@@ -1,0 +1,59 @@
+<?php
+  /*
+   * Module: Defects 
+  */
+  $capability_key = 'defects';  
+  require('header.php');
+?>
+	<div id="page">
+		<div id="page-title">
+    	<h2>
+      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+
+				<div class="clear"></div>
+      </h2>
+		</div>
+				
+		<div id="content">
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" name="keyword" placeholder="Search"/>
+        <button>Go</button>
+      </div>
+        
+      <!-- BOF GridView -->
+      <div id="grid-defects" class="grid jq-grid">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+							<td class="border-right text-center" width="80"><a class="sort default active up" column="type">Type</a></td>
+              <td class="border-right text-center" width="280"><a class="sort down" column="defect">Defect</a></td>
+              <td class="border-right text-center"><a class="sort" column="model">Model</a></td>  
+              <td class="border-right text-center" width="100"><a class="sort" column="line">Line</a></td>  
+              <td class="border-right text-center" width="90"><a class="sort" column="category">Category</a></td>  
+              <td class="border-right text-center" width="60"><a class="sort" column="location">Location</a></td>   
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      
+      <!-- BOF Pagination -->
+      <div id="defects-pagination"></div>
+		</div>
+	</div>
+<script>
+	$(function() {
+  	var data = { 
+    	"url":"/populate/defects.php",
+      "limit":"15",
+			"data_key":"defects",
+			"row_template":"row_template_defects",
+      "pagination":"#defects-pagination"
+		}
+	
+		$('#grid-defects').grid(data);
+  }) 
+ </script>
+
+<?php require('footer.php'); ?>

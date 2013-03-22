@@ -1,0 +1,109 @@
+<?php
+  /*
+   * Module: Product - Edit 
+  */
+  $capability_key = 'edit_product';
+  require('header.php');
+  
+	if($_POST['action'] == 'edit_product') {
+		$args = array('variables' => $_POST['product'], 'conditions' => 'id='.$_POST['pid']); 
+		$num_of_records = $Posts->EditProduct($args);
+		$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'id='.$_POST['item_cost_id']));
+		redirect_to($Capabilities->All['show_product']['url'].'?pid='.$_POST['pid']);		
+	} 
+	
+  if(isset($_REQUEST['pid'])) {
+  	$products = $DB->Find('products', array(
+				  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, item_classifications.classification, products.bar_code, products.color', 
+				  	    'conditions' 	=> 'products.id = '.$_REQUEST['pid'], 
+				  	    'joins' 			=> 'INNER JOIN brand_models ON products.brand_model = brand_models.id
+				  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification'
+  	  )
+		);	
+		$item_costs = $DB->Find('item_costs', array('columns' => 'id, supplier, unit, currency, cost', 
+  							'conditions' => 'item_id = '.$_REQUEST['pid'].' AND item_type="PRD"'));  
+		$item_images = $DB->Get('item_images', array('columns' => 'item_images.*',
+		 																			'conditions' => 'item_id='.$_REQUEST['pid']));	
+  }
+  $brands = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model', 'conditions' => 'parent IS NULL'));
+  $packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification', 'conditions' => 'item_type = "PRD"'));
+	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
+	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
+  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
+	$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 'conditions' => 'item_type="PRD" AND item_id = '.$_REQUEST['pid']));	
+?>
+
+	<div id="page">
+		<div id="page-title">
+    	<h2>
+      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+        <?php
+					echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_REQUEST['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>';
+					echo (count($has_inventory)>0) ? '<a href="pinventory-show.php?iid='.$has_inventory['id'].'&pid='.$has_inventory['item_id'].'" class="nav">View Inventory Details</a>' 
+																					: '<a href="pinventory-new.php?pid='.$_REQUEST['pid'].'" class="nav">Add Inventory Entry</a>';
+				?>
+				<div class="clear"></div>
+      </h2>
+		</div>
+				
+		<div id="content">
+			<form class="form-container" id="product-form" action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
+				<input type="hidden" name="action" value="edit_product">
+				<input type="hidden" name="pid" value="<?php echo $_REQUEST['pid'] ?>">
+				<input type="hidden" id="item_cost_id" name="item_cost_id" value="<?php echo $item_costs['id'] ?>">
+        
+        <h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Product Code:</td><td width="310"><input type="text" id="product[product_code]" name="product[product_code]" value="<?php echo $products['product_code'] ?>" class="text-field" /></td>
+              <td width="150">Brand:</td><td><?php select_query_tag($brands, 'id', 'brand_model', $products['brand'], 'product[brand_model]', 'product[brand_model]', '', 'width:192px;'); ?>
+              </td>
+           </tr>
+           <tr>
+              <td>Pack:</td><td><?php select_query_tag($packs, 'id', 'classification', $products['product_classification'], 'product[product_classification]', 'product[product_classification]', '', 'width:192px;'); ?></td>
+              <td>Color:</td><td><input type="text" id="product[color]" name="product[color]" value="<?php echo $products['color'] ?>" class="text-field" /></td>
+           </tr>    
+           <tr>
+              <td>Barcode:</td><td><input type="text" id="product[bar_code]" name="product[bar_code]" value="<?php echo $products['bar_code'] ?>" class="text-field" /></td>
+              <td>Status:</td><td><?php select_query_tag($statuses, 'id', 'description', $products['status'], 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
+           </tr>            
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" id="product[description]" name="product[description]" value="<?php echo $products['description'] ?>" class="text-field" style="width:645px" />
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
+        <br/>
+        <h3 class="form-title">Purchase Information</h3>
+        <table>            
+           <tr>
+              <td width="150">Supplier:</td>
+              <td colspan="99">
+                <?php select_query_tag($suppliers, 'id', 'name', $item_costs['supplier'], 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;'); ?>
+              </td>
+           </tr>
+           <tr>
+              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $item_costs['unit'], 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
+              <td width="150">Currency:</td><td><?php select_query_tag($currencies, 'id', 'code', $item_costs['currency'], 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+           </tr>
+           <tr>
+              <td>Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" value="<?php echo $item_costs['cost'] ?>" class="text-field text-right" /></td>
+              <td></td>
+           </tr>    
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>       
+        
+            
+         <div class="field-command">
+       	   <div class="text-post-status"></div>
+       	   <input type="submit" value="Update" class="btn"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('products-show.php?pid='.$_REQUEST['pid']); ?>"/>
+         </div>
+			</form>
+		</div>
+	</div>
+
+<?php require('footer.php'); ?>

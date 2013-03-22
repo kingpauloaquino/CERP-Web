@@ -1,0 +1,58 @@
+<?php
+  /*
+   * Module: Locations
+  */
+  $capability_key = 'locations';  
+  require('header.php');
+?>
+	<div id="page">
+		<div id="page-title">
+    	<h2>
+      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+        <?php
+				  
+				?>
+				<div class="clear"></div>
+      </h2>
+		</div>
+				
+		<div id="content">
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" name="keyword" placeholder="Search"/>
+        <button>Go</button>
+      </div>
+        
+      <!-- BOF GridView -->
+      <div id="grid-locations" class="grid jq-grid">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <td width="110" class="border-right text-center"><a class="sort default active up" code="address">Address</a></td>
+              <td width="200" class="border-right text-center"><a class="sort" code="item">Item</a></td>
+              <td width="100" class="border-right text-center"><a class="sort" code="bldg">Building</a></td>
+              <td class="border-right text-center"><a class="sort" code="description">Description</a></td>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      
+      <!-- BOF Pagination -->
+      <div id="locations-pagination"></div>
+		</div>
+	</div>
+<script>
+	$(function() {
+  	var data = { 
+    	"url":"/populate/locations.php",
+      "limit":"15",
+			"data_key":"location_addresses",
+			"row_template":"row_template_locations",
+      "pagination":"#locations-pagination"
+		}
+	
+		$('#grid-locations').grid(data);
+  }) 
+ </script>
+<?php require('footer.php'); ?>

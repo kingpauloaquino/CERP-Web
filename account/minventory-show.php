@@ -41,14 +41,15 @@
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
-              <td width="150">Material Code:</td><td><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field" disabled/>
+              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field" disabled/>
               	<?php echo $linkto = ($materials['material_code']!='') ? link_to('materials-show.php?mid='.$_REQUEST['id']) : '' ?>
               </td>
-              <td>Type:</td><td><input type="text" value="<?php echo $materials['material_type'] ?>" class="text-field text-date" disabled/></td>
+              <td width="150">Type:</td><td><input type="text" value="<?php echo $materials['material_type'] ?>" class="text-field text-date" disabled/></td>
            </tr>
            <tr>
               <td>Classification:</td><td><input type="text" value="<?php echo $materials['classification'] ?>" class="text-field" disabled/></td>
-              <td>Model:</td><td><input type="text" value="<?php echo $materials['brand_model'] ?>" class="text-field text-date" disabled/></td>
+              
+              <td>Model:</td><td><input type="text" value="<?php echo $model = ($materials['material_type'] == 'Direct Material') ? $materials['brand_model'] : 'N/A' ?>" class="text-field" disabled/></td>
            </tr>
            <tr>
               <td>Person in-charge:</td><td><input type="text" value="<?php echo $materials['pic'] ?>" class="text-field" disabled/>

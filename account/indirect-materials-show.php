@@ -10,7 +10,8 @@
 					  			'columns' 		=> 'materials.id AS mid, materials.parent, materials.material_code, materials.bar_code, materials.description, 
 																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
 																  	suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.code AS currency, item_costs.cost, 
-																  	lookups3.description AS material_type, lookups4.description AS status, item_costs.transportation_rate', 
+																  	lookups3.description AS material_type, lookups4.description AS status, item_costs.transportation_rate,
+																  	terminals.id AS tid, terminals.terminal_code', 
 					  	    'conditions' 	=> 'materials.id = '.$_REQUEST['mid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
 																		LEFT OUTER JOIN users ON materials.person_in_charge = users.id
@@ -19,7 +20,8 @@
 																		LEFT OUTER JOIN lookups AS lookups1 ON item_costs.unit = lookups1.id
 																		LEFT OUTER JOIN lookups AS lookups2 ON item_costs.currency = lookups2.id
 																		LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
-																		LEFT OUTER JOIN lookups AS lookups4 ON materials.status = lookups4.id'
+																		LEFT OUTER JOIN lookups AS lookups4 ON materials.status = lookups4.id
+																		LEFT OUTER JOIN terminals ON terminals.id=materials.production_entry_terminal_id'
 	  	  )
 			);
 			$address = $DB->Find('location_address_items', array(
@@ -57,138 +59,59 @@
 				
 		<div id="content">
 			<form class="form-container">
-        <h3 class="form-title">Basic Information</h3>
-        
-        <div class="field">
-          <label class="label">Material Code:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $materials['material_code'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Bar Code:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $materials['bar_code'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Type:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $materials['material_type'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Classification:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $materials['classification'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Person-in-charge:</label>
-          <div class="input">
-          	<input type="text" name="name" value="<?php echo $materials['pic'] ?>"/>
-          	<?php echo $linkto = ($materials['pic']!='') ? link_to('users-show.php?uid='.$materials['user_id']) : '' ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Status:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $materials['status'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Address:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $address['address'] ?>" readonly="readonly"/>
-          	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Description:</label>
-          <div class="input">
-            <textarea readonly="readonly"><?php echo $materials['description'] ?></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-				
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field" disabled/></td>
+              <td width="150"></td><td></td>
+           </tr>
+           <tr>
+              <td>Classification:</td><td><input type="text" value="<?php echo $materials['classification'] ?>" class="text-field" disabled/></td>
+              <td>Status:</td><td><input type="text" value="<?php echo $materials['status'] ?>" class="text-field" disabled/></td>
+           </tr>  
+           <tr>
+              <td>Barcode:</td><td><input type="text" value="<?php echo $materials['bar_code'] ?>" class="text-field" disabled/></td>
+              <td>Person-in-charge:</td><td><input type="text" value="<?php echo $materials['pic'] ?>" class="text-field" disabled/>
+              	<?php echo $linkto = ($materials['pic']!='') ? link_to('users-show.php?uid='.$materials['user_id']) : '' ?>
+              </td>
+           </tr>      
+           <tr>
+              <td>Addresss:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
+              	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
+              </td>
+              <td>WIP Line Entry:</td><td><input type="text" value="<?php echo $materials['terminal_code'] ?>" class="text-field" disabled/>
+              	<?php echo $linkto = ($materials['terminal_code']!='') ? link_to('terminals-show.php?tid='.$materials['tid']) : '' ?>
+              </td>
+           </tr>             
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" value="<?php echo $materials['description'] ?>" class="text-field" style="width:645px" disabled/>
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
         <br/>
-        
         <h3 class="form-title">Purchase Information</h3>
-        <div class="field">
-          <label class="label">Supplier:</label>
-          <div class="input">
-          	<input type="text" name="name" value="<?php echo $materials['supplier'] ?>"/>
-          	<?php echo $linkto = ($materials['supplier']!='') ? link_to('suppliers-show.php?sid='.$materials['sup_id']) : '' ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Unit:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $materials['unit'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Currency:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $materials['currency'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Cost:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $materials['cost'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Transportation Rate:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $materials['transportation_rate'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-      	<br/>
-      	
-      	<h3 class="form-title">Material Images</h3>
-        <div class="imageRow">
-			  	<div class="set">
-			  		<?php
-			  			if(count($item_images)>0) {
-				  			foreach ($item_images as $image) {
-									echo '<div class="single">';
-									echo '<a href="../images/inks/'.$image['name'].'.'.$image['ext'].'" rel="lightbox[inks]" title="'.$image['title'].'"><img src="../images/inks/'.$image['name'].'_thumb.'.$image['ext'].'" alt="'.$image['description'].'" /></a>';
-									echo '</div>';
-								}
-			  			}else {
-			  				echo '<div class="single">';
-								echo '<img src="../images/inks/no_image.png" alt="no image available" />';
-								echo '</div>';
-			  			}
-			  		?>
-			  	</div>
-		  	</div>
+        <table>
+           <tr>
+              <td width="150">Supplier:</td>
+              <td colspan="99">
+              	<input type="text" value="<?php echo $materials['supplier'] ?>" class="text-field" style="width:645px" disabled/>
+              	<?php echo $linkto = ($materials['supplier']!='') ? link_to('suppliers-show.php?sid='.$materials['sup_id']) : '' ?>
+              </td>
+           </tr>
+           <tr>
+              <td width="150">Currency:</td><td width="310"><input type="text" value="<?php echo $materials['currency'] ?>" class="text-field" disabled/></td>
+              <td width="150">Cost:</td><td><input type="text" value="<?php echo $materials['cost'] ?>" class="text-field  text-right" disabled/></td>
+           </tr>
+           <tr>
+              <td width="150">Unit:</td><td width="310"><input type="text" value="<?php echo $materials['unit'] ?>" class="text-field" disabled/></td>
+              <td>Transportation Rate:</td><td><input type="text" value="<?php echo $materials['transportation_rate'] ?>" class="text-field text-right" disabled/></td>
+           </tr>    
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>        
+      
       </form>
 				
 		</div>

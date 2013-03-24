@@ -181,11 +181,11 @@
               </td>
            </tr>
            <tr>
-              <td width="150">Unit:</td><td width="310"><input type="text" value="<?php echo $materials['unit'] ?>" class="text-field" disabled/></td>
-              <td width="150">Currency:</td><td><input type="text" value="<?php echo $materials['currency'] ?>" class="text-field" disabled/></td>
+              <td width="150">Currency:</td><td width="310"><input type="text" value="<?php echo $materials['currency'] ?>" class="text-field" disabled/></td>
+              <td width="150">Cost:</td><td><input type="text" value="<?php echo $materials['cost'] ?>" class="text-field  text-right" disabled/></td>
            </tr>
            <tr>
-              <td>Cost:</td><td><input type="text" value="<?php echo $materials['cost'] ?>" class="text-field  text-right" disabled/></td>
+              <td width="150">Unit:</td><td width="310"><input type="text" value="<?php echo $materials['unit'] ?>" class="text-field" disabled/></td>
               <td>Transportation Rate:</td><td><input type="text" value="<?php echo $materials['transportation_rate'] ?>" class="text-field text-right" disabled/></td>
            </tr>    
            <tr><td height="5" colspan="99"></td></tr>

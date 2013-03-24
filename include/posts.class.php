@@ -139,12 +139,11 @@ class Posts {
 		  'bar_code'								=> $params['bar_code'],	
 		  'material_type'						=> $params['material_type'],	
 		  'material_classification'	=> $params['material_classification'],		  
-		  'production_entry_terminal_id'	=> $params['production_entry_terminal_id'],	  
 		  'description'							=> $params['description'],
 		  'brand_model'							=> $params['brand_model'],
 		  'person_in_charge'				=> $params['person_in_charge'],
 		  'status'									=> $params['status'],
-		  'production_entry_terminal_id' => 3 // defaults to Pre-production
+		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] 
 		);
     return $this->DB->InsertRecord('materials', $material);
   }
@@ -161,14 +160,15 @@ class Posts {
 		  'material_classification'	=> $params['material_classification'],		  
 		  'description'							=> $params['description'],
 		  'person_in_charge'				=> $params['person_in_charge'],
-		  'status'									=> $params['status']
+		  'status'									=> $params['status'],
+		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] 
 		);
     return $this->DB->InsertRecord('materials', $material);
   }
 
   function AddMaterialRev($params) {
     $material = array(
-		  'material_id'				=> $params['material_id'],
+		  'material_id'				=> $params['item_id'],
 		  'base_material_id'	=> $params['base_material_id'],
 		  'revision'					=> $params['revision']
 		);
@@ -186,7 +186,8 @@ class Posts {
 		  'supplier'	=> $params['supplier'],		  
 		  'unit'			=> $params['unit'],
 		  'currency'	=> $params['currency'],
-		  'cost'			=> $params['cost']
+		  'cost'			=> $params['cost'],
+		  'transportation_rate'	=> $params['transportation_rate']
 		);
     return $this->DB->InsertRecord('item_costs', $item_cost);
   }
@@ -200,7 +201,9 @@ class Posts {
 		  'product_code'						=> $params['product_code'],		  
 		  'product_classification'	=> $params['product_classification'],		  
 		  'brand_model'							=> $params['brand_model'],	  
-		  'description'							=> $params['description'],
+		  'description'							=> $params['description'],  
+		  'color'										=> $params['color'], 
+		  'bar_code'								=> $params['bar_code'],
 		  'status'									=> $params['status']
 		);
     return $this->DB->InsertRecord('products', $product);

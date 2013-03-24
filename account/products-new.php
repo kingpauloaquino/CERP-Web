@@ -18,6 +18,7 @@
 	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
 	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
   $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
 ?>
 
 	<div id="page">
@@ -30,93 +31,58 @@
 				
 		<div id="content">
 			<form class="form-container" method="POST">
-        <h3 class="form-title">Basic Information</h3>
 				<input type="hidden" name="action" value="add_product">
 				<input type="hidden" id="item_cost[item_type]" name="item_cost[item_type]" value="PRD">
-        
-        <div class="field">
-          <label class="label">Product Code:</label>
-          <div class="input">
-            <input type="text" id="product[product_code]" name="product[product_code]"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Brand:</label>
-          <div class="input">
-            <?php select_query_tag($brands, 'id', 'brand_model', '', 'product[brand_model]', 'product[brand_model]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Pack:</label>
-          <div class="input">
-            <?php select_query_tag($packs, 'id', 'classification', '', 'product[product_classification]', 'product[product_classification]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Status:</label>
-          <div class="input">
-            <?php select_query_tag($status, 'id', 'description', '', 'product[status]', 'product[status]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Description:</label>
-          <div class="input">
-            <textarea id="product[description]" name="product[description]"></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
+				
+        <h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Product Code:</td><td width="310"><input type="text" id="product[product_code]" name="product[product_code]" class="text-field" /></td>
+              <td width="150">Brand:</td><td><?php select_query_tag($brands, 'id', 'brand_model', '', 'product[brand_model]', 'product[brand_model]', '', 'width:192px;'); ?>
+              </td>
+           </tr>
+           <tr>
+              <td>Pack:</td><td><?php select_query_tag($packs, 'id', 'classification', '', 'product[product_classification]', 'product[product_classification]', '', 'width:192px;'); ?></td>
+              <td>Color:</td><td><input type="text" id="product[color]" name="product[color]" value="<?php echo $products['color'] ?>" class="text-field" /></td>
+           </tr>    
+           <tr>
+              <td>Barcode:</td><td><input type="text" id="product[bar_code]" name="product[bar_code]" class="text-field" /></td>
+              <td>Status:</td><td><?php select_query_tag($statuses, 'id', 'description', '', 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
+           </tr>            
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" id="product[description]" name="product[description]" class="text-field" style="width:645px" />
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
         <br/>
         <h3 class="form-title">Purchase Information</h3>
+        <table>            
+           <tr>
+              <td width="150">Supplier:</td>
+              <td colspan="99">
+                <?php select_query_tag($suppliers, 'id', 'name', '', 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;'); ?>
+              </td>
+           </tr>
+           <tr>
+              <td width="150">Currency:</td><td><?php select_query_tag($currencies, 'id', 'code', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+              <td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" class="text-field text-right" /></td>
+           </tr>
+           <tr>
+              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
+              <td></td>
+           </tr>    
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>       
         
-        <div class="field">
-          <label class="label">Supplier:</label>
-          <div class="input">
-            <?php select_query_tag($suppliers, 'id', 'name', '', 'item_cost[supplier]', 'item_cost[supplier]'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Unit:</label>
-          <div class="input">
-            <?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Currency:</label>
-          <div class="input">
-            <?php select_query_tag($currencies, 'id', 'code', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Cost:</label>
-          <div class="input">
-            <input type="text" id="item_cost[cost]" name="item_cost[cost]"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label"></label>
-          <div class="input">
-            <button class="btn">Create</button>
-            <button class="btn" onclick="return cancel_btn();">Cancel</button>
-          </div>
-          <div class="clear"></div>
-        </div>
+            
+         <div class="field-command">
+       	   <div class="text-post-status"></div>
+       	   <input type="submit" value="Create" class="btn"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('products-show.php?pid='.$_REQUEST['pid']); ?>"/>
+         </div>
 
 			</form>
 		</div>

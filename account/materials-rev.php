@@ -9,12 +9,15 @@
 		$rev = (strlen($_POST['material']['material_rev'])==1 && ctype_alpha($_POST['material']['material_rev'])) ? $_POST['material']['material_rev'] : 'A';
 		$_POST['material']['material_code'] = $_POST['material']['base_code'] . $rev;		
 		$id = $Posts->AddMaterial($_POST['material']);
-		$_POST['item_cost']['mid'] = $id;
+		
+		$_POST['item_cost']['item_id'] = $id;
 		$Posts->AddItemCost($_POST['item_cost']);
-		$_POST['material_rev']['base_material_id'] = (int) $_POST['material']['material_id'];
-		$_POST['material_rev']['material_id'] = $id;
+		
+		$_POST['material_rev']['base_material_id'] = (int) $_POST['material']['item_id'];
+		$_POST['material_rev']['item_id'] = $id;
 		$_POST['material_rev']['revision'] = $_POST['material']['material_rev'];
 		$Posts->AddMaterialRev($_POST['material_rev']);
+		
 		if(isset($id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$id); }
 	} 
 	
@@ -26,6 +29,7 @@
 	$models = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model'));
 	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
 	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
+	$terminals = $DB->Get('terminals', array('columns' => 'id, CONCAT(terminal_code," - ", terminal_name) AS terminal', 'conditions' => 'location_id=4 AND type="IN"', 'sort_column' => 'id')); // location_id=4 (WIP)
   $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
 	$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));	
 ?>
@@ -76,7 +80,7 @@
         <h3 class="form-title">Basic Information</h3>
 				
 				<input type="hidden" name="action" value="add_material_rev">
-	   		<input type="hidden" id="material[material_id]" name="material[material_id]" />
+	   		<input type="hidden" id="material[item_id]" name="material[item_id]" />
 	   		<input type="hidden" id="material[material_type]" name="material[material_type]" />
 	   		<input type="hidden" id="material[material_classification]" name="material[material_classification]" />
 	   		<input type="hidden" id="material[brand_model]" name="material[brand_model]" />
@@ -86,129 +90,68 @@
 				<span class="notice">
           <p class="info"><strong>Notice!</strong> Material codes should be unique.</p>
         </span>
+        
+        
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Base Material Code:</td><td width="310"><input type="text" id="material[base_code]" name="material[base_code]" class="text-field searchbox" autocomplete="off"" />
+              	<div id="live_search_display" class="live_search_display"></div>
+              </td>
+              <td width="150">Revision:</td><td><input type="text" id="material[material_rev]" name="material[material_rev]" class="text-field" placeholder="Revision [A-Z]" /></td>
+           </tr>
+           <tr>
+              <td>Classification:</td><td><input type="text" id="material_classification" name="material_classification" class="text-field" disabled/></td>
+              <td>Model:</td><td><input type="text" id="brand_model" name="brand_model" class="text-field" disabled/></td>
+           </tr>
+           <tr>
+              <td>Type:</td><td><input type="text" id="material_type" name="material_type" class="text-field" disabled/></td>
+              <td>Status:</td><td><?php select_query_tag($status, 'id', 'description', '', 'material[status]', 'material[status]', '', 'width:192px;'); ?></td>
+           </tr>    
+           <tr>
+              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" class="text-field" /></td>
+              <td>Person-in-charge:</td><td><?php select_query_tag($pics, 'id', 'pic', '', 'material[person_in_charge]', 'material[person_in_charge]', '', 'width:192px;'); ?>
+              </td>
+           </tr>      
+           <tr>
+              <td>Addresss:</td><td><input type="text"  class="text-field" /></td>
+              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', '', 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?>
+              </td>
+           </tr>             
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" id="material[description]" name="material[description]" class="text-field" style="width:645px" />
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
+        <br/>
+        <h3 class="form-title">Purchase Information</h3>
+        <table>            
+           <tr>
+              <td width="150">Supplier:</td>
+              <td colspan="99">
+                <?php select_query_tag($suppliers, 'id', 'name', '', 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;'); ?>
+              </td>
+           </tr>
+           <tr>
+           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'code', '', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+           		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" class="text-field text-right" /></td>
+           </tr>
+           <tr>
+              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
+              <td>Transportation Rate:</td><td><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right" /></td>
+           </tr>    
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>   
+            
+         <div class="field-command">
+       	   <div class="text-post-status"></div>
+       	   <input type="submit" value="Create" class="btn"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('materials.php'); ?>"/>
+         </div>
 				
-				<div class="field">
-          <label class="label">Material Code:</label>
-          <div class="input">
-            <input type="text" id="material[base_code]" name="material[base_code]" class="searchbox" autocomplete="off" />
-						<div id="live_search_display" class="live_search_display"></div>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Revision:</label>
-          <div class="input">
-            <input type="text" id="material[material_rev]" name="material[material_rev]" class="text" autocomplete="off" />
-          </div>
-          <div class="clear"></div>
-        </div>
-			
-        <div class="field">
-          <label class="label">Bar Code:</label>
-          <div class="input">
-            <input type="text" id="material[bar_code]" name="material[bar_code]"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-			
-        <div class="field">
-          <label class="label">Type:</label>
-          <div class="input">
-            <input type="text" id="material_type" name="material_type" readonly="reaadonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-			
-        <div class="field">
-          <label class="label">Class:</label>
-          <div class="input">
-            <input type="text" id="material_classification" name="material_classification" readonly="reaadonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-			
-        <div class="field">
-          <label class="label">Model:</label>
-          <div class="input">
-            <input type="text" id="brand_model" name="brand_model" readonly="reaadonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Person-in-charge:</label>
-          <div class="input">
-            <?php select_query_tag($pics, 'id', 'pic', '', 'material[person_in_charge]', 'material[person_in_charge]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Status:</label>
-          <div class="input">
-            <?php select_query_tag($status, 'id', 'description', '', 'material[status]', 'material[status]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Description:</label>
-          <div class="input">
-            <textarea id="material[description]" name="material[description]"></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-				<br/>
-				<h3 class="form-title">Purchase Information</h3>
-        <div class="field">
-          <label class="label">Supplier:</label>
-          <div class="input">
-            <?php select_query_tag($suppliers, 'id', 'name', '', 'item_cost[supplier]', 'item_cost[supplier]'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Unit:</label>
-          <div class="input">
-            <?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Currency:</label>
-          <div class="input">
-            <?php select_query_tag($currencies, 'id', 'code', '', 'item_cost[currency]', 'item_cost[currency]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Cost:</label>
-          <div class="input">
-            <input type="text" id="item_cost[cost]" name="item_cost[cost]" value=""/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Transportation Rate:</label>
-          <div class="input">
-            <input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" value=""/>
-          </div>
-          <div class="clear"></div>
-        </div>
-				<br/>
-				<div class="field">
-          <label class="label"></label>
-          <div class="input">
-            <button class="btn">Create</button>
-            <button class="btn" onclick="return cancel_btn();">Cancel</button>
-          </div>
-          <div class="clear"></div>
-        </div>
 				</form>
 			</div>
 		</div>

@@ -86,7 +86,7 @@ if($_POST)
 	echo '$(".mcode").click(function() {';
 	if($_POST['searchtype']=='revision'){
 		echo '$(\'[name*="material[base_code]"]\').val($(this).text());';
-		echo '$(\'[name*="material[material_id]"]\').val($(this).find(".mat_id").val());';
+		echo '$(\'[name*="material[item_id]"]\').val($(this).find(".mat_id").val());';
 		echo '$(\'[name*="material[material_type]"]\').val($(this).find(".mat_type_id").val());';
 		echo '$(\'#material_type\').val($(this).find(".mat_type").val());';
 		echo '$(\'[name*="material[material_classification]"]\').val($(this).find(".mat_class_id").val());';

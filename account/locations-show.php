@@ -41,6 +41,50 @@
 				
 		<div id="content">
 			<form class="form-container">
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field" disabled/></td>
+              <td width="150">Base Material Code:</td><td><input type="text" value="Base Material Code" class="text-field" disabled/>
+              	<?php echo $linkto = (isset($parent_material['material_code'])) ? link_to('materials-show.php?mid='.$parent_material['base_id'].'&base=1') : '' ?>
+              </td>
+           </tr>
+           <tr>
+              <td>Classification:</td><td><input type="text" value="<?php echo $materials['classification'] ?>" class="text-field" disabled/></td>
+              <td>Model:</td><td><input type="text" value="<?php echo $materials['brand_model'] ?>" class="text-field" disabled/></td>
+           </tr>
+           <tr>
+              <td>Type:</td><td><input type="text" value="<?php echo $materials['material_type'] ?>" class="text-field" disabled/></td>
+              <td>Status:</td><td><input type="text" value="<?php echo $materials['status'] ?>" class="text-field" disabled/></td>
+           </tr>    
+           <tr>
+              <td>Barcode:</td><td><input type="text" value="<?php echo $materials['bar_code'] ?>" class="text-field" disabled/></td>
+              <td>Person-in-charge:</td><td><input type="text" value="<?php echo $materials['pic'] ?>" class="text-field" disabled/>
+              	<?php echo $linkto = ($materials['pic']!='') ? link_to('users-show.php?uid='.$materials['user_id']) : '' ?>
+              </td>
+           </tr>      
+           <tr>
+              <td>Addresss:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
+              	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
+              </td>
+              <td>WIP Line Entry:</td><td><input type="text" value="<?php echo $materials['terminal_code'] ?>" class="text-field" disabled/>
+              	<?php echo $linkto = ($materials['terminal_code']!='') ? link_to('terminals-show.php?tid='.$materials['tid']) : '' ?>
+              </td>
+           </tr>             
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" value="<?php echo $materials['description'] ?>" class="text-field" style="width:645px" disabled/>
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
+				
+				
+				
+				
+				
+				
         <h3 class="form-title">Basic Information</h3>
         
         <div class="field">

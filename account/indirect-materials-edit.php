@@ -37,10 +37,12 @@
 	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
 	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
   $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+	$terminals = $DB->Get('terminals', array('columns' => 'id, CONCAT(terminal_code," - ", terminal_name) AS terminal', 'conditions' => 'location_id=4 AND type="IN"', 'sort_column' => 'id')); // location_id=4 (WIP)
 	$item_images = $DB->Get('item_images', array('columns' => 'item_images.*',
 		 																			'conditions' => 'item_id='.$_REQUEST['mid']));	
 	$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 
-  																							'conditions' => 'item_type="MAT" AND item_id = '.$_REQUEST['mid']));																									
+  																							'conditions' => 'item_type="MAT" AND item_id = '.$_REQUEST['mid']));	
+																																																
 ?>
 
 	<div id="page">
@@ -55,138 +57,66 @@
 		</div>
 				
 		<div id="content">
-			<form class="form-container" action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
-        <h3 class="form-title">Basic Information</h3>
-        
+			<form class="form-container" action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">        
 				<input type="hidden" name="action" value="edit_indirect_material">
 				<input type="hidden" name="mid" value="<?php echo $_REQUEST['mid'] ?>">
-                
-        <div class="field">
-          <label class="label">Material Code:</label>
-          <div class="input">
-            <input type="text" id="material[material_code]" name="material[material_code]" value="<?php echo $materials['material_code'] ?>"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Bar Code:</label>
-          <div class="input">
-            <input type="text" id="material[bar_code]" name="material[bar_code]" value="<?php echo $materials['bar_code'] ?>"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Classification:</label>
-          <div class="input">
-            <?php select_query_tag($classifications, 'id', 'classification', $materials['material_classification'], 'material[material_classification]', 'material[material_classification]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-                
-        <div class="field">
-          <label class="label">Person-in-charge:</label>
-          <div class="input">
-            <?php select_query_tag($pics, 'id', 'pic', $materials['person_in_charge'], 'material[person_in_charge]', 'material[person_in_charge]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Status:</label>
-          <div class="input">
-            <?php select_query_tag($status, 'id', 'description', $materials['status'], 'material[status]', 'material[status]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Address:</label>
-          <div class="input">
-            <input type="text"  value="<?php echo $address['address'] ?>"/>
-          	<?php echo $linkto = ($address['add_id']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$address['add_id'].'">change</a>' : '' ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Description:</label>
-          <div class="input">
-            <textarea id="material[description]" name="material[description]"><?php echo $materials['description'] ?></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-				<br/>
-				<h3 class="form-title">Purchase Information</h3>
-        <div class="field">
-          <label class="label">Status:</label>
-          <div class="input">
-            <?php select_query_tag($suppliers, 'id', 'name', $item_costs['supplier'], 'item_cost[supplier]', 'item_cost[supplier]'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Unit:</label>
-          <div class="input">
-            <?php select_query_tag($units, 'id', 'description', $item_costs['unit'], 'item_cost[unit]', 'item_cost[unit]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Currency:</label>
-          <div class="input">
-            <?php select_query_tag($currencies, 'id', 'code', $item_costs['currency'], 'item_cost[currency]', 'item_cost[currency]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Cost:</label>
-          <div class="input">
-            <input type="text" id="item_cost[cost]" name="item_cost[cost]" value="<?php echo $item_costs['cost'] ?>"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Transportation Rate:</label>
-          <div class="input">
-            <input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" value="<?php echo $item_costs['transportation_rate'] ?>"/>
-          </div>
-          <div class="clear"></div>
-        </div>
 				
-				<br/>
-      	<h3 class="form-title">Material Images</h3>
-	        <div class="imageRow">
-				  	<div class="set">
-				  		<?php
-				  			if(count($item_images)>0) {
-					  			foreach ($item_images as $image) {
-										echo '<div class="single">';
-										echo '<a href="../images/inks/'.$image['name'].'.'.$image['ext'].'" rel="lightbox[inks]" title="'.$image['title'].'"><img src="../images/inks/'.$image['name'].'_thumb.'.$image['ext'].'" alt="'.$image['description'].'" /></a>';
-										echo '</div>';
-									}
-				  			}else {
-				  				echo '<div class="single">';
-									echo '<img src="../images/inks/no_image.png" alt="no image available" />';
-									echo '</div>';
-				  			}
-				  		?>
-				  	</div>
-				  </div>
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Material Code:</td><td width="310"><input type="text" id="material[material_code]" name="material[material_code]" value="<?php echo $materials['material_code'] ?>" class="text-field" /></td>
+              <td width="150"></td><td></td>
+           </tr>
+           <tr>
+              <td>Classification:</td><td><?php select_query_tag($classifications, 'id', 'classification', $materials['material_classification'], 'material[material_classification]', 'material[material_classification]', '', 'width:192px;'); ?></td>
+              <td>Status:</td><td><?php select_query_tag($status, 'id', 'description', $materials['status'], 'material[status]', 'material[status]', '', 'width:192px;'); ?></td>
+           </tr> 
+           <tr>
+              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" value="<?php echo $materials['bar_code'] ?>" class="text-field" /></td>
+              <td>Person-in-charge:</td><td><?php select_query_tag($pics, 'id', 'pic', $materials['person_in_charge'], 'material[person_in_charge]', 'material[person_in_charge]', '', 'width:192px;'); ?>
+              </td>
+           </tr>      
+           <tr>
+              <td>Addresss:</td><td><input type="text"  value="<?php echo $address['address'] ?>" class="text-field" />
+          			<?php echo $linkto = ($address['add_id']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$address['add_id'].'">change</a>' : '' ?>
+              </td>
+              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', $materials['production_entry_terminal_id'], 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?>
+              </td>
+           </tr>             
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" id="material[description]" name="material[description]" value="<?php echo $materials['description'] ?>" class="text-field" style="width:645px" />
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
+        <br/>
+        <h3 class="form-title">Purchase Information</h3>
+        <table>            
+           <tr>
+              <td width="150">Supplier:</td>
+              <td colspan="99">
+                <?php select_query_tag($suppliers, 'id', 'name', $item_costs['supplier'], 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;'); ?>
+              </td>
+           </tr>
+           <tr>
+           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'code', $item_costs['currency'], 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+           		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" value="<?php echo $item_costs['cost'] ?>" class="text-field text-right" /></td>
+           </tr>
+           <tr>
+              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $item_costs['unit'], 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
+              <td>Transportation Rate:</td><td><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" value="<?php echo $item_costs['transportation_rate'] ?>" class="text-field text-right" /></td>
+           </tr>    
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>  
 				  
-			  <div class="field">
-              <label class="label"></label>
-              <div class="input">
-                <button class="btn">Update</button>
-                <button class="btn" onclick="return cancel_btn();">Cancel</button>
-              </div>
-              <div class="clear"></div>
-            </div>
+			  
+         <div class="field-command">
+       	   <div class="text-post-status"></div>
+       	   <input type="submit" value="Update" class="btn"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('materials-show.php?mid='.$_REQUEST['mid']); ?>"/>
+         </div>
 				</form>
 		</div>
 	</div>

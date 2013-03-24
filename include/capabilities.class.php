@@ -23,9 +23,9 @@ class Capabilities {
 	  'publish_material' => array('name' => 'Publish Material', 'url' => '', 'parent' => 'materials'),
 	  
 		'indirect_materials' => array('name' => 'Indirect Materials', 'url' => 'indirect-materials.php', 'parent' => 'indirect_materials'),
-	  'show_indirect_material' => array('name' => 'Material Details', 'url' => 'indirect-materials-show.php', 'parent' => 'indirect_materials'),
-	  'add_indirect_material' => array('name' => 'New Material', 'url' => 'indirect-materials-new.php', 'parent' => 'indirect_materials'),
-	  'edit_indirect_material' => array('name' => 'Edit Material', 'url' => 'indirect-materials-edit.php', 'parent' => 'indirect_materials'),
+	  'show_indirect_material' => array('name' => 'Indirect Material Details', 'url' => 'indirect-materials-show.php', 'parent' => 'indirect_materials'),
+	  'add_indirect_material' => array('name' => 'New Indirect Material', 'url' => 'indirect-materials-new.php', 'parent' => 'indirect_materials'),
+	  'edit_indirect_material' => array('name' => 'Edit Indirect Material', 'url' => 'indirect-materials-edit.php', 'parent' => 'indirect_materials'),
 	  
 	  'products' => array('name' => 'Products', 'url' => 'products.php', 'parent' => 'products'),
 	  'show_product' => array('name' => 'Product Details', 'url' => 'products-show.php', 'parent' => 'products'),

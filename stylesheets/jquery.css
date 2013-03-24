@@ -1,31 +1,43 @@
-.live_search_display_modal {
-	width:190px;
-	display:none;
-	border-left:solid 1px #dedede;
-	border-right:solid 1px #dedede;
-	border-bottom:solid 1px #dedede;
-	background: #efefef;
-	overflow:hidden;
-	z-index: 10;
-	position: absolute;
-	margin: 26px 0px 0px 125px;
-}
+#live_search_display, #live_search_display1, #live_search_display2, #live_search_display3 {
+		width:190px;
+		display:none;
+		border-left:solid 1px #dedede;
+		border-right:solid 1px #dedede;
+		border-bottom:solid 1px #dedede;
+		background: #fff;
+		overflow:hidden;
+		z-index: 10;
+		position: absolute;
+		margin: 0px;
+	}
+#live_search_display_modal {
+		width:190px;
+		display:none;
+		border-left:solid 1px #dedede;
+		border-right:solid 1px #dedede;
+		border-bottom:solid 1px #dedede;
+		background: #fff;
+		overflow:hidden;
+		z-index: 10;
+		position: absolute;
+		margin: 0px 0px 0px 96px;
+	}
 	
-.display_box {
-	padding:2px; 
-	border-top:solid 1px #dedede; 
-	font-size:12px; 
-	height:20px;
-}
+	.display_box {
+		padding:2px; 
+		border-top:solid 1px #fff; 
+		font-size:12px; 
+		height:20px;
+	}
 	
-.display_box:hover {
-	background:#ddd;
-	color:#fff;
-}
-#shade {
-	background-color:#00CCFF;
-	color:#FFFFFF;
-}
+	.display_box:hover {
+		background:#777;
+		color:#fff;
+	}
+	#shade {
+		background-color:#00CCFF;
+		color:#FFFFFF;
+	}
 
 /* css for timepicker */
 .ui-timepicker-div { font-size: 90%; z-index: 1000}

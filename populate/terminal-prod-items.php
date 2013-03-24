@@ -19,8 +19,8 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 					    'joins'		=> 'INNER JOIN materials ON materials.id = production_inventories.item_id
 					    							INNER JOIN lookups ON lookups.id = production_inventories.status',
 					    'conditions' => ' production_inventories.terminal_id = '.$_GET['tid'],
-              // 'order' 	=> $order .' '.$sort,
-							// 'limit'		=> $startpoint .', '.$limit							//TODO: if with order/limit => error
+              'order' 	=> $order .' '.$sort,
+							'limit'		=> $startpoint .', '.$limit
              )
            );
 	return array("terminal_prod_items" => $query, "total" => $DB->totalRows());

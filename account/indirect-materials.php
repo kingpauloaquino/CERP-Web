@@ -19,8 +19,8 @@
 		<div id="content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" name="keyword" placeholder="Search"/>
-        <button>Go</button>
+        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+      </div>
       </div>
         
       <!-- BOF GridView -->

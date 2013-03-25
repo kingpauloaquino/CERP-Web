@@ -1,7 +1,7 @@
 <?php
 require('../include/general.class.php');
 
-$keyword	= $_GET['keyword'];
+$keyword	= $_GET['params'];
 $page			= ($_GET['page'] != "" ? $_GET['page'] : 1);
 $limit		= ($_GET['limit'] != "" ? $_GET['limit'] : 15);
 $order		= ($_GET['order'] != "" ? $_GET['order'] : "id");
@@ -10,6 +10,13 @@ $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
   $startpoint = $limit * ($page - 1);
+	$search = (isset($keyword) || $keyword != '') 
+						? 
+						'products.product_code LIKE "%'. $keyword .'%" OR '.
+						'products.description LIKE "%'. $keyword .'%" OR '.
+						'brand_models.brand_model LIKE "%'. $keyword .'%" OR '.
+						'item_classifications.classification LIKE "%'. $keyword .'%" ' 
+						: '';
 	
 	$query = $DB->Fetch('products', array(
 							'columns'	=> 'products.id AS id, products.product_code AS code, products.description AS description, products.color,
@@ -20,7 +27,8 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 					                  INNER JOIN item_costs ON item_id = products.id AND item_costs.item_type = "PRD" 
 					                  INNER JOIN lookups ON lookups.id = item_costs.unit',
 					    'order' 	=> $order .' '.$sort,
-    					'limit'		=> $startpoint .', '.$limit
+    					'limit'		=> $startpoint .', '.$limit,
+    					'conditions' => $search,
              )
            );
 	return array("products" => $query, "total" => $DB->totalRows());

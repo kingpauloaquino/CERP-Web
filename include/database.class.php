@@ -70,6 +70,7 @@ class MySQL {
 	  $args['conditions'] = ($args['conditions'] == '' ? '' : ' WHERE '.$args['conditions']);
       $args['order'] = ($args['order'] == '' ? '' : ' ORDER BY '.$args['order']);
       $args['limit'] = ($args['limit'] == '' ? '' : ' LIMIT '.$args['limit']);
+      $args['group'] = ($args['group'] == '' ? '' : ' GROUP BY '.$args['group']);
       // $args['sort_column'] = ($args['sort_column'] == '' ? '' : 'ORDER BY '.$args['sort_column']);
     }
 	
@@ -78,10 +79,11 @@ class MySQL {
     $sql = "SELECT ".$args['columns'];
     $sql .= " FROM ".$table." ".$args['joins'];
     $sql .= $args['conditions'];
+    $sql .= $args['group'];
     $sql .= $args['order'];
 	
 	// echo $sql; exit();
-	
+	//var_dump($sql); die();
 	$this->statement = $sql;
     $sql .= $args['limit'];
 	

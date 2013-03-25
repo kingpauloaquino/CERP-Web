@@ -1,7 +1,7 @@
 <?php
 require('../include/general.class.php');
 
-$keyword	= $_GET['keyword'];
+$keyword	= $_GET['params'];
 $page			= ($_GET['page'] != "" ? $_GET['page'] : 1);
 $limit		= ($_GET['limit'] != "" ? $_GET['limit'] : 15);
 $order		= ($_GET['order'] != "" ? $_GET['order'] : "id");
@@ -10,15 +10,23 @@ $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
   $startpoint = $limit * ($page - 1);
-	
+	$search = (isset($keyword) || $keyword != '') 
+						? 
+						'materials.material_code LIKE "%'. $keyword .'%" OR '.
+						'materials.description LIKE "%'. $keyword .'%" OR '.
+						'item_classifications.classification LIKE "%'. $keyword .'%" ' 
+						: '';
+
 	$query = $DB->Fetch('warehouse_inventories', array(
 							'columns'	=> 'warehouse_inventories.item_id AS id, materials.material_code AS code, SUM(warehouse_inventories.qty) AS qty,
 														item_classifications.classification AS classification, materials.description AS description',
 					    'joins'		=> 'INNER JOIN materials ON warehouse_inventories.item_id = materials.id
 														INNER JOIN item_classifications ON materials.material_classification = item_classifications.id
-														AND warehouse_inventories.item_type="MAT" GROUP BY code',
-              'order' 	=> $order .' '.$sort,
-							'limit'		=> $startpoint .', '.$limit
+														AND warehouse_inventories.item_type="MAT"',
+					    'order' 	=> $order .' '.$sort,
+    					'limit'		=> $startpoint .', '.$limit,
+    					'conditions' => $search,
+    					'group' => 'code'
              )
            );
 	return array("material_inventory" => $query, "total" => $DB->totalRows());

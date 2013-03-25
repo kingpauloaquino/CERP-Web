@@ -13,6 +13,7 @@ $(function() {
   $('.btn-download').download(); 
   
   $(".numbers").digits();
+  //$(".search").search();
   
   // $(".dot-loader").Loadingdotdotdot({
     // "speed": 500,
@@ -81,6 +82,18 @@ $.fn.digits = function(){
     })
 }
 
+// $.fn.search = function() {  
+	// $(document).keypress(function(e) {
+    // if(e.which == 13) {
+// 
+      // var keyword = $('#keyword').val();
+	    // //args['params'] = keyword;
+	    // //alert('test');
+	    // //grid_population(table, args);
+    // }
+	// });
+// }
+
 
 // ====================================
 // GRIDVIEW
@@ -103,13 +116,24 @@ $.fn.grid = function(args) {
     
     table.find('thead a.sort').removeClass('active up');
     $(this).addClass(active);
-  })
+  });
+  	
+	$('.search').keypress(function(e) {
+    if(e.which == 13) {
+    	args['page'] = 1;
+	    args['params'] = $('#keyword').val();
+	    
+	    grid_population(table, args);
+    }
+	});
+
   
   grid_population(table, args);
   // })
 }
 
 function grid_population(table, args) {
+
   var tbody			= table.find('tbody');
   var min_height	= 500;
   
@@ -118,16 +142,16 @@ function grid_population(table, args) {
   
   if(typeof(args['url']) == "undefined") return false;
   tbody.html('<tr class="empty"><td colspan="99"><h3 class="dot-loader">Loading Records ....</h3></td></tr>');
-  
+
   args['page'] = args['page'] || 1;
   args['limit'] = args['limit'] || 15;
   args['order_by'] = args['order_by'] || "";
   args['sort_by'] = args['sort_by'] || 'ASC';
-	var params = typeof args['params'] == "undefined" ? "" : "&"+args['params'];
-
+	var params = typeof args['params'] == "undefined" ? "" : args['params'];
+	//alert(params);
   // DATA POPULATION
   $.ajax({
-    url: host + args['url'] + '?page='+ args['page'] +'&limit='+ args['limit'] +'&order='+ args['order_by'] +'&sort='+ args['sort_by'] + params,
+    url: host + args['url'] + '?page='+ args['page'] +'&limit='+ args['limit'] +'&order='+ args['order_by'] +'&sort='+ args['sort_by'] +'&params='+ params,
     dataType: "json",
     data: args['data'] || null,
     success: function(data) {

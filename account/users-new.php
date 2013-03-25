@@ -27,96 +27,51 @@
 		<div id="content">
 			<form action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
 				<div class="form-container">
-					<h3 class="form-title">Basic Information</h3>
 					<input type="hidden" name="action" value="add_user">
-					<span class="notice">
-	<!--           <p class="info"><strong>Notice!</strong> Material codes should be unique.</p> -->
-	        </span>
-	
-					<div class="field">
-	          <label class="label">Employee ID:</label>
-	          <div class="input">
-	            <input type="text" id="user[employee_id]" name="user[employee_id]" value="<?php echo $user['employee_id'] ?>" class="magenta" />
-	          </div>
-	          <div class="clear"></div>
-	        </div>	 
-	        
-	        <div class="field">
-	          <label class="label">First Name:</label>
-	          <div class="input">
-	            <input type="text" id="user[first_name]" name="user[first_name]" autocomplete="off" />
-	          </div>
-	          <div class="clear"></div>
-	        </div>	        
-	        
-					<div class="field">
-	          <label class="label">Last Name:</label>
-	          <div class="input">
-	            <input type="text" id="user[last_name]" name="user[last_name]" autocomplete="off" />
-	          </div>
-	          <div class="clear"></div>
-	        </div>	        
-	        
-					<div class="field">
-	          <label class="label">Email:</label>
-	          <div class="input">
-	            <input type="text" id="user[email]" name="user[email]" autocomplete="off" />
-	          </div>
-	          <div class="clear"></div>
-	        </div>
-	        
-	        <div class="field">
-	          <label class="label">Position:</label>
-	          <div class="input">
-	            <input type="text" id="user[position]" name="user[position]" autocomplete="off" />
-	          </div>
-	          <div class="clear"></div>
-	        </div>
-	        
-	        <div class="field">
-	          <label class="label">Status:</label>
-	          <div class="input">
-	            <?php select_query_tag($statuss, 'id', 'description', '', 'user[status]', 'user[status]', '', 'text w250'); ?>
-	          </div>
-	          <div class="clear"></div>
-	        </div>
-
-					<br/>
-					<h3 class="form-title">Security</h3>
 					
-					<div class="field">
-	          <label class="label">Role:</label>
-	          <div class="input">
-	            <?php select_query_tag($roles, 'id', 'name', '', 'user[role]', 'user[role]', '', 'text w250'); ?>
-	          </div>
-	          <div class="clear"></div>
-	        </div>
-	        
-	        <div class="field">
-	          <label class="label">New Password:</label>
-	          <div class="input">
-	            <input type="password" id="user[password]" name="user[password]" autocomplete="off" />
-	          </div>
-	          <div class="clear"></div>
-	        </div>
-	        
-	        <div class="field">
-	          <label class="label">Confirm Password:</label>
-	          <div class="input">
-	            <input type="password" id="password2" name="password2" autocomplete="off" />
-	          </div>
-	          <div class="clear"></div>
-	        </div>
-	        
-	        <br/>
-	        <div class="field">
-            <label class="label"></label>
-            <div class="input">
-              <button class="btn">Create</button>
-              <button class="btn" onclick="return cancel_btn();">Cancel</button>
-            </div>
-            <div class="clear"></div>
-          </div>
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Employee ID:</td><td width="310"><input type="text" id="user[employee_id]" name="user[employee_id]" autocomplete="off" class="text-field magenta" /></td>
+              <td width="150">Position:</td><td><input type="text" id="user[position]" name="user[position]" autocomplete="off" class="text-field" /></td>
+           </tr>
+           <tr>
+              <td>First Name:</td><td><input type="text" id="user[first_name]" name="user[first_name]" autocomplete="off" class="text-field" /></td>
+              <td>Last Name:</td><td><input type="text" id="user[last_name]" name="user[last_name]" autocomplete="off" class="text-field" /></td>
+           </tr>
+           <tr>
+              <td>Email:</td><td><input type="text" id="user[email]" name="user[email]" autocomplete="off" class="text-field" /></td>
+              <td>Status:</td><td><?php select_query_tag($statuss, 'id', 'description', '', 'user[status]', 'user[status]', '', 'width:192px;'); ?></td>
+           </tr>            
+           <tr>
+              <td>Remarks:</td>
+              <td colspan="99">
+                <input type="text"  class="text-field" style="width:645px" />
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
+        
+        <br/>
+        <h3 class="form-title">Security Information</h3>
+        
+        <table>
+           <tr>
+              <td width="150">Role:</td><td width="310"><?php select_query_tag($roles, 'id', 'name', '', 'user[role]', 'user[role]', '', 'width:192px;'); ?></td>
+              <td width="150"></td><td></td>
+           </tr>
+           <tr>
+              <td>Password:</td><td><input type="password" id="user[password]" name="user[password]" autocomplete="off" class="text-field" /></td>
+              <td>Confirm Password:</td><td><input type="password" id="password2" name="password2" autocomplete="off" class="text-field" /></td>
+           </tr>
+        </table>
+        <br/>
+         <div class="field-command">
+       	   <div class="text-post-status"></div>
+       	   <input type="submit" value="Create" class="btn"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('users.php'); ?>"/>
+         </div>
+	
 				</form>
 			</div>
 		</div>

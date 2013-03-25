@@ -31,66 +31,38 @@
 				
 		<div id="content">
 			<form class="form-container">
-        <h3 class="form-title">Basic Information</h3>
-        
-        <div class="field">
-          <label class="label">Employee ID:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $user['employee_id'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Firstname:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $user['first_name'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Lastname:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $user['last_name'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Email:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $user['email'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Position:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $user['position'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Status:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $user['status'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Employee ID:</td><td width="310"><input type="text" value="<?php echo $user['employee_id'] ?>" class="text-field" disabled/></td>
+              <td width="150">Position:</td><td><input type="text" value="<?php echo $user['position'] ?>" class="text-field" disabled/></td>
+           </tr>
+           <tr>
+              <td>First Name:</td><td><input type="text" value="<?php echo $user['first_name'] ?>" class="text-field" disabled/></td>
+              <td>Last Name:</td><td><input type="text" value="<?php echo $user['last_name'] ?>" class="text-field" disabled/></td>
+           </tr>
+           <tr>
+              <td>Email:</td><td><input type="text" value="<?php echo $user['email'] ?>" class="text-field" disabled/></td>
+              <td>Status:</td><td><input type="text" value="<?php echo $user['status'] ?>" class="text-field" disabled/></td>
+           </tr>            
+           <tr>
+              <td>Remarks:</td>
+              <td colspan="99">
+                <input type="text"  class="text-field" style="width:645px" disabled/>
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
         
         <br/>
         <h3 class="form-title">Security Information</h3>
         
-        <div class="field">
-          <label class="label">Role:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $user['role'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
+        <table>
+           <tr>
+              <td width="150">Role:</td><td width="310"><input type="text" value="<?php echo $user['role'] ?>" class="text-field" disabled/></td>
+              <td width="150"></td><td></td>
+           </tr>
+        </table>
       </form>
 	</div>
 </div>

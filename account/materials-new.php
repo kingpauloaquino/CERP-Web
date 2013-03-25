@@ -79,6 +79,12 @@
               <td colspan="99">
                 <input type="text" id="material[description]" name="material[description]" class="text-field" style="width:645px" />
               </td>
+           </tr>           
+           <tr>
+              <td>Keywords:</td>
+              <td colspan="99">
+                <input type="text" id="material[tags]" name="material[tags]" class="text-field" style="width:645px" />
+              </td>
            </tr>
            <tr><td height="5" colspan="99"></td></tr>
         </table>

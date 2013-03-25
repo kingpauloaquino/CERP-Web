@@ -7,20 +7,15 @@
   
   if(isset($_REQUEST['sid'])) {
   	$supplier = $DB->Find('suppliers', array(
-  		'columns' => 'suppliers.*', 
+  		'columns' => 'suppliers.*, lookups1.description AS supplier_type, lookups2.description AS product_service, 
+										lookups3.description AS term_of_payment, lookups4.description AS country', 
+			'joins' => 'LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = suppliers.supplier_type
+									LEFT OUTER JOIN lookups AS lookups2 ON lookups2.id = suppliers.product_service
+									LEFT OUTER JOIN lookups AS lookups3 ON lookups3.id = suppliers.term_of_payment
+									LEFT OUTER JOIN lookups AS lookups4 ON lookups4.id = suppliers.country',
   	    'conditions' => 'suppliers.id = '.$_REQUEST['sid']
-  	  )
-	);
-	
+  	  ));	
   }
-  $supplier_type = $DB->Get('lookups', array('columns' => 'id, description', 
-					'conditions' => 'id = '.$supplier['supplier_type']));
-  $products_service = $DB->Get('lookups', array('columns' => 'id, description', 
-  					'conditions' => 'id = '.$supplier['product_service'])); 
-  $term_of_payment = $DB->Get('lookups', array('columns' => 'id, description', 
-  					'conditions' => 'id = '.$supplier['term_of_payment'])); 
-  $country = $DB->Get('lookups', array('columns' => 'id, description', 
-  					'conditions' => 'id = '.$supplier['country'])); 
 ?>
 
 	<div id="page">
@@ -38,105 +33,52 @@
 				
 		<div id="content">
 			<form class="form-container">
-        <h3 class="form-title">Basic Information</h3>
-        
-        <div class="field">
-          <label class="label">Supplier Code:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $supplier['supplier_code'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Name:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $supplier['name'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Type:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $supplier_type[0]['description'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Product / Service:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $products_service[0]['description'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Terms of Payment:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $term_of_payment[0]['description'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Country:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $country[0]['description'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Address:</label>
-          <div class="input">
-            <textarea readonly="readonly"><?php echo $supplier['address'] ?></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Description:</label>
-          <div class="input">
-            <textarea readonly="readonly"><?php echo $supplier['description'] ?></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Supplier Code:</td><td width="310"><input type="text" value="<?php echo $supplier['supplier_code'] ?>" class="text-field" disabled/></td>
+              <td width="150">Name:</td><td><input type="text" value="<?php echo $supplier['name'] ?>" class="text-field" disabled/></td>
+           </tr>
+           <tr>
+              <td>Type:</td><td><input type="text" value="<?php echo $supplier['supplier_type'] ?>" class="text-field" disabled/></td>
+              <td>Product/Service:</td><td><input type="text" value="<?php echo $supplier['product_service'] ?>" class="text-field" disabled/></td>
+           </tr>
+           <tr>
+              <td>Terms of Payment:</td><td><input type="text" value="<?php echo $supplier['term_of_payment'] ?>" class="text-field" disabled/></td>
+              <td>Country:</td><td><input type="text" value="<?php echo $supplier['country'] ?>" class="text-field" disabled/></td>
+           </tr>            
+           <tr>
+              <td>Address:</td>
+              <td colspan="99">
+                <input type="text" value="<?php echo $supplier['address'] ?>" class="text-field" style="width:645px" disabled/>
+              </td>
+           </tr>          
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" value="<?php echo $supplier['description'] ?>" class="text-field" style="width:645px" disabled/>
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
         <br/>
-        <h3 class="form-title">Contact Information</h3>
-        <div class="field">
-          <label class="label">Representative:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $supplier['representative'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
         
-        <div class="field">
-          <label class="label">Contact #:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $supplier['contact_no1'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Fax #:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $supplier['fax_no'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Email:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $supplier['email'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
+				<h3 class="form-title">Contact Information</h3>
+        <table>
+           <tr>
+              <td width="150">Representative:</td><td width="310"><input type="text" value="<?php echo $supplier['representative'] ?>" class="text-field" disabled/></td>
+              <td width="150"></td><td></td>
+           </tr>
+           <tr>
+              <td>Contact #1:</td><td><input type="text" value="<?php echo $supplier['contact_no1'] ?>" class="text-field" disabled/></td>
+              <td>Contact #2:</td><td><input type="text" value="<?php echo $supplier['contact_no2'] ?>" class="text-field" disabled/></td>
+           </tr>
+           <tr>
+              <td>Fax #:</td><td><input type="text" value="<?php echo $supplier['fax_no'] ?>" class="text-field" disabled/></td>
+              <td>Email:</td><td><input type="text" value="<?php echo $supplier['email'] ?>" class="text-field" disabled/></td>
+           </tr>  
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
      </form>
 				
 		</div>

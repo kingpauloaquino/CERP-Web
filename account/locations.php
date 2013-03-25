@@ -10,6 +10,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
+				  echo '<a href="'.$Capabilities->All['add_location']['url'].'" class="nav">'.$Capabilities->All['add_location']['name'].'</a>'; 
 				  
 				?>
 				<div class="clear"></div>
@@ -19,8 +20,7 @@
 		<div id="content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" name="keyword" placeholder="Search"/>
-        <button>Go</button>
+        <input type="text" id="keyword" name="keyword" placeholder="Search" />
       </div>
         
       <!-- BOF GridView -->

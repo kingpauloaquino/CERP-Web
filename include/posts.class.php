@@ -117,6 +117,7 @@ class Posts {
 		  'country'					=> $params['country'],
 		  'representative'	=> ucwords(strtolower($params['representative'])),
 		  'contact_no1'			=> $params['contact_no1'],
+		  'contact_no2'			=> $params['contact_no2'],
 		  'fax_no'					=> $params['fax_no'],
 		  'email'						=> $params['email'],
 		  'supplier_type'		=> $params['supplier_type'],

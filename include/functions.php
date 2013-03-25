@@ -41,7 +41,22 @@ function extract_querystring($querystring, $items) {
 	return implode("&", $newqs);
 }
 
-function select_tag($items=array(), $selected='', $id='', $name='', $option='', $class='text', $value_is_text=FALSE) {
+function select_tag($items=array(), $selected='', $id='', $name='', $option='', $style='', $value_is_text=FALSE) {
+  $tag = '<select id="'.$id.'" name="'.$name.'" style="'.$style.'">';
+  if (!empty($items)) {
+  	$tag .= ($option == '' ? '' : '<option value="">'.$option.'</option>');
+    foreach ($items as $key => $value) {
+		  $tag .= ($value_is_text) ? '<option value="'.$value.'" ' : '<option value="'.$key.'" ';
+		  $tag .= ($selected == $value ? ' selected="selected">' : '>');
+		  $tag .= $value;
+		  $tag .= '</option>';
+		}
+  }
+  $tag .= '</select>';
+  echo $tag;
+}
+
+function select_tag2($items=array(), $selected='', $id='', $name='', $option='', $class='text', $value_is_text=FALSE) {
   $tag = '<select id="'.$id.'" name="'.$name.'" class="'.$class.'">';
   if (!empty($items)) {
   	$tag .= ($option == '' ? '' : '<option value="">'.$option.'</option>');

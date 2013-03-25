@@ -21,15 +21,14 @@
       <div class="search">
         <input type="text" id="keyword" name="keyword" placeholder="Search" />
       </div>
-      </div>
         
       <!-- BOF GridView -->
       <div id="grid-indirect-materials" class="grid jq-grid">
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-							<td class="border-right text-center" width="160"><a class="sort default active up" column="code">Code</a></td>
-              <td class="border-right text-center" width="100"><a class="sort" column="classification">Classification</a></td>   
+							<td class="border-right text-center" width="130"><a class="sort default active up" column="code">Code</a></td>
+              <td class="border-right text-center" width="130"><a class="sort" column="classification">Classification</a></td>   
               <td class="border-right text-center"><a class="sort" column="description">Description</a></td>  
             </tr>
           </thead>

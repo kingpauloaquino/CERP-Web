@@ -1,7 +1,7 @@
 <?php
 require('../include/general.class.php');
 
-$keyword	= $_GET['keyword'];
+$keyword	= $_GET['params'];
 $page			= ($_GET['page'] != "" ? $_GET['page'] : 1);
 $limit		= ($_GET['limit'] != "" ? $_GET['limit'] : 15);
 $order		= ($_GET['order'] != "" ? $_GET['order'] : "purchase_id");
@@ -10,6 +10,13 @@ $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
   $startpoint = $limit * ($page - 1);
+	$search = (isset($keyword) || $keyword != '') 
+						? 
+						'p.purchase_number LIKE "%'. $keyword .'%" OR '.
+						'm.material_code LIKE "%'. $keyword .'%" OR '.
+						'm.description LIKE "%'. $keyword .'%" '
+						//'materials.tags LIKE "%'. $keyword .'%" '
+						: '';
 	
 	$items	= "SELECT pi.id, pi.purchase_id, pi.item_id, pi.quantity, SUM(IFNULL(ri.quantity, 0)) AS received
 		  				FROM purchases AS p
@@ -26,9 +33,10 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 									  				INNER JOIN item_costs AS ic ON ic.id = pi.item_id AND ic.item_type = "MAT"
 									  				INNER JOIN materials AS m ON m.id = ic.item_id
 									  				INNER JOIN lookups AS l ON l.id = ic.unit
-									  				WHERE p.received = 0 AND p.status = 137',
+									  				AND p.received = 0 AND p.status = 137',
 					    'order' 	=> $order .' '.$sort,
-    					'limit'		=> $startpoint .', '.$limit
+    					'limit'		=> $startpoint .', '.$limit,
+    					'conditions' => $search
              )
            );
 	return array("receiving" => $query, "total" => $DB->totalRows());

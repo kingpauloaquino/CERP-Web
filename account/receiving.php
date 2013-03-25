@@ -17,10 +17,9 @@
           <a id="btn-receive-material" href="#mdl-receive-material" rel="modal:open"></a>
           
           <!-- BOF Search -->
-          <div class="search">
-            <input type="text" name="keyword" placeholder="Search"/>
-            <button>Go</button>
-          </div>
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+      </div>
             
           <!-- BOF GridView -->
           <div id="grid-receiving-items" class="grid jq-grid">

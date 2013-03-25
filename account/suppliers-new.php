@@ -35,121 +35,61 @@
 				
 		<div id="content">
 			<form class="form-container" action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
-        <h3 class="form-title">Basic Information</h3>
-
 				<input type="hidden" name="action" value="add_supplier"> 
 				
-				<span class="notice">
-<!--           <p class="info"><strong>Notice!</strong> Material codes should be unique.</p> -->
-        </span>
-				
-				<div class="field">
-          <label class="label">Supplier Code:</label>
-          <div class="input">
-            <input type="text" id="supplier[supplier_code]" name="supplier[supplier_code]"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Name:</label>
-          <div class="input">
-            <input type="text" id="supplier[name]" name="supplier[name]"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Type:</label>
-          <div class="input">
-            <?php select_query_tag($supplier_types, 'id', 'description', '', 'supplier[supplier_type]', 'supplier[supplier_type]', '', 'text w250'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Product / Service:</label>
-          <div class="input">
-            <?php select_query_tag($products_services, 'id', 'description', '', 'supplier[product_service]', 'supplier[product_service]', '', 'text w250'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Terms of Payment:</label>
-          <div class="input">
-            <?php select_query_tag($terms_of_payment, 'id', 'description', '', 'supplier[term_of_payment]', 'supplier[term_of_payment]', '', 'text w250'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Country:</label>
-          <div class="input">
-            <?php select_query_tag($countries, 'id', 'description', '', 'supplier[country]', 'supplier[country]', '', 'text w250'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Address:</label>
-          <div class="input">
-            <textarea id="supplier[address]" name="supplier[address]"></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Description:</label>
-          <div class="input">
-            <textarea id="supplier[description]" name="supplier[description]"></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Supplier Code:</td><td width="310"><input type="text" id="supplier[supplier_code]" name="supplier[supplier_code]" class="text-field magenta" /></td>
+              <td width="150">Name:</td><td><input type="text" id="supplier[name]" name="supplier[name]" class="text-field" /></td>
+           </tr>
+           <tr>
+              <td>Type:</td><td><?php select_query_tag($supplier_types, 'id', 'description', '', 'supplier[supplier_type]', 'supplier[supplier_type]', '', 'width:192px;'); ?></td>
+              <td>Product/Service:</td><td><?php select_query_tag($products_services, 'id', 'description', '', 'supplier[product_service]', 'supplier[product_service]', '', 'width:192px;'); ?></td>
+           </tr>
+           <tr>
+              <td>Terms of Payment:</td><td><?php select_query_tag($terms_of_payment, 'id', 'description', '', 'supplier[term_of_payment]', 'supplier[term_of_payment]', '', 'width:192px;'); ?></td>
+              <td>Country:</td><td><?php select_query_tag($countries, 'id', 'description', '', 'supplier[country]', 'supplier[country]', '', 'width:192px;'); ?></td>
+           </tr>            
+           <tr>
+              <td>Address:</td>
+              <td colspan="99">
+                <input type="text" id="supplier[address]" name="supplier[address]" class="text-field" style="width:645px" />
+              </td>
+           </tr>          
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" id="supplier[description]" name="supplier[description]" class="text-field" style="width:645px" />
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
         <br/>
-        <h3 class="form-title">Contact Information</h3>
-        <div class="field">
-          <label class="label">Representative:</label>
-          <div class="input">
-            <input type="text" id="supplier[representative]" name="supplier[representative]"/>
-          </div>
-          <div class="clear"></div>
-        </div>
         
-        <div class="field">
-          <label class="label">Contact #:</label>
-          <div class="input">
-            <input type="text" id="supplier[contact_no1]" name="supplier[contact_no1]"/>
-          </div>
-          <div class="clear"></div>
-        </div>
+				<h3 class="form-title">Contact Information</h3>
+        <table>
+           <tr>
+              <td width="150">Representative:</td><td width="310"><input type="text" id="supplier[representative]" name="supplier[representative]" class="text-field" /></td>
+              <td width="150"></td><td></td>
+           </tr>
+           <tr>
+              <td>Contact #1:</td><td><input type="text" id="supplier[contact_no1]" name="supplier[contact_no1]" class="text-field" /></td>
+              <td>Contact #2:</td><td><input type="text" id="supplier[contact_no2]" name="supplier[contact_no2]" class="text-field" /></td>
+           </tr>
+           <tr>
+              <td>Fax #:</td><td><input type="text" id="supplier[fax_no]" name="supplier[fax_no]" class="text-field" /></td>
+              <td>Email:</td><td><input type="text" id="supplier[email]" name="supplier[email]" class="text-field" /></td>
+           </tr>  
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
         
-        <div class="field">
-          <label class="label">Fax #:</label>
-          <div class="input">
-            <input type="text" id="supplier[fax_no]" name="supplier[fax_no]"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Email:</label>
-          <div class="input">
-            <input type="text" id="supplier[email]" name="supplier[email]"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-				<br/>
-				<div class="field">
-          <label class="label"></label>
-          <div class="input">
-            <button class="btn">Create</button>
-            <button class="btn" onclick="return cancel_btn();">Cancel</button>
-          </div>
-          <div class="clear"></div>
-        </div>
+				<div class="field-command">
+       	   <div class="text-post-status"></div>
+       	   <input type="submit" value="Create" class="btn"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('suppliers.php'); ?>"/>
+         </div>
+				
 				</form>
 		</div>
 	</div>

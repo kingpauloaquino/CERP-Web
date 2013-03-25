@@ -119,12 +119,12 @@ $.fn.grid = function(args) {
   });
   	
 	$('.search').keypress(function(e) {
-    if(e.which == 13) {
+    //if(e.which == 13) { // enter key
     	args['page'] = 1;
 	    args['params'] = $('#keyword').val();
 	    
 	    grid_population(table, args);
-    }
+    //}
 	});
 
   

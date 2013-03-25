@@ -5,10 +5,10 @@
   $capability_key = 'edit_location';
   require('header.php');
 	
-	if($_REQUEST['clear_item'] == 1) {
-		$args = array('variables' => array('item_id' => NULL, 'item_type' => ''), 'conditions' => 'address='.$_REQUEST['lid']); 
+	if($_GET['clear_item'] == 1) {
+		$args = array('variables' => array('item_id' => NULL, 'item_type' => ''), 'conditions' => 'address='.$_GET['lid']); 
 		$num_of_records = $Posts->EditLocationAddressItem($args);
-		redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_REQUEST['lid']);	
+		redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_GET['lid']);	
 	}
 	
 	if($_POST['action'] == 'edit_location') {
@@ -27,16 +27,16 @@
 		redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_POST['lid']);		
 	} 
 	
-	if(isset($_REQUEST['lid'])) {
+	if(isset($_GET['lid'])) {
   	$location = $DB->Find('location_addresses', array(
   		'columns' => 'location_addresses.*', 
-  	  'conditions' => 'location_addresses.id = '.$_REQUEST['lid']
+  	  'conditions' => 'location_addresses.id = '.$_GET['lid']
   	  )
 		);
 		$item = $DB->Find('location_address_items', array(
 				  			'columns' 		=> 'location_address_items.id, location_address_items.item_id AS mat_id, materials.material_code AS item_code', 
 				  			'joins'				=> 'INNER JOIN materials ON materials.id = location_address_items.item_id',
-				  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.address = '.$_REQUEST['lid']
+				  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.address = '.$_GET['lid']
   	  )
 		);
 	}
@@ -103,7 +103,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['show_location']['url'].'?lid='.$_REQUEST['lid'].'" class="nav">'.$Capabilities->All['show_location']['name'].'</a>'; 
+				  echo '<a href="'.$Capabilities->All['show_location']['url'].'?lid='.$_GET['lid'].'" class="nav">'.$Capabilities->All['show_location']['name'].'</a>'; 
 				?>
 				<div class="clear"></div>
       </h2>
@@ -114,113 +114,47 @@
 				<input type="hidden" name="action" value="edit_location"> 
 				<input type="hidden" name="bldg" id="bldg"> 
 				<input type="hidden" name="bldg_no" id="bldg_no"> 
-				<input type="hidden" name="lid" value="<?php echo $_REQUEST['lid'] ?>">
-        <h3 class="form-title">Basic Information</h3>
-        
-        <span class="notice">
-<!--           <p class="info"><strong>Notice</strong> Message</p> -->
-        </span>
+				<input type="hidden" name="lid" value="<?php echo $_GET['lid'] ?>">
 
-				<div class="field">
-          <label class="label">Current:</label>
-          <div class="input">
-            <input type="text" class="magenta" value="<?php echo $location['address'] ?>" readonly="readonly" />
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Building:</label>
-          <div class="input">
-            <?php select_query_tag($locations, 'id', 'location_code', $location['bldg'], 'location[bldg]', 'location[bldg]', '', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Building Type:</label>
-          <div class="input">
-            <?php select_query_tag($bldg_nos, 'id', 'bldg_no', $location['bldg_no'], 'location[bldg_no]', 'location[bldg_no]', 'N/A', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Terminal:</label>
-          <div class="input">
-            <?php select_query_tag($terminals, 'id', 'terminal_code', $location['terminal_id'], 'location[terminal_id]', 'location[terminal_id]', 'N/A', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Classification [Rack]:</label>
-          <div class="input">
-            <?php select_query_tag($item_classifications, 'id', 'classification', $location['item_classification'], 'location[item_classification]', 'location[item_classification]', 'N/A', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Deck:</label>
-          <div class="input">
-            <?php select_query_tag($decks, 'id', 'location', $location['deck'], 'location[deck]', 'location[deck]', 'N/A', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <!-- <div class="field">
-          <label class="label">Area:</label>
-          <div class="input">
-            <?php select_query_tag($areas, 'id', 'location', $location['area'], 'location[area]', 'location[area]', 'N/A', 'text w180'); ?>
-          </div>
-          <div class="clear"></div>
-        </div> -->
-        
-        <div class="field">
-          <label class="label">Rack:</label>
-          <div class="input">
-            <?php select_tag($racks, $location['rack'], 'location[rack]', 'location[rack]', '', 'text w180', TRUE); ?>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Number:</label>
-          <div class="input">
-            <input type="text" id="location[number]" name="location[number]" value="<?php echo $location['number'] ?>" />
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Assigned Item:</label>
-          <div class="input">
-          	<input type="hidden" id="mat_id" name="mat_id"/>
-            <input type="text" id="item_code" name="item_code" value="<?php echo $item['item_code'] ?>" class="searchbox" autocomplete="off" />
-          	<?php echo $linkto = ($item['item_code']!='') ? '&nbsp;<a href="'.$Capabilities->All['edit_location']['url'].'?lid='.$_REQUEST['lid'].'&clear_item=1">clear</a>' : '' ?>
-            
-						<div id="live_search_display"></div>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Description:</label>
-          <div class="input">
-            <textarea id="location[description]" name="location[description]"><?php echo $location['description'] ?></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-
-				<div class="field">
-          <label class="label"></label>
-          <div class="input">
-            <button class="btn">Update</button>
-            <button class="btn" onclick="return cancel_btn();">Cancel</button>
-          </div>
-          <div class="clear"></div>
-        </div>
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Current:</td><td width="310"><input type="text" value="<?php echo $location['address'] ?>" class="text-field magenta" /></td>
+              <td width="150">Building:</td><td><?php select_query_tag($locations, 'id', 'location_code', $location['bldg'], 'location[bldg]', 'location[bldg]', '', 'width:192px;'); ?></td>
+           </tr>
+           <tr>
+              <td>Building Type:</td><td><?php select_query_tag($bldg_nos, 'id', 'bldg_no', $location['bldg_no'], 'location[bldg_no]', 'location[bldg_no]', '', 'width:192px;'); ?></td>
+              <td>Terminal:</td><td><?php select_query_tag($terminals, 'id', 'terminal_code', $location['terminal_id'], 'location[terminal_id]', 'location[terminal_id]', '', 'width:192px;'); ?></td>
+           </tr>
+           <tr>
+              <td>Classification [Rack]:</td><td><?php select_query_tag($item_classifications, 'id', 'classification', $location['item_classification'], 'location[item_classification]', 'location[item_classification]', 'N/A', 'width:192px;'); ?></td>
+              <td>Deck:</td><td><?php select_query_tag($decks, 'id', 'location', $location['deck'], 'location[deck]', 'location[deck]', '', 'width:192px;'); ?></td>
+           </tr>  
+           <tr>
+              <td>Rack:</td><td><?php select_tag($racks, $location['rack'], 'location[rack]', 'location[rack]', '', 'width:192px;', TRUE); ?></td>
+              <td>Number:</td><td><input type="text" id="location[number]" name="location[number]" value="<?php echo $location['number'] ?>" class="text-field" /></td>
+           </tr>            
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" id="location[description]" name="location[description]" value="<?php echo $location['description'] ?>" class="text-field" style="width:645px" />
+              </td>
+           </tr>  
+           <tr>
+							<input type="hidden" id="mat_id" name="mat_id"/>
+              <td>Assigned Item:</td><td><input type="text" id="item_code" name="item_code" value="<?php echo $item['item_code'] ?>" class="text-field searchbox" autocomplete="off" placeholder="Material Code" />
+              	<?php echo $linkto = ($item['item_code']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$_GET['lid'].'&clear_item=1">[CLEAR]</a>' : '' ?>
+              	<div id="live_search_display" class="live_search_display"></div>
+              </td>
+              <td></td><td></td>
+           </tr>    
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>	
+        <div class="field-command">
+       	   <div class="text-post-status"></div>
+       	   <input type="submit" value="Update" class="btn"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('locations-show.php?lid='.$_GET['lid']); ?>"/>
+         </div>
 			</form>
 		</div>
 	</div>

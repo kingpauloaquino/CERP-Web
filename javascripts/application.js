@@ -2,6 +2,7 @@ var host = "http://"+ location.hostname +"/cerp";
 var request_data = null;
 
 $(function() {
+
   $('#signin-form').core_position();
   $('a.show-submenu').show_submenu();
   $('#menu-profile').show_account_submenu();
@@ -13,7 +14,6 @@ $(function() {
   $('.btn-download').download(); 
   
   $(".numbers").digits();
-  //$(".search").search();
   
   // $(".dot-loader").Loadingdotdotdot({
     // "speed": 500,
@@ -29,21 +29,47 @@ $.fn.core_position = function() {
 }
 
 $.fn.show_submenu = function() {
-  $(this).click(function(e) {
-    e.preventDefault();
-  	
+  
+  $(this).click(function() {
+	hide_menus();
+  	$(".main-sub-menu").hide();
   	var menu = $(this).attr('alt');
-  	$('.main-sub-menu').removeClass('block');
-  	$(menu).addClass('block');
-  });
+  	
+		$(menu).toggle('fast');
+		return false;
+	});
+}
+
+function hide_menus() {
+	$("body").click(function() {
+		$(".main-sub-menu").hide("fast");
+		$(".profile-sub-menu").hide("fast");
+	});
+	$(".main-sub-menu").click(function(e) {
+		e.stopPropagation();
+	});
+	$(".profile-sub-menu").click(function(e) {
+		e.stopPropagation();
+	});
+	$(".main-sub-menu").hide("fast");
+	$(".profile-sub-menu").hide("fast");
 }
 
 $.fn.show_account_submenu = function() {
-  $(this).click(function(e) {
-    e.preventDefault();
-  	
-  	$('.profile-sub-menu').toggleClass('block');
-  });
+  
+  $(this).click(function() {
+	hide_menus();
+  	$(".profile-sub-menu").toggle('fast');
+		return false;
+	});
+	
+	
+	
+  // $(this).click(function(e) {
+    // e.preventDefault();
+//   	
+  	// $('.profile-sub-menu').toggleClass('block');
+  // });
 }
 
 $.fn.redirect_to = function() {

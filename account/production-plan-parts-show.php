@@ -102,7 +102,7 @@
 										echo '<td class="border-right">'.$material['description'].'</td>';
 										echo '<td class="border-right text-center">'.$material['unit'].'</td>';
 										echo '<td class="border-right text-right">'.trim_decimal($material['qty']).'</td>';
-										echo '<td class="border-right text-right">'.trim_decimal($material['plan_qty']).'</td>';
+										echo '<td class="border-right text-right numbers">'.trim_decimal($material['plan_qty']).'</td>';
 										echo '<td class="border-right text-center"><a href="production-line-show.php?mid='.$material['mat_id'].'&prod_lot_no='.$_GET['prod_lot_no'].'&trk_no='.$material['tracking_no'].'">view</a></td>';
 										echo '</tr>';
 										$ctr+=1;

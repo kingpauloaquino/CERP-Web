@@ -39,7 +39,6 @@ function populate_users($keyword='', $paged=1, $sort='employee_id', $order='asc'
 }
 
 if(empty($Signed)) redirect_to("/".$Host);
-
 if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   $action = $_POST['action'];
   $redirect = $Capabilities->All[$_POST['redirect']]['url'];
@@ -285,9 +284,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			
 			}			
 		}
-		
-
 		break;	
+	// ===============================================================
+  // Post::Delete Terminal
+  // ===============================================================
+  case 'delete_terminal'; 
+		echo $DB->DeleteRecord('terminals', array('conditions' => 'id='.$_POST['terminal_id']));
+		redirect_to(host('terminals.php')); 
+    break;
   } // close switch
 
 }
@@ -332,6 +336,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         <div class="menu">
         	<a href="#" alt="#menu-materials" class="show-submenu">Materials</a>
         	<div id="menu-materials" class="main-sub-menu">
+
+      			
             <div class="glyphicons-halflings"></div>
         	  <ul>
         	    <li><a href="materials.php">Materials</a></li>

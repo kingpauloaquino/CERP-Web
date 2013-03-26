@@ -4,12 +4,12 @@
   */
   $capability_key = 'show_terminal';
   require('header.php');
-	
-	if(isset($_REQUEST['tid'])) {
+		
+	if(isset($_GET['tid'])) {
   	$terminal = $DB->Find('terminals', array(
   		'columns' => 'terminals.*, locations.location_code AS bldg', 
   		'joins' => 'INNER JOIN locations ON terminals.location_id=locations.id',
-  	  'conditions' => 'terminals.id = '.$_REQUEST['tid']
+  	  'conditions' => 'terminals.id = '.$_GET['tid']
   	  ));
 	}
 ?>
@@ -21,12 +21,13 @@
         <?php
 				  echo '<a href="'.$Capabilities->All['terminals']['url'].'" class="nav">'.$Capabilities->All['terminals']['name'].'</a>'; 
 				  echo '<a href="'.$Capabilities->All['add_terminal']['url'].'" class="nav">'.$Capabilities->All['add_terminal']['name'].'</a>'; 
-				  echo '<a href="'.$Capabilities->All['edit_terminal']['url'].'?tid='.$_REQUEST['tid'].'" class="nav">'.$Capabilities->All['edit_terminal']['name'].'</a>'; 
+				  echo '<a href="'.$Capabilities->All['edit_terminal']['url'].'?tid='.$_GET['tid'].'" class="nav">'.$Capabilities->All['edit_terminal']['name'].'</a>'; 
 										if(if_contains($terminal['bldg'],'WH1')) $url = 'terminal-wh-items.php?typ=MAT&tid='.$terminal['id'];
 					if(if_contains($terminal['bldg'],'WH2')) $url = 'terminal-wh-items.php?typ=PRD&tid='.$terminal['id'];
 					if(if_contains($terminal['bldg'],'WIP')) $url = 'terminal-prod-items.php?tid='.$terminal['id'];	
 					
 				  echo '<a href="'.$url.'" class="nav">Terminal Items</a>'; 
+					 
 				?>
 				<div class="clear"></div>
       </h2>
@@ -34,48 +35,24 @@
 				
 		<div id="content">
 			<form class="form-container">
-        <h3 class="form-title">Basic Information</h3>
-        
-        <div class="field">
-          <label class="label">Location:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $terminal['bldg'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Terminal Code:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $terminal['terminal_code'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Terminal:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $terminal['terminal_name'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Type:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $terminal['type'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-
-        <div class="field">
-          <label class="label">Description:</label>
-          <div class="input">
-            <textarea readonly="readonly"><?php echo $terminal['description'] ?></textarea>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Location:</td><td width="310"><input type="text" value="<?php echo $terminal['bldg'] ?>" class="text-field" disabled/></td>
+              <td width="150">Terminal Code:</td><td><input type="text" value="<?php echo $terminal['terminal_code'] ?>" class="text-field" disabled/></td>
+           </tr>
+           <tr>
+              <td>Terminal:</td><td><input type="text" value="<?php echo $terminal['terminal_name'] ?>" class="text-field" disabled/></td>
+              <td>Type:</td><td><input type="text" value="<?php echo $terminal['type'] ?>" class="text-field" disabled/></td>
+           </tr>          
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text"  class="text-field" value="<?php echo $terminal['description']?>" style="width:645px" disabled/>
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
         <br/>
         
       	<h3 class="form-title">Devices</h3>
@@ -95,7 +72,7 @@
 								$devices = $DB->Get('terminal_devices', array(
 								  			'columns' 		=> 'terminal_devices.*, devices.device_code, devices.make, devices.model, devices.serial_no',
 								  			'joins'				=> 'INNER JOIN devices ON terminal_devices.device_id = devices.id',
-								  	    'conditions' 	=> 'terminal_devices.terminal_id='.$_REQUEST['tid']));
+								  	    'conditions' 	=> 'terminal_devices.terminal_id='.$_GET['tid']));
 								if(!$devices) {
 									echo '<tr>';
 									echo '<td colspan="5">No Record</td>';
@@ -118,6 +95,7 @@
 					</table>
 				</form>
 			</div>
+			
 		</div>
 	</div>
 

@@ -104,10 +104,10 @@
 											if(if_contains($invt['terminal_code'],'WH2')) $url = 'terminal-wh-items.php?typ=PRD&tid='.$invt['terminal_id'];
 											if(if_contains($invt['terminal_code'],'WIP')) $url = 'terminal-prod-items.php?tid='.$invt['terminal_id'];			
 											echo '<tr><td class="border-right text-right"><a href="'.$url.'">'.$invt['terminal_name'].'</a></td>';
-											echo '<td class="border-right text-right numbers'.
+											echo '<td class="border-right text-right numbers '.
 														($enroute = ($invt['status'] == 148)? 'text-red': '') . ($complete = ($invt['output_complete'] > 0)? 'text-lightgray': '').
 														'">'.trim_decimal($invt['input']).'</td>';
-											echo '<td class="border-right text-right numbers'.
+											echo '<td class="border-right text-right numbers '.
 														($enroute = ($invt['status'] == 148)? 'text-red': '') . ($complete = ($invt['output_complete'] > 0)? 'text-lightgray': '').
 														'">'. ($stat = ($invt['status'] == 148)? '(en route) ': '') .trim_decimal($invt['qty']).'</td>';
 											echo '<td class="border-right text-right '.($gray = ($invt['output_complete'] > 0)? 'text-lightgray': '').'">'.trim_decimal($invt['rework']).'</td>';
@@ -116,8 +116,8 @@
 											echo '<td class="border-right text-right '.($gray = ($invt['output_complete'] > 0)? 'text-lightgray': '').'">'.trim_decimal($invt['mgr_sample']).'</td>';
 											echo '<td class="border-right text-right '.($gray = ($invt['output_complete'] > 0)? 'text-lightgray': '').'">'.trim_decimal($invt['defect_a']).'</td>';
 											echo '<td class="border-right text-right '.($gray = ($invt['output_complete'] > 0)? 'text-lightgray': '').'">'.trim_decimal($invt['defect_b']).'</td>';
-											echo '<td class="border-right text-right numbers'.($gray = ($invt['output_complete'] > 0)? 'text-lightgray': '').'">'.trim_decimal($invt['output_partial']).'</td>';
-											echo '<td class="border-right text-right numbers'.($gray = ($invt['output_complete'] > 0)? 'text-lightgray': '').'">'.trim_decimal($invt['output_complete']).'</td></tr>';
+											echo '<td class="border-right text-right numbers '.($gray = ($invt['output_complete'] > 0)? 'text-lightgray': '').'">'.trim_decimal($invt['output_partial']).'</td>';
+											echo '<td class="border-right text-right numbers '.($gray = ($invt['output_complete'] > 0)? 'text-lightgray': '').'">'.trim_decimal($invt['output_complete']).'</td></tr>';
 										//} else {
 											// echo '<td class="border-right text-right">'.trim_decimal($invt['qa_sample']).'</td>';
 											// echo '<td class="border-right text-right">'.trim_decimal($invt['mgr_sample']).'</td>';

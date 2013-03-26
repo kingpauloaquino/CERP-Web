@@ -76,42 +76,24 @@
 			<form class="form-container" action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
 				<input type="hidden" name="action" value="add_terminal"> 
 				<div class="form-container">
-					<h3 class="form-title">Basic Information</h3>
-					<span class="notice">
-	<!--           <p class="info"><strong>Notice!</strong> Material codes should be unique.</p> -->
-	        </span>
-					
-					<div class="field">
-	          <label class="label">Location:</label>
-	          <div class="input">
-	            <?php select_query_tag($bldgs, 'id', 'location_code', '', 'terminal[location_id]', 'terminal[location_id]', '', 'text w180'); ?>
-	          </div>
-	          <div class="clear"></div>
-	        </div>
-	        
-	        <div class="field">
-	          <label class="label">Terminal Code:</label>
-	          <div class="input">
-	            <input type="text" id="terminal[terminal_code]" name="terminal[terminal_code]"/>
-	          </div>
-	          <div class="clear"></div>
-	        </div>
-	        
-	        <div class="field">
-	          <label class="label">Terminal:</label>
-	          <div class="input">
-	            <input type="text" id="terminal[terminal]" name="terminal[terminal]"/>
-	          </div>
-	          <div class="clear"></div>
-	        </div>
-	        
-	        <div class="field">
-	          <label class="label">Description:</label>
-	          <div class="input">
-	            <textarea id="terminal[description]" name="terminal[description]"><?php echo $terminal['description'] ?></textarea>
-	          </div>
-	          <div class="clear"></div>
-	        </div>
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">Location:</td><td width="310"><?php select_query_tag($bldgs, 'id', 'location_code', '', 'terminal[location_id]', 'terminal[location_id]', '', 'width:192px;'); ?></td>
+              <td width="150">Terminal Code:</td><td><input type="text" id="terminal[terminal_code]" name="terminal[terminal_code]"  class="text-field" /></td>
+           </tr>
+           <tr>
+              <td>Terminal:</td><td><input type="text" id="terminal[terminal_name]" name="terminal[terminal_name]" class="text-field"/></td>
+              <td>Type:</td><td><?php select_tag(array('IN', 'OUT'), $terminal['type'], 'terminal[type]', 'terminal[type]', '', 'width:192px;', TRUE); ?></td>
+           </tr>          
+           <tr>
+              <td>Description:</td>
+              <td colspan="99">
+                <input type="text" id="terminal[description]" name="terminal[description]" class="text-field" style="width:645px"/>
+              </td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
 				</div>
         <br/>
         
@@ -130,52 +112,50 @@
 	          <tbody></tbody>
 					</table>
 				</div>
-				
-				<br/>
-				<div class="field">
-          <label class="label"></label>
-          <div class="input">
-          	<a href="#add-device-modal" rel="modal:open" class="btn_modal">Add Device</a>	
-            <button class="btn">Create</button>
-            <button class="btn" onclick="return cancel_btn();">Cancel</button>
-          </div>
-          <div class="clear"></div>
-        </div>
+					<br/>
+					<div class="field-command">
+						<div class="text-post-status"></div>
+						<a class="btn" href="#add-device-modal" rel="modal:open">Add Device</a>		
+       	    <input type="submit" value="Create" class="btn"/>
+            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('terminals.php'); ?>"/>
+					</div>
 			</form>
 			
-			<div id="add-device-modal" class="modal">
-			   <h4 class="title">Add Device</h4>
-			   <div class="content">
-			      <form id="add-device-form">
-			   	     <span class="notice"></span>
+			<div id="add-device-modal" class="modal" style="width:485px;">
+				<?php
+					$devices = $DB->Get('devices', array('columns' => 'id, device_code'));
+				?>
+				<div class="modal-title"><h3>Add Device</h3></div>
+				<div class="modal-content">
+					<form id="add-device-form">
+               <span class="notice"></span>
 			      	 <input type="hidden" id="item_action" value="1"/>
-			         <div class="t-row">
-			            <label>Device Code</label>
-			            <?php select_query_tag($devices, 'id', 'device_code', '', 'device_code', 'device_code', '-', 'text w180'); ?>
-			         </div>
+			      	 
+			      	 <div class="field">
+                  <label>Device Code:</label>
+                  <?php select_query_tag($devices, 'id', 'device_code', '', 'device_code', 'device_code', '-', 'width:192px;'); ?>
+               </div>               
+               
+			      	 <div class="field">
+                  <label>Make:</label>
+                  <input type="text" id="make" name="make" value="" class="text-field" disabled />
+               </div>
+               
+			      	 <div class="field">
+                  <label>Model:</label>
+                  <input type="text" id="model" name="model" value="" class="text-field" disabled />
+               </div>
 			         
-			         <div class="t-row">
-			            <label>Make:</label>
-			            <input type="text" id="make" name="make" value="" class="text w180 readonly" readonly="reaadonly" />
-			         </div>
-			         
-			         <div class="t-row">
-			            <label>Model:</label>
-			            <input type="text" id="model" name="model" value="" class="text w180 readonly" readonly="reaadonly"/>
-			         </div>
-			         
-			         <div class="t-row">
-			            <label>Serial #:</label>
-			            <input type="text" id="serial_no" name="serial_no" value="" class="text w180 readonly" readonly="reaadonly"/>
-			         </div>
-			         
-			         <br/>
-			         <div class="t-foot">
-			           <input type="button" id="device-continue" value="Continue" alt="1" class="device-submit-reset btn"/>
-			           <input type="button" id="device-add-close" value="Add & Close" alt="0" class="device-submit-reset btn"/>
-			         </div>
-			      </form>
-			   </div>
+			      	 <div class="field">
+                  <label>Serial #:</label>
+                  <input type="text" id="serial_no" name="serial_no" value="" class="text-field" disabled />
+               </div>
+			      </form>	
+				</div>
+				<div class="modal-footer">					
+					<input type="button" id="device-continue" value="Continue" alt="1" class="device-submit-reset"/>
+       		<input type="button" id="device-add-close" value="Add & Close" alt="0" class="device-submit-reset"/>
+				</div>
 			</div>
 			
 		</div>
@@ -190,7 +170,7 @@
   jQuery.fn.submit_reset_device = function() {
   	this.click(function() {
   	  var x			= $(this).attr('alt');
-  	  var form		= $(this).closest('form');
+  	  var form		= $('#add-device-form');
   	  var notice	= form.find('.notice');
   	  var complete	= true;
   	  

@@ -12,7 +12,7 @@
 <script>
 $(function() {
     $( ".accordion" ).accordion({
-        collapsible: true, active: false, autoHeight: false
+        collapsible: true, active: false, autoHeight: false, heightStyle: "content"
     });
 });
 </script>
@@ -99,7 +99,7 @@ $(function() {
 														: '<td class="border-right">'.$invt['material_code'].'</td>
 															<td class="border-right text-center">'.$invt['mat_lot_no'].'</td>
 															<td class="border-right text-center">'.$invt['unit'].'</td>
-															<td class="border-right text-right">'.trim_decimal($invt['qty']).'</td>
+															<td class="border-right text-right numbers">'.trim_decimal($invt['qty']).'</td>
 															<td class="border-right text-center"><a href="production-line-show.php?mid='.$invt['mat_id'].'&prod_lot_no='.$_REQUEST['lot'].'&trk_no='.$_REQUEST['trk_no'].'">VIEW</a></td>';
 											
 									}

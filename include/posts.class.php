@@ -428,7 +428,8 @@ class Posts {
   	$terminal = array(
   	  'location_id'	=> $params['location_id'],
   	  'terminal_code'	=> $params['terminal_code'],
-  	  'terminal'	=> $params['terminal'],
+  	  'terminal_name'	=> $params['terminal_name'],
+  	  'type'	=> $params['type'],
   	  'description'	=> $params['description']
 		);	
 		return $this->DB->InsertRecord('terminals', $terminal);

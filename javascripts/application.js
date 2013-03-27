@@ -143,7 +143,6 @@ $.fn.grid = function(args) {
     table.find('thead a.sort').removeClass('active up');
     $(this).addClass(active);
   });
-  	
 	$('.search').keypress(function(e) {
     //if(e.which == 13) { // enter key
     	args['page'] = 1;
@@ -152,8 +151,8 @@ $.fn.grid = function(args) {
 	    grid_population(table, args);
     //}
 	});
-
   
+  args['params'] = $('#keyword').val();	
   grid_population(table, args);
   // })
 }
@@ -301,6 +300,20 @@ function row_template_suppliers(data) {
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right\">"+ data['name'] +"</td>" +
     "<td class=\"border-right\">"+ data['prodserv'] +"</td>" +
+    "</tr>");
+
+  return row;
+}
+
+function row_template_notifications(data) {
+  var forward	= host + "/account/"+ data['url'];
+  var row		= $("<tr forward=\""+ forward +"\">" +
+    "<td class=\"border-right text-center\">"+ data['created_at'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['type'] +"</td>" +
+  	"<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['title'] +"</a></td>" +
+    "<td class=\"border-right text-center\">"+ data['value'] +"</td>" +
+    "<td class=\"border-right \">"+ data['remarks'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['status'] +"</td>" +
     "</tr>");
 
   return row;

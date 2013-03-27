@@ -67,7 +67,7 @@ class MySQL {
   	if (isset($args)) {
   	  $args['columns'] = (isset($args['columns']) ? $args['columns'] : '*');
   	  $args['joins'] = (isset($args['joins']) ? $args['joins'] : '');
-	  $args['conditions'] = ($args['conditions'] == '' ? '' : ' WHERE '.$args['conditions']);
+	  	$args['conditions'] = ($args['conditions'] == '' ? '' : ' WHERE '.$args['conditions']);
       $args['order'] = ($args['order'] == '' ? '' : ' ORDER BY '.$args['order']);
       $args['limit'] = ($args['limit'] == '' ? '' : ' LIMIT '.$args['limit']);
       $args['group'] = ($args['group'] == '' ? '' : ' GROUP BY '.$args['group']);

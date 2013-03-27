@@ -6,6 +6,8 @@ class Capabilities {
   public $All = array(
 	  'dashboard' => array('name' => 'Dashboard', 'url' => 'index.php', 'parent' => 'dashboard'),
 	  
+	  'notifications' => array('name' => 'Notifications', 'url' => 'notifications.php', 'parent' => 'notifications'),
+	  
 	  'orders' => array('name' => 'Orders', 'url' => 'orders.php', 'parent' => 'orders'),
 	  'show_order' => array('name' => 'Order Details', 'url' => 'orders-show.php', 'parent' => 'orders'),
 	  'add_order' => array('name' => 'New Order', 'url' => 'orders-new.php', 'parent' => 'orders'),

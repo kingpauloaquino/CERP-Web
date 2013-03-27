@@ -18,6 +18,10 @@
 		</div>
 
     <div id="content">
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $_GET['pid']; ?>" style="display: none" />
+      </div>
       <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
          
          <!-- BOF GRIDVIEW -->
@@ -64,7 +68,6 @@
 			      "limit":"50",
 						"data_key":"parts_tree",
 						"row_template":"row_template_parts_tree_read_only",
-			      "params":"pid=<?php echo $_GET['pid']; ?>"
 					}
 				
 					$('#grid-parts-materials').grid(data);

@@ -28,8 +28,8 @@
           <thead>
             <tr>
 							<td class="border-right text-center" width="160"><a class="sort default active up" column="code">Code</a></td>
-              <td class="border-right text-center" width="100"><a class="sort down" column="model">Model</a></td>
-              <td class="border-right text-center" width="100"><a class="sort" column="classification">Classification</a></td>   
+              <td class="border-right text-center" width="100"><a class="sort" column="model">Model</a></td>
+              <td class="border-right text-center" width="140"><a class="sort" column="classification">Classification</a></td>   
               <td class="border-right text-center"><a class="sort" column="description">Description</a></td>  
             </tr>
           </thead>

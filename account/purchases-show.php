@@ -15,6 +15,10 @@
         </div>
 
         <div id="content">
+				<!-- BOF Search -->
+	      <div class="search">
+	        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $purchase['id']; ?>" style="display: none" />
+	      </div>
           <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
              <!-- BOF TEXTFIELDS -->
              <div>

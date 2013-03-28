@@ -14,19 +14,24 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						? 
 						'materials.material_code LIKE "%'. $keyword .'%" OR '.
 						'materials.description LIKE "%'. $keyword .'%" OR '.
+						'brand_models.brand_model LIKE "%'. $keyword .'%" OR '.
 						'item_classifications.classification LIKE "%'. $keyword .'%" ' 
 						: '';
 
 	$query = $DB->Fetch('warehouse_inventories', array(
 							'columns'	=> 'warehouse_inventories.item_id AS id, materials.material_code AS code, SUM(warehouse_inventories.qty) AS qty,
-														item_classifications.classification AS classification, materials.description AS description',
+														item_classifications.classification AS classification, materials.description AS description, 
+														brand_models.brand_model AS model, lookups.description AS uom',
 					    'joins'		=> 'INNER JOIN materials ON warehouse_inventories.item_id = materials.id
 														INNER JOIN item_classifications ON materials.material_classification = item_classifications.id
+														INNER JOIN brand_models ON brand_models.id = materials.brand_model
+														INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
+														INNER JOIN lookups ON lookups.id = item_costs.unit
 														AND warehouse_inventories.item_type="MAT"',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,
-    					'group' => 'code'
+    					'group' => 'warehouse_inventories.id'
              )
            );
 	return array("material_inventory" => $query, "total" => $DB->totalRows());

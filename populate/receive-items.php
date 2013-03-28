@@ -1,23 +1,28 @@
 <?php
 require('../include/general.class.php');
 
-$delivery_id = $_GET['delivery_id'];
+$keyword	= $_GET['params'];
+$page			= ($_GET['page'] != "" ? $_GET['page'] : 1);
+$limit		= ($_GET['limit'] != "" ? $_GET['limit'] : 15);
+$order		= ($_GET['order'] != "" ? $_GET['order'] : "id");
+$sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 
-if(empty($delivery_id)) return null;
-
-function populate_records($id) {
+function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
-  
-  $query = $DB->Fetch('receive_items', array(
+  $startpoint = $limit * ($page - 1);
+	$search = 'delivery_id= '.$keyword;
+	$query = $DB->Fetch('receive_items', array(
                   'columns' => 'receive_items.id, material_code AS material_code, materials.description AS material_description, 
                                 quantity, lookups.description AS status, passed, receive_items.remarks',
                   'joins' => 'INNER JOIN materials ON materials.id = receive_items.receive_item
                               INNER JOIN lookups ON lookups.id = receive_items.status',
-                  'conditions' => 'delivery_id = '. $id)
+							    'order' 	=> $order .' '.$sort,
+		    					'limit'		=> $startpoint .', '.$limit,
+                  'conditions' => $search)
            );
-	
-  return array("materials" => $query);
+	//return array("materials" => $query, "total" => $DB->totalRows());
+	return array("materials" => $query);
 }
-
-$JSON->build_pretty_json(populate_records($delivery_id));
+echo json_encode(populate_records($keyword, $page, $limit, $order, $sort));
+//$JSON->build_pretty_json(populate_records($keyword, $page, $limit, $order, $sort));
 ?>

@@ -20,7 +20,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('products', array(
 							'columns'	=> 'products.id AS id, products.product_code AS code, products.description AS description, products.color,
-														brand_models.brand_model AS brand, item_classifications.classification AS classification, 
+														brand_models.brand_model AS brand, item_classifications.classification AS pack, 
                     				item_costs.cost AS price, lookups.description AS unit',
 					    'joins'		=> 'INNER JOIN brand_models ON brand_models.id = products.brand_model 
 					                  INNER JOIN item_classifications ON products.product_classification = item_classifications.id 

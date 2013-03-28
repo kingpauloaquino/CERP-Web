@@ -17,6 +17,10 @@
         </div>
 
         <div id="content">
+				<!-- BOF Search -->
+	      <div class="search">
+	        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $purchase['id']; ?>" style="display: none" />
+	      </div>
           <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
           	 <input type="hidden" name="action" value="edit_purchase"/>
           	 <input type="hidden" name="purchase[id]" value="<?php echo $purchase['id']; ?>"/>
@@ -134,7 +138,6 @@
 			      "limit":"50",
 						"data_key":"purchase_items",
 						"row_template":"row_template_purchase_material",
-			      "params":"purchase_id=<?php echo $purchase['id']; ?>"
 					}         	
          	
            var grid = $('#purchase-materials');

@@ -17,6 +17,10 @@
         </div>
 
         <div id="content">
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $delivery['id']; ?>" style="display: none" />
+      </div>
           <form id="delivery-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
           	 <input type="hidden" name="action" value="edit_delivery"/>
           	 <input type="hidden" name="delivery[id]" value="<?php echo $delivery['id']; ?>"/>
@@ -89,7 +93,7 @@
         $(function() {
           var grid = $('#purchase-materials');
           var data = { 
-            "url":"/populate/receive-items.php?delivery_id=<?php echo $delivery['id']; ?>",
+            "url":"/populate/receive-items.php",
             "data_key":"materials",
             "row_template":"row_template_verify_deliver_materials"
           }

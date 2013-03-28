@@ -7,6 +7,7 @@ require('posts.class.php');
 require('query.class.php');
 require('prettyjson.class.php');
 require('menu.class.php');
+require('role.class.php');
   
 $Host			= ""; //gethostname();
 $HostAccount	= "account";
@@ -29,6 +30,7 @@ $Posts			= new Posts($DB);
 $Query			= new Query($DB);
 $JSON			= new PrettyJson;
 $Menu			= new Menu;
+$Role		= new Role($DB);
 
 $Signed			= $_SESSION['user'];  
 $Title			= $Capabilities->GetName();

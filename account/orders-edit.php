@@ -17,6 +17,10 @@
 		</div>
 
     <div id="content">
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $order['id']; ?>" style="display: none" />
+      </div>
       <form id="order-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
       	 <input type="hidden" name="action" value="edit_order"/>
           	 <input type="hidden" name="order[id]" value="<?php echo $order['id']; ?>"/>
@@ -190,7 +194,6 @@
 			      "limit":"50",
 						"data_key":"order_items",
 						"row_template":"row_template_order_items",
-			      "params":"order_id=<?php echo $order['id']; ?>"
 					}
 					
 					$('#grid-order-items').grid(data);

@@ -265,9 +265,11 @@ function row_template_indirect_materials(data) {
 function row_template_materials_inventory(data) {
   var forward	= host + "/account/minventory-show.php?id="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
+    "<td class=\"border-right text-center\">"+ data['model'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['classification'] +"</td>" +
     "<td class=\"border-right\">"+ data['description'] +"</td>" +
-    "<td class=\"border-right text-right\">"+ data['qty'] +"</td>" +
+    "<td class=\"border-right text-center \">"+ data['uom'] +"</td>" +
+    "<td class=\"border-right text-right numbers \">"+ data['qty'] +"</td>" +
     "</tr>");
 
   return row;
@@ -277,6 +279,7 @@ function row_template_products(data) {
   var forward	= host + "/account/products-show.php?pid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ data['brand'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['pack'] +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
     "<td class=\"border-right\">"+ data['description'] +"</td>" +
     "</tr>");
@@ -287,9 +290,12 @@ function row_template_products(data) {
 function row_template_products_inventory(data) {
   var forward	= host + "/account/pinventory-show.php?id="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
+    "<td class=\"border-right text-center\">"+ (data['brand'] || '') +"</td>" +
+    "<td class=\"border-right text-center\">"+ (data['pack'] || '') +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
     "<td class=\"border-right\">"+ data['description'] +"</td>" +
-    "<td class=\"border-right text-right\">"+ data['qty'] +"</td>" +
+    "<td class=\"border-right text-center \">"+ data['uom'] +"</td>" +
+    "<td class=\"border-right text-right numbers \">"+ data['qty'] +"</td>" +
     "</tr>");
 
   return row;

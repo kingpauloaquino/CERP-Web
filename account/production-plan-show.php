@@ -125,8 +125,8 @@
 													: '<td class="border-right'.$addtl.'">'.$prod['product'].'</td>'; 
 										//echo '<td class="border-right text-center" style="'.set_color($prod['color']).'">'.$prod['color'].'</td>';									
 										echo '<td class="border-right'.$addtl.'">'.get_ink_color($prod['color']).'</td>';									
-										echo '<td class="border-right text-right numbers'.$addtl.'">'.$prod['order_qty'].'</td>';
-										echo '<td class="border-right text-right numbers'.$addtl.'">'.$prod['prod_qty'].'</td>';
+										echo '<td class="border-right text-right numbers '.$addtl.'">'.$prod['order_qty'].'</td>';
+										echo '<td class="border-right text-right numbers '.$addtl.'">'.$prod['prod_qty'].'</td>';
 										echo '<td class="border-right text-center'.$addtl.'">'.date("F d, Y", strtotime($prod['ship_date'])).'</td>';
 										
 										echo $link = ($prod['type']=='Request') 

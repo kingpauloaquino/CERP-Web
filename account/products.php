@@ -27,9 +27,10 @@
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <td class="border-right text-center" width="160"><a class="sort default active up" column="code">Code</a></td>
+              <td class="border-right text-center" width="150"><a class="sort default active up" column="code">Code</a></td>
               <td class="border-right text-center" width="100"><a class="sort down" column="brand">Brand</a></td>
-              <td class="border-right text-center" width="100"><a class="sort" column="color">Color</a></td>
+              <td class="border-right text-center" width="90"><a class="sort down" column="pack">Pack</a></td>
+              <td class="border-right text-center" width="90"><a class="sort" column="color">Color</a></td>
               <td class="border-right text-center"><a class="sort" column="description">Description</a></td>
             </tr>
           </thead>

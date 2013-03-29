@@ -158,6 +158,14 @@ class Capabilities {
 	  'show_settings_lookups' => array('name' => 'Lookups', 'url' => 'settings-lookups-show.php', 'parent' => 'settings'),
 	  'edit_settings_lookups' => array('name' => 'Edit Lookups', 'url' => 'settings-lookups-edit.php', 'parent' => 'settings'),
 	  
+		
+	  'show_profile' => array('name' => 'Profile', 'url' => 'profile-show.php', 'parent' => 'profile'),
+	  'edit_profile' => array('name' => 'Edit Profile', 'url' => 'profile-edit.php', 'parent' => 'profile'),
+	  
+		
+	  'roles' => array('name' => 'Roles', 'url' => 'roles.php', 'parent' => 'roles'),
+	  'show_role' => array('name' => 'Role Details', 'url' => 'roles-show.php', 'parent' => 'roles'),
+	  'edit_role' => array('name' => 'Edit Role', 'url' => 'roles-edit.php', 'parent' => 'roles'),
   );
   
   function Childrens($key='') {

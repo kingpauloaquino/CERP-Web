@@ -30,9 +30,11 @@ $Posts			= new Posts($DB);
 $Query			= new Query($DB);
 $JSON			= new PrettyJson;
 $Menu			= new Menu;
-$Role		= new Role($DB);
 
 $Signed			= $_SESSION['user'];  
+
+$Role		= new Role($DB, $Signed['id']);
+
 $Title			= $Capabilities->GetName();
 
 $default_page_limit = 15; 

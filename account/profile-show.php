@@ -1,16 +1,16 @@
 <?php
   /*
-   * Module: Users 
+   * Module: Profile 
   */
-  $capability_key = 'show_user';
+  $capability_key = 'show_profile';
   require('header.php');
   
-  if(isset($_REQUEST['uid'])) {
+  if(isset($Signed['id'])) {
   	$user = $DB->Find('users', array(
 			'columns' 		=> 'users.*, lookups.description AS status, roles.name as role', 
 			'joins'				=> 'LEFT OUTER JOIN lookups on users.status = lookups.id 
 												LEFT OUTER JOIN roles on users.role = roles.id',
-  	  'conditions' 	=> 'users.id = '.$_REQUEST['uid']
+  	  'conditions' 	=> 'users.id = '.$Signed['id']
   	  )
 		);	
   }
@@ -21,9 +21,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['users']['url'].'" class="nav">'.$Capabilities->All['users']['name'].'</a>'; 
-				  echo '<a href="'.$Capabilities->All['add_user']['url'].'" class="nav">'.$Capabilities->All['add_user']['name'].'</a>'; 
-				  echo '<a href="'.$Capabilities->All['edit_user']['url'].'?uid='.$_REQUEST['uid'].'" class="nav">'.$Capabilities->All['edit_user']['name'].'</a>'; 
+				  echo '<a href="'.$Capabilities->All['edit_profile']['url'].'" class="nav">'.$Capabilities->All['edit_profile']['name'].'</a>'; 
 				?>
 				<div class="clear"></div>
       </h2>
@@ -62,31 +60,32 @@
               <td width="150"></td><td></td>
            </tr>
         </table>
-        <br/>
+        
         <h3 class="form-title">Capabilities</h3>
 	      <div class="grid jq-grid">
 	        <table cellspacing="0" cellpadding="0">
 	          <thead>
 	            <tr>
             		<td width="5%" class="border-right text-center"><a></a></td>
-            		<td width="15%" class="border-right text-center"><a>Title</a></td>
-            		<td class="border-right text-center"><a>Capabilities</a></td>
+            		<td width="20%" class="border-right text-center"><a>Title</a></td>
+            		<td class="border-right text-center"><a>Capability</a></td>
 	            </tr>
 	          </thead>
 	          <tbody>
 						<?php
-							$init = TRUE;
-							foreach ($Role->getAllCapabilities() as $capa) {
-								if(!isset($capa['parent'])) {
-									if(!$init)
-										echo '</td></tr>';
-									$init = FALSE;
+							foreach ($Role->getUserRoles() as $user_role) {
+								echo '<tr>';
+								echo '<td class="text-center"><input type="checkbox"/></td>';
+								echo '<td colspan="2">'.$user_role['name'].'</td>';
+								echo '</tr>';
+								
+								$roles = $Role->getUserCapabilities($user_role['role_id']);
+								foreach ($roles as $role) {
 									echo '<tr>';
-									echo '<td class="text-center"><input type="checkbox"/></td>';
-									echo '<td>'.$capa['name'].'</td>';
-									echo '<td>';					
-								} else {
-									echo '<input type="checkbox"/> '.$capa['name'].'&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;';
+									echo '<td></td>';
+									echo '<td></td>';
+									echo '<td><input type="checkbox"/> '.$role['name'].'</td>';
+									echo '</tr>';									
 								}
 							}
 							?>

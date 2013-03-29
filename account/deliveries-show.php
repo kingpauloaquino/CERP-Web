@@ -74,7 +74,7 @@
            	   <div class="text-post-status">
            	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $delivery['status_description']; ?>
                </div>
-               <?php if($delivery['status'] != 83) { ?>
+               <?php if($delivery['status'] != 137) { ?>
                   <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('deliveries-edit.php?id='. $delivery['id']); ?>"/>
                <?php } ?>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('receiving.php'); ?>"/>

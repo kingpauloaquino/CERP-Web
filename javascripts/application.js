@@ -635,6 +635,16 @@ function row_template_defects(data) {
   return row;
 }
 
+function row_template_roles(data) {
+  var forward	= host + "/account/roles-show.php?rid="+ data['id'] +"&title="+ data['name'] +"";
+  var row		= $("<tr forward=\""+ forward +"\">"+
+  	"<td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['name'] || '--') +"</a></td>" +
+    "<td class=\"border-right text-center\">"+ data['description'] +"</td>" +
+    "</tr>");
+
+  return row;
+}
+
 
 // ====================================
 // FUNCTIONS

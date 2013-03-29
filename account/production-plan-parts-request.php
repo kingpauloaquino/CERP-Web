@@ -35,6 +35,10 @@
 		</div>
 				
 		<div id="content">
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $_GET['popid']; ?>" style="display: none" />
+      </div>
       <form id="order-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
 				<input type="hidden" name="action" value="parts_request"/>		
 				<input type="hidden" name="order_id" value="<?php echo $_GET['oid']?>"/>		
@@ -92,8 +96,7 @@
     	"url":"/populate/parts-requests.php",
       "limit":"50",
 			"data_key":"parts_requests",
-			"row_template":"row_template_parts_requests",
-      "params":"popid=<?php echo $_GET['popid']; ?>"
+			"row_template":"row_template_parts_requests"
 		}
 		
 		$('#tbl-parts').grid(data);

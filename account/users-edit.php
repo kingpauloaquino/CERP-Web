@@ -15,7 +15,7 @@
 		$args = array('variables' => array('role_id' => $_POST['role_id']), 'conditions' => 'user_id='.$_POST['uid']); 
 		$num_of_records = $Posts->EditUserRole($args);
 		
-		//redirect_to($Capabilities->All['show_user']['url'].'?uid='.$_POST['uid']);		
+		redirect_to($Capabilities->All['show_user']['url'].'?uid='.$_POST['uid']);		
 	} 
   
   if(isset($_GET['uid'])) {

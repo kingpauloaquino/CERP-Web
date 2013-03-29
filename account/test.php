@@ -1,36 +1,24 @@
 <?php 
-$capability_key = 'users'; 
+$capability_key = 'show_material'; 
 require('header.php');	
 
 $allowed = $Role->isCapableByName('show_material');
+
+if(!$allowed) {
+	require('inaccessible.php');	
+}else{
 ?>
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title">TEST</span>
-				 <?php
-				 	if($allowed)
-				  	echo '<a href="'.$Capabilities->All['add_user']['url'].'" class="nav">'.$Capabilities->All['add_user']['name'].'</a>';
-				?>
+      	<span class="title"></span>
 				<div class="clear"></div>
       </h2>
 		</div>
 				
 		<div id="content">
-			<?php
-				if($allowed){
-					?>
 					<h2>usual content</h2>
-					<?php
-				}
-				else {					
-					?>
-					<span class="notice">
-		        <p class="info"><strong>Prohibited!</strong> You have no access.</p>
-		      </span> 
-					<?php
-				}
-			?>  
 		</div>
 	</div>
+<?php } ?>
 <?php require('footer.php'); ?>

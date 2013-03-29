@@ -636,7 +636,7 @@ function row_template_defects(data) {
 }
 
 function row_template_roles(data) {
-  var forward	= host + "/account/roles-show.php?rid="+ data['id'] +"&title="+ data['name'] +"";
+  var forward	= host + "/account/roles-show.php?rid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\">"+
   	"<td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['name'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ data['description'] +"</td>" +

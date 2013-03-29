@@ -8,7 +8,12 @@
 	if($_POST['action'] == 'add_user') {
 		$id = $Posts->AddUser($_POST['user']);
 		$x = $Capabilities->All['show_user']['url'].'?uid='.$id;
-		if(isset($id)){ redirect_to($Capabilities->All['show_user']['url'].'?uid='.$id); }
+		
+		if(isset($id)) {
+			$Posts->AddUserRole(array('user_id' => $id , 'role_id' => $_POST['role_id']));
+			
+			redirect_to($Capabilities->All['show_user']['url'].'?uid='.$id);	
+		}
 	}
 	
 	$roles = $DB->Get('roles', array('columns' => 'id, name'));
@@ -25,7 +30,7 @@
 		</div>
 		
 		<div id="content">
-			<form action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
+			<form id="user-form" action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
 				<div class="form-container">
 					<input type="hidden" name="action" value="add_user">
 					
@@ -46,7 +51,7 @@
            <tr>
               <td>Remarks:</td>
               <td colspan="99">
-                <input type="text"  class="text-field" style="width:645px" />
+                <input type="text" id="user[description]" name="user[description]" class="text-field" style="width:645px" />
               </td>
            </tr>
            <tr><td height="5" colspan="99"></td></tr>
@@ -57,18 +62,22 @@
         
         <table>
            <tr>
-              <td width="150">Role:</td><td width="310"><?php select_query_tag($roles, 'id', 'name', '', 'user[role]', 'user[role]', '', 'width:192px;'); ?></td>
+              <td width="150">Role:</td><td width="310"><?php select_query_tag($roles, 'id', 'name', '', 'role_id', 'role_id', '', 'width:192px;'); ?></td>
               <td width="150"></td><td></td>
            </tr>
            <tr>
-              <td>Password:</td><td><input type="password" id="user[password]" name="user[password]" autocomplete="off" class="text-field" /></td>
-              <td>Confirm Password:</td><td><input type="password" id="password2" name="password2" autocomplete="off" class="text-field" /></td>
-           </tr>
+              <td>Password:</td><td><input type="password" id="user[password]" name="user[password]" autocomplete="off" class="text-field required" /></td>
+              <td>Confirm Password:</td><td><input type="password" id="password-check" name="password-check" autocomplete="off" class="text-field required" /></td>
+           </tr> 
         </table>
+        <br/>
+        <span class="notice">
+	        <p class="error"><strong>Required!</strong> Password mismatch</p>
+	      </span> 
         <br/>
          <div class="field-command">
        	   <div class="text-post-status"></div>
-       	   <input type="submit" value="Create" class="btn"/>
+       	   <input id="submit" type="submit" value="Create" class="btn"/>
            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('users.php'); ?>"/>
          </div>
 	
@@ -76,5 +85,26 @@
 			</div>
 		</div>
 	</div>
-
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".notice").hide();
+    $("#submit").click(function(){
+      
+      var hasError = false;
+      var password = $("#[name*=\'user[password]\']");
+      var check = $("#password-check");
+      if (password.val() == '') {
+      	$('.notice').html('<p class="error">Enter a password.</p>');
+          hasError = true;
+      } else if (check.val() == '') {
+      	$('.notice').html('<p class="error">Re-enter a password.</p>');
+          hasError = true;
+      } else if (password.val() != check.val()) {
+      	$('.notice').html('<p class="error">Passwords mismatch.</p>');
+          hasError = true;
+      }
+      if(hasError == true) {$(".notice").show(); return false;}
+  	});
+  });
+  </script>
 <?php require('footer.php'); ?>

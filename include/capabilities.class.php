@@ -164,6 +164,7 @@ class Capabilities {
 	  
 		
 	  'roles' => array('name' => 'Roles', 'url' => 'roles.php', 'parent' => 'roles'),
+	  'add_role' => array('name' => 'New Role', 'url' => 'roles-new.php', 'parent' => 'roles'),
 	  'show_role' => array('name' => 'Role Details', 'url' => 'roles-show.php', 'parent' => 'roles'),
 	  'edit_role' => array('name' => 'Edit Role', 'url' => 'roles-edit.php', 'parent' => 'roles'),
   );

@@ -1,9 +1,8 @@
 <?php 
 $capability_key = 'users'; 
 require('header.php');	
-echo '<br/><br/><br/><br/><br/>';
-var_dump($Role->getRoleCapabilityIDs(1));
-$allowed = $Role->isCapableByName('add_user');
+
+$allowed = $Role->isCapableByName('show_material');
 ?>
 	<div id="page">
 		<div id="page-title">

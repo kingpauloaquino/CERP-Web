@@ -2,15 +2,9 @@
   /*
    * Module: Roles 
   */
-  $capability_key = 'show_role';
+  $capability_key = 'add_role';
   require('header.php');
 	
-	if(isset($_GET['rid'])) {
-  	$roles = $DB->Find('roles', array(
-  		'columns' => 'roles.*',
-  	  'conditions' => 'id = '.$_GET['rid']
-	  ));	
-  }
 ?>
 
 	<div id="page">
@@ -19,24 +13,24 @@
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
         	echo '<a href="'.$Capabilities->All['roles']['url'].'" class="nav">'.$Capabilities->All['roles']['name'].'</a>';
-        	echo '<a href="'.$Capabilities->All['edit_role']['url'].'?rid='.$_GET['rid'].'" class="nav">'.$Capabilities->All['edit_role']['name'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>
 		</div>
 				
-	<div id="content">
-	<form class="form-container">
+		<div id="content">
+		<form class="form-container" method="post">
+    	<input type="hidden" name="action" value="add_role"> 
 			<h3 class="form-title">Details</h3>
       <table>
          <tr>
-            <td width="150">Title:</td><td width="310"><input type="text" value="<?php echo $roles['name'] ?>" class="text-field" disabled/></td>
+            <td width="150">Title:</td><td width="310"><input type="text" id="role[name]" name="role[name]" class="text-field" /></td>
             <td width="150"></td>
          </tr>      
          <tr>
             <td>Description:</td>
             <td colspan="99">
-              <input type="text" value="<?php echo $roles['description'] ?>" class="text-field" style="width:645px" disabled/>
+              <input type="text" id="role[description]" name="role[description]" class="text-field" style="width:645px" />
             </td>
          </tr>
          <tr><td height="5" colspan="99"></td></tr>
@@ -53,13 +47,6 @@
           </thead>
           <tbody>
 						<?php
-							$role_caps = $Role->getRoleCapabilityIDs($_GET['rid']);
-							function exists($roles, $key){
-								foreach($roles as $r) {
-									if($r['capability_id'] == $key)
-										return TRUE;
-								} return FALSE;
-							}
 
 							$init = TRUE;
 							foreach ($Role->getAllCapabilities() as $capa) {
@@ -71,13 +58,19 @@
 									echo '<td>'.$capa['name'].'</td>';
 									echo '<td>';					
 								} else {
-									echo '<input type="checkbox" '.($check = (exists($role_caps, $capa['id'])) ? 'checked' : '').' disabled/> '.$capa['name'].'&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;';
+									echo '<input type="checkbox" id="caps[]" name="caps[]" value="' .$capa['id']. '" /> '.$capa['name'].'&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;';
 								}
 							}
 							?>
 					</tbody>
 				</table>
 			</div>
+			
+			<div class="field-command">
+     	   <div class="text-post-status"></div>
+     	   <input type="submit" value="Create" class="btn"/>
+         <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('roles.php'); ?>"/>
+       </div>
     </form>
 	</div>
 </div>

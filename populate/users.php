@@ -23,7 +23,9 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 							'columns'	=> 'users.id AS id, users.employee_id AS employee_id, 
 														CONCAT(users.first_name," ",users.last_name) AS username, 
 														roles.name AS role, lookups.description AS status',
-					    'joins'		=> 'INNER JOIN roles on users.role = roles.id LEFT OUTER JOIN lookups on users.status = lookups.id',
+					    'joins'		=> 'INNER JOIN user_roles ON user_roles.user_id = users.id
+														INNER JOIN roles ON roles.id = user_roles.role_id 
+					    							LEFT OUTER JOIN lookups on users.status = lookups.id',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

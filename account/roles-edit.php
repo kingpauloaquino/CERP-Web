@@ -4,6 +4,14 @@
   */
   $capability_key = 'edit_role';
   require('header.php');
+	
+	if(isset($_GET['rid'])) {
+  	$roles = $DB->Find('roles', array(
+  		'columns' => 'roles.*',
+  	  'conditions' => 'id = '.$_GET['rid']
+	  ));	
+  }
+	
 ?>
 
 	<div id="page">
@@ -11,15 +19,33 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
-        	echo '<a href="'.$Capabilities->All['show_role']['url'].'?rid='.$_GET['rid'].'&title='.$_GET['title'].'" class="nav">'.$Capabilities->All['show_role']['name'].'</a>';
+        	echo '<a href="'.$Capabilities->All['roles']['url'].'" class="nav">'.$Capabilities->All['roles']['name'].'</a>';
+        	echo '<a href="'.$Capabilities->All['show_role']['url'].'?rid='.$_GET['rid'].'" class="nav">'.$Capabilities->All['show_role']['name'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>
 		</div>
 				
-	<div id="content">
-		<form class="form-container">
-      <h3 class="form-title"><?php echo $_GET['title'] ?> Capabilities</h3>
+		<div id="content">
+		<form class="form-container" method="post">
+    	<input type="hidden" name="action" value="edit_role"> 
+			<input type="hidden" name="rid" value="<?php echo $_GET['rid'] ?>"> 
+			<h3 class="form-title">Details</h3>
+      <table>
+         <tr>
+            <td width="150">Title:</td><td width="310"><input type="text" id="role[name]" name="role[name]" value="<?php echo $roles['name'] ?>" class="text-field" /></td>
+            <td width="150"></td>
+         </tr>      
+         <tr>
+            <td>Description:</td>
+            <td colspan="99">
+              <input type="text" id="role[description]" name="role[description]" value="<?php echo $roles['description'] ?>" class="text-field" style="width:645px" />
+            </td>
+         </tr>
+         <tr><td height="5" colspan="99"></td></tr>
+      </table>
+      <br/>
+      <h3 class="form-title">Capabilities</h3>
       <div class="grid jq-grid">
         <table cellspacing="0" cellpadding="0">
           <thead>
@@ -48,13 +74,19 @@
 									echo '<td>'.$capa['name'].'</td>';
 									echo '<td>';					
 								} else {
-									echo '<input type="checkbox" '.($check = (exists($role_caps, $capa['id'])) ? 'checked' : '').' /> '.$capa['name'].'&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;';
+									echo '<input type="checkbox" id="caps[]" name="caps[]" value="' .$capa['id']. '" '.($check = (exists($role_caps, $capa['id'])) ? 'checked' : '').' /> '.$capa['name'].'&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;';
 								}
 							}
 							?>
 					</tbody>
 				</table>
 			</div>
+			
+			<div class="field-command">
+     	   <div class="text-post-status"></div>
+     	   <input type="submit" value="Update" class="btn"/>
+         <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('roles-show.php?rid='.$_GET['rid']); ?>"/>
+       </div>
     </form>
 	</div>
 </div>

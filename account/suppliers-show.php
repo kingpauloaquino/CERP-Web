@@ -5,7 +5,7 @@
   $capability_key = 'show_supplier';
   require('header.php');
   
-  if(isset($_REQUEST['sid'])) {
+  if(isset($_GET['sid'])) {
   	$supplier = $DB->Find('suppliers', array(
   		'columns' => 'suppliers.*, lookups1.description AS supplier_type, lookups2.description AS product_service, 
 										lookups3.description AS term_of_payment, lookups4.description AS country', 
@@ -13,7 +13,7 @@
 									LEFT OUTER JOIN lookups AS lookups2 ON lookups2.id = suppliers.product_service
 									LEFT OUTER JOIN lookups AS lookups3 ON lookups3.id = suppliers.term_of_payment
 									LEFT OUTER JOIN lookups AS lookups4 ON lookups4.id = suppliers.country',
-  	    'conditions' => 'suppliers.id = '.$_REQUEST['sid']
+  	    'conditions' => 'suppliers.id = '.$_GET['sid']
   	  ));	
   }
 ?>
@@ -25,7 +25,7 @@
         <?php
 				  echo '<a href="'.$Capabilities->All['suppliers']['url'].'" class="nav">'.$Capabilities->All['suppliers']['name'].'</a>'; 
 				  echo '<a href="'.$Capabilities->All['add_supplier']['url'].'" class="nav">'.$Capabilities->All['add_supplier']['name'].'</a>'; 
-				  echo '<a href="'.$Capabilities->All['edit_supplier']['url'].'?sid='.$_REQUEST['sid'].'" class="nav">'.$Capabilities->All['edit_supplier']['name'].'</a>'; 
+				  echo '<a href="'.$Capabilities->All['edit_supplier']['url'].'?sid='.$_GET['sid'].'" class="nav">'.$Capabilities->All['edit_supplier']['name'].'</a>'; 
 				?>
 				<div class="clear"></div>
       </h2>

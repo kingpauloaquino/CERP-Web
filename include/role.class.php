@@ -23,9 +23,9 @@ class Role
 	function isCapableByName($cap_name) {
 		foreach ($this->getUserRoles() as $user_role) {
 			$result = $this->DB->Find('role_capabilities', array(
-						  			'columns' 		=> 'role_capabilities.id',
+						  			'columns' 		=> 'role_capabilities.*',
 						  			'joins' => 'INNER JOIN capabilities ON capabilities.id = role_capabilities.capability_id',
-						  	    'conditions' 	=> 'capabilities.name="'. $cap_name .'" AND role_id='. $user_role['role_id']));
+						  	    'conditions' 	=> 'capabilities.capability="'. $cap_name .'" AND role_id='. $user_role['role_id']));
 			if(isset($result)) {
 				return TRUE;
 			}

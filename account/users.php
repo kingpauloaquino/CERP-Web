@@ -29,7 +29,7 @@
             <tr>
               <td class="border-right text-center" width="110"><a class="sort default active up" column="employee_id">Employee ID</a></td>
               <td class="border-right text-center"><a class="sort" column="name">Name</a></td>
-              <td class="border-right text-center" width="110"><a class="sort" column="role">Role</a></td>
+              <td class="border-right text-center" width="140"><a class="sort" column="role">Role</a></td>
               <td class="border-right text-center" width="100"><a class="sort" column="status">Status</a></td>
             </tr>
           </thead>

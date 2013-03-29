@@ -35,7 +35,7 @@ class Posts {
   	$employee_id = $this->EscQuery($params['employee_id']);
 	$password = md5($this->EscQuery($params['password']));
 	$user = $this->DB->Find('users', array(
-	  'columns' => 'id, employee_id, first_name, last_name, position, email, role, status',
+	  'columns' => 'id, employee_id, first_name, last_name, position, email, status',
 	  'conditions' => "employee_id = '".$employee_id."' AND password = '".$password."'")
 	);
 	
@@ -54,60 +54,54 @@ class Posts {
 		  'last_name'		=> ucwords(strtolower($params['last_name'])),
 		  'email'				=> $params['email'],
 		  'position'		=> ucwords(strtolower($params['position'])),
-		  'role'				=> $params['role'],
+		  'description'	=> ucwords(strtolower($params['description'])),
 		  'status'			=> $params['status']
 		);  
     return $this->DB->InsertRecord('users', $user);
   }
 	
 	function EditUser($params) {
-		$params['variables']['password'] = md5($params['variables']['password']);
+		if(isset($params['variables']['password'])) {
+			$params['variables']['password'] = md5($params['variables']['password']);	
+		}
     return $this->DB->UpdateRecord('users', $params);
   }
   
-  // Posts::EditUser
-  // Descriptions: Use to update user details
-  // Parameters: Param[First Name, Last Name, Position, Email, Role, Status, New Password]
-  // Return: Boolean (0,1)
-  // function EditUser($params) {
-  	// $role = array(
-  	  // 'name' 			=> ucwords(strtolower($this->EscQuery($params['name']))),
-  	  // 'capabilities' 	=> '',
-	  // 'date_created'	=> $this->DateTimeNow()
-		// );
-	// 	
-	// return $this->DB->InsertRecord('roles', $role);
-  // }
+  function AddUserRole($params) {
+    $items = array(
+		  'user_id'	=> $params['user_id'],	  
+		  'role_id'	=> $params['role_id']
+		);
+    return $this->DB->InsertRecord('user_roles', $items);
+	}
+	
+	function EditUserRole($params) {
+    return $this->DB->UpdateRecord('user_roles', $params);
+	}
   
-  // Posts::AddRole
-  // Descriptions: Use to create new role
-  // Parameters: Param[Name, Capabilities]
-  // Return: ID
   function AddRole($params) {
-  	$role = array(
-  	  'name' 			=> ucwords(strtolower($this->EscQuery($params['name']))),
-  	  'capabilities' 	=> '',
-	  'date_created'	=> $this->DateTimeNow()
-	);
+    $items = array(
+		  'name'	=> $params['name'],	  
+		  'description'	=> $params['description']
+		);
+    return $this->DB->InsertRecord('roles', $items);
+	}
 	
-	return $this->DB->InsertRecord('roles', $role);
-  }
-  
-  // Posts::AddRole
-  // Descriptions: Use to create new role
-  // Parameters: Param[Name, Capabilities]
-  // Return: Boolean (0,1)
-  function EditRole($capabilities, $conditions) {
-  	$arguments = array(
-  	  'variables' => array(
-  	    'capabilities' 	=> $this->EscQuery($capabilities),
-	    'date_updated'	=> $this->DateTimeNow()
-	  ),
-	  'conditions' => $conditions
-	);
+	function EditRole($params) {
+    return $this->DB->UpdateRecord('roles', $params);
+	}
 	
-	return $this->DB->UpdateRecord('roles', $arguments);
-  }
+	function AddCapability($params) {
+    $items = array(
+		  'role_id'	=> $params['role_id'],	  
+		  'capability_id'	=> $params['capability_id']
+		);
+    return $this->DB->InsertRecord('role_capabilities', $items);
+	}
+	
+	function DeleteCapability($params) {
+    return $this->DB->DeleteRecord('role_capabilities', $params);
+	}
 	
 	function AddSupplier($params) {
     $supplier = array(
@@ -984,5 +978,7 @@ class Posts {
 	
 	return $this->DB->UpdateRecord('deliveries', $data);
   }
+
+	
 	
 }

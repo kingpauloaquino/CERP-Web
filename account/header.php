@@ -64,37 +64,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   case 'edit_user':
     break;
-
-  // ===============================================================
-  // Post::Add Role
-  // ===============================================================
-  case 'add_role':
-    $role_name = ucwords(strtolower(($_POST['role']['name'])));
-	  
-    if($Posts->IsUnique('roles','name', $role_name) == 1) {
-      echo '<p class="error">Sorry, but role name: <b>'.$role_name.'</b> is already used</p>';
-	} else {
-      $role_id = $Posts->AddRole($_POST['role']);
-      $tag .= '<p class="success">You have successfully added: <b>'.$role_name.'</b> in your roles</p>';
-	  $tag .= '<script>$("#role_name").val("");$("#roles").append("<option value=\"'.$role_id.'\">'.$role_name.'</option>");</script>';
-	  echo $tag;
-	}
-    exit(); break;
-
-  // ===============================================================
-  // Post::Add Role
-  // ===============================================================
-  case 'edit_role':
-    $role_id = ucwords(strtolower(($_POST['role']['id'])));
-	  
-	$Posts->EditRole(implode(",", $_POST['capability']), 'id = '.$role_id);
-    echo '<p class="success">You have successfully updated your role capabilities</p>';
-	exit(); break;
 	
   // ===============================================================
   // Post::Add Purchase
   // ===============================================================
-  case 'add_purchase';
+  case 'add_purchase':
     $purchase		= $_POST['purchase'];
     $items			= array();
 		$total_amount	= 0.00;
@@ -119,7 +93,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   // Post::Edit Purchase
   // ===============================================================
-  case 'edit_purchase';
+  case 'edit_purchase':
     $purchase		= $_POST['purchase'];
     $items			= array();
 		$total_amount	= 0.00;
@@ -144,7 +118,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   // Post::Add Delivery
   // ===============================================================
-  case 'add_delivery';
+  case 'add_delivery':
   	echo $Posts->AddDelivery($_POST['delivery']);
   	exit();
   	break;
@@ -152,7 +126,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   // Post::Update Delivery
   // ===============================================================
-  case 'edit_delivery';
+  case 'edit_delivery':
     $delivery			= $_POST['delivery'];
 		$delivery['items']	= $_POST['items'];
 	
@@ -163,7 +137,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   // Post::Add Receiving
   // ===============================================================
-  case 'add_receiving';
+  case 'add_receiving':
     echo $Posts->AddReceiving($_POST['receiving']);
     exit();
     break;
@@ -171,7 +145,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 	// ===============================================================
   // Post::Add Parts
   // ===============================================================
-  case 'add_parts_tree';
+  case 'add_parts_tree':
     $pid		= $_POST['pid'];
     $code		= $_POST['code'];
     $items			= array();
@@ -190,7 +164,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 	// ===============================================================
   // Post::Edit Parts
   // ===============================================================
-  case 'edit_parts_tree';
+  case 'edit_parts_tree':
     $pid		= $_POST['pid'];
     $code		= $_POST['code'];
     $items			= array();
@@ -211,7 +185,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 	// ===============================================================
   // Post::Add Order
   // ===============================================================
-  case 'add_order';	
+  case 'add_order':
     $order	= $_POST['order'];
     $items			= array();
 		$total_amount	= 0.00;
@@ -241,7 +215,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 	// ===============================================================
   // Post::Edit Order
   // ===============================================================
-  case 'edit_order';
+  case 'edit_order':
     $order	= $_POST['order'];
     $items			= array();
 		$total_amount	= 0.00;
@@ -270,7 +244,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 	// ===============================================================
   // Post::Parts Request
   // ===============================================================
-  case 'parts_request';
+  case 'parts_request':
 		$parts = array();
 		foreach($_POST['parts'] as $id => $attr) {
 			if(isset($attr['requested'])) {
@@ -285,13 +259,56 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			}			
 		}
 		break;	
+		
 	// ===============================================================
   // Post::Delete Terminal
   // ===============================================================
-  case 'delete_terminal'; 
+  case 'delete_terminal':
 		echo $DB->DeleteRecord('terminals', array('conditions' => 'id='.$_POST['terminal_id']));
 		redirect_to(host('terminals.php')); 
     break;
+		
+	// ===============================================================
+  // Post::Roles
+  // ===============================================================
+  // Add Role
+  case 'add_role': 
+		$id = $Posts->AddRole($_POST['role']);
+		if(isset($id)) {
+			if(isset($_POST['caps'])) {
+				foreach ($_POST['caps'] as $cap) {
+					$Posts->AddCapability(array('role_id' => $id, 'capability_id' => $cap));
+				}
+			}
+			redirect_to($Capabilities->All['show_role']['url'].'?rid='.$id);
+		}
+    break;
+	
+  // Edit Role
+  case 'edit_role':
+		$args = array('variables' => $_POST['role'], 'conditions' => 'id='.$_POST['rid']); 
+		$num_of_records = $Posts->EditRole($args);
+		
+		$Posts->DeleteCapability(array('conditions' => 'role_id='.$_POST['rid']));
+		
+		if(isset($_POST['caps'])) {
+			foreach ($_POST['caps'] as $cap) {
+				$Posts->AddCapability(array('role_id' => $_POST['rid'], 'capability_id' => $cap));
+			}
+		}
+		
+		redirect_to($Capabilities->All['show_role']['url'].'?rid='.$_POST['rid']);
+    break;
+		
+  // Delte Role
+  case 'delete_role':
+		
+    break;
+	
+	
+	
+	
+	
   } // close switch
 
   

@@ -35,7 +35,7 @@ class MySQL {
   // Authenticate Username and Password
   // Get User Information
   function authenticate($username, $password) {
-	$sql = "SELECT * FROM users WHERE username = '".$username."' AND password = '".md5($password)."'";
+	$sql = "SELECT users.* FROM users WHERE users.employee_id = '".$username."' AND users.password = '".md5($password)."'";
 	return $this->Query($sql);
   }
 
@@ -132,7 +132,7 @@ class MySQL {
   	$columns	= implode(array_keys($arguments),",");
 		$values		= implode($arguments,"','");
     $sql			= "INSERT INTO ".$table." (".$columns.", created_at) VALUES ('".$values."', '".date('Y-m-d H:i:s')."')"; 
-//var_dump($sql); 
+//var_dump($sql); die(); 
 		$this->Query($sql);
 		return mysql_insert_id();
   }
@@ -150,7 +150,7 @@ class MySQL {
 		}
 	} 
 	$sql = "UPDATE ".$table." SET ".rtrim($values, ",").", updated_at='".date('Y-m-d H:i:s')."' WHERE ".$arguments['conditions']; 
-//var_dump($sql);	
+	//var_dump($sql); die();	
 	$this->Query($sql);
 	return mysql_affected_rows();
   }

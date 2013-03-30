@@ -3,9 +3,13 @@
   $capability_key = 'edit_order';
   require('header.php');
 	
-	$order = $Query->order_by_id($_GET['oid']);
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 	
-	$pay_terms = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('term_of_payment').'"', 'sort_column' => 'description'));
+		$order = $Query->order_by_id($_GET['oid']);	
+		$pay_terms = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('term_of_payment').'"', 'sort_column' => 'description'));
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -325,5 +329,6 @@
            })
          }
        </script>
-       
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

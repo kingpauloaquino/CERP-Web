@@ -3,11 +3,16 @@
   $capability_key = 'add_order';
   require('header.php');
 	
-	$client = $DB->Find('suppliers', array(
-							  			'columns' => 'suppliers.id, suppliers.name', 
-							  	  	'conditions' => 'suppliers.name LIKE "ST SANGYO%"'));
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 	
-	$pay_terms = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('term_of_payment').'"', 'sort_column' => 'description'));
+		$client = $DB->Find('suppliers', array(
+								  			'columns' => 'suppliers.id, suppliers.name', 
+								  	  	'conditions' => 'suppliers.name LIKE "ST SANGYO%"'));
+		
+		$pay_terms = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('term_of_payment').'"', 'sort_column' => 'description'));
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -316,5 +321,6 @@
            })
          }
        </script>
-       
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

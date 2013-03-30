@@ -2,6 +2,11 @@
   /* Module: Dashboard  */
   $capability_key = 'receiving';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 ?>
       <!-- BOF PAGE -->
       <div id="page">
@@ -254,4 +259,5 @@
   }
 </script>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

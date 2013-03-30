@@ -4,14 +4,19 @@
   */
   $capability_key = 'show_terminal';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 		
-	if(isset($_GET['tid'])) {
-  	$terminal = $DB->Find('terminals', array(
-  		'columns' => 'terminals.*, locations.location_code AS bldg', 
-  		'joins' => 'INNER JOIN locations ON terminals.location_id=locations.id',
-  	  'conditions' => 'terminals.id = '.$_GET['tid']
-  	  ));
-	}
+		if(isset($_GET['tid'])) {
+	  	$terminal = $DB->Find('terminals', array(
+	  		'columns' => 'terminals.*, locations.location_code AS bldg', 
+	  		'joins' => 'INNER JOIN locations ON terminals.location_id=locations.id',
+	  	  'conditions' => 'terminals.id = '.$_GET['tid']
+	  	  ));
+		}
 ?>
 
 	<div id="page">
@@ -99,4 +104,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

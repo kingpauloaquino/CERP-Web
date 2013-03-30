@@ -1,9 +1,52 @@
 <?php
 
 class Capabilities {
+  private $DB;
+	public $All;
+	
+	function Capabilities($db) {
+		$this->DB = $db;
+		$this->GetCapabilities();
+	}
+	
+	function Childrens($key='') {
+  	$childs = array(
+	  'users' => array('add_user', 'roles')
+	);
+	return $childs[$key];
+  }
+
+  // Function: GetName
+  // Description: Use to get capability name
+  // Return: Capability name
+  function GetName() {
+    global $capability_key;
+	return $this->All[$capability_key]['name'];
+  }
   
-  private $db;
-  public $All = array(
+  function GetUrl() {
+    global $capability_key;
+	return $this->All[$capability_key]['url'];
+  }
+  
+  function GetParent() {
+    global $capability_key;
+	return $this->All[$capability_key]['parent'];
+  }
+	
+	function GetCapabilities() {
+		$capabilities = $this->DB->Get('capabilities', array(
+					  			'columns' 		=> 'id, capability, title, parent, url',
+					  	    'conditions' 	=> 'parent IS NOT null ORDER BY parent'));
+		
+		$all = array();																		
+		foreach ($capabilities as $cap) {
+			$all[$cap['capability']] = array('name' => $cap['title'], 'url' => $cap['url'], 'parent' => $cap['parent']);
+		}
+		$this->All = $all;
+	}	
+	
+  public $manual = array(
   //dashboard
 	  'dashboard' => array('name' => 'Dashboard', 'url' => 'index.php', 'parent' => 'dashboard'),	  
 	//defect
@@ -146,30 +189,8 @@ class Capabilities {
 	  
 	  'show_settings_lookups' => array('name' => 'Lookups', 'url' => 'settings-lookups-show.php', 'parent' => 'settings'),
 	  'edit_settings_lookups' => array('name' => 'Update Lookups', 'url' => 'settings-lookups-edit.php', 'parent' => 'settings'),
-  );
+  );
   
-  function Childrens($key='') {
-  	$childs = array(
-	  'users' => array('add_user', 'roles')
-	);
-	return $childs[$key];
-  }
-
-  // Function: GetName
-  // Description: Use to get capability name
-  // Return: Capability name
-  function GetName() {
-    global $capability_key;
-	return $this->All[$capability_key]['name'];
-  }
   
-  function GetUrl() {
-    global $capability_key;
-	return $this->All[$capability_key]['url'];
-  }
-  
-  function GetParent() {
-    global $capability_key;
-	return $this->All[$capability_key]['parent'];
-  }
+	
 }

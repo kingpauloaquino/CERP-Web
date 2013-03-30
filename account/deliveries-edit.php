@@ -1,11 +1,16 @@
 <?php
   $capability_key = 'users';
   require('header.php');
-  $delivery = $Query->get_delivery_detail($_GET['id']);
-  
-  if($delivery['status'] == 83) {
-  	echo '<script>window.location.href="'. host('deliveries-show.php?id='. $delivery['id']) .'"</script>';
-  }
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+	
+	  $delivery = $Query->get_delivery_detail($_GET['id']);  
+	  if($delivery['status'] == 83) {
+	  	echo '<script>window.location.href="'. host('deliveries-show.php?id='. $delivery['id']) .'"</script>';
+	  }
 ?>
       <!-- BOF PAGE -->
       <div id="page">
@@ -121,5 +126,6 @@
           return row;
         }
       </script>
-       
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

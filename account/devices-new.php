@@ -5,24 +5,29 @@
   $capability_key = 'add_device';
   require('header.php');
 	
-	if($_POST['action'] == 'add_device') { 
-		$device_id = $Posts->AddDevice($_POST['device']);
-		
-		$users = $_POST['users'];
-		
-		if(!empty($users)) {
-      $fields = array('user_id');
-		  foreach ($users as $user) {
-		  	$new_users = array();
-		    foreach (explode('|', $user) as $index => $field) {
-		  	  $new_users[$fields[$index]] =  $field;
-		    }
-				$new_users['device_id'] = $device_id;
-				$Posts->AddDeviceUser($new_users);
-		  }			
-		}		
-		if(isset($device_id)){ redirect_to($Capabilities->All['show_device']['url'].'?did='.$device_id); }
-	} 
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+	
+		if($_POST['action'] == 'add_device') { 
+			$device_id = $Posts->AddDevice($_POST['device']);
+			
+			$users = $_POST['users'];
+			
+			if(!empty($users)) {
+	      $fields = array('user_id');
+			  foreach ($users as $user) {
+			  	$new_users = array();
+			    foreach (explode('|', $user) as $index => $field) {
+			  	  $new_users[$fields[$index]] =  $field;
+			    }
+					$new_users['device_id'] = $device_id;
+					$Posts->AddDeviceUser($new_users);
+			  }			
+			}		
+			if(isset($device_id)){ redirect_to($Capabilities->All['show_device']['url'].'?did='.$device_id); }
+		} 
 ?>
 <script>	
 	$(document).ready(function() {
@@ -227,4 +232,5 @@
   }
 </script>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

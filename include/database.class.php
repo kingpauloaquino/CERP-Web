@@ -150,7 +150,8 @@ class MySQL {
 		}
 	} 
 	$sql = "UPDATE ".$table." SET ".rtrim($values, ",").", updated_at='".date('Y-m-d H:i:s')."' WHERE ".$arguments['conditions']; 
-	//var_dump($sql); die();	
+
+//var_dump($sql); die();	
 	$this->Query($sql);
 	return mysql_affected_rows();
   }

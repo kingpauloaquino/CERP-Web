@@ -1,11 +1,16 @@
 <?php
   $capability_key = 'users';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  $suppliers = $DB->Fetch('suppliers', array('columns' => 'id, name'));
-  $purchase = $Query->purchase_by_id($_GET['id']);
-  
-  if($purchase['status'] == "Publish") page_not_found();
+	  $suppliers = $DB->Fetch('suppliers', array('columns' => 'id, name'));
+	  $purchase = $Query->purchase_by_id($_GET['id']);
+	  
+	  if($purchase['status'] == "Publish") page_not_found();
 ?>
       <!-- BOF PAGE -->
       <div id="page">
@@ -228,5 +233,6 @@
            })
          }
       </script>
-       
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

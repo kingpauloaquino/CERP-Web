@@ -4,21 +4,26 @@
   */
   $capability_key = 'show_production_line';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  if(isset($_REQUEST['mid'])) {
-  	$materials = $DB->Find('materials', array(
-					  			'columns' 		=> 'materials.id AS mid, materials.parent, materials.material_code, materials.description, brand_models.brand_model, 
-																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
-																  	lookups3.description AS material_type, lookups4.description AS status', 
-					  	    'conditions' 	=> 'materials.id = '.$_REQUEST['mid'], 
-					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
-																		LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
-																		LEFT OUTER JOIN users ON materials.person_in_charge = users.id
-																		LEFT OUTER JOIN item_costs ON materials.id = item_costs.item_id
-																		LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
-																		LEFT OUTER JOIN lookups AS lookups4 ON materials.status = lookups4.id'
-	  ));
-  }
+	  if(isset($_GET['mid'])) {
+	  	$materials = $DB->Find('materials', array(
+						  			'columns' 		=> 'materials.id AS mid, materials.parent, materials.material_code, materials.description, brand_models.brand_model, 
+																	  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
+																	  	lookups3.description AS material_type, lookups4.description AS status', 
+						  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
+						  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
+																			LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
+																			LEFT OUTER JOIN users ON materials.person_in_charge = users.id
+																			LEFT OUTER JOIN item_costs ON materials.id = item_costs.item_id
+																			LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
+																			LEFT OUTER JOIN lookups AS lookups4 ON materials.status = lookups4.id'
+		  ));
+	  }
 	
 ?>
 
@@ -28,8 +33,8 @@
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
 				  // echo '<a href="'.$Capabilities->All['add_material_inventory']['url'].'" class="nav">'.$Capabilities->All['add_material_inventory']['name'].'</a>';
-				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_REQUEST['iid'].'&mid='.$_REQUEST['mid'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 
-			  	// echo '<a href="'.$Capabilities->All['material_inventory_history']['url'].'?iid='.$_REQUEST['iid'].'&mid='.$_REQUEST['mid'].'" class="nav" target="_blank">'.$Capabilities->All['material_inventory_history']['name'].'</a>';
+				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['mid'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 
+			  	// echo '<a href="'.$Capabilities->All['material_inventory_history']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['mid'].'" class="nav" target="_blank">'.$Capabilities->All['material_inventory_history']['name'].'</a>';
 
 				?>
 				<div class="clear"></div>
@@ -92,8 +97,8 @@
 							  										production_inventories.rework, production_inventories.additional, production_inventories.qa_sample, production_inventories.mgr_sample,
 							  										production_inventories.defect_a, production_inventories.defect_b, production_inventories.output_partial, production_inventories.output_complete', 
 							  			'joins' => 'LEFT OUTER JOIN production_inventories ON production_inventories.terminal_id = terminals.id
-							  									AND production_inventories.item_type = "MAT" AND production_inventories.item_id = '.$_REQUEST['mid'].' 
-							  	    						AND production_inventories.prod_lot_no ="'.$_REQUEST['prod_lot_no'].'" AND production_inventories.tracking_no="'.$_REQUEST['trk_no'].'"
+							  									AND production_inventories.item_type = "MAT" AND production_inventories.item_id = '.$_GET['mid'].' 
+							  	    						AND production_inventories.prod_lot_no ="'.$_GET['prod_lot_no'].'" AND production_inventories.tracking_no="'.$_GET['trk_no'].'"
 							  									INNER JOIN locations ON locations.id = terminals.location_id',
 							  	    'conditions' => 'locations.location_code = "WIP"',
 							  	    'conditions' => 'locations.location_code = "WIP" AND terminals.type="IN"',
@@ -136,4 +141,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

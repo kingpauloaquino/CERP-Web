@@ -5,20 +5,25 @@
   $capability_key = 'add_product';
   require('header.php');
 	
-	if($_POST['action'] == 'add_product') { 
-		$id = $Posts->AddProduct($_POST['product']);
-		$_POST['item_cost']['item_id'] = $id;
-		$Posts->AddItemCost($_POST['item_cost']);
-		if(isset($id)){ redirect_to($Capabilities->All['show_product']['url'].'?pid='.$id); }
-	} 
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 	
-  $brands = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model', 'conditions' => 'parent IS NULL'));
-  $packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification', 'conditions' => 'item_type = "PRD"'));
-	$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));
-	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
-	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
-  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
-  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
+		if($_POST['action'] == 'add_product') { 
+			$id = $Posts->AddProduct($_POST['product']);
+			$_POST['item_cost']['item_id'] = $id;
+			$Posts->AddItemCost($_POST['item_cost']);
+			if(isset($id)){ redirect_to($Capabilities->All['show_product']['url'].'?pid='.$id); }
+		} 
+		
+	  $brands = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model', 'conditions' => 'parent IS NULL'));
+	  $packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification', 'conditions' => 'item_type = "PRD"'));
+		$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));
+		$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
+		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
+	  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+	  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
 ?>
 
 	<div id="page">
@@ -81,11 +86,12 @@
          <div class="field-command">
        	   <div class="text-post-status"></div>
        	   <input type="submit" value="Create" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('products-show.php?pid='.$_REQUEST['pid']); ?>"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('products.php'); ?>"/>
          </div>
 
 			</form>
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

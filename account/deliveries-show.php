@@ -1,7 +1,13 @@
 <?php
   $capability_key = 'show_deliveries';
   require('header.php');
-  $delivery = $Query->get_delivery_detail($_GET['id']);
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+		
+  	$delivery = $Query->get_delivery_detail($_GET['id']);
 ?>
       <!-- BOF PAGE -->
       <div id="page">
@@ -113,5 +119,6 @@
           return row;
         }
       </script>
-       
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

@@ -3,7 +3,12 @@
   $capability_key = 'show_order';
   require('header.php');
 	
-	$order = $Query->order_by_id($_GET['oid']);
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+	
+		$order = $Query->order_by_id($_GET['oid']);
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -110,5 +115,6 @@
 			  }) 
 			  
        </script>
-       
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

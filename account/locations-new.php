@@ -5,24 +5,29 @@
   $capability_key = 'add_location';
   require('header.php');
 	
-	if($_POST['action'] == 'add_location') {
-		if($_POST['location']['item_classification'] == 0) { // for single class rack
-			$_POST['location']['item_classification'] = NULL;
-		} 
-		$_POST['location']['address'] = $_POST['bldg'].'-'.$_POST['bldg_no'].$_POST['location']['rack'].sprintf( '%03d', $_POST['location']['number']);
-		$id = $Posts->AddLocation($_POST['location']);
-		$id = $Posts->AddLocationAddressItem(array('address' => $id));
-		
-		if(isset($id)){ redirect_to($Capabilities->All['show_location']['url'].'?lid='.$id); }
-	} 
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 	
-  $locations = $DB->Get('locations', array('columns' => 'id, location_code', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg').'"'));
-	$bldg_nos = $DB->Get('locations', array('columns' => 'id, CONCAT(location_code, "-", description) AS bldg_no', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg_no').'"'));
-  $terminals = $DB->Get('terminals', array('columns' => 'id, terminal_code'));
-  $item_classifications = $DB->Get('item_classifications', array('columns' => 'id, classification')); 
-  $decks = $DB->Get('locations', array('columns' => 'id, location', 'conditions' => 'parent = "'.get_lookup_code('loc_deck').'"'));
-  $areas = $DB->Get('locations', array('columns' => 'id, location', 'conditions' => 'parent = "'.get_lookup_code('loc_area').'"'));
-	$racks = range('A', 'Z');
+		if($_POST['action'] == 'add_location') {
+			if($_POST['location']['item_classification'] == 0) { // for single class rack
+				$_POST['location']['item_classification'] = NULL;
+			} 
+			$_POST['location']['address'] = $_POST['bldg'].'-'.$_POST['bldg_no'].$_POST['location']['rack'].sprintf( '%03d', $_POST['location']['number']);
+			$id = $Posts->AddLocation($_POST['location']);
+			$id = $Posts->AddLocationAddressItem(array('address' => $id));
+			
+			if(isset($id)){ redirect_to($Capabilities->All['show_location']['url'].'?lid='.$id); }
+		} 
+		
+	  $locations = $DB->Get('locations', array('columns' => 'id, location_code', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg').'"'));
+		$bldg_nos = $DB->Get('locations', array('columns' => 'id, CONCAT(location_code, "-", description) AS bldg_no', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg_no').'"'));
+	  $terminals = $DB->Get('terminals', array('columns' => 'id, terminal_code'));
+	  $item_classifications = $DB->Get('item_classifications', array('columns' => 'id, classification')); 
+	  $decks = $DB->Get('locations', array('columns' => 'id, location', 'conditions' => 'parent = "'.get_lookup_code('loc_deck').'"'));
+	  $areas = $DB->Get('locations', array('columns' => 'id, location', 'conditions' => 'parent = "'.get_lookup_code('loc_area').'"'));
+		$racks = range('A', 'Z');
 ?>
 <script>	
 	$(document).ready(function() {
@@ -95,4 +100,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

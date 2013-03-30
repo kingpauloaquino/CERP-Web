@@ -5,22 +5,26 @@
   $capability_key = 'show_material_inventory';
   require('header.php');
   
-  if(isset($_REQUEST['id'])) {
-  	$materials = $DB->Find('materials', array(
-					  			'columns' 		=> 'materials.id AS mid, materials.material_code, materials.description, brand_models.brand_model, lookups1.description AS unit,
-																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
-																  	lookups3.description AS material_type, lookups4.description AS status', 
-					  	    'conditions' 	=> 'materials.id = '.$_REQUEST['id'], 
-					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
-																		LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
-																		LEFT OUTER JOIN users ON materials.person_in_charge = users.id
-																		LEFT OUTER JOIN item_costs ON materials.id = item_costs.item_id
-																		LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
-																		LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
-																		LEFT OUTER JOIN lookups AS lookups4 ON materials.status = lookups4.id'
-	  ));
-  }
-	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+		
+	  if(isset($_GET['id'])) {
+	  	$materials = $DB->Find('materials', array(
+						  			'columns' 		=> 'materials.id AS mid, materials.material_code, materials.description, brand_models.brand_model, lookups1.description AS unit,
+																	  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
+																	  	lookups3.description AS material_type, lookups4.description AS status', 
+						  	    'conditions' 	=> 'materials.id = '.$_GET['id'], 
+						  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
+																			LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
+																			LEFT OUTER JOIN users ON materials.person_in_charge = users.id
+																			LEFT OUTER JOIN item_costs ON materials.id = item_costs.item_id
+																			LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
+																			LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
+																			LEFT OUTER JOIN lookups AS lookups4 ON materials.status = lookups4.id'
+		  ));
+	  }	
 ?>
 
 	<div id="page">
@@ -29,8 +33,8 @@
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
 				  // echo '<a href="'.$Capabilities->All['add_material_inventory']['url'].'" class="nav">'.$Capabilities->All['add_material_inventory']['name'].'</a>';
-				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_REQUEST['iid'].'&mid='.$_REQUEST['id'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 
-			  	// echo '<a href="'.$Capabilities->All['material_inventory_history']['url'].'?iid='.$_REQUEST['iid'].'&mid='.$_REQUEST['id'].'" class="nav" target="_blank">'.$Capabilities->All['material_inventory_history']['name'].'</a>';
+				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 
+			  	// echo '<a href="'.$Capabilities->All['material_inventory_history']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['id'].'" class="nav" target="_blank">'.$Capabilities->All['material_inventory_history']['name'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>
@@ -42,7 +46,7 @@
         <table>
            <tr>
               <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field" disabled/>
-              	<?php echo $linkto = ($materials['material_code']!='') ? link_to('materials-show.php?mid='.$_REQUEST['id']) : '' ?>
+              	<?php echo $linkto = ($materials['material_code']!='') ? link_to('materials-show.php?mid='.$_GET['id']) : '' ?>
               </td>
               <td width="150">Type:</td><td><input type="text" value="<?php echo $materials['material_type'] ?>" class="text-field text-date" disabled/></td>
            </tr>
@@ -73,7 +77,7 @@
 	        				$warehouse = $DB->Get('warehouse_inventories', array(
 							  			'columns' => 'warehouse_inventories.item_id, warehouse_inventories.invoice_no, warehouse_inventories.lot_no,
 							  										warehouse_inventories.qty, warehouse_inventories.remarks', 
-							  	    'conditions' => 'warehouse_inventories.item_type = "MAT" AND warehouse_inventories.item_id = '.$_REQUEST['id']
+							  	    'conditions' => 'warehouse_inventories.item_type = "MAT" AND warehouse_inventories.item_id = '.$_GET['id']
 							  	    ));
 									//echo '<tr><td class="border-right text-right" colspan="5">'.$warehouse[0]['terminal_name'].'</td></tr>';
 									$total_qty = 0.0;
@@ -147,7 +151,7 @@
 																	INNER JOIN production_purchase_orders ON production_purchase_orders.id =  production_purchase_order_products.production_purchase_order_id
 																	INNER JOIN orders ON orders.id = production_purchase_orders.order_id
 																	INNER JOIN lookups ON lookups.id = production_purchase_order_product_parts.status',
-							  	    'conditions' => 'production_purchase_order_product_parts.material_id = '.$_REQUEST['id'], 
+							  	    'conditions' => 'production_purchase_order_product_parts.material_id = '.$_GET['id'], 
 							  	    'sort_column' => 'production_purchase_order_product_parts.created_at',
 							  	    'sort_order' => 'DESC '
 							  	    ));
@@ -184,4 +188,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

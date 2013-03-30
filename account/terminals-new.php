@@ -5,27 +5,32 @@
   $capability_key = 'add_terminal';
   require('header.php');
 	
-	if($_POST['action'] == 'add_terminal') {
-		$terminal_id = $Posts->AddTerminal($_POST['terminal']);
-
-		$devices = $_POST['devices'];
-		
-		if(!empty($devices)) {
-      $fields = array('device_id');
-		  foreach ($devices as $device) {
-		  	$new_devices = array();
-		    foreach (explode('|', $device) as $index => $field) {
-		  	  $new_devices[$fields[$index]] =  $field;
-		    }
-				$new_devices['terminal_id'] = $terminal_id;
-				$Posts->AddTerminalDevice($new_devices);
-		  }			
-		}		
-		redirect_to($Capabilities->All['show_terminal']['url'].'?tid='.$terminal_id);
-	} 
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 	
-	$bldgs = $DB->Get('locations', array('columns' => 'id, location_code', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg').'"'));
-	$devices = $DB->Get('devices', array('columns' => 'id, device_code'));
+		if($_POST['action'] == 'add_terminal') {
+			$terminal_id = $Posts->AddTerminal($_POST['terminal']);
+	
+			$devices = $_POST['devices'];
+			
+			if(!empty($devices)) {
+	      $fields = array('device_id');
+			  foreach ($devices as $device) {
+			  	$new_devices = array();
+			    foreach (explode('|', $device) as $index => $field) {
+			  	  $new_devices[$fields[$index]] =  $field;
+			    }
+					$new_devices['terminal_id'] = $terminal_id;
+					$Posts->AddTerminalDevice($new_devices);
+			  }			
+			}		
+			redirect_to($Capabilities->All['show_terminal']['url'].'?tid='.$terminal_id);
+		} 
+		
+		$bldgs = $DB->Get('locations', array('columns' => 'id, location_code', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg').'"'));
+		$devices = $DB->Get('devices', array('columns' => 'id, device_code'));
 ?>
 <script>	
 	$(document).ready(function() {
@@ -215,4 +220,6 @@
     });
   }
 </script>
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

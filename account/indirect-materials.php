@@ -4,6 +4,11 @@
   */
   $capability_key = 'indirect_materials';  
   require('header.php');
+		
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 ?>
 	<div id="page">
 		<div id="page-title">
@@ -53,4 +58,6 @@
 		$('#grid-indirect-materials').grid(data);
   }) 
  </script>
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

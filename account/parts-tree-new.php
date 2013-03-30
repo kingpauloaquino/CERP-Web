@@ -2,6 +2,11 @@
   /* Module: Parts Tree - New  */
   $capability_key = 'add_parts_tree';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -9,9 +14,9 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['show_parts_tree']['url'].'?pid='.$_REQUEST['pid'].'&code='.$_REQUEST['code'].'" class="nav">'.$Capabilities->All['show_parts_tree']['name'].'</a>';
-				  echo '<a href="'.$Capabilities->All['edit_parts_tree']['url'].'?pid='.$_REQUEST['pid'].'&code='.$_REQUEST['code'].'" class="nav">'.$Capabilities->All['edit_parts_tree']['name'].'</a>'; 
-					echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_REQUEST['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>'; 
+				  echo '<a href="'.$Capabilities->All['show_parts_tree']['url'].'?pid='.$_GET['pid'].'&code='.$_GET['code'].'" class="nav">'.$Capabilities->All['show_parts_tree']['name'].'</a>';
+				  echo '<a href="'.$Capabilities->All['edit_parts_tree']['url'].'?pid='.$_GET['pid'].'&code='.$_GET['code'].'" class="nav">'.$Capabilities->All['edit_parts_tree']['name'].'</a>'; 
+					echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_GET['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>'; 
 				?>
 				<div class="clear"></div>
       </h2>
@@ -20,8 +25,8 @@
     <div id="content">
       <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
       	 <input type="hidden" name="action" value="add_parts_tree"/>
-				 <input type="hidden" name="pid" value="<?php echo $_REQUEST['pid'] ?>">
-				<input type="hidden" name="code" value="<?php echo $_REQUEST['code'] ?>">		
+				 <input type="hidden" name="pid" value="<?php echo $_GET['pid'] ?>">
+				<input type="hidden" name="code" value="<?php echo $_GET['code'] ?>">		
          
          <!-- BOF GRIDVIEW -->
          <div id="grid-parts-materials" class="grid jq-grid" style="min-height:146px;">
@@ -204,5 +209,6 @@
            })
          }
        </script>
-       
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

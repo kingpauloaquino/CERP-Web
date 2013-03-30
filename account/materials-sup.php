@@ -2,39 +2,45 @@
   /*
    * Module: Material - New Supplier
   */
-  $capability_key = 'add_material_sup';
+  $capability_key = 'add_material_supplier';
   require('header.php');
-  
-	if($_POST['action'] == 'add_material') {		
-		$_POST['material']['base'] = FALSE;
-		$id = $Posts->AddMaterial($_POST['material']);
-		
-		
-		$_POST['item_cost']['item_id'] = $id;
-		$Posts->AddItemCost($_POST['item_cost']);
-		if(isset($id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$id); }
-	} 
 	
-	if(isset($_GET['baseid'])) {
-		$base = $DB->Find('materials', array(
-				  			'columns' 		=> 'COUNT(id) AS cnt', 
-				  	    'conditions' 	=> 'materials.parent = '.$_GET['baseid']
-  	  )
-		);
-		$code_suffix = (int) $base['cnt'] + 1;
+	$allowed = $Role->isCapableByName($capability_key);
+	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+  
+		if($_POST['action'] == 'add_material') {		
+			$_POST['material']['base'] = FALSE;
+			$id = $Posts->AddMaterial($_POST['material']);
+			
+			
+			$_POST['item_cost']['item_id'] = $id;
+			$Posts->AddItemCost($_POST['item_cost']);
+			if(isset($id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$id); }
+		} 
 		
-		$materials = $DB->Find('materials', array(
-				  			'columns' 		=> 'materials.*, lookups.description AS mat_typ, item_classifications.classification AS classification, brand_models.brand_model AS model, 
-				  												CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
-				  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id
-																	LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id
-																	LEFT OUTER JOIN users ON materials.person_in_charge = users.id
-																	LEFT OUTER JOIN lookups ON materials.material_type = lookups.id
-																	LEFT OUTER JOIN terminals ON terminals.id=materials.production_entry_terminal_id',
-				  	    'conditions' 	=> 'materials.id = '.$_GET['baseid']
-  	  )
-		);	
-	}	
+		if(isset($_GET['baseid'])) {
+			$base = $DB->Find('materials', array(
+					  			'columns' 		=> 'COUNT(id) AS cnt', 
+					  	    'conditions' 	=> 'materials.parent = '.$_GET['baseid']
+	  	  )
+			);
+			$code_suffix = (int) $base['cnt'] + 1;
+			
+			$materials = $DB->Find('materials', array(
+					  			'columns' 		=> 'materials.*, lookups.description AS mat_typ, item_classifications.classification AS classification, brand_models.brand_model AS model, 
+					  												CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
+					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id
+																		LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id
+																		LEFT OUTER JOIN users ON materials.person_in_charge = users.id
+																		LEFT OUTER JOIN lookups ON materials.material_type = lookups.id
+																		LEFT OUTER JOIN terminals ON terminals.id=materials.production_entry_terminal_id',
+					  	    'conditions' 	=> 'materials.id = '.$_GET['baseid']
+	  	  )
+			);	
+		}	
 		
 	$pics = $DB->Get('users', array('columns' => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic', 'sort_column' => 'first_name'));	
 	$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));
@@ -120,7 +126,7 @@
          <div class="field-command">
        	   <div class="text-post-status"></div>
        	   <input type="submit" value="Create" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('materials.php'); ?>"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('materials-show.php?mid='.$materials['id']); ?>"/>
          </div>
         
 				</form>
@@ -128,4 +134,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

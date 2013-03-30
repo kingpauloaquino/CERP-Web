@@ -4,22 +4,27 @@
   */
   $capability_key = 'add_indirect_material';
   require('header.php');
-  
-	if($_POST['action'] == 'add_indirect_material') {
-		$id = $Posts->AddIndirectMaterial($_POST['material']);
-				
-		$_POST['item_cost']['item_id'] = $id;
-		$Posts->AddItemCost($_POST['item_cost']);
-		if(isset($id)){ redirect_to($Capabilities->All['show_indirect_material']['url'].'?mid='.$id); }
-	} 
 	
-  $classifications = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification'));
-	$pics = $DB->Get('users', array('columns' => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic', 'sort_column' => 'first_name', 'conditions' => 'role = 5'));	
-	$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));
-	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
-	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
-  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
-	$terminals = $DB->Get('terminals', array('columns' => 'id, CONCAT(terminal_code," - ", terminal_name) AS terminal', 'conditions' => 'location_id=4 AND type="IN"', 'sort_column' => 'id')); // location_id=4 (WIP)
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+  
+		if($_POST['action'] == 'add_indirect_material') {
+			$id = $Posts->AddIndirectMaterial($_POST['material']);
+					
+			$_POST['item_cost']['item_id'] = $id;
+			$Posts->AddItemCost($_POST['item_cost']);
+			if(isset($id)){ redirect_to($Capabilities->All['show_indirect_material']['url'].'?mid='.$id); }
+		} 
+		
+	  $classifications = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification'));
+		$pics = $DB->Get('users', array('columns' => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic', 'sort_column' => 'first_name'));	
+		$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));
+		$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
+		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
+	  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+		$terminals = $DB->Get('terminals', array('columns' => 'id, CONCAT(terminal_code," - ", terminal_name) AS terminal', 'conditions' => 'location_id=4 AND type="IN"', 'sort_column' => 'id')); // location_id=4 (WIP)
 ?>
 
 	<div id="page">
@@ -35,12 +40,7 @@
 				<input type="hidden" name="action" value="add_indirect_material">
 				<input type="hidden" id="item_cost[item_type]" name="item_cost[item_type]" value="MAT">
 				<input type="hidden" id="material[material_type]" name="material[material_type]" value="71" />
-				
-				<span class="notice">
-          <p class="info"><strong>Notice!</strong> Material codes should be unique.</p>
-        </span>
-        
-        
+				        
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
@@ -93,7 +93,7 @@
          <div class="field-command">
        	   <div class="text-post-status"></div>
        	   <input type="submit" value="Create" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('materials.php'); ?>"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('indirect-materials.php'); ?>"/>
          </div>
         
 				
@@ -102,4 +102,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

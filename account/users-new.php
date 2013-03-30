@@ -5,19 +5,24 @@
   $capability_key = 'add_user';
   require('header.php');
 	
-	if($_POST['action'] == 'add_user') {
-		$id = $Posts->AddUser($_POST['user']);
-		$x = $Capabilities->All['show_user']['url'].'?uid='.$id;
-		
-		if(isset($id)) {
-			$Posts->AddUserRole(array('user_id' => $id , 'role_id' => $_POST['role_id']));
-			
-			redirect_to($Capabilities->All['show_user']['url'].'?uid='.$id);	
-		}
-	}
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 	
-	$roles = $DB->Get('roles', array('columns' => 'id, name'));
-	$statuss = $DB->Get('lookups', array('columns' => 'id, description', 'conditions' => 'parent = "'.get_lookup_code('user_status').'"'));
+		if($_POST['action'] == 'add_user') {
+			$id = $Posts->AddUser($_POST['user']);
+			$x = $Capabilities->All['show_user']['url'].'?uid='.$id;
+			
+			if(isset($id)) {
+				$Posts->AddUserRole(array('user_id' => $id , 'role_id' => $_POST['role_id']));
+				
+				redirect_to($Capabilities->All['show_user']['url'].'?uid='.$id);	
+			}
+		}
+		
+		$roles = $DB->Get('roles', array('columns' => 'id, name'));
+		$statuss = $DB->Get('lookups', array('columns' => 'id, description', 'conditions' => 'parent = "'.get_lookup_code('user_status').'"'));
 ?>
 
 	<div id="page">
@@ -107,4 +112,6 @@
   	});
   });
   </script>
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

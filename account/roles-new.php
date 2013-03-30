@@ -5,6 +5,11 @@
   $capability_key = 'add_role';
   require('header.php');
 	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+	
 ?>
 
 	<div id="page">
@@ -78,4 +83,5 @@
 	</div>
 </div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

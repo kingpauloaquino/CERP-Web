@@ -3,7 +3,12 @@
   $capability_key = 'users';
   require('header.php');
   
-  $receiving = $Query->receive_purchase_id($_GET['id']);
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+		
+  	$receiving = $Query->receive_purchase_id($_GET['id']);
 ?>
       <!-- BOF PAGE -->
       <div id="page">
@@ -96,5 +101,6 @@
           $('#purchase_amount').currency_format(<?php echo $receiving['total_amount']; ?>);
         })
       </script>
-       
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

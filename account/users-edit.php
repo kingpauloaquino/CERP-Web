@@ -5,33 +5,38 @@
   $capability_key = 'edit_user';
   require('header.php');
 	
-	if($_POST['action'] == 'edit_user') {
-		$args = array('variables' => $_POST['user'], 'conditions' => 'id='.$_POST['uid']);
-		if($_POST['user']['password'] == '') {
-			unset($args['variables']['password']);
-		}
-		$num_of_records = $Posts->EditUser($args);
-		$args = NULL;
-		$args = array('variables' => array('role_id' => $_POST['role_id']), 'conditions' => 'user_id='.$_POST['uid']); 
-		$num_of_records = $Posts->EditUserRole($args);
-		
-		redirect_to($Capabilities->All['show_user']['url'].'?uid='.$_POST['uid']);		
-	} 
-  
-  if(isset($_GET['uid'])) {
-  	$user = $DB->Find('users', array(
-			'columns' 		=> 'users.id, users.employee_id, users.first_name, users.last_name, users.email, users.position, users.description, 
-												users.status AS status_id, user_roles.role_id AS role_id, lookups.description AS status, roles.name as role', 
-			'joins'				=> 'LEFT OUTER JOIN lookups on users.status = lookups.id 
-												INNER JOIN user_roles ON user_roles.user_id = users.id
-												INNER JOIN roles ON roles.id = user_roles.role_id',
-  	  'conditions' 	=> 'users.id = '.$_GET['uid']
-  	  )
-		);	
-  }
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 	
-	$roles = $DB->Get('roles', array('columns' => 'id, name'));
-	$statuss = $DB->Get('lookups', array('columns' => 'id, description', 'conditions' => 'parent = "'.get_lookup_code('user_status').'"'));
+		if($_POST['action'] == 'edit_user') {
+			$args = array('variables' => $_POST['user'], 'conditions' => 'id='.$_POST['uid']);
+			if($_POST['user']['password'] == '') {
+				unset($args['variables']['password']);
+			}
+			$num_of_records = $Posts->EditUser($args);
+			$args = NULL;
+			$args = array('variables' => array('role_id' => $_POST['role_id']), 'conditions' => 'user_id='.$_POST['uid']); 
+			$num_of_records = $Posts->EditUserRole($args);
+			
+			redirect_to($Capabilities->All['show_user']['url'].'?uid='.$_POST['uid']);		
+		} 
+	  
+	  if(isset($_GET['uid'])) {
+	  	$user = $DB->Find('users', array(
+				'columns' 		=> 'users.id, users.employee_id, users.first_name, users.last_name, users.email, users.position, users.description, 
+													users.status AS status_id, user_roles.role_id AS role_id, lookups.description AS status, roles.name as role', 
+				'joins'				=> 'LEFT OUTER JOIN lookups on users.status = lookups.id 
+													INNER JOIN user_roles ON user_roles.user_id = users.id
+													INNER JOIN roles ON roles.id = user_roles.role_id',
+	  	  'conditions' 	=> 'users.id = '.$_GET['uid']
+	  	  )
+			);	
+	  }
+		
+		$roles = $DB->Get('roles', array('columns' => 'id, name'));
+		$statuss = $DB->Get('lookups', array('columns' => 'id, description', 'conditions' => 'parent = "'.get_lookup_code('user_status').'"'));
 ?>
 
 	<div id="page">
@@ -46,12 +51,11 @@
 		</div>
 				
 		<div id="content">
-			<form action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
-				<div class="form-container">
-					<input type="hidden" name="action" value="edit_user">
-					<input type="hidden" name="uid" value="<?php echo $_GET['uid'] ?>">
-					
-					<h3 class="form-title">Details</h3>
+			<form action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+				<input type="hidden" name="action" value="edit_user">
+				<input type="hidden" name="uid" value="<?php echo $_GET['uid'] ?>">
+				
+				<h3 class="form-title">Details</h3>
         <table>
            <tr>
               <td width="150">Employee ID:</td><td width="310"><input type="text" id="user[employee_id]" name="user[employee_id]" autocomplete="off" value="<?php echo $user['employee_id'] ?>" class="text-field magenta" /></td>
@@ -117,4 +121,5 @@
   });
   </script>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

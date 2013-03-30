@@ -4,17 +4,22 @@
   */
   $capability_key = 'show_user';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  if(isset($_GET['uid'])) {
-  	$user = $DB->Find('users', array(
-			'columns' 		=> 'users.*, lookups.description AS status, roles.name as role', 
-			'joins'				=> 'LEFT OUTER JOIN lookups on users.status = lookups.id 
-												INNER JOIN user_roles ON user_roles.user_id = users.id
-												INNER JOIN roles ON roles.id = user_roles.role_id',
-  	  'conditions' 	=> 'users.id = '.$_GET['uid']
-  	  )
-		);	
-  }
+	  if(isset($_GET['uid'])) {
+	  	$user = $DB->Find('users', array(
+				'columns' 		=> 'users.*, lookups.description AS status, roles.name as role', 
+				'joins'				=> 'LEFT OUTER JOIN lookups on users.status = lookups.id 
+													INNER JOIN user_roles ON user_roles.user_id = users.id
+													INNER JOIN roles ON roles.id = user_roles.role_id',
+	  	  'conditions' 	=> 'users.id = '.$_GET['uid']
+	  	  )
+			);	
+	  }
 ?>
 
 	<div id="page">
@@ -68,4 +73,5 @@
 	</div>
 </div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

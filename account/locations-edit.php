@@ -5,49 +5,54 @@
   $capability_key = 'edit_location';
   require('header.php');
 	
-	if($_GET['clear_item'] == 1) {
-		$args = array('variables' => array('item_id' => NULL, 'item_type' => ''), 'conditions' => 'address='.$_GET['lid']); 
-		$num_of_records = $Posts->EditLocationAddressItem($args);
-		redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_GET['lid']);	
-	}
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 	
-	if($_POST['action'] == 'edit_location') {
-		$_POST['location']['address'] = $_POST['bldg'].'-'.$_POST['bldg_no'].$_POST['location']['rack'].sprintf( '%03d', $_POST['location']['number']);
-		$args = array('variables' => $_POST['location'], 'conditions' => 'id='.$_POST['lid']); 
-		$num_of_records = $Posts->EditLocation($args);
-		
-		if($_POST['mat_id']!='') {
-			$mid = $_POST['mat_id'];
-			$typ = 'MAT';
-			$args = array('variables' => array('item_id' => $mid, 'item_type' => $typ), 'conditions' => 'address='.$_POST['lid']); 
+		if($_GET['clear_item'] == 1) {
+			$args = array('variables' => array('item_id' => NULL, 'item_type' => ''), 'conditions' => 'address='.$_GET['lid']); 
 			$num_of_records = $Posts->EditLocationAddressItem($args);
+			redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_GET['lid']);	
 		}
 		
+		if($_POST['action'] == 'edit_location') {
+			$_POST['location']['address'] = $_POST['bldg'].'-'.$_POST['bldg_no'].$_POST['location']['rack'].sprintf( '%03d', $_POST['location']['number']);
+			$args = array('variables' => $_POST['location'], 'conditions' => 'id='.$_POST['lid']); 
+			$num_of_records = $Posts->EditLocation($args);
+			
+			if($_POST['mat_id']!='') {
+				$mid = $_POST['mat_id'];
+				$typ = 'MAT';
+				$args = array('variables' => array('item_id' => $mid, 'item_type' => $typ), 'conditions' => 'address='.$_POST['lid']); 
+				$num_of_records = $Posts->EditLocationAddressItem($args);
+			}
+			
+			
+			redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_POST['lid']);		
+		} 
 		
-		redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_POST['lid']);		
-	} 
-	
-	if(isset($_GET['lid'])) {
-  	$location = $DB->Find('location_addresses', array(
-  		'columns' => 'location_addresses.*', 
-  	  'conditions' => 'location_addresses.id = '.$_GET['lid']
-  	  )
-		);
-		$item = $DB->Find('location_address_items', array(
-				  			'columns' 		=> 'location_address_items.id, location_address_items.item_id AS mat_id, materials.material_code AS item_code', 
-				  			'joins'				=> 'INNER JOIN materials ON materials.id = location_address_items.item_id',
-				  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.address = '.$_GET['lid']
-  	  )
-		);
-	}
-	
-	$locations = $DB->Get('locations', array('columns' => 'id, location_code', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg').'"'));
-	$bldg_nos = $DB->Get('locations', array('columns' => 'id, CONCAT(location_code, "-", description) AS bldg_no', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg_no').'"'));
-  $terminals = $DB->Get('terminals', array('columns' => 'id, terminal_code'));
-  $item_classifications = $DB->Get('item_classifications', array('columns' => 'id, classification')); 
-  $decks = $DB->Get('locations', array('columns' => 'id, location', 'conditions' => 'parent = "'.get_lookup_code('loc_deck').'"'));
-  $areas = $DB->Get('locations', array('columns' => 'id, location', 'conditions' => 'parent = "'.get_lookup_code('loc_area').'"'));
-	$racks = range('A', 'Z');
+		if(isset($_GET['lid'])) {
+	  	$location = $DB->Find('location_addresses', array(
+	  		'columns' => 'location_addresses.*', 
+	  	  'conditions' => 'location_addresses.id = '.$_GET['lid']
+	  	  )
+			);
+			$item = $DB->Find('location_address_items', array(
+					  			'columns' 		=> 'location_address_items.id, location_address_items.item_id AS mat_id, materials.material_code AS item_code', 
+					  			'joins'				=> 'INNER JOIN materials ON materials.id = location_address_items.item_id',
+					  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.address = '.$_GET['lid']
+	  	  )
+			);
+		}
+		
+		$locations = $DB->Get('locations', array('columns' => 'id, location_code', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg').'"'));
+		$bldg_nos = $DB->Get('locations', array('columns' => 'id, CONCAT(location_code, "-", description) AS bldg_no', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg_no').'"'));
+	  $terminals = $DB->Get('terminals', array('columns' => 'id, terminal_code'));
+	  $item_classifications = $DB->Get('item_classifications', array('columns' => 'id, classification')); 
+	  $decks = $DB->Get('locations', array('columns' => 'id, location', 'conditions' => 'parent = "'.get_lookup_code('loc_deck').'"'));
+	  $areas = $DB->Get('locations', array('columns' => 'id, location', 'conditions' => 'parent = "'.get_lookup_code('loc_area').'"'));
+		$racks = range('A', 'Z');
 ?>
 <script type="text/javascript" src="../javascripts/jquery.watermarkinput.js"></script>
 <script>	
@@ -159,4 +164,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

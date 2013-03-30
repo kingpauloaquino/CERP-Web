@@ -2,8 +2,13 @@
   /* Module: Dashboard  */
   $capability_key = 'show_purchase';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  $purchase = $Query->purchase_by_id($_GET['id']);
+  	$purchase = $Query->purchase_by_id($_GET['id']);
 ?>
       <!-- BOF PAGE -->
       <div id="page">
@@ -105,5 +110,6 @@
 					$('#purchase_amount').currency_format(<?php echo $purchase['total_amount']; ?>);
 			  }) 
       </script>
-       
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

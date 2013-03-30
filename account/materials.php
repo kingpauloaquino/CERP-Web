@@ -3,7 +3,12 @@
    * Module: Materials 
   */
   $capability_key = 'materials';  
-  require('header.php');
+  require('header.php');	
+		
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 ?>
 	<div id="page">
 		<div id="page-title">
@@ -54,4 +59,6 @@
 		$('#grid-materials').grid(data);
   }) 
  </script>
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

@@ -4,6 +4,11 @@
   */
   $capability_key = 'users';  
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 ?>
 	<div id="page">
 		<div id="page-title">
@@ -54,4 +59,6 @@
 		$('#grid-users').grid(data);
   }) 
  </script>
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

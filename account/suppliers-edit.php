@@ -4,33 +4,31 @@
   */
   $capability_key = 'edit_supplier';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-	if($_POST['action'] == 'edit_supplier') {
-		$args = array('variables' => $_POST['supplier'], 'conditions' => 'id='.$_POST['sid']); 
-		$num_of_records = $Posts->EditSupplier($args);
-		redirect_to($Capabilities->All['show_supplier']['url'].'?sid='.$_POST['sid']);		
-	} 
-	
-  if(isset($_GET['sid'])) {
-  	$supplier = $DB->Find('suppliers', array(
-  		'columns' => 'suppliers.*', 
-  	    'conditions' => 'suppliers.id = '.$_GET['sid']
-  	  )
-		);
-  }
-	
-  $supplier_types = $DB->Get('lookups', array('columns' => 'id, description', 
-					'conditions' => 'parent = "'.get_lookup_code('supplier_type').'"', 
-					'sort_column' => 'description'));
-  $products_services = $DB->Get('lookups', array('columns' => 'id, description', 
-  					'conditions' => 'parent = "'.get_lookup_code('product_service').'"', 
-  					'sort_column' => 'description')); 
-  $terms_of_payment = $DB->Get('lookups', array('columns' => 'id, description', 
-  					'conditions' => 'parent = "'.get_lookup_code('term_of_payment').'"', 
-  					'sort_column' => 'description')); 
-  $countries = $DB->Get('lookups', array('columns' => 'id, description', 
-  					'conditions' => 'parent = "'.get_lookup_code('country').'"', 
-  					'sort_column' => 'description'));
+		if($_POST['action'] == 'edit_supplier') {
+			$args = array('variables' => $_POST['supplier'], 'conditions' => 'id='.$_POST['sid']); 
+			$num_of_records = $Posts->EditSupplier($args);
+			redirect_to($Capabilities->All['show_supplier']['url'].'?sid='.$_POST['sid']);		
+		} 
+		
+	  if(isset($_GET['sid'])) {
+	  	$supplier = $DB->Find('suppliers', array(
+	  		'columns' => 'suppliers.*', 'conditions' => 'suppliers.id = '.$_GET['sid']));
+	  }
+		
+	  $supplier_types = $DB->Get('lookups', array('columns' => 'id, description', 'conditions' => 'parent = "'.get_lookup_code('supplier_type').'"', 
+						'sort_column' => 'description'));
+	  $products_services = $DB->Get('lookups', array('columns' => 'id, description', 'conditions' => 'parent = "'.get_lookup_code('product_service').'"', 
+	  					'sort_column' => 'description')); 
+	  $terms_of_payment = $DB->Get('lookups', array('columns' => 'id, description', 'conditions' => 'parent = "'.get_lookup_code('term_of_payment').'"', 
+	  					'sort_column' => 'description')); 
+	  $countries = $DB->Get('lookups', array('columns' => 'id, description', 'conditions' => 'parent = "'.get_lookup_code('country').'"', 
+	  					'sort_column' => 'description'));
 ?>
 
 	<div id="page">
@@ -106,4 +104,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

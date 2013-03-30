@@ -4,16 +4,22 @@
   */
   $capability_key = 'show_profile';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  if(isset($Signed['id'])) {
-  	$user = $DB->Find('users', array(
-			'columns' 		=> 'users.*, lookups.description AS status, roles.name as role', 
-			'joins'				=> 'LEFT OUTER JOIN lookups on users.status = lookups.id 
-												LEFT OUTER JOIN roles on users.role = roles.id',
-  	  'conditions' 	=> 'users.id = '.$Signed['id']
-  	  )
-		);	
-  }
+	  if(isset($Signed['id'])) {
+	  	$user = $DB->Find('users', array(
+				'columns' 		=> 'users.*, lookups.description AS status, roles.name as role', 
+				'joins'				=> 'INNER JOIN user_roles ON user_roles.user_id = users.id
+													INNER JOIN roles ON roles.id = user_roles.role_id
+													LEFT OUTER JOIN lookups on users.status = lookups.id',
+	  	  'conditions' 	=> 'users.id = '.$Signed['id']
+	  	  )
+			);	
+	  }
 ?>
 
 	<div id="page">
@@ -28,7 +34,7 @@
 		</div>
 				
 		<div id="content">
-			<div class="form-container">
+			<form class="form-container">
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
@@ -46,7 +52,7 @@
            <tr>
               <td>Remarks:</td>
               <td colspan="99">
-                <input type="text"  class="text-field" style="width:645px" disabled/>
+                <input type="text" value="<?php echo $user['description'] ?>" class="text-field" style="width:645px" disabled/>
               </td>
            </tr>
            <tr><td height="5" colspan="99"></td></tr>
@@ -59,42 +65,10 @@
               <td width="150">Role:</td><td width="310"><input type="text" value="<?php echo $user['role'] ?>" class="text-field" disabled/></td>
               <td width="150"></td><td></td>
            </tr>
-        </table>
-        
-        <h3 class="form-title">Capabilities</h3>
-	      <div class="grid jq-grid">
-	        <table cellspacing="0" cellpadding="0">
-	          <thead>
-	            <tr>
-            		<td width="5%" class="border-right text-center"><a></a></td>
-            		<td width="20%" class="border-right text-center"><a>Title</a></td>
-            		<td class="border-right text-center"><a>Capability</a></td>
-	            </tr>
-	          </thead>
-	          <tbody>
-						<?php
-							foreach ($Role->getUserRoles() as $user_role) {
-								echo '<tr>';
-								echo '<td class="text-center"><input type="checkbox"/></td>';
-								echo '<td colspan="2">'.$user_role['name'].'</td>';
-								echo '</tr>';
-								
-								$roles = $Role->getUserCapabilities($user_role['role_id']);
-								foreach ($roles as $role) {
-									echo '<tr>';
-									echo '<td></td>';
-									echo '<td></td>';
-									echo '<td><input type="checkbox"/> '.$role['name'].'</td>';
-									echo '</tr>';									
-								}
-							}
-							?>
-						</tbody>
-					</table>
-				</form>
-			</div>
-      </div>
+        </table>        
+      </form>
+		</div>
 	</div>
-</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

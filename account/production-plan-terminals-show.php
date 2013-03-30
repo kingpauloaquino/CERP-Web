@@ -5,9 +5,10 @@
   $capability_key = 'show_production_plan_terminals';
   require('header.php');
   
-  if(isset($_REQUEST['mid'])) {
-
-  }
+  $allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 ?>
 <script>
 $(function() {
@@ -26,31 +27,18 @@ $(function() {
 				
 		<div id="content">
 			<form class="form-container">
-				<h3 class="form-title">Basic Information</h3>
-				
-				<div class="field">
-          <label class="label">P/O No.:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $_REQUEST['po'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Production Lot No.:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $_REQUEST['lot'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
-        
-        <div class="field">
-          <label class="label">Product Code:</label>
-          <div class="input">
-            <input type="text" name="name" value="<?php echo $_REQUEST['prod'] ?>" readonly="readonly"/>
-          </div>
-          <div class="clear"></div>
-        </div>
+				<h3 class="form-title">Details</h3>
+        <table>
+           <tr>
+              <td width="150">P/O No.:</td><td width="310"><input type="text" value="<?php echo $_GET['po'] ?>" class="text-field" disabled/></td>
+              <td width="150">Production Lot No.:</td><td><input type="text" value="<?php echo $_GET['lot'] ?>" class="text-field" disabled/></td>
+           </tr>
+           <tr>
+              <td>Product Code:</td><td><input type="text" value="<?php echo $_GET['prod'] ?>" class="text-field" disabled/></td>
+              <td></td><td></td>
+           </tr>
+           <tr><td height="5" colspan="99"></td></tr>
+        </table>
 
 				<br/>
 				<h3 class="form-title">Terminals</h3>
@@ -76,8 +64,8 @@ $(function() {
 								  									INNER JOIN lookups ON lookups.id = item_costs.unit
 								  									INNER JOIN lookups AS lookups2 ON lookups2.id = production_inventories.status',
 								  	    'conditions' => 'locations.location_code = "WIP" 
-								  	    						AND production_inventories.item_type = "MAT" AND production_inventories.tracking_no = "'.$_REQUEST['trk_no'].'"
-								  	    						AND production_inventories.qty > 0 AND production_inventories.prod_lot_no ="'.$_REQUEST['lot'].'" AND production_inventories.terminal_id ='.$trml['terminal_id'],
+								  	    						AND production_inventories.item_type = "MAT" AND production_inventories.tracking_no = "'.$_GET['trk_no'].'"
+								  	    						AND production_inventories.qty > 0 AND production_inventories.prod_lot_no ="'.$_GET['lot'].'" AND production_inventories.terminal_id ='.$trml['terminal_id'],
 								  	    'sort_column' => 'terminals.id'
 								  	    ));
 									echo '<div class="grid jq-grid"><table cellspacing="0" cellpadding="0">';
@@ -100,7 +88,7 @@ $(function() {
 															<td class="border-right text-center">'.$invt['mat_lot_no'].'</td>
 															<td class="border-right text-center">'.$invt['unit'].'</td>
 															<td class="border-right text-right numbers">'.trim_decimal($invt['qty']).'</td>
-															<td class="border-right text-center"><a href="production-line-show.php?mid='.$invt['mat_id'].'&prod_lot_no='.$_REQUEST['lot'].'&trk_no='.$_REQUEST['trk_no'].'">VIEW</a></td>';
+															<td class="border-right text-center"><a href="production-line-show.php?mid='.$invt['mat_id'].'&prod_lot_no='.$_GET['lot'].'&trk_no='.$_GET['trk_no'].'">VIEW</a></td>';
 											
 									}
 									echo '</tbody></table></div>';
@@ -111,4 +99,5 @@ $(function() {
 			</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

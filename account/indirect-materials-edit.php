@@ -5,43 +5,49 @@
   $capability_key = 'edit_indirect_material';
   require('header.php');
   
-	if($_POST['action'] == 'edit_indirect_material') {
-		$num_of_records1 = $Posts->EditMaterial(array('variables' => $_POST['material'], 'conditions' => 'id='.$_POST['mid']));
-		$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'item_id='.$_POST['mid']));
-		redirect_to($Capabilities->All['show_indirect_material']['url'].'?mid='.$_POST['mid']);		
-	} 
 	
-  if(isset($_REQUEST['mid'])) {
-  	$materials = $DB->Find('materials', array(
-				  			'columns' 		=> 'materials.*', 
-				  	    'conditions' 	=> 'materials.id = '.$_REQUEST['mid'], 
-				  	    'joins' 			=> 'LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id
-																	LEFT OUTER JOIN users ON materials.person_in_charge = users.id'
-  	  )
-		);	
-		$item_costs = $DB->Find('item_costs', array('columns' => 'supplier, unit, currency, cost, transportation_rate', 
-  							'conditions' => 'item_id = '.$_REQUEST['mid'].' AND item_type="MAT"'));  
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 		
-			$address = $DB->Find('location_address_items', array(
-					  			'columns' 		=> 'location_address_items.id, location_address_items.address AS add_id, location_addresses.address', 
-					  			'joins'				=> 'INNER JOIN location_addresses ON location_addresses.id = location_address_items.address',
-					  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.item_id = '.$_REQUEST['mid']
+		if($_POST['action'] == 'edit_indirect_material') {
+			$num_of_records1 = $Posts->EditMaterial(array('variables' => $_POST['material'], 'conditions' => 'id='.$_POST['mid']));
+			$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'item_id='.$_POST['mid']));
+			redirect_to($Capabilities->All['show_indirect_material']['url'].'?mid='.$_POST['mid']);				
+		} 
+		
+	  if(isset($_GET['mid'])) {
+	  	$materials = $DB->Find('materials', array(
+					  			'columns' 		=> 'materials.*', 
+					  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
+					  	    'joins' 			=> 'LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id
+																		LEFT OUTER JOIN users ON materials.person_in_charge = users.id'
 	  	  )
-			);
-  }
-	
-  $classifications = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification'));
-	$models = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model'));
-	$pics = $DB->Get('users', array('columns' => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic', 'sort_column' => 'first_name','conditions' => 'role = 5'));	
-	$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));
-	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
-	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
-  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
-	$terminals = $DB->Get('terminals', array('columns' => 'id, CONCAT(terminal_code," - ", terminal_name) AS terminal', 'conditions' => 'location_id=4 AND type="IN"', 'sort_column' => 'id')); // location_id=4 (WIP)
-	$item_images = $DB->Get('item_images', array('columns' => 'item_images.*',
-		 																			'conditions' => 'item_id='.$_REQUEST['mid']));	
-	$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 
-  																							'conditions' => 'item_type="MAT" AND item_id = '.$_REQUEST['mid']));	
+			);	
+			$item_costs = $DB->Find('item_costs', array('columns' => 'supplier, unit, currency, cost, transportation_rate', 
+	  							'conditions' => 'item_id = '.$_GET['mid'].' AND item_type="MAT"'));  
+			
+				$address = $DB->Find('location_address_items', array(
+						  			'columns' 		=> 'location_address_items.id, location_address_items.address AS add_id, location_addresses.address', 
+						  			'joins'				=> 'INNER JOIN location_addresses ON location_addresses.id = location_address_items.address',
+						  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.item_id = '.$_GET['mid']
+		  	  )
+				);
+	  }
+		
+	  $classifications = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification'));
+		$models = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model'));
+		$pics = $DB->Get('users', array('columns' => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic', 'sort_column' => 'first_name'));	
+		$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));
+		$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
+		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
+	  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+		$terminals = $DB->Get('terminals', array('columns' => 'id, CONCAT(terminal_code," - ", terminal_name) AS terminal', 'conditions' => 'location_id=4 AND type="IN"', 'sort_column' => 'id')); // location_id=4 (WIP)
+		$item_images = $DB->Get('item_images', array('columns' => 'item_images.*',
+			 																			'conditions' => 'item_id='.$_GET['mid']));	
+		$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 
+	  																							'conditions' => 'item_type="MAT" AND item_id = '.$_GET['mid']));	
 																																																
 ?>
 
@@ -50,7 +56,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
-					echo '<a href="'.$Capabilities->All['show_indirect_material']['url'].'?mid='.$_REQUEST['mid'].'" class="nav">'.$Capabilities->All['show_indirect_material']['name'].'</a>';
+					echo '<a href="'.$Capabilities->All['show_indirect_material']['url'].'?mid='.$_GET['mid'].'" class="nav">'.$Capabilities->All['show_indirect_material']['name'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>
@@ -59,7 +65,7 @@
 		<div id="content">
 			<form class="form-container" action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">        
 				<input type="hidden" name="action" value="edit_indirect_material">
-				<input type="hidden" name="mid" value="<?php echo $_REQUEST['mid'] ?>">
+				<input type="hidden" name="mid" value="<?php echo $_GET['mid'] ?>">
 				
 				<h3 class="form-title">Details</h3>
         <table>
@@ -115,10 +121,11 @@
          <div class="field-command">
        	   <div class="text-post-status"></div>
        	   <input type="submit" value="Update" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('materials-show.php?mid='.$_REQUEST['mid']); ?>"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('materials-show.php?mid='.$_GET['mid']); ?>"/>
          </div>
 				</form>
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

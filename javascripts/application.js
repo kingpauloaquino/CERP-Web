@@ -294,7 +294,6 @@ function row_template_products_inventory(data) {
     "<td class=\"border-right text-center\">"+ (data['pack'] || '') +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
     "<td class=\"border-right\">"+ data['description'] +"</td>" +
-    "<td class=\"border-right text-center \">"+ data['uom'] +"</td>" +
     "<td class=\"border-right text-right numbers \">"+ data['qty'] +"</td>" +
     "</tr>");
 

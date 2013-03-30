@@ -2,8 +2,14 @@
   /*
    * Module: Material - New 
   */
-  $capability_key = 'add_material_rev';
+  $capability_key = 'add_material_revision';
   require('header.php');
+	
+		$allowed = $Role->isCapableByName($capability_key);
+	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
 	if($_POST['action'] == 'add_material_rev') { 
 		$rev = (strlen($_POST['material']['material_rev'])==1 && ctype_alpha($_POST['material']['material_rev'])) ? $_POST['material']['material_rev'] : 'A';
@@ -149,4 +155,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

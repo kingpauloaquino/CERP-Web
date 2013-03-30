@@ -5,7 +5,12 @@
   $capability_key = 'dashboard';
   require('header.php');
 	
-	$requests = $DB->Find('notifications', array(
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+	
+		$requests = $DB->Find('notifications', array(
 					  			'columns' 		=> 'COUNT(id) AS unread', 
 					  	    'conditions' 	=> 'type=161 AND status = 163', //163 = UNREAD
 	  	  ));
@@ -118,4 +123,5 @@
 <script src="../Highcharts/js/highcharts.js"></script>
 <script src="../Highcharts/js/modules/exporting.js"></script>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

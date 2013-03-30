@@ -2,16 +2,20 @@
   /*
    * Module: Production Plan Parts Request
   */
-  $capability_key = 'show_production_plan_parts_request';
+  $capability_key = 'send_production_part_request';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  if(isset($_GET['popid'])) {
-  	$ppop = $DB->Find('production_purchase_order_products', array(
-				  			'columns' 		=> 'id AS ppopid, product_id, lot_no, init',
-				  	    'conditions' 	=> 'id = '.$_GET['popid']
-		));
-		
-  }
+	  if(isset($_GET['popid'])) {
+	  	$ppop = $DB->Find('production_purchase_order_products', array(
+					  			'columns' 		=> 'id AS ppopid, product_id, lot_no, init',
+					  	    'conditions' 	=> 'id = '.$_GET['popid']
+			));			
+	  }
 	
 ?>
 
@@ -21,11 +25,11 @@
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
 				   echo '<a href="'.$Capabilities->All['show_production_plan']['url'].'?ppoid='.$_GET['ppoid'].'&oid='.$_GET['oid'].'" class="nav">'.$Capabilities->All['show_production_plan']['name'].'</a>'; 
-					 echo '<a href="'.$Capabilities->All['show_production_plan_parts']['url'] . '?' . 					 
+					 echo '<a href="'.$Capabilities->All['show_production_parts']['url'] . '?' . 					 
 					 												http_build_query(array('ppoid' => $_GET['ppoid'], 'oid' => $_GET['oid'], 'popid' => $_GET['popid'], 'prod_lot_no' => $_GET['prod_lot_no'], 
 					 												'prod' => $_GET['prod'], 'po_no' => $_GET['po_no'], 'po_date' => $_GET['po_date'], 'delivery_date' => $_GET['delivery_date'], 
 					 												'target_date' => $_GET['target_date'], 'status' => $_GET['status'])) 
-																	. '" class="nav">'.$Capabilities->All['show_production_plan_parts']['name'].'</a>';
+																	. '" class="nav">'.$Capabilities->All['show_production_parts']['name'].'</a>';
 				  // echo '<a href="'.$Capabilities->All['edit_product_tree']['url'].'?pid='.$_GET['pid'].'&code='.$_GET['code'].'" class="nav">'.$Capabilities->All['edit_product_tree']['name'].'</a>';
 					// echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_GET['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>'; 
 
@@ -103,4 +107,6 @@
   	$('.timepick').datetimepicker();
   }) 
  </script>
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

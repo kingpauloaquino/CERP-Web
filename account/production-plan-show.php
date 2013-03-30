@@ -4,47 +4,32 @@
   */
   $capability_key = 'show_production_plan';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  if(isset($_REQUEST['ppoid']) && isset($_REQUEST['oid'])) {
-  	$entry = $DB->Get('production_purchase_order_products', array(
-				  			'columns' 		=> 'COUNT(id) AS cnt',
-				  	    'conditions' 	=> 'production_purchase_order_id = '.$_REQUEST['ppoid']
-		));
-		
-		$prod_detail = $DB->Find('production_purchase_orders', array(
-				  			'columns' 		=> 'production_purchase_orders.id AS ppoid, production_purchase_orders.order_id AS oid, orders.po_number AS po_no, lookups.description AS status,
-																	orders.po_date AS po_date, orders.delivery_date AS delivery_date, production_purchase_orders.target_date AS target_date',
-				  	    'joins' 			=> 'INNER JOIN orders ON orders.id = production_purchase_orders.order_id
-				  	    									INNER JOIN lookups ON lookups.id = production_purchase_orders.status',
-								'sort_column'	=> '',
-				  	    'conditions' 	=> 'production_purchase_orders.id = '.$_REQUEST['ppoid']
-		));		
-		
-		if((int)$entry[0]['cnt']==0) {
-			$args = array('ppoid' => $_REQUEST['ppoid'], 'oid' => $_REQUEST['oid'], 'target_date' => $prod_detail['target_date']); 
-			$num_of_records = $Posts->InitPurchaseOrderProducts($args);	
+	  if(isset($_GET['ppoid']) && isset($_GET['oid'])) {
+	  	$entry = $DB->Get('production_purchase_order_products', array(
+					  			'columns' 		=> 'COUNT(id) AS cnt',
+					  	    'conditions' 	=> 'production_purchase_order_id = '.$_GET['ppoid']
+			));
 			
-			//TODO: update production_purchase_orders init->1
+			$prod_detail = $DB->Find('production_purchase_orders', array(
+					  			'columns' 		=> 'production_purchase_orders.id AS ppoid, production_purchase_orders.order_id AS oid, orders.po_number AS po_no, lookups.description AS status,
+																		orders.po_date AS po_date, orders.delivery_date AS delivery_date, production_purchase_orders.target_date AS target_date',
+					  	    'joins' 			=> 'INNER JOIN orders ON orders.id = production_purchase_orders.order_id
+					  	    									INNER JOIN lookups ON lookups.id = production_purchase_orders.status',
+									'sort_column'	=> '',
+					  	    'conditions' 	=> 'production_purchase_orders.id = '.$_GET['ppoid']
+			));		
 			
-			// $ppops = $DB->Get('production_purchase_order_products', array(
-				  			// 'columns' 		=> 'id AS ppopid, product_id, lot_no',
-				  	    // 'conditions' 	=> 'production_purchase_order_id = '.$_REQUEST['ppoid']
-			// ));
-			// foreach ($ppops as $ppop) {
-				// $args = array('ppopid' => $ppop['ppopid'], 'product_id' => $ppop['product_id']); 
-				// $num_of_records = $Posts->InitPurchaseOrderProductMaterials($args);	
-// 				
-				// $parts = $DB->Get('production_purchase_order_product_parts', array(
-					  			// 'columns' 		=> 'material_id',
-					  	    // 'conditions' 	=> 'production_purchase_order_product_id = '.$ppop['ppopid']
-				// ));
-				// foreach ($parts as $part) {
-					// $args = array('item_id' => $part['material_id'], 'prod_lot_no' => $ppop['lot_no'], 'ppopid' => $ppop['ppopid']); 
-					// $num_of_records = $Posts->InitProductionInventory($args);	
-				// }
-			// }
-		}
-  }
+			if((int)$entry[0]['cnt']==0) {
+				$args = array('ppoid' => $_GET['ppoid'], 'oid' => $_GET['oid'], 'target_date' => $prod_detail['target_date']); 
+				$num_of_records = $Posts->InitPurchaseOrderProducts($args);	
+			}
+	  }
 ?>
 
 	<div id="page">
@@ -52,9 +37,9 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
-				  // echo '<a href="'.$Capabilities->All['add_product_tree']['url'].'?pid='.$_REQUEST['pid'].'&code='.$_REQUEST['code'].'" class="nav">'.$Capabilities->All['add_product_tree']['name'].'</a>'; 
-				  echo '<a href="'.$Capabilities->All['edit_production_plan']['url'].'?ppoid='.$_REQUEST['ppoid'].'&oid='.$_REQUEST['oid'].'" class="nav">'.$Capabilities->All['edit_production_plan']['name'].'</a>';
-					// echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_REQUEST['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>'; 
+				  // echo '<a href="'.$Capabilities->All['add_product_tree']['url'].'?pid='.$_GET['pid'].'&code='.$_GET['code'].'" class="nav">'.$Capabilities->All['add_product_tree']['name'].'</a>'; 
+				  echo '<a href="'.$Capabilities->All['edit_production_plan']['url'].'?ppoid='.$_GET['ppoid'].'&oid='.$_GET['oid'].'" class="nav">'.$Capabilities->All['edit_production_plan']['name'].'</a>';
+					// echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_GET['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>'; 
 				?>
 				<div class="clear"></div>
       </h2>
@@ -106,7 +91,7 @@
 										  	    'joins' 			=> 'INNER JOIN products ON products.id = production_purchase_order_products.product_id
 										  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification
 										  	    									INNER JOIN lookups AS lookups2 ON lookups2.id = production_purchase_order_products.type',
-										  	    'conditions' 	=> 'production_purchase_order_products.production_purchase_order_id = '.$_REQUEST['ppoid'],
+										  	    'conditions' 	=> 'production_purchase_order_products.production_purchase_order_id = '.$_GET['ppoid'],
 														'sort_column'	=> 'production_purchase_order_products.product_id',
 						  	  ));
 									$ctr=1;
@@ -118,7 +103,7 @@
 										echo '<td class="border-right text-center'.$addtl.'">'.$prod['lot_no'].'</td>';
 										echo $link = ($prod['lot_no']!=NULL) 
 													? '<td class="border-right'.$addtl.'"><a href="production-plan-parts-show.php?'.
-															http_build_query(array('ppoid' => $_REQUEST['ppoid'], 'oid' => $_REQUEST['oid'], 'popid' => $prod['pop_id'], 
+															http_build_query(array('ppoid' => $_GET['ppoid'], 'oid' => $_GET['oid'], 'popid' => $prod['pop_id'], 
 																'prod_lot_no' => $prod['lot_no'], 'pid' => $prod['pid'],'prod' => $prod['product'], 'po_no' => $prod_detail['po_no'], 
 																'po_date' => $prod_detail['po_date'], 'delivery_date' => $prod_detail['delivery_date'], 
 																'target_date' => $prod_detail['target_date'], 'status' => $prod_detail['status'])).'">'.$prod['product'].'</a></td>'
@@ -152,4 +137,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

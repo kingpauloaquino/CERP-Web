@@ -5,11 +5,11 @@
   $capability_key = 'add_material';
   require('header.php');
 	
-$allowed = $Role->isCapableByName('add_material');
-
-if(!$allowed) {
-	require('inaccessible.php');	
-}else{
+	$allowed = $Role->isCapableByName($capability_key);
+	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
 	if($_POST['action'] == 'add_material') {
 		$_POST['material']['base'] = TRUE;

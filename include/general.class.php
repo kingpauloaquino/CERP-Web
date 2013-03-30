@@ -25,7 +25,7 @@ $DB				= new MySQL;
   $DB->hostname	= "localhost";
 // }
 
-$Capabilities	= new Capabilities;
+$Capabilities	= new Capabilities($DB);
 $Posts			= new Posts($DB);
 $Query			= new Query($DB);
 $JSON			= new PrettyJson;
@@ -35,6 +35,7 @@ $Signed			= $_SESSION['user'];
 
 $Role		= new Role($DB, $Signed['id']);
 
+//$Capabilities->GetCapabilities();
 $Title			= $Capabilities->GetName();
 
 $default_page_limit = 15; 

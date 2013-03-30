@@ -5,35 +5,40 @@
   $capability_key = 'edit_terminal';
   require('header.php');
 	
-	if($_POST['action'] == 'edit_terminal') {
-		$args = array('variables' => $_POST['terminal'], 'conditions' => 'id='.$_POST['tid']); 
-		$num_of_records = $Posts->EditTerminal($args);
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+	
+		if($_POST['action'] == 'edit_terminal') {
+			$args = array('variables' => $_POST['terminal'], 'conditions' => 'id='.$_POST['tid']); 
+			$num_of_records = $Posts->EditTerminal($args);
+			
+			$devices = $_POST['devices'];
+			
+			if(!empty($devices)) {
+	      $fields = array('device_id');
+			  foreach ($devices as $device) {
+			  	$new_devices = array();
+			    foreach (explode('|', $device) as $index => $field) {
+			  	  $new_devices[$fields[$index]] =  $field;
+			    }
+					$new_devices['terminal_id'] = $_POST['tid'];
+					$Posts->AddTerminalDevice($new_devices);
+			  }						
+			}
+			redirect_to($Capabilities->All['show_terminal']['url'].'?tid='.$_POST['tid']);	
+		} 
 		
-		$devices = $_POST['devices'];
-		
-		if(!empty($devices)) {
-      $fields = array('device_id');
-		  foreach ($devices as $device) {
-		  	$new_devices = array();
-		    foreach (explode('|', $device) as $index => $field) {
-		  	  $new_devices[$fields[$index]] =  $field;
-		    }
-				$new_devices['terminal_id'] = $_POST['tid'];
-				$Posts->AddTerminalDevice($new_devices);
-		  }						
+		if(isset($_GET['tid'])) {
+	  	$terminal = $DB->Find('terminals', array(
+	  		'columns' => 'terminals.*, locations.location_code AS bldg', 
+	  		'joins' => 'INNER JOIN locations ON terminals.location_id=locations.id',
+	  	  'conditions' => 'terminals.id = '.$_GET['tid']
+	  	  ));
 		}
-		redirect_to($Capabilities->All['show_terminal']['url'].'?tid='.$_POST['tid']);	
-	} 
-	
-	if(isset($_GET['tid'])) {
-  	$terminal = $DB->Find('terminals', array(
-  		'columns' => 'terminals.*, locations.location_code AS bldg', 
-  		'joins' => 'INNER JOIN locations ON terminals.location_id=locations.id',
-  	  'conditions' => 'terminals.id = '.$_GET['tid']
-  	  ));
-	}
-	
-	$bldgs = $DB->Get('locations', array('columns' => 'id, location_code', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg').'"'));
+		
+		$bldgs = $DB->Get('locations', array('columns' => 'id, location_code', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg').'"'));
 	
 ?>
 <script>	
@@ -270,4 +275,6 @@
     });
   }
 </script>
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

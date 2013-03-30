@@ -5,33 +5,38 @@
   $capability_key = 'edit_product';
   require('header.php');
   
-	if($_POST['action'] == 'edit_product') {
-		$args = array('variables' => $_POST['product'], 'conditions' => 'id='.$_POST['pid']); 
-		$num_of_records = $Posts->EditProduct($args);
-		$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'id='.$_POST['item_cost_id']));
-		redirect_to($Capabilities->All['show_product']['url'].'?pid='.$_POST['pid']);		
-	} 
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 	
-  if(isset($_REQUEST['pid'])) {
-  	$products = $DB->Find('products', array(
-				  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, item_classifications.classification, products.bar_code, products.color', 
-				  	    'conditions' 	=> 'products.id = '.$_REQUEST['pid'], 
-				  	    'joins' 			=> 'INNER JOIN brand_models ON products.brand_model = brand_models.id
-				  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification'
-  	  )
-		);	
-		$item_costs = $DB->Find('item_costs', array('columns' => 'id, supplier, unit, currency, cost', 
-  							'conditions' => 'item_id = '.$_REQUEST['pid'].' AND item_type="PRD"'));  
-		$item_images = $DB->Get('item_images', array('columns' => 'item_images.*',
-		 																			'conditions' => 'item_id='.$_REQUEST['pid']));	
-  }
-  $brands = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model', 'conditions' => 'parent IS NULL'));
-  $packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification', 'conditions' => 'item_type = "PRD"'));
-	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
-	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
-  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
-  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
-	$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 'conditions' => 'item_type="PRD" AND item_id = '.$_REQUEST['pid']));	
+		if($_POST['action'] == 'edit_product') {
+			$args = array('variables' => $_POST['product'], 'conditions' => 'id='.$_POST['pid']); 
+			$num_of_records = $Posts->EditProduct($args);
+			$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'id='.$_POST['item_cost_id']));
+			redirect_to($Capabilities->All['show_product']['url'].'?pid='.$_POST['pid']);		
+		} 
+		
+	  if(isset($_GET['pid'])) {
+	  	$products = $DB->Find('products', array(
+					  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, item_classifications.classification, products.bar_code, products.color', 
+					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
+					  	    'joins' 			=> 'INNER JOIN brand_models ON products.brand_model = brand_models.id
+					  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification'
+	  	  )
+			);	
+			$item_costs = $DB->Find('item_costs', array('columns' => 'id, supplier, unit, currency, cost', 
+	  							'conditions' => 'item_id = '.$_GET['pid'].' AND item_type="PRD"'));  
+			$item_images = $DB->Get('item_images', array('columns' => 'item_images.*',
+			 																			'conditions' => 'item_id='.$_GET['pid']));	
+	  }
+	  $brands = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model', 'conditions' => 'parent IS NULL'));
+	  $packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification', 'conditions' => 'item_type = "PRD"'));
+		$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
+		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
+	  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+	  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
+		$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 'conditions' => 'item_type="PRD" AND item_id = '.$_GET['pid']));	
 ?>
 
 	<div id="page">
@@ -39,9 +44,9 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
-					echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_REQUEST['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>';
+					echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_GET['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>';
 					echo (count($has_inventory)>0) ? '<a href="pinventory-show.php?iid='.$has_inventory['id'].'&pid='.$has_inventory['item_id'].'" class="nav">View Inventory Details</a>' 
-																					: '<a href="pinventory-new.php?pid='.$_REQUEST['pid'].'" class="nav">Add Inventory Entry</a>';
+																					: '<a href="pinventory-new.php?pid='.$_GET['pid'].'" class="nav">Add Inventory Entry</a>';
 				?>
 				<div class="clear"></div>
       </h2>
@@ -50,7 +55,7 @@
 		<div id="content">
 			<form class="form-container" id="product-form" action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
 				<input type="hidden" name="action" value="edit_product">
-				<input type="hidden" name="pid" value="<?php echo $_REQUEST['pid'] ?>">
+				<input type="hidden" name="pid" value="<?php echo $_GET['pid'] ?>">
 				<input type="hidden" id="item_cost_id" name="item_cost_id" value="<?php echo $item_costs['id'] ?>">
         
         <h3 class="form-title">Details</h3>
@@ -100,10 +105,11 @@
          <div class="field-command">
        	   <div class="text-post-status"></div>
        	   <input type="submit" value="Update" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('products-show.php?pid='.$_REQUEST['pid']); ?>"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('products-show.php?pid='.$_GET['pid']); ?>"/>
          </div>
 			</form>
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

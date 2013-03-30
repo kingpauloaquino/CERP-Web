@@ -5,31 +5,36 @@
   $capability_key = 'edit_device';
   require('header.php');
 	
-	if($_POST['action'] == 'edit_device') { 
-		$args = array('variables' => $_POST['device'], 'conditions' => 'id='.$_POST['did']); 
-		$num_of_records = $Posts->EditDevice($args);
-		
-		$users = $_POST['users'];
-		
-		if(!empty($users)) {
-      $fields = array('user_id');
-		  foreach ($users as $user) {
-		  	$new_users = array();
-		    foreach (explode('|', $user) as $index => $field) {
-		  	  $new_users[$fields[$index]] =  $field;
-		    }
-				$new_users['device_id'] = $_POST['did'];
-				$Posts->AddDeviceUser($new_users);
-		  }			
-		}		
-		redirect_to($Capabilities->All['show_device']['url'].'?did='.$_POST['did']);
-	}
-	if(isset($_REQUEST['did'])) {
-  	$device = $DB->Find('devices', array(
-  		'columns' => 'devices.*', 
-  	    'conditions' => 'devices.id = '.$_REQUEST['did']
-  	  )
-	);} 
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+	
+		if($_POST['action'] == 'edit_device') { 
+			$args = array('variables' => $_POST['device'], 'conditions' => 'id='.$_POST['did']); 
+			$num_of_records = $Posts->EditDevice($args);
+			
+			$users = $_POST['users'];
+			
+			if(!empty($users)) {
+	      $fields = array('user_id');
+			  foreach ($users as $user) {
+			  	$new_users = array();
+			    foreach (explode('|', $user) as $index => $field) {
+			  	  $new_users[$fields[$index]] =  $field;
+			    }
+					$new_users['device_id'] = $_POST['did'];
+					$Posts->AddDeviceUser($new_users);
+			  }			
+			}		
+			redirect_to($Capabilities->All['show_device']['url'].'?did='.$_POST['did']);
+		}
+		if(isset($_GET['did'])) {
+	  	$device = $DB->Find('devices', array(
+	  		'columns' => 'devices.*', 
+	  	    'conditions' => 'devices.id = '.$_GET['did']
+	  	  )
+		);} 
 ?>
 <script>	
 	$(document).ready(function() {
@@ -66,7 +71,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['show_device']['url'].'?did='.$_REQUEST['did'].'" class="nav">'.$Capabilities->All['show_device']['name'].'</a>'; 
+				  echo '<a href="'.$Capabilities->All['show_device']['url'].'?did='.$_GET['did'].'" class="nav">'.$Capabilities->All['show_device']['name'].'</a>'; 
 				?>
 				<div class="clear"></div>
       </h2>
@@ -75,7 +80,7 @@
 		<div id="content">
 			<form class="form-container" method="POST">
 				<input type="hidden" name="action" value="edit_device"/>
-				<input type="hidden" name="did" value="<?php echo $_REQUEST['did'] ?>"/>
+				<input type="hidden" name="did" value="<?php echo $_GET['did'] ?>"/>
         <h3 class="form-title">Basic Information</h3>
 					<span class="notice">
 	<!--           <p class="info"><strong>Notice!</strong> Material codes should be unique.</p> -->
@@ -139,7 +144,7 @@
 								$users = $DB->Get('device_users', array(
 								  			'columns' 		=> 'device_users.user_id, users.id AS uid, users.employee_id, CONCAT(users.first_name," ",users.last_name) AS username, roles.name',
 								  			'joins'				=> 'INNER JOIN users ON users.id = device_users.user_id	INNER JOIN roles on roles.id = users.role',
-								  	    'conditions' 	=> 'device_users.device_id='.$_REQUEST['did']));
+								  	    'conditions' 	=> 'device_users.device_id='.$_GET['did']));
 								$ctr = 1;
 								foreach ($users as $user) {
 									echo '<tr>';
@@ -256,4 +261,5 @@
   }
 </script>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

@@ -4,13 +4,18 @@
   */
   $capability_key = 'show_device';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  if(isset($_REQUEST['did'])) {
-  	$device = $DB->Find('devices', array(
-  		'columns' => 'devices.*', 
-  	    'conditions' => 'devices.id = '.$_REQUEST['did']
-  	  )
-	);}
+	  if(isset($_GET['did'])) {
+	  	$device = $DB->Find('devices', array(
+	  		'columns' => 'devices.*', 
+	  	    'conditions' => 'devices.id = '.$_GET['did']
+	  	  )
+		);}
 ?>
 
 	<div id="page">
@@ -20,7 +25,7 @@
         <?php
 				  echo '<a href="'.$Capabilities->All['devices']['url'].'" class="nav">'.$Capabilities->All['devices']['name'].'</a>'; 
 				  echo '<a href="'.$Capabilities->All['add_device']['url'].'" class="nav">'.$Capabilities->All['add_device']['name'].'</a>'; 
-				  echo '<a href="'.$Capabilities->All['edit_device']['url'].'?did='.$_REQUEST['did'].'" class="nav">'.$Capabilities->All['edit_device']['name'].'</a>'; 
+				  echo '<a href="'.$Capabilities->All['edit_device']['url'].'?did='.$_GET['did'].'" class="nav">'.$Capabilities->All['edit_device']['name'].'</a>'; 
 				?>
 				<div class="clear"></div>
       </h2>
@@ -87,7 +92,7 @@
 								$users = $DB->Get('device_users', array(
 								  			'columns' 		=> 'device_users.user_id, users.id AS uid, users.employee_id, CONCAT(users.first_name," ",users.last_name) AS username, roles.name',
 								  			'joins'				=> 'INNER JOIN users ON users.id = device_users.user_id	INNER JOIN roles on roles.id = users.role',
-								  	    'conditions' 	=> 'device_users.device_id='.$_REQUEST['did']));
+								  	    'conditions' 	=> 'device_users.device_id='.$_GET['did']));
 								if(!$users) {
 									echo '<tr>';
 									echo '<td colspan="4">No Record</td>';
@@ -112,4 +117,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

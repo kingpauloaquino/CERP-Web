@@ -4,13 +4,18 @@
   */
   $capability_key = 'show_product_inventory';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  if(isset($_REQUEST['id'])) {
+  if(isset($_GET['id'])) {
   	$products = $DB->Find('products', array(
 					  			'columns' 		=> 'products.id AS pid, products.product_code, products.description, brand_models.brand_model, lookups1.description AS unit,
 																  	products.color, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, lookups4.description AS status,
 																  	item_classifications.classification, products.bar_code', 
-					  	    'conditions' 	=> 'products.id = '.$_REQUEST['id'], 
+					  	    'conditions' 	=> 'products.id = '.$_GET['id'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id 
 																		LEFT OUTER JOIN users ON products.person_in_charge = users.id
 																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id
@@ -28,8 +33,8 @@
       	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
         <?php
 				  // echo '<a href="'.$Capabilities->All['add_material_inventory']['url'].'" class="nav">'.$Capabilities->All['add_material_inventory']['name'].'</a>';
-				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_REQUEST['iid'].'&mid='.$_REQUEST['mid'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 
-			  	// echo '<a href="'.$Capabilities->All['material_inventory_history']['url'].'?iid='.$_REQUEST['iid'].'&mid='.$_REQUEST['mid'].'" class="nav" target="_blank">'.$Capabilities->All['material_inventory_history']['name'].'</a>';
+				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['mid'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 
+			  	// echo '<a href="'.$Capabilities->All['material_inventory_history']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['mid'].'" class="nav" target="_blank">'.$Capabilities->All['material_inventory_history']['name'].'</a>';
 
 				?>
 				<div class="clear"></div>
@@ -42,7 +47,7 @@
         <table>
            <tr>
               <td width="150">Product Code:</td><td width="310"><input type="text" value="<?php echo $products['product_code'] ?>" class="text-field" disabled/>
-              	<?php echo $linkto = ($products['product_code']!='') ? link_to('products-show.php?pid='.$_REQUEST['id']) : '' ?>
+              	<?php echo $linkto = ($products['product_code']!='') ? link_to('products-show.php?pid='.$_GET['id']) : '' ?>
               </td>
               <td width="150">Brand:</td><td><input type="text" value="<?php echo $products['brand_model'] ?>" class="text-field" disabled/>
               </td>
@@ -85,7 +90,7 @@
 	        				$warehouse = $DB->Get('warehouse2_inventories', array(
 							  			'columns' => 'warehouse2_inventories.item_id, warehouse2_inventories.production_purchase_order_id, warehouse2_inventories.tracking_no,
 							  										warehouse2_inventories.prod_lot_no, warehouse2_inventories.qty, warehouse2_inventories.remarks', 
-							  	    'conditions' => 'warehouse2_inventories.item_id = '.$_REQUEST['id']
+							  	    'conditions' => 'warehouse2_inventories.item_id = '.$_GET['id']
 							  	    ));
 									//echo '<tr><td class="border-right text-right" colspan="5">'.$warehouse[0]['terminal_name'].'</td></tr>';
 									$total_qty = 0.0;
@@ -116,4 +121,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

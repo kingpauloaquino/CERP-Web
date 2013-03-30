@@ -4,18 +4,23 @@
   */
   $capability_key = 'show_supplier';
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
   
-  if(isset($_GET['sid'])) {
-  	$supplier = $DB->Find('suppliers', array(
-  		'columns' => 'suppliers.*, lookups1.description AS supplier_type, lookups2.description AS product_service, 
-										lookups3.description AS term_of_payment, lookups4.description AS country', 
-			'joins' => 'LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = suppliers.supplier_type
-									LEFT OUTER JOIN lookups AS lookups2 ON lookups2.id = suppliers.product_service
-									LEFT OUTER JOIN lookups AS lookups3 ON lookups3.id = suppliers.term_of_payment
-									LEFT OUTER JOIN lookups AS lookups4 ON lookups4.id = suppliers.country',
-  	    'conditions' => 'suppliers.id = '.$_GET['sid']
-  	  ));	
-  }
+	  if(isset($_GET['sid'])) {
+	  	$supplier = $DB->Find('suppliers', array(
+	  		'columns' => 'suppliers.*, lookups1.description AS supplier_type, lookups2.description AS product_service, 
+											lookups3.description AS term_of_payment, lookups4.description AS country', 
+				'joins' => 'LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = suppliers.supplier_type
+										LEFT OUTER JOIN lookups AS lookups2 ON lookups2.id = suppliers.product_service
+										LEFT OUTER JOIN lookups AS lookups3 ON lookups3.id = suppliers.term_of_payment
+										LEFT OUTER JOIN lookups AS lookups4 ON lookups4.id = suppliers.country',
+	  	    'conditions' => 'suppliers.id = '.$_GET['sid']
+	  	  ));	
+	  }
 ?>
 
 	<div id="page">
@@ -84,4 +89,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

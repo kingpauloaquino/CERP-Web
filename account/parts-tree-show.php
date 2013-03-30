@@ -3,6 +3,10 @@
   $capability_key = 'show_parts_tree';
   require('header.php');
 
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -61,18 +65,19 @@
    </div>
 	</div>
       
-       <script>
-				$(function() {
-			  	var data = { 
-			    	"url":"/populate/parts-tree.php",
-			      "limit":"50",
-						"data_key":"parts_tree",
-						"row_template":"row_template_parts_tree_read_only",
-					}
-				
-					$('#grid-parts-materials').grid(data);
-			  })         
-            
-       </script>
-       
-<?php require('footer.php'); ?>
+	 <script>
+	$(function() {
+		var data = { 
+	  	"url":"/populate/parts-tree.php",
+	    "limit":"50",
+			"data_key":"parts_tree",
+			"row_template":"row_template_parts_tree_read_only",
+		}
+	
+		$('#grid-parts-materials').grid(data);
+	  })         
+	      
+	 </script>
+
+<?php }
+require('footer.php'); ?>

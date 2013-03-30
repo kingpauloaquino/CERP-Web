@@ -5,43 +5,48 @@
   $capability_key = 'edit_production_plan';
   require('header.php');
 	
-	if($_POST['action'] == 'edit_production_plan') {
-		foreach ($_POST['production_plan'] as $arr) {
-			if($arr['type']=='Request') { 
-				$request_target_date = array('prod_ship_date' => date('Y-m-d', strtotime($arr['prod_ship_date'])));
-				$Posts->EditProductionPlan(array('variables' => $request_target_date, 'conditions' => 'id='.$arr['id']));	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+	
+		if($_POST['action'] == 'edit_production_plan') {
+			foreach ($_POST['production_plan'] as $arr) {
+				if($arr['type']=='Request') { 
+					$request_target_date = array('prod_ship_date' => date('Y-m-d', strtotime($arr['prod_ship_date'])));
+					$Posts->EditProductionPlan(array('variables' => $request_target_date, 'conditions' => 'id='.$arr['id']));	
+				}
+				if($arr['lot_no']!='') {
+					$arr['init'] = 1;
+					$args = array('ppopid' => $arr['id'], 'product_id' => $arr['product_id'], 'plan_qty' => $arr['produce_qty'], 'tracking_no' => ($arr['id'].'-'.$arr['product_id'])); 
+					$num_of_records = $Posts->InitPurchaseOrderProductMaterials($args);	
+					
+					$parts = $DB->Get('production_purchase_order_product_parts', array(
+						  			'columns' 		=> 'material_id',
+						  	    'conditions' 	=> 'production_purchase_order_product_id = '.$arr['id']
+					));
+					// foreach ($parts as $part) {
+						// $args = array('item_id' => $part['material_id'], 'prod_lot_no' => $arr['lot_no'], 'ppopid' => $arr['id'], 'tracking_no' => $arr['id'].$arr['product_id']); 
+						// $num_of_records = $Posts->InitProductionInventory($args);	
+					// }		
+				$arr['type'] = 122; // Type ID for Plan
+				$arr['prod_ship_date'] = date('Y-m-d', strtotime($arr['prod_ship_date']));			
+				$Posts->EditProductionPlan(array('variables' => $arr, 'conditions' => 'id='.$arr['id']));							
+				}
 			}
-			if($arr['lot_no']!='') {
-				$arr['init'] = 1;
-				$args = array('ppopid' => $arr['id'], 'product_id' => $arr['product_id'], 'plan_qty' => $arr['produce_qty'], 'tracking_no' => ($arr['id'].'-'.$arr['product_id'])); 
-				$num_of_records = $Posts->InitPurchaseOrderProductMaterials($args);	
-				
-				$parts = $DB->Get('production_purchase_order_product_parts', array(
-					  			'columns' 		=> 'material_id',
-					  	    'conditions' 	=> 'production_purchase_order_product_id = '.$arr['id']
-				));
-				// foreach ($parts as $part) {
-					// $args = array('item_id' => $part['material_id'], 'prod_lot_no' => $arr['lot_no'], 'ppopid' => $arr['id'], 'tracking_no' => $arr['id'].$arr['product_id']); 
-					// $num_of_records = $Posts->InitProductionInventory($args);	
-				// }	
-			$arr['type'] = 122; // Type ID for Plan
-			$arr['prod_ship_date'] = date('Y-m-d', strtotime($arr['prod_ship_date']));			
-			$Posts->EditProductionPlan(array('variables' => $arr, 'conditions' => 'id='.$arr['id']));							
-			}
-		}
-		redirect_to($Capabilities->All['show_production_plan']['url'].'?ppoid='.$_POST['ppoid'].'&oid='.$_POST['oid']);	
-	} 
-  
-  if(isset($_GET['ppoid']) && isset($_GET['oid'])) {		
-		$prod_detail = $DB->Find('production_purchase_orders', array(
-				  			'columns' 		=> 'production_purchase_orders.id AS ppoid, production_purchase_orders.order_id AS oid, orders.po_number AS po_no, lookups.description AS pack, lookups.description AS status,
-																	orders.po_date AS po_date, orders.delivery_date AS delivery_date, production_purchase_orders.target_date AS target_date',
-				  	    'joins' 			=> 'INNER JOIN orders ON orders.id = production_purchase_orders.order_id
-				  	    									INNER JOIN lookups ON lookups.id = production_purchase_orders.status',
-								'sort_column'	=> '',
-				  	    'conditions' 	=> 'production_purchase_orders.id = '.$_GET['ppoid']
-		));	
-  }
+			redirect_to($Capabilities->All['show_production_plan']['url'].'?ppoid='.$_POST['ppoid'].'&oid='.$_POST['oid']);	
+		} 
+	  
+	  if(isset($_GET['ppoid']) && isset($_GET['oid'])) {		
+			$prod_detail = $DB->Find('production_purchase_orders', array(
+					  			'columns' 		=> 'production_purchase_orders.id AS ppoid, production_purchase_orders.order_id AS oid, orders.po_number AS po_no, lookups.description AS pack, lookups.description AS status,
+																		orders.po_date AS po_date, orders.delivery_date AS delivery_date, production_purchase_orders.target_date AS target_date',
+					  	    'joins' 			=> 'INNER JOIN orders ON orders.id = production_purchase_orders.order_id
+					  	    									INNER JOIN lookups ON lookups.id = production_purchase_orders.status',
+									'sort_column'	=> '',
+					  	    'conditions' 	=> 'production_purchase_orders.id = '.$_GET['ppoid']
+			));	
+	  }
 ?>
 
 	<div id="page">
@@ -158,4 +163,6 @@
 		});
 	});
 </script>
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

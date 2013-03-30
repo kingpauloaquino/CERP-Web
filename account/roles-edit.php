@@ -5,12 +5,17 @@
   $capability_key = 'edit_role';
   require('header.php');
 	
-	if(isset($_GET['rid'])) {
-  	$roles = $DB->Find('roles', array(
-  		'columns' => 'roles.*',
-  	  'conditions' => 'id = '.$_GET['rid']
-	  ));	
-  }
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
+	
+		if(isset($_GET['rid'])) {
+	  	$roles = $DB->Find('roles', array(
+	  		'columns' => 'roles.*',
+	  	  'conditions' => 'id = '.$_GET['rid']
+		  ));	
+	  }
 	
 ?>
 
@@ -96,4 +101,5 @@
 	</div>
 </div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

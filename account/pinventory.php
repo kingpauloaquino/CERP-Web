@@ -4,6 +4,11 @@
   */
   $capability_key = 'product_inventory';  
   require('header.php');
+	
+	$allowed = $Role->isCapableByName($capability_key);	
+	if(!$allowed) {
+		require('inaccessible.php');	
+	}else{
 ?>
 	<div id="page">
 		<div id="page-title">
@@ -32,7 +37,6 @@
               <td width="90" class="border-right text-center"><a class="sort" column="pack">Pack</a></td>
               <td width="90" class="border-right text-center"><a class="sort" column="color">Color</a></td>
               <td class="border-right"><a class="sort" column="description">Description</a></td>
-              <td width="100" class="border-right text-center" ><a class="sort" column="uom">UOM</a></td>
               <td width="100" class="border-right text-center" ><a class="sort" column="qty">Current Qty</a></td>
             </tr>
           </thead>
@@ -57,4 +61,6 @@
 		$('#grid-products').grid(data);
   }) 
  </script>
-<?php require('footer.php'); ?>
+
+<?php }
+require('footer.php'); ?>

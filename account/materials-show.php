@@ -4,7 +4,12 @@
   */
   $capability_key = 'show_material';
   require('header.php');
-  
+	
+$allowed = $Role->isCapableByName('show_material');
+
+if(!$allowed) {
+	require('inaccessible.php');	
+}else{
   if(isset($_REQUEST['mid'])) {
   	if($_REQUEST['base']) {
   		$materials = $DB->Find('materials', array(
@@ -200,4 +205,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

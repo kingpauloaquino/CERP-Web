@@ -4,6 +4,12 @@
   */
   $capability_key = 'edit_material';
   require('header.php');
+	
+$allowed = $Role->isCapableByName('edit_material');
+
+if(!$allowed) {
+	require('inaccessible.php');	
+}else{
   
 	if($_POST['action'] == 'edit_material') {
 		$num_of_records1 = $Posts->EditMaterial(array('variables' => $_POST['material'], 'conditions' => 'id='.$_POST['mid']));
@@ -129,4 +135,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

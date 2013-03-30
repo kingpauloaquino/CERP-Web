@@ -4,6 +4,12 @@
   */
   $capability_key = 'add_material';
   require('header.php');
+	
+$allowed = $Role->isCapableByName('add_material');
+
+if(!$allowed) {
+	require('inaccessible.php');	
+}else{
   
 	if($_POST['action'] == 'add_material') {
 		$_POST['material']['base'] = TRUE;
@@ -119,4 +125,5 @@
 		</div>
 	</div>
 
-<?php require('footer.php'); ?>
+<?php }
+require('footer.php'); ?>

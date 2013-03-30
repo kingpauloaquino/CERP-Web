@@ -20,5 +20,6 @@ if(!$allowed) {
 					<h2>usual content</h2>
 		</div>
 	</div>
-<?php } ?>
-<?php require('footer.php'); ?>
+	
+<?php }
+require('footer.php'); ?>

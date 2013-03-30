@@ -431,21 +431,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	</div>
         </div>
         <div class="menu">
-          <a href="#" alt="#menu-others" class="show-submenu">Others</a>
-        	<div id="menu-others" class="main-sub-menu">
-            <div class="glyphicons-halflings"></div>
-        	  <ul>
-        	    <li><a href="notifications.php">Notifications</a></li>
-        	  </ul>
-        	</div>
-        </div>
-        <div class="menu">
           <a href="#" alt="#menu-preferences" class="show-submenu">Preferences</a>
         	<div id="menu-preferences" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
         	  <ul>
         	    <li><a href="users.php">Users</a></li>
         	    <li><a href="roles.php">Roles</a></li>
+        	    <li><a href="notifications.php">Notifications</a></li>
         	    <li><a href="settings-lookups-show.php">Lookups</a></li>
         	    <li><a href="settings-show.php">Settings</a></li>
         	    <li><a href="settings.php">Advanced</a></li>

@@ -36,7 +36,7 @@
 				  echo '<a href="'.$Capabilities->All['add_product']['url'].'" class="nav">'.$Capabilities->All['add_product']['name'].'</a>'; 
 				  echo '<a href="'.$Capabilities->All['edit_product']['url'].'?pid='.$_REQUEST['pid'].'" class="nav">'.$Capabilities->All['edit_product']['name'].'</a>'; 
 					
-					echo '<a href="'.$Capabilities->All['show_parts_tree']['url'].'?pid='.$_REQUEST['pid'].'&code='.$products['product_code'].'" class="nav">'.$Capabilities->All['show_product_tree']['name'].'</a>'; 
+					echo '<a href="'.$Capabilities->All['show_parts_tree']['url'].'?pid='.$_REQUEST['pid'].'&code='.$products['product_code'].'" class="nav">'.$Capabilities->All['show_parts_tree']['name'].'</a>'; 
 					
 					echo '<a href="'.$Capabilities->All['show_product_inventory']['url'].'?id='.$_REQUEST['pid'].'" class="nav">'.$Capabilities->All['show_product_inventory']['name'].'</a>';
 				?>

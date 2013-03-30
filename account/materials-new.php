@@ -50,10 +50,6 @@ if(!$allowed) {
 				<input type="hidden" name="action" value="add_material">
 				<input type="hidden" id="item_cost[item_type]" name="item_cost[item_type]" value="MAT">
 				<input type="hidden" id="material[material_type]" name="material[material_type]" value="70" />
-				
-				<span class="notice">
-          <p class="info"><strong>Notice!</strong> Material codes should be unique.</p>
-        </span>        
         
 				<h3 class="form-title">Details</h3>
         <table>
@@ -75,7 +71,7 @@ if(!$allowed) {
               </td>
            </tr>      
            <tr>
-              <td>Addresss:</td><td><input type="text"  class="text-field" />
+              <td>Address:</td><td><input type="text"  class="text-field" />
               </td>
               <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', '', 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?>
               </td>
@@ -104,7 +100,7 @@ if(!$allowed) {
               </td>
            </tr>
            <tr>
-           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'code', '', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'code', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
            		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" class="text-field text-right" /></td>
            </tr>
            <tr>

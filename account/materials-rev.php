@@ -21,8 +21,7 @@
 		if(isset($id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$id); }
 	} 
 	
-	$pics = $DB->Get('users', array('columns' => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic', 'sort_column' => 'first_name',
-																	'conditions' => 'role = 5'));
+	$pics = $DB->Get('users', array('columns' => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic', 'sort_column' => 'first_name'));
 	
 	$types = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('material_type').'"', 'sort_column' => 'description'));
   $classifications = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification'));
@@ -54,7 +53,7 @@
 										'LEFT OUTER JOIN users ON materials.person_in_charge = users.id '+
 										'LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id '+
 										'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id ',
-										'materials.base = FALSE AND materials.material_code LIKE "' + searchbox + '%" ', searchbox); break;
+										'materials.base = FALSE AND material_type=70 AND materials.material_code LIKE "' + searchbox + '%" ', searchbox); break;
 				}				
 			}
 			return false;    
@@ -77,8 +76,6 @@
 				
 		<div id="content">
 			<form class="form-container" method="POST">
-        <h3 class="form-title">Basic Information</h3>
-				
 				<input type="hidden" name="action" value="add_material_rev">
 	   		<input type="hidden" id="material[item_id]" name="material[item_id]" />
 	   		<input type="hidden" id="material[material_type]" name="material[material_type]" />
@@ -87,15 +84,10 @@
 				<input type="hidden" id="material[parent]" name="material[parent]">
 				<input type="hidden" id="item_cost[item_type]" name="item_cost[item_type]" value="MAT">
 				
-				<span class="notice">
-          <p class="info"><strong>Notice!</strong> Material codes should be unique.</p>
-        </span>
-        
-        
-				<h3 class="form-title">Details</h3>
+        <h3 class="form-title">Details</h3>		      
         <table>
            <tr>
-              <td width="150">Base Material Code:</td><td width="310"><input type="text" id="material[base_code]" name="material[base_code]" class="text-field searchbox" autocomplete="off"" />
+              <td width="150">Base Material Code:</td><td width="310"><input type="text" id="material[base_code]" name="material[base_code]" class="text-field searchbox" autocomplete="off" />
               	<div id="live_search_display" class="live_search_display"></div>
               </td>
               <td width="150">Revision:</td><td><input type="text" id="material[material_rev]" name="material[material_rev]" class="text-field" placeholder="Revision [A-Z]" /></td>
@@ -114,7 +106,7 @@
               </td>
            </tr>      
            <tr>
-              <td>Addresss:</td><td><input type="text"  class="text-field" /></td>
+              <td>Address:</td><td><input type="text"  class="text-field" /></td>
               <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', '', 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?>
               </td>
            </tr>             
@@ -136,7 +128,7 @@
               </td>
            </tr>
            <tr>
-           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'code', '', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'code', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
            		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" class="text-field text-right" /></td>
            </tr>
            <tr>

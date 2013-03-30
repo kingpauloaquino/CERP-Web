@@ -15,7 +15,7 @@ if(!$allowed) {
   		$materials = $DB->Find('materials', array(
 					  			'columns' 		=> 'materials.id AS mid, materials.parent, materials.material_code, materials.description, brand_models.brand_model, 
 																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
-																  	lookups3.description AS material_type, lookups4.description AS status, terminals.id AS tid, terminals.terminal_code', 
+																  	lookups3.description AS material_type, lookups4.description AS status, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
 					  	    'conditions' 	=> 'materials.id = '.$_REQUEST['mid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
 																		LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
@@ -31,7 +31,7 @@ if(!$allowed) {
 					  			'columns' 		=> 'materials.id AS mid, materials.parent, materials.material_code, materials.bar_code, materials.description, brand_models.brand_model, 
 																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
 																  	suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.code AS currency, item_costs.cost, 
-																  	lookups3.description AS material_type, lookups4.description AS status, item_costs.transportation_rate, terminals.id AS tid, terminals.terminal_code', 
+																  	lookups3.description AS material_type, lookups4.description AS status, item_costs.transportation_rate, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
 					  	    'conditions' 	=> 'materials.id = '.$_REQUEST['mid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
 																		LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
@@ -125,10 +125,10 @@ if(!$allowed) {
               </td>
            </tr>      
            <tr>
-              <td>Addresss:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
+              <td>Address:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
               	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
               </td>
-              <td>WIP Line Entry:</td><td><input type="text" value="<?php echo $materials['terminal_code'] ?>" class="text-field" disabled/>
+              <td>WIP Line Entry:</td><td><input type="text" value="<?php echo $materials['terminal'] ?>" class="text-field" disabled/>
               	<?php echo $linkto = ($materials['terminal_code']!='') ? link_to('terminals-show.php?tid='.$materials['tid']) : '' ?>
               </td>
            </tr>             

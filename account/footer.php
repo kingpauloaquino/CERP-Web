@@ -3,7 +3,7 @@
       
       <!-- BOF FOOTER -->
       <div id="footer">
-        <p>&copy; CRESC 2012</p>
+        <p>&copy; CRESC 2013</p>
       </div>
       
     </div>

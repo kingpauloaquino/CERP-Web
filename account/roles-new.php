@@ -47,18 +47,21 @@
           </thead>
           <tbody>
 						<?php
-
-							$init = TRUE;
-							foreach ($Role->getAllCapabilities() as $capa) {
-								if(!isset($capa['parent'])) {
-									if(!$init)
-										echo '</td></tr>';
-									$init = FALSE;
-									echo '<tr>';
-									echo '<td>'.$capa['name'].'</td>';
-									echo '<td>';					
-								} else {
-									echo '<input type="checkbox" id="caps[]" name="caps[]" value="' .$capa['id']. '" /> '.$capa['name'].'&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;';
+							$cap_titles = $DB->Get('capabilities', array(
+								  			'columns' 		=> 'id, name',
+								  	    'conditions' 	=> 'parent IS null ORDER BY name'));
+												
+							$init = TRUE;												
+							foreach ($cap_titles as $title) {
+								if(!$init)
+									echo '</td></tr>';
+								$init = FALSE;
+								echo '<tr><td>'.$title['name'].'</td><td>';
+								$capabilities = $DB->Get('capabilities', array(
+									  			'columns' 		=> 'id, name',
+									  	    'conditions' 	=> 'parent ='.$title['id']));
+								foreach ($capabilities as $cap) {
+									echo '<input type="checkbox" id="caps[]" name="caps[]" value="' .$cap['id']. '" /> '.$cap['name'].'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 								}
 							}
 							?>

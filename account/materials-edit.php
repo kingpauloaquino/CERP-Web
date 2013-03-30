@@ -69,33 +69,32 @@
 			<form class="form-container" action="<?php echo host($Capabilities->GetUrl()) ?>" method="POST">
 				<input type="hidden" name="action" value="edit_material">
 				<input type="hidden" name="mid" value="<?php echo $_GET['mid'] ?>">
+				<input type="hidden" id="material[material_type]" name="material[material_type]" value="70" />
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
               <td width="150">Material Code:</td><td width="310"><input type="text" id="material[material_code]" name="material[material_code]" value="<?php echo $materials['material_code'] ?>" class="text-field" /></td>
-              <td width="150">Base Material Code:</td><td><input type="text" value="Base Material Code" class="text-field" />
+              <td width="150">Base Material Code:</td><td><input type="text" value="<?php echo $parent_material['material_code'] ?>" class="text-field" disabled/>
               	<?php echo $linkto = (isset($parent_material['material_code'])) ? link_to('materials-show.php?mid='.$parent_material['base_id'].'&base=1') : '' ?>
               </td>
            </tr>
            <tr>
-              <td>Classification:</td><td><?php select_query_tag($classifications, 'id', 'classification', $materials['material_classification'], 'material[material_classification]', 'material[material_classification]', '', 'width:192px;'); ?></td>
+              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" value="<?php echo $materials['bar_code'] ?>" class="text-field" /></td>
               <td>Model:</td><td><?php select_query_tag($models, 'id', 'brand_model', $materials['brand_model'], 'material[brand_model]', 'material[brand_model]', '', 'width:192px;'); ?></td>
            </tr>
            <tr>
-              <td>Type:</td><td><?php select_query_tag($types, 'id', 'description', $materials['material_type'], 'material[material_type]', 'material[material_type]', '', 'width:192px;'); ?></td>
+              <td>Classification:</td><td><?php select_query_tag($classifications, 'id', 'classification', $materials['material_classification'], 'material[material_classification]', 'material[material_classification]', '', 'width:192px;'); ?></td>
               <td>Status:</td><td><?php select_query_tag($status, 'id', 'description', $materials['status'], 'material[status]', 'material[status]', '', 'width:192px;'); ?></td>
            </tr>    
            <tr>
-              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" value="<?php echo $materials['bar_code'] ?>" class="text-field" /></td>
-              <td>Person-in-charge:</td><td><?php select_query_tag($pics, 'id', 'pic', $materials['person_in_charge'], 'material[person_in_charge]', 'material[person_in_charge]', '', 'width:192px;'); ?>
-              </td>
+              <td>Person-in-charge:</td><td><?php select_query_tag($pics, 'id', 'pic', $materials['person_in_charge'], 'material[person_in_charge]', 'material[person_in_charge]', '', 'width:192px;'); ?></td>
+              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', $materials['production_entry_terminal_id'], 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?></td>
            </tr>      
            <tr>
               <td>Addresss:</td><td><input type="text"  value="<?php echo $address['address'] ?>" class="text-field" />
           			<?php echo $linkto = ($address['add_id']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$address['add_id'].'">change</a>' : '' ?>
               </td>
-              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', $materials['production_entry_terminal_id'], 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?>
-              </td>
+              <td></td><td></td>
            </tr>             
            <tr>
               <td>Description:</td>

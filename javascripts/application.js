@@ -288,7 +288,7 @@ function row_template_products(data) {
 }
 
 function row_template_products_inventory(data) {
-  var forward	= host + "/account/pinventory-show.php?id="+ data['id'] +"";
+  var forward	= host + "/account/pinventory-show.php?id="+ data['pid'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ (data['brand'] || '') +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['pack'] || '') +"</td>" +

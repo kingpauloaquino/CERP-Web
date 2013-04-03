@@ -2,13 +2,21 @@
   /*
    * Module: Terminal Items
   */
-  $capability_key = 'terminal_items';  
+  $capability_key = 'terminal_prod_items';  
   require('header.php');
 ?>
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php 
+      		$trml = '';
+      		switch($_GET['tid']){
+						case 3: $trml = 'Pre-production'; break;
+						case 5: $trml = 'Ink-filling'; break;
+						case 7: $trml = 'LSP'; break;
+						case 9: $trml = 'Packing'; break;
+      		}
+      		echo $trml.' '.$Capabilities->GetName(); ?></span>
         <?php
 				  //echo '<a href="'.$Capabilities->All['add_material_inventory']['url'].'" class="nav">'.$Capabilities->All['add_material_inventory']['name'].'</a>';
 				?>
@@ -19,8 +27,7 @@
 		<div id="content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" name="keyword" placeholder="Search"/>
-        <button>Go</button>
+        <input type="text" id="keyword" name="keyword" placeholder="Search" />
       </div>
         
       <!-- BOF GridView -->
@@ -28,7 +35,7 @@
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <td class="border-right text-center" width="100"><a class="sort default active up" column="ppoid">Production Plan ID</a></td>
+              <td class="border-right text-center" width="100"><a class="sort default active up" column="ppoid">Prod. Plan ID</a></td>
               <td class="border-right text-center" width="110"><a class="sort" column="product">Product</a></td>
               <td class="border-right text-center" width="100"><a class="sort" column="prod_lot_no">Prod. Lot No</a></td>
               <td class="border-right text-center" width="100"><a class="sort" column="tracking_no">Tracking No</a></td>
@@ -50,11 +57,10 @@
 <script>
 	$(function() {
   	var data = { 
-    	"url":"/populate/terminal-prod-items.php?tid=",
+    	"url":"/populate/terminal-prod-items.php?tid=<?php echo $_GET['tid']; ?>",
       "limit":"15",
 			"data_key":"terminal_prod_items",
 			"row_template":"row_template_terminal_prod_items",
-      "params":"tid=<?php echo $_GET['tid']; ?>",
       "pagination":"#materials-pagination"
 		}
 	

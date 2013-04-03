@@ -15,6 +15,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     $notice = '<p class="error">The employee ID or password is incorrect</p>';
     $user = $Posts->Authenticate($params);
     if(!empty($user)) {
+    	//$_SESSION['timeout'] = time();
       $_SESSION['user'] = $user;
       redirect_to($HostAccount);
     } 

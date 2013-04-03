@@ -3,6 +3,10 @@ require('../include/general.class.php');
   
 request_populate_data();
 
+//if ($_SESSION['timeout'] + 10 * 60 < time()) {
+   //redirect_to("/".$Host."?signout=true");
+//} 
+
 function request_populate_data() {
   global $JSON;
   if($_SERVER['REQUEST_METHOD'] == "GET" and $_GET['format'] == "json") {

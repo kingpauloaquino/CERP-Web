@@ -30,7 +30,7 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 				  // echo '<a href="'.$Capabilities->All['add_material_inventory']['url'].'" class="nav">'.$Capabilities->All['add_material_inventory']['name'].'</a>';
 				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 

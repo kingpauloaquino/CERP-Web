@@ -306,7 +306,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		
   // Delte Role
   case 'delete_role':
-		
+		$Posts->DeleteCapability(array('conditions' => 'role_id='.$_POST['rid']));
+		$Posts->DeleteRole(array('conditions' => 'id='.$_POST['rid']));		
+		redirect_to($Capabilities->All['roles']['url']);
     break;
 	
 	

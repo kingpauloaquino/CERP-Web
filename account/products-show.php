@@ -35,7 +35,7 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 				  echo '<a href="'.$Capabilities->All['products']['url'].'" class="nav">'.$Capabilities->All['products']['name'].'</a>'; 
 				  echo '<a href="'.$Capabilities->All['add_product']['url'].'" class="nav">'.$Capabilities->All['add_product']['name'].'</a>'; 

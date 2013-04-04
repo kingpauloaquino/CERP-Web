@@ -22,7 +22,7 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 				   echo '<a href="'.$Capabilities->All['show_production_plan']['url'].'?ppoid='.$_GET['ppoid'].'&oid='.$_GET['oid'].'" class="nav">'.$Capabilities->All['show_production_plan']['name'].'</a>';
 				   //echo '<a href="'.$Capabilities->All['show_production_plan_parts_request']['url'].'?ppoid='.$_GET['ppoid'].'&oid='.$_GET['oid'].'&popid='.$_GET['popid'].'&prod_lot_no='.$_GET['prod_lot_no'].'&prod='.$_GET['prod'].'" class="nav">'.$Capabilities->All['show_production_plan_parts_request']['name'].'</a>';

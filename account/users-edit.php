@@ -42,7 +42,7 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 				  echo '<a href="'.$Capabilities->All['show_user']['url'].'?uid='.$_GET['uid'].'" class="nav">'.$Capabilities->All['show_user']['name'].'</a>'; 
 				?>

@@ -23,6 +23,11 @@ class Capabilities {
     global $capability_key;
 	return $this->All[$capability_key]['name'];
   }
+	
+  function GetTitle() {
+    global $capability_key;
+	return $this->All[$capability_key]['title'];
+  }
   
   function GetUrl() {
     global $capability_key;
@@ -36,12 +41,12 @@ class Capabilities {
 	
 	function GetCapabilities() {
 		$capabilities = $this->DB->Get('capabilities', array(
-					  			'columns' 		=> 'id, capability, title, parent, url',
+					  			'columns' 		=> 'id, capability, title, name, parent, url',
 					  	    'conditions' 	=> 'parent IS NOT null ORDER BY parent'));
 		
 		$all = array();																		
 		foreach ($capabilities as $cap) {
-			$all[$cap['capability']] = array('name' => $cap['title'], 'url' => $cap['url'], 'parent' => $cap['parent']);
+			$all[$cap['capability']] = array('title' => $cap['title'],'name' => $cap['name'], 'url' => $cap['url'], 'parent' => $cap['parent']);
 		}
 		$this->All = $all;
 	}	

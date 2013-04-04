@@ -13,7 +13,7 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 				  echo '<a href="'.$Capabilities->All['add_order']['url'].'" class="nav">'.$Capabilities->All['add_order']['name'].'</a>';
 				?>

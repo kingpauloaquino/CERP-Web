@@ -57,7 +57,7 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 					echo '<a href="'.$Capabilities->All['show_material']['url'].'?mid='.$_GET['mid'].'" class="nav">'.$Capabilities->All['show_material']['name'].'</a>';
 				?>

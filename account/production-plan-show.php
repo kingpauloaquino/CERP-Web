@@ -35,7 +35,7 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 				  // echo '<a href="'.$Capabilities->All['add_product_tree']['url'].'?pid='.$_GET['pid'].'&code='.$_GET['code'].'" class="nav">'.$Capabilities->All['add_product_tree']['name'].'</a>'; 
 				  echo '<a href="'.$Capabilities->All['edit_production_plan']['url'].'?ppoid='.$_GET['ppoid'].'&oid='.$_GET['oid'].'" class="nav">'.$Capabilities->All['edit_production_plan']['name'].'</a>';

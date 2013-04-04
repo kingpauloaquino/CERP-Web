@@ -91,6 +91,10 @@ class Posts {
     return $this->DB->UpdateRecord('roles', $params);
 	}
 	
+	function DeleteRole($params) {
+    return $this->DB->DeleteRecord('roles', $params);
+	}
+	
 	function AddCapability($params) {
     $items = array(
 		  'role_id'	=> $params['role_id'],	  

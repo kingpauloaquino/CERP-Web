@@ -16,7 +16,7 @@
 						case 7: $trml = 'LSP'; break;
 						case 9: $trml = 'Packing'; break;
       		}
-      		echo $trml.' '.$Capabilities->GetName(); ?></span>
+      		echo $trml.' '.$Capabilities->GetTitle(); ?></span>
         <?php
 				  //echo '<a href="'.$Capabilities->All['add_material_inventory']['url'].'" class="nav">'.$Capabilities->All['add_material_inventory']['name'].'</a>';
 				?>

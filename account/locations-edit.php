@@ -106,7 +106,7 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 				  echo '<a href="'.$Capabilities->All['show_location']['url'].'?lid='.$_GET['lid'].'" class="nav">'.$Capabilities->All['show_location']['name'].'</a>'; 
 				?>

@@ -21,10 +21,11 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
         	echo '<a href="'.$Capabilities->All['roles']['url'].'" class="nav">'.$Capabilities->All['roles']['name'].'</a>';
         	echo '<a href="'.$Capabilities->All['edit_role']['url'].'?rid='.$_GET['rid'].'" class="nav">'.$Capabilities->All['edit_role']['name'].'</a>';
+        	echo '<a href="'.$Capabilities->All['delete_role']['url'].'?rid='.$_GET['rid'].'" class="nav">'.$Capabilities->All['delete_role']['name'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>

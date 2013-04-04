@@ -42,7 +42,7 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title"><?php echo $Capabilities->GetName(); ?></span>
+      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 					echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_GET['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>';
 					echo (count($has_inventory)>0) ? '<a href="pinventory-show.php?iid='.$has_inventory['id'].'&pid='.$has_inventory['item_id'].'" class="nav">View Inventory Details</a>' 

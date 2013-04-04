@@ -13,7 +13,7 @@
 				
 		<div id="content">
 			<div id="title">
-				<h1><?php echo $Capabilities->GetName(); ?></h1>
+				<h1><?php echo $Capabilities->GetTitle(); ?></h1>
 				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dapibus molestie fermentum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas</p>
 			</div>
 		</div>

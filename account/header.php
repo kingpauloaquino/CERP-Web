@@ -358,26 +358,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			
       <div id="main-menu">
         <div class="menu">
-        	<a href="#" alt="#menu-materials" class="show-submenu">Materials</a>
-        	<div id="menu-materials" class="main-sub-menu">
-
-      			
+        	<a href="#" alt="#menu-items" class="show-submenu">Items</a>
+        	<div id="menu-items" class="main-sub-menu">      			
             <div class="glyphicons-halflings"></div>
         	  <ul>
         	    <li><a href="materials.php">Materials</a></li>
         	    <li><a href="materials-rev.php">Material Revision</a></li>
         	    <li><a href="indirect-materials.php">Indirect Materials</a></li>
-        	    <li><a href="minventory.php">Warehouse Inventory</a></li>
-        	  </ul>
-        	</div>
-        </div>
-        <div class="menu">
-        	<a href="#" alt="#menu-products" class="show-submenu">Products</a>
-        	<div id="menu-products" class="main-sub-menu">
-            <div class="glyphicons-halflings"></div>
-        	  <ul>
-        	    <li><a href="products.php">List</a></li>
-        	    <li><a href="pinventory.php">Warehouse Inventory</a></li>
+        	    <li><a href="minventory.php">Materials Inventory</a></li>
+        	    <li><a href="products.php">Products</a></li>
+        	    <li><a href="pinventory.php">Products Inventory</a></li>
         	  </ul>
         	</div>
         </div>

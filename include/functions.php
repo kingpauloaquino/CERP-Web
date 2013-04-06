@@ -161,7 +161,7 @@ function build_select_suppliers($value="", $key="") {
 function build_select_delivery_receipts($value="", $key="") {
   global $DB;
   
-  $query = array('columns' => 'id, delivery_receipt', 'conditions' => 'status = 81');
+  $query = array('columns' => 'id, delivery_receipt', 'conditions' => 'status = 135');
   $data = $DB->Fetch('deliveries', $query);
   $options = "";
   

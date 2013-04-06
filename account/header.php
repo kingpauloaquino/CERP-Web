@@ -377,9 +377,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
             <div class="glyphicons-halflings"></div>
         	  <ul>
         	    <li><a href="orders.php">Orders</a></li>
+        	    <li><a href="purchases.php">Purchases</a></li>
         	    <li><a href="deliveries.php">Deliveries</a></li>
         	    <li><a href="receiving.php">Receiving</a></li>
-        	    <li><a href="purchases.php">Purchases</a></li>
         	    <li><a href="suppliers.php">Suppliers</a></li>
         	  </ul>
         	</div>

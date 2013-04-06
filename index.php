@@ -3,6 +3,7 @@ require('include/general.class.php');
 
 if(!empty($Signed)) redirect_to($HostAccount);
 if(isset($_GET['signout'])) {
+	unset($_SESSION['user']);
   session_destroy();
 }
 
@@ -42,6 +43,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     	    .right { float:right; }
     	</style>
     	<script type="text/javascript">
+    		history.go(1);
+    	
     	  $(function() {
     	  	$('#wrapper').css('left', ($(document).width() - $('#wrapper').width()) / 2);
     	  	//$('#wrapper').css('top', ($(document).height() - $('#wrapper').height()) / 2);

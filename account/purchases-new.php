@@ -93,11 +93,10 @@
    <div id="modal-product-materials" style="display:none;width:820px;">
       <div class="modal-title"><h3>Materials</h3></div>
       <div class="modal-content">
-        <!-- BOF Search -->
-        <div class="search">
-          <input type="text" name="keyword" placeholder="Search"/>
-          <button>Go</button>
-        </div>
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+      </div>
       
         <!-- BOF GRIDVIEW -->
         <div id="grid-materials" class="grid jq-grid">

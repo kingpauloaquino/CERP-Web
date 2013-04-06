@@ -106,7 +106,7 @@
 								<td class="border-right text-center" width="20"><input type="checkbox" class="chk-all"/></td> 
 								<td class="border-right text-center" width="140"><a class="sort default active up" column="code">Code</a></td>
 								<td class="border-right text-center" width="100"><a class="sort down" column="model">Model</a></td>
-								<td class="border-right text-center"><a class="sort" column="description">Description</a></td> 
+								<td class="border-right text-center"><a class="sort" column="description">Supplier</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="price">Price</a></td> 
                </tr>
@@ -130,9 +130,9 @@
        <script>
 				$(function() {
 			  	var data = { 
-			    	"url":"/populate/materials.php",
-			      "limit":"15",
-						"data_key":"materials",
+			    	"url":"/populate/material-costs.php",
+			      "limit":"10",
+						"data_key":"material-costs",
 						"row_template":"row_modal_materials",
 			      "pagination":"#materials-pagination"
 					}
@@ -164,7 +164,7 @@
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
            cell.append("<td class=\"mat-code border-right\">"+ row['code'] +"</td>");
            cell.append("<td class=\"mat-brand border-right\">"+ row['model'] +"</td>");
-           cell.append("<td class=\"mat-description border-right\">"+ row['description'] +"</td>");
+           cell.append("<td class=\"mat-description border-right\">"+ row['supplier'] +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            

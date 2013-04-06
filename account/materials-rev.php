@@ -1,76 +1,54 @@
 <?php
   /*
-   * Module: Material - New 
+   * Module: Material Revision
   */
   $capability_key = 'add_material_revision';
   require('header.php');
 	
-		$allowed = $Role->isCapableByName($capability_key);
+	$allowed = $Role->isCapableByName($capability_key);
 	
 	if(!$allowed) {
 		require('inaccessible.php');	
 	}else{
-  
-	if($_POST['action'] == 'add_material_rev') { 
-		$rev = (strlen($_POST['material']['material_rev'])==1 && ctype_alpha($_POST['material']['material_rev'])) ? $_POST['material']['material_rev'] : 'A';
-		$_POST['material']['material_code'] = $_POST['material']['base_code'] . $rev;		
-		$id = $Posts->AddMaterial($_POST['material']);
 		
+	if($_POST['action'] == 'add_material_rev') {
+		$_POST['material']['base'] = FALSE;
+		$id = $Posts->AddMaterial($_POST['material']);
+				
 		$_POST['item_cost']['item_id'] = $id;
 		$Posts->AddItemCost($_POST['item_cost']);
-		
-		$_POST['material_rev']['base_material_id'] = (int) $_POST['material']['item_id'];
-		$_POST['material_rev']['item_id'] = $id;
-		$_POST['material_rev']['revision'] = $_POST['material']['material_rev'];
-		$Posts->AddMaterialRev($_POST['material_rev']);
-		
+				
+		$_POST['rev']['material_id'] = $id;
+		$_POST['rev']['base_material_id'] = $_POST['material']['parent'];
+		$Posts->AddMaterialRev($_POST['rev']);
 		if(isset($id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$id); }
 	} 
+  
+	if($_GET['mid']) {
+		$last_rev = $DB->Find('material_revisions', array(
+					  			'columns' 		=> 'MAX(revision) AS revision', 
+					  	    'conditions' 	=> 'base_material_id = '.$_GET['mid'] ));
+		$new_rev = "A";									
+		if($last_rev['revision']) {
+			$new_rev = chr(ord($last_rev['revision']) + 1); // increment Revision suffix
+		}
+		
+		$material = $DB->Find('materials', array(
+					  			'columns' 		=> 'materials.*', 
+					  	    'conditions' 	=> 'materials.id = '.$_GET['mid'] ));
+	}
+		
 	
-	$pics = $DB->Get('users', array('columns' => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic', 'sort_column' => 'first_name'));
-	
-	$types = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('material_type').'"', 'sort_column' => 'description'));
   $classifications = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification'));
 	$models = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model'));
+	$pics = $DB->Get('users', array('columns' => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic', 'sort_column' => 'first_name'));	
+	$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));
 	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
-	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
 	$terminals = $DB->Get('terminals', array('columns' => 'id, CONCAT(terminal_code," - ", terminal_name) AS terminal', 'conditions' => 'location_id=4 AND type="IN"', 'sort_column' => 'id')); // location_id=4 (WIP)
+	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
+	$types = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('material_type').'"', 'sort_column' => 'code'));
   $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
-	$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));	
 ?>
-<script type="text/javascript" src="../javascripts/jquery.watermarkinput.js"></script>
-<script type="text/javascript">
-	$(document).ready(function(){
-		$('.searchbox').keydown(function(e) { if (e.keyCode == 9) { $('.live_search_display').hide(); }});
-		
-		$('.searchbox').keyup(function() {
-			var searchbox = $(this).val().toUpperCase();
-			if(searchbox=='') {	$('.live_search_display').hide();}
-			else {
-				switch ($(this).attr('id')) {
-					case 'material[base_code]':
-					add_live_search('#live_search_display', 'revision', 
-										'materials', 'materials.id, materials.parent, materials.material_code AS item_code, materials.description,  '+
-										'materials.material_type, materials.material_classification, materials.brand_model AS brand_model_id, '+
-										'lookups.description AS mat_typ, item_classifications.classification AS mat_class, brand_models.brand_model, '+
-										'lookups2.description AS status, CONCAT(users.first_name, " ", users.last_name) AS pic ',
-										'LEFT OUTER JOIN lookups ON materials.material_type = lookups.id '+
-										'LEFT OUTER JOIN lookups AS lookups2 ON materials.status = lookups2.id '+
-										'LEFT OUTER JOIN users ON materials.person_in_charge = users.id '+
-										'LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id '+
-										'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id ',
-										'materials.base = FALSE AND material_type=70 AND materials.material_code LIKE "' + searchbox + '%" ', searchbox); break;
-				}				
-			}
-			return false;    
-		});
-		$('[name*="material[material_rev]"]').keyup(function() {
-			$(this).val($(this).val().toUpperCase());
-		});
-		$('[name*="material[base_code]"]').Watermark("Base Material Code");
-		$('[name*="material[material_rev]"]').Watermark("Rev [A-Z]");	
-	});
-</script>
 
 	<div id="page">
 		<div id="page-title">
@@ -81,47 +59,42 @@
 		</div>
 				
 		<div id="content">
-			<form class="form-container" method="POST">
+			<form class="form-container" method="POST">				
 				<input type="hidden" name="action" value="add_material_rev">
-	   		<input type="hidden" id="material[item_id]" name="material[item_id]" />
-	   		<input type="hidden" id="material[material_type]" name="material[material_type]" />
-	   		<input type="hidden" id="material[material_classification]" name="material[material_classification]" />
-	   		<input type="hidden" id="material[brand_model]" name="material[brand_model]" />
-				<input type="hidden" id="material[parent]" name="material[parent]">
 				<input type="hidden" id="item_cost[item_type]" name="item_cost[item_type]" value="MAT">
-				
-        <h3 class="form-title">Details</h3>		      
+				<input type="hidden" id="material[material_type]" name="material[material_type]" value="70" />
+				<input type="hidden" id="material[parent]" name="material[parent]" value="<?php echo $_GET['mid'] ?>" />
+				<input type="hidden" id="rev[revision]" name="rev[revision]" value="<?php echo $new_rev ?>" />
+        
+				<h3 class="form-title">Details</h3>
         <table>
            <tr>
-              <td width="150">Base Material Code:</td><td width="310"><input type="text" id="material[base_code]" name="material[base_code]" class="text-field searchbox" autocomplete="off" />
-              	<div id="live_search_display" class="live_search_display"></div>
-              </td>
-              <td width="150">Revision:</td><td><input type="text" id="material[material_rev]" name="material[material_rev]" class="text-field" placeholder="Revision [A-Z]" /></td>
+              <td width="150">Material Code:</td><td width="310"><input type="text" id="material[material_code]" name="material[material_code]" value="<?php echo $material['material_code']. $new_rev; ?>" class="text-field magenta" readonly/></td>
+              <td width="150">Base Material Code:</td><td><input type="text" value="<?php echo $material['material_code'] ?>" class="text-field" disabled/>
            </tr>
            <tr>
-              <td>Classification:</td><td><input type="text" id="material_classification" name="material_classification" class="text-field" disabled/></td>
-              <td>Model:</td><td><input type="text" id="brand_model" name="brand_model" class="text-field" disabled/></td>
+              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" value="<?php echo $material['material_code']. $new_rev; ?>" class="text-field" /></td>
+              <td>Model:</td><td><?php select_query_tag($models, 'id', 'brand_model', $material['brand_model'], 'material[brand_model]', 'material[brand_model]', '', 'width:192px;'); ?></td>
            </tr>
            <tr>
-              <td>Type:</td><td><input type="text" id="material_type" name="material_type" class="text-field" disabled/></td>
-              <td>Status:</td><td><?php select_query_tag($status, 'id', 'description', '', 'material[status]', 'material[status]', '', 'width:192px;'); ?></td>
+           		<td>Classification:</td><td><?php select_query_tag($classifications, 'id', 'classification', $material['material_classification'], 'material[material_classification]', 'material[material_classification]', '', 'width:192px;'); ?></td>
+              <td>Status:</td><td><?php select_query_tag($status, 'id', 'description', $material['status'], 'material[status]', 'material[status]', '', 'width:192px;'); ?></td>
            </tr>    
+           <tr>              
+              <td>Person-in-charge:</td><td><?php select_query_tag($pics, 'id', 'pic', $material['person_in_charge'], 'material[person_in_charge]', 'material[person_in_charge]', '', 'width:192px;'); ?></td>
+              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', $material['production_entry_terminal_id'], 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?></td>
+           </tr>     
            <tr>
-              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" class="text-field" /></td>
-              <td>Person-in-charge:</td><td><?php select_query_tag($pics, 'id', 'pic', '', 'material[person_in_charge]', 'material[person_in_charge]', '', 'width:192px;'); ?>
+              <td>Address:</td><td><input type="text"  class="text-field" />
               </td>
-           </tr>      
-           <tr>
-              <td>Address:</td><td><input type="text"  class="text-field" /></td>
-              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', '', 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?>
-              </td>
-           </tr>             
+              <td></td><td></td>
+           </tr>              
            <tr>
               <td>Description:</td>
               <td colspan="99">
                 <input type="text" id="material[description]" name="material[description]" class="text-field" style="width:645px" />
               </td>
-           </tr>
+           </tr>  
            <tr><td height="5" colspan="99"></td></tr>
         </table>
         <br/>
@@ -147,9 +120,9 @@
          <div class="field-command">
        	   <div class="text-post-status"></div>
        	   <input type="submit" value="Create" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('materials.php'); ?>"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('materials-show.php?mid='.$_GET['mid']); ?>"/>
          </div>
-				
+         
 				</form>
 			</div>
 		</div>

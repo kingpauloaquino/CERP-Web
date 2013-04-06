@@ -20,10 +20,6 @@
 		</div>
 
     <div id="content">
-			<!-- BOF Search -->
-      <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $order['id']; ?>" style="display: none" />
-      </div>
       <form id="order-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
          <div>
          	<table>
@@ -104,7 +100,7 @@
        <script>
 				$(function() {
 			  	var data = { 
-			    	"url":"/populate/order-items.php",
+			    	"url":"/populate/order-items.php?oid=<?php echo $order['id'] ?>",
 			      "limit":"50",
 						"data_key":"order_items",
 						"row_template":"row_template_order_items_read_only",

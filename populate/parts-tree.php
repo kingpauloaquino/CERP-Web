@@ -10,7 +10,7 @@ $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
   $startpoint = $limit * ($page - 1);
-	$search = 'item_costs.item_type = "MAT" AND products_parts_tree.product_id = '.$keyword;
+	$search = 'item_costs.item_type = "MAT" AND products_parts_tree.product_id = '.$_GET['pid'];
 	
 	$query = $DB->Fetch('products_parts_tree', array(
 							'columns'	=> 'products_parts_tree.id, materials.id AS material_id, materials.material_code AS code, materials.description,

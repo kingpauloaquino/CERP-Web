@@ -15,15 +15,10 @@
 		$_POST['material']['base'] = TRUE;
 		$_POST['material']['parent'] = NULL;
 		$base_id = $Posts->AddMaterial($_POST['material']);
-		
-		$_POST['material']['base'] = FALSE;
-		$_POST['material']['parent'] = $base_id;
-		$_POST['material']['material_code'] = $_POST['material']['material_code'].'-1';
-		$id = $Posts->AddMaterial($_POST['material']);
 				
-		$_POST['item_cost']['item_id'] = $id;
+		$_POST['item_cost']['item_id'] = $base_id;
 		$Posts->AddItemCost($_POST['item_cost']);
-		if(isset($id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$id); }
+		if(isset($base_id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$base_id); }
 	} 
 	
   $classifications = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification'));
@@ -54,7 +49,7 @@
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
-              <td width="150">Material Code:</td><td width="310"><input type="text" id="material[material_code]" name="material[material_code]" class="text-field" /></td>
+              <td width="150">Material Code:</td><td width="310"><input type="text" id="material[material_code]" name="material[material_code]" class="text-field magenta" /></td>
               <td width="150"></td>
            </tr>
            <tr>

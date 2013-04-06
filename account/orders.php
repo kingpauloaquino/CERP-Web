@@ -35,7 +35,7 @@
               <td class="border-right text-center" width="110"><a class="sort default active up" column="po_number">PO Number</a></td>
               <td class="border-right text-center" width="100"><a class="sort" column="po_date">PO Date</a></td>
               <td class="border-right text-center"><a class="sort" column="description">Description</a></td>
-              <td class="border-right text-center" width="160"><a class="sort" column="payment_terms">Payment Terms</a></td>
+              <td class="border-right text-center" width="240"><a class="sort" column="payment_terms">Payment Terms</a></td>
               <td class="border-right text-center" width="100"><a class="sort" column="delivery_date">Delivery</a></td>
               <td class="border-right text-center" width="100"><a class="sort" column="status">Status</a></td>
             </tr>

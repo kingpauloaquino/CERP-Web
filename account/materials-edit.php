@@ -13,32 +13,39 @@
   
 	if($_POST['action'] == 'edit_material') {
 		$num_of_records1 = $Posts->EditMaterial(array('variables' => $_POST['material'], 'conditions' => 'id='.$_POST['mid']));
-		$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'item_id='.$_POST['mid']));
+		
+		echo '<br/><br/>';
+		foreach($_POST['item_cost'] as $cost) {
+			$Posts->EditItemCost(array('variables' => $cost, 'conditions' => 'item_type= "MAT" AND id='.$cost['id']));
+		}
 		redirect_to($Capabilities->All['show_material']['url'].'?mid='.$_POST['mid']);		
 	} 
 	
   if(isset($_GET['mid'])) {
   	$materials = $DB->Find('materials', array(
 				  			'columns' 		=> 'materials.*', 
-				  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
-				  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id
-																	LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id
-																	LEFT OUTER JOIN users ON materials.person_in_charge = users.id'
-  	  )
-		);	
+				  	    'conditions' 	=> 'materials.id = '.$_GET['mid'] ));	
+								
 		$item_costs = $DB->Find('item_costs', array('columns' => 'supplier, unit, currency, cost, transportation_rate', 
   							'conditions' => 'item_id = '.$_GET['mid'].' AND item_type="MAT"'));  
-		$parent_material = $DB->Find('materials', array(
-				  			'columns' 		=> 'materials.id AS base_id, materials.material_code', 
-				  	    'conditions' 	=> 'materials.base = TRUE AND materials.id = '.$materials['parent']
-  	  )
-		);
-			$address = $DB->Find('location_address_items', array(
-					  			'columns' 		=> 'location_address_items.id, location_address_items.address AS add_id, location_addresses.address', 
-					  			'joins'				=> 'INNER JOIN location_addresses ON location_addresses.id = location_address_items.address',
-					  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.item_id = '.$_GET['mid']
-	  	  )
-			);
+		
+		$address = $DB->Find('location_address_items', array(
+				  			'columns' 		=> 'location_address_items.id, location_address_items.address AS add_id, location_addresses.address', 
+				  			'joins'				=> 'INNER JOIN location_addresses ON location_addresses.id = location_address_items.address',
+				  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.item_id = '.$_GET['mid'] ));
+								
+		if($materials['base']) {
+			$revisions = $DB->Get('material_revisions', array('columns' => 'materials.id, materials.material_code', 
+	 																				'joins' => 'INNER JOIN materials ON materials.id = material_revisions.material_id',
+		 																			'conditions' => 'base_material_id = '.$materials['id']));
+			$base_code = 'N/A';																
+		} else {
+			$base = $DB->Find('materials', array(
+				  			'columns' 		=> 'id, material_code', 
+				  	    'conditions' 	=> 'id = '.$materials['parent']));
+			$base_id = $base['id']; 
+			$base_code = $base['material_code'];
+		}	
   }
 	
   $classifications = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification'));
@@ -73,9 +80,9 @@
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
-              <td width="150">Material Code:</td><td width="310"><input type="text" id="material[material_code]" name="material[material_code]" value="<?php echo $materials['material_code'] ?>" class="text-field" /></td>
-              <td width="150">Base Material Code:</td><td><input type="text" value="<?php echo $parent_material['material_code'] ?>" class="text-field" disabled/>
-              	<?php echo $linkto = (isset($parent_material['material_code'])) ? link_to('materials-show.php?mid='.$parent_material['base_id'].'&base=1') : '' ?>
+              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field" disabled/></td>
+              <td width="150">Base Material Code:</td><td><input type="text" value="<?php echo $base_code ?>" class="text-field" disabled/>
+              	<?php echo $linkto = (isset($base_id)) ? link_to('materials-show.php?mid='.$base_id) : '' ?>
               </td>
            </tr>
            <tr>
@@ -91,7 +98,7 @@
               <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', $materials['production_entry_terminal_id'], 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?></td>
            </tr>      
            <tr>
-              <td>Addresss:</td><td><input type="text"  value="<?php echo $address['address'] ?>" class="text-field" />
+              <td>Address:</td><td><input type="text"  value="<?php echo $address['address'] ?>" class="text-field" />
           			<?php echo $linkto = ($address['add_id']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$address['add_id'].'">change</a>' : '' ?>
               </td>
               <td></td><td></td>
@@ -106,24 +113,36 @@
         </table>
         <br/>
         <h3 class="form-title">Purchase Information</h3>
-        <table>            
-           <tr>
-              <td width="150">Supplier:</td>
-              <td colspan="99">
-                <?php select_query_tag($suppliers, 'id', 'name', $item_costs['supplier'], 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;'); ?>
-              </td>
-           </tr>
-           <tr>
-           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'code', $item_costs['currency'], 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
-           		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" value="<?php echo $item_costs['cost'] ?>" class="text-field text-right" /></td>
-           </tr>
-           <tr>
-              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $item_costs['unit'], 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
-              <td>Transportation Rate:</td><td><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" value="<?php echo $item_costs['transportation_rate'] ?>" class="text-field text-right" /></td>
-           </tr>    
-           <tr><td height="5" colspan="99"></td></tr>
-        </table>       
-        
+        <table>
+        	<?php
+        		$costs = $DB->Get('materials', array('columns' => 'item_costs.*', 
+		 																				'joins' => 'INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
+																												INNER JOIN suppliers ON suppliers.id = item_costs.supplier
+																												INNER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
+																												INNER JOIN lookups AS lookups2 ON lookups2.id = item_costs.currency',
+			 																			'conditions' => 'materials.id = '.$_GET['mid']));
+						foreach($costs as $cost) {
+						?>
+							<tr>
+	              <td width="150">Supplier:</td>
+	              <td colspan="99">
+	              	<?php select_query_tag($suppliers, 'id', 'name', $cost['supplier'], 'item_cost['.$cost['id'].'][supplier]', 'item_cost['.$cost['id'].'][supplier]', '', 'width:655px;'); ?>
+	              	<input type="hidden" id="<?php echo 'item_cost['.$cost['id'].'][id]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][id]' ?>" value="<?php echo $cost['id'] ?>"  />
+	              </td>
+	           </tr>
+	           <tr>
+	              <td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'code', $cost['currency'], 'item_cost['.$cost['id'].'][currency]', 'item_cost['.$cost['id'].'][currency]', '', 'width:192px;'); ?></td>
+	              <td width="150">Cost:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][cost]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][cost]' ?>" value="<?php echo $cost['cost'] ?>" class="text-field text-right" /></td>
+	           </tr>
+	           <tr>
+	              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $cost['unit'], 'item_cost['.$cost['id'].'][unit]', 'item_cost['.$cost['id'].'][unit]', '', 'width:192px;'); ?></td>
+	              <td>Transportation Rate:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" value="<?php echo $cost['transportation_rate'] ?>" class="text-field text-right" /></td>
+	           </tr>    
+	           <tr><td height="5" colspan="99"></td></tr>
+						<?php
+						}
+        	?>           
+        </table>
             
          <div class="field-command">
        	   <div class="text-post-status"></div>

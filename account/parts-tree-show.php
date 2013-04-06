@@ -22,10 +22,6 @@
 		</div>
 
     <div id="content">
-			<!-- BOF Search -->
-      <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $_GET['pid']; ?>" style="display: none" />
-      </div>
       <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
          
          <!-- BOF GRIDVIEW -->
@@ -35,9 +31,9 @@
                <tr>
                  <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
                  <td width="20" class="border-right text-center">No.</td>
-                 <td width="140" class="border-right">Item Code</td>
-                 <td width="55" class="border-right text-center">Qty</td>
-                 <td width="30" class="border-right text-center">Unit</td>
+                 <td width="160" class="border-right">Item Code</td>
+                 <td width="65" class="border-right text-center">Qty</td>
+                 <td width="50" class="border-right text-center">Unit</td>
                  <td width="100" class="border-right text-center">Unit Price</td>
                  <td width="100" class="border-right text-center">Amount</td>
                  <td class="text-center">Remarks</td>
@@ -68,7 +64,7 @@
 	 <script>
 	$(function() {
 		var data = { 
-	  	"url":"/populate/parts-tree.php",
+	  	"url":"/populate/parts-tree.php?pid=<?php echo $_GET['pid']; ?>",
 	    "limit":"50",
 			"data_key":"parts_tree",
 			"row_template":"row_template_parts_tree_read_only",

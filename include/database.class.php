@@ -114,7 +114,7 @@ class MySQL {
 	  $args['conditions'] = ($args['conditions'] == '' ? '' : 'where '.$args['conditions']);
 	}
 	
-	$sql = "SELECT ".$args['columns']." FROM ".$table." ".$args['joins']." ".$args['conditions'];
+	$sql = "SELECT ".$args['columns']." FROM ".$table." ".$args['joins']." ".$args['conditions'] ." ". $args['sort_column'];
 	$row = $this->IsEmpty($this->Query($sql));
 //var_dump($sql);
 	if($row == null) { return null; }
@@ -132,7 +132,8 @@ class MySQL {
   	$columns	= implode(array_keys($arguments),",");
 		$values		= implode($arguments,"','");
     $sql			= "INSERT INTO ".$table." (".$columns.", created_at) VALUES ('".$values."', '".date('Y-m-d H:i:s')."')"; 
-//var_dump($sql); die(); 
+// echo '<br/><br/>';
+// var_dump($sql); die(); 
 		$this->Query($sql);
 		return mysql_insert_id();
   }
@@ -150,7 +151,7 @@ class MySQL {
 		}
 	} 
 	$sql = "UPDATE ".$table." SET ".rtrim($values, ",").", updated_at='".date('Y-m-d H:i:s')."' WHERE ".$arguments['conditions']; 
-
+//echo '<br/><br/>';
 //var_dump($sql); die();	
 	$this->Query($sql);
 	return mysql_affected_rows();

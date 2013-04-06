@@ -167,9 +167,9 @@ class Posts {
 
   function AddMaterialRev($params) {
     $material = array(
-		  'material_id'				=> $params['item_id'],
-		  'base_material_id'	=> $params['base_material_id'],
-		  'revision'					=> $params['revision']
+		  'revision'					=> $params['revision'],
+		  'material_id'				=> $params['material_id'],
+		  'base_material_id'	=> $params['base_material_id']
 		);
     return $this->DB->InsertRecord('material_revisions', $material);
   }

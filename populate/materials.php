@@ -21,12 +21,9 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('materials', array(
 							'columns'	=> 'materials.id AS id, materials.material_code AS code, materials.description AS description, 
-                    				brand_models.brand_model AS model, item_classifications.classification AS classification, 
-                    				item_costs.cost AS price, lookups.description AS unit',
+                    				brand_models.brand_model AS model, item_classifications.classification AS classification',
 					    'joins'		=> 'INNER JOIN brand_models ON materials.brand_model = brand_models.id 
 					                  INNER JOIN item_classifications ON materials.material_classification = item_classifications.id 
-					                  INNER JOIN item_costs ON item_id = materials.id AND item_costs.item_type = "MAT" 
-					                  INNER JOIN lookups ON lookups.id = item_costs.unit
 					                  AND material_type=70',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,

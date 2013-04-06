@@ -10,7 +10,7 @@ $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
   $startpoint = $limit * ($page - 1);
-	$search = 'purchase_id='.$keyword;
+	$search = 'purchase_id='.$_GET['pid'];
 	
 	$query = $DB->Fetch('purchase_items', array(
                'columns' => 'purchase_items.id, purchase_items.item_id, material_code AS code, materials.description, 

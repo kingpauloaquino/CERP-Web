@@ -44,24 +44,26 @@
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
-              <td width="150">Material Code:</td><td width="310"><input type="text" id="material[material_code]" name="material[material_code]" class="text-field" /></td>
-              <td width="150"></td><td></td>
+              <td width="150">Material Code:</td><td width="310"><input type="text" id="material[material_code]" name="material[material_code]" class="text-field magenta" /></td>
+              <td width="150"></td>
            </tr>
            <tr>
-              <td>Classification:</td><td><?php select_query_tag($classifications, 'id', 'classification', '', 'material[material_classification]', 'material[material_classification]', '', 'width:192px;'); ?></td>
-              <td>Status:</td><td><?php select_query_tag($status, 'id', 'description', '', 'material[status]', 'material[status]', '', 'width:192px;'); ?></td>
-           </tr>  
-           <tr>
               <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" class="text-field" /></td>
-              <td>Person-in-charge:</td><td><?php select_query_tag($pics, 'id', 'pic', '', 'material[person_in_charge]', 'material[person_in_charge]', '', 'width:192px;'); ?>
-              </td>
-           </tr>      
+              <td>Model:</td><td><input type="text" value="N/A" class="text-field" disabled/></td>
+           </tr>
            <tr>
-              <td>Addresss:</td><td><input type="text"  class="text-field" />
+           		<td>Classification:</td><td><?php select_query_tag($classifications, 'id', 'classification', '', 'material[material_classification]', 'material[material_classification]', '', 'width:192px;'); ?></td>
+              <td>Status:</td><td><?php select_query_tag($status, 'id', 'description', '', 'material[status]', 'material[status]', '', 'width:192px;'); ?></td>
+           </tr>    
+           <tr>              
+              <td>Person-in-charge:</td><td><?php select_query_tag($pics, 'id', 'pic', '', 'material[person_in_charge]', 'material[person_in_charge]', '', 'width:192px;'); ?></td>
+              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', '', 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?></td>
+           </tr>     
+           <tr>
+              <td>Address:</td><td><input type="text"  class="text-field" />
               </td>
-              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', '', 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?>
-              </td>
-           </tr>             
+              <td></td><td></td>
+           </tr>                       
            <tr>
               <td>Description:</td>
               <td colspan="99">

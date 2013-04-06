@@ -18,10 +18,6 @@
 		</div>
 
     <div id="content">
-			<!-- BOF Search -->
-      <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $_GET['pid']; ?>" style="display: none" />
-      </div>
       <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
       	 <input type="hidden" name="action" value="edit_parts_tree"/>
 				 <input type="hidden" name="pid" value="<?php echo $_GET['pid'] ?>">
@@ -32,11 +28,11 @@
            <table cellspacing="0" cellpadding="0">
              <thead>
                <tr>
-                 <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
+               	 <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
                  <td width="20" class="border-right text-center">No.</td>
-                 <td width="140" class="border-right">Item Code</td>
-                 <td width="55" class="border-right text-center">Qty</td>
-                 <td width="30" class="border-right text-center">Unit</td>
+                 <td width="160" class="border-right">Item Code</td>
+                 <td width="65" class="border-right text-center">Qty</td>
+                 <td width="50" class="border-right text-center">Unit</td>
                  <td width="100" class="border-right text-center">Unit Price</td>
                  <td width="100" class="border-right text-center">Amount</td>
                  <td class="text-center">Remarks</td>
@@ -71,11 +67,10 @@
    <div id="modal-product-materials" style="display:none;width:820px;">
       <div class="modal-title"><h3>Materials</h3></div>
       <div class="modal-content">
-        <!-- BOF Search -->
-        <div class="search">
-          <input type="text" name="keyword" placeholder="Search"/>
-          <button>Go</button>
-        </div>
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+      </div>
       
         <!-- BOF GRIDVIEW -->
         <div id="grid-materials" class="grid jq-grid">
@@ -85,7 +80,7 @@
 								<td class="border-right text-center" width="20"><input type="checkbox" class="chk-all"/></td> 
 								<td class="border-right text-center" width="140"><a class="sort default active up" column="code">Code</a></td>
 								<td class="border-right text-center" width="100"><a class="sort down" column="model">Model</a></td>
-								<td class="border-right text-center"><a class="sort" column="description">Description</a></td> 
+								<td class="border-right text-center"><a class="sort" column="description">Supplier</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="price">Price</a></td> 
                </tr>
@@ -109,20 +104,19 @@
        <script>
 				$(function() {
 			  	var data = { 
-			    	"url":"/populate/materials.php",
+			    	"url":"/populate/material-costs.php",
 			      "limit":"10",
-						"data_key":"materials",
+						"data_key":"material-costs",
 						"row_template":"row_modal_materials",
 			      "pagination":"#materials-pagination"
 					}
 					$('#grid-materials').grid(data);
 					
 					var data2 = { 
-			    	"url":"/populate/parts-tree.php",
+			    	"url":"/populate/parts-tree.php?pid=<?php echo $_GET['pid']; ?>",
 			      "limit":"50",
 						"data_key":"parts_tree",
-						"row_template":"row_template_parts_tree",
-			      "params":"pid=<?php echo $_GET['pid']; ?>"
+						"row_template":"row_template_parts_tree"
 					}				
 					$('#grid-parts-materials').grid(data2);
 					$('#add-item').append_item();
@@ -138,7 +132,7 @@
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
            cell.append("<td class=\"mat-code border-right\">"+ row['code'] +"</td>");
            cell.append("<td class=\"mat-brand border-right\">"+ row['model'] +"</td>");
-           cell.append("<td class=\"mat-description border-right\">"+ row['description'] +"</td>");
+           cell.append("<td class=\"mat-description border-right\">"+ row['supplier'] +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            

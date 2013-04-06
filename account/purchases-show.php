@@ -20,10 +20,6 @@
         </div>
 
         <div id="content">
-				<!-- BOF Search -->
-	      <div class="search">
-	        <input type="text" id="keyword" name="keyword" placeholder="Search" value="<?php echo $purchase['id']; ?>" style="display: none" />
-	      </div>
           <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
              <!-- BOF TEXTFIELDS -->
              <div>
@@ -99,11 +95,10 @@
        <script>
        	$(function() {
 			  	var data = { 
-			    	"url":"/populate/purchases-items.php",
+			    	"url":"/populate/purchases-items.php?pid=<?php echo $purchase['id']; ?>",
 			      "limit":"50",
 						"data_key":"purchase_items",
-						"row_template":"row_template_purchase_material_read_only",
-			      "params":"purchase_id=<?php echo $purchase['id']; ?>"
+						"row_template":"row_template_purchase_material_read_only"
 					}
 				
 					$('#grid-purchase-materials').grid(data);

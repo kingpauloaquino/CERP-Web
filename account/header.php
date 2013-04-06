@@ -363,7 +363,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
             <div class="glyphicons-halflings"></div>
         	  <ul>
         	    <li><a href="materials.php">Materials</a></li>
-        	    <li><a href="materials-rev.php">Material Revision</a></li>
         	    <li><a href="indirect-materials.php">Indirect Materials</a></li>
         	    <li><a href="minventory.php">Materials Inventory</a></li>
         	    <li><a href="products.php">Products</a></li>

@@ -109,11 +109,10 @@
    <div id="modal-products" style="display:none;width:820px;">
       <div class="modal-title"><h3>Products</h3></div>
       <div class="modal-content">
-        <!-- BOF Search -->
-        <div class="search">
-          <input type="text" name="keyword" placeholder="Search"/>
-          <button>Go</button>
-        </div>
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+      </div>
       
         <!-- BOF GRIDVIEW -->
         <div id="grid-products" class="grid jq-grid grid-item">
@@ -123,7 +122,7 @@
 								<td class="border-right text-center" width="20"><input type="checkbox" class="chk-all"/></td> 
 								<td class="border-right text-center" width="140"><a class="sort default active up" column="code">Code</a></td>
 								<td class="border-right text-center" width="100"><a class="sort down" column="model">Model</a></td>
-								<td class="border-right text-center"><a class="sort" column="description">Description</a></td> 
+								<td class="border-right text-center"><a class="sort" column="description">Supplier</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="price">Price</a></td> 
                </tr>
@@ -147,11 +146,10 @@
      <div id="modal-materials" style="display:none;width:820px;">
       <div class="modal-title"><h3>Materials</h3></div>
       <div class="modal-content">
-        <!-- BOF Search -->
-        <div class="search">
-          <input type="text" name="keyword" placeholder="Search"/>
-          <button>Go</button>
-        </div>
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+      </div>
       
         <!-- BOF GRIDVIEW -->
         <div id="grid-materials" class="grid jq-grid grid-item">
@@ -202,9 +200,9 @@
 					$('#grid-products').grid(data);
 					
 					var data2 = { 
-			    	"url":"/populate/materials.php",
+			    	"url":"/populate/material-costs.php",
 			      "limit":"10",
-						"data_key":"materials",
+						"data_key":"material-costs",
 						"row_template":"row_modal_materials",
 			      "pagination":"#materials-pagination"
 					}
@@ -241,7 +239,7 @@
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
            cell.append("<td class=\"mat-code border-right\">"+ row['code'] +"</td>");
            cell.append("<td class=\"mat-brand border-right\">"+ row['model'] +"</td>");
-           cell.append("<td class=\"mat-description border-right\">"+ row['description'] +"</td>");
+           cell.append("<td class=\"mat-description border-right\">"+ row['supplier'] +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            

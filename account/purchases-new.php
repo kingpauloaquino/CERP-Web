@@ -170,10 +170,6 @@
 					    $('#modal-product-materials').hide();
 					});	
 					
-					$('.close-modal').click(function(){
-					    alert('x');
-					});	  	
-					
 			  function populate(sup_id) {
 			  	var data = { 
 			    	"url":"/populate/material-supplier-costs.php?sid=" + sup_id,

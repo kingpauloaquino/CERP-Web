@@ -7,6 +7,7 @@
 	if(!$allowed) {
 		require('inaccessible.php');	
 	}else{
+		
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -24,13 +25,13 @@
          <div>
          	<table>
                <tr>
-                  <td width="120">Purchase Number:</td><td width="340"><input type="text" name="purchase[purchase_number]" value="" class="text-field" autofocus/></td>
+                  <td width="120">Purchase Number:</td><td width="340"><input type="text" name="purchase[purchase_number]" value="<?php echo generate_new_code('purchase_number') ?>" class="text-field magenta" autofocus/></td>
                   <td width="120"></td><td width="340"></td>
                </tr>
                <tr>
                   <td>Supplier:</td>
                   <td colspan="99">
-                    <select name="purchase[supplier_id]" style="width:655px;"><?php echo build_select_suppliers(); ?></select>
+                    <select id="suppliers" name="purchase[supplier_id]" style="width:655px;"><?php echo build_select_suppliers(); ?></select>
                   </td>
                </tr>
                <tr>
@@ -97,7 +98,7 @@
       <div class="search">
         <input type="text" id="keyword" name="keyword" placeholder="Search" />
       </div>
-      
+      	
         <!-- BOF GRIDVIEW -->
         <div id="grid-materials" class="grid jq-grid">
            <table cellspacing="0" cellpadding="0">
@@ -105,13 +106,13 @@
                <tr>
 								<td class="border-right text-center" width="20"><input type="checkbox" class="chk-all"/></td> 
 								<td class="border-right text-center" width="140"><a class="sort default active up" column="code">Code</a></td>
-								<td class="border-right text-center" width="100"><a class="sort down" column="model">Model</a></td>
+								<td class="border-right text-center" width="80"><a class="sort" column="stock">Stock</a></td> 
 								<td class="border-right text-center"><a class="sort" column="description">Supplier</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="price">Price</a></td> 
                </tr>
              </thead>
-             <tbody></tbody>
+             <tbody id="production-requests"></tbody>
            </table>
          </div>
          
@@ -125,50 +126,97 @@
          <div class="clear"></div>
        </div>
      </div>
+     
+     <div id="modal-material-requests" style="display:none;width:920px;">
+      <div class="modal-title"><h3>Unreleased Production Requests</h3></div>
+      <div class="modal-content">
+      
+        <div id="grid-requests" class="grid jq-grid">
+	        <table cellspacing="0" cellpadding="0">
+	          <thead>
+	            <tr>
+	              <td width="3%" class="border-right text-center"><a></a></td>
+	              <td width="12%" class="border-right text-center"><a>P/O No.</a></td>
+	              <td width="12%" class="border-right text-center"><a>Tracking No.</a></td>
+	              <td width="12%" class="border-right text-center"><a>Prod. Lot No</a></td>
+	              <td class="border-right text-center"><a>Status</a></td>
+	              <td width="10%" class="border-right text-center"><a>Pending</a></td>
+	              <td width="10%" class="border-right text-center"><a>Released</a></td>
+	              <td width="10%" class="border-right text-center"><a>Requested</a></td>
+	            </tr>
+	          </thead>
+	          <tbody>
+	          </tbody>
+	        </table>
+	      </div>	
+	      <div id="requests-pagination"></div>
+      
+       <div class="modal-footer">
+         <a class="btn" rel="modal:close">Close</a>
+         <div class="clear"></div>
+       </div>
+     </div>
 	</div>
       
        <script>
 				$(function() {
+					populate($('#suppliers').val());
+					$('#suppliers').on('change', function() {
+						$('#purchase-materials').empty();
+					  populate(this.value);
+					});	
+					 	
+					
+			  function populate(sup_id) {
 			  	var data = { 
-			    	"url":"/populate/material-costs.php",
+			    	"url":"/populate/material-supplier-costs.php?sid=" + sup_id,
 			      "limit":"10",
-						"data_key":"material-costs",
+						"data_key":"material-supplier-costs",
 						"row_template":"row_modal_materials",
 			      "pagination":"#materials-pagination"
 					}
-					$('#grid-purchase-materials').grid({});
 					$('#grid-materials').grid(data);
 					
 					$('#add-item').append_item();
 				  $('#remove-purchase-materials').remove_item();
 				  $('#purchase_amount').formatCurrency();
 				  $('.get-amount').compute_amount();
-			  }) 
-         /*
-         function row_modal_materials(row) {
-           var row_id	= "mat-"+ row['id'];
-           var cells	= "";
-           
-           cells += "<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>";
-           cells += "<td class=\"mat-code border-right\">"+ row['code'] +"</td>";
-           cells += "<td class=\"mat-brand border-right\">"+ row['brand'] +"</td>";
-           cells += "<td class=\"mat-description border-right\">"+ row['classification'] +"</td>";
-           return '<tr id="'+ row_id +'">'+ cells +'</tr>';
-         }
-         */
-        
+				  
+				 
+			  }
+			  
+			  
+			  
+			  
+			  }); 
+       
          function row_modal_materials(row) {
            var row_id	= "mat-"+ row['id'];
            var cell		= $("<tr id=\""+ row_id +"\"></tr>");
            
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
-           cell.append("<td class=\"mat-code border-right\">"+ row['code'] +"</td>");
-           cell.append("<td class=\"mat-brand border-right\">"+ row['model'] +"</td>");
-           cell.append("<td class=\"mat-description border-right\">"+ row['supplier'] +"</td>");
+           cell.append("<td class=\"mat-code border-right\"><a class=\"mat\" alt=\"" + row['id'] + "\" rel=\"modal:open\" href=\"#modal-material-requests\">"+ row['code'] +"</a></td>");
+           cell.append("<td class=\"mat-stock border-right text-right numbers\">"+ (parseFloat(row['stock']) || '0') +"</td>");
+           cell.append("<td class=\"mat-description border-right text-center\">"+ row['supplier'] +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            
            cell.find('.currency').formatCurrency();
+           cell.find('.numbers').digits();
+               
+					 var a = cell.find('.mat');                               
+           $(a).click(function(e){
+           	alert($(this).attr('alt'));
+           	var data = { 
+				    	"url":"/populate/material-supplier-costs.php?sid=1" ,
+				      "limit":"10",
+							"data_key":"material-supplier-costs",
+							"row_template":"row_modal_materials",
+				      "pagination":"#requests-pagination"
+						}
+						$('#grid-requests').grid(data);
+           })
+           
            return cell;
          }
          

@@ -116,6 +116,7 @@ class MySQL {
 	
 	$sql = "SELECT ".$args['columns']." FROM ".$table." ".$args['joins']." ".$args['conditions'] ." ". $args['sort_column'];
 	$row = $this->IsEmpty($this->Query($sql));
+//echo '<br/><br/>';
 //var_dump($sql);
 	if($row == null) { return null; }
 	return mysql_fetch_array($row);

@@ -21,7 +21,7 @@
       </div>
         
       <!-- BOF GridView -->
-      <div id="grid-defects" class="grid jq-grid">
+      <div id="grid-defects" class="grid jq-grid" style="min-height:400px;">
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>

@@ -24,7 +24,7 @@
 				<input type="hidden" name="code" value="<?php echo $_GET['code'] ?>">		
          
          <!-- BOF GRIDVIEW -->
-         <div id="grid-parts-materials" class="grid jq-grid" style="min-height:146px;">
+         <div id="grid-parts-materials" class="grid jq-grid" style="min-height:350px;">
            <table cellspacing="0" cellpadding="0">
              <thead>
                <tr>

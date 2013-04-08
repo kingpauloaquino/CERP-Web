@@ -22,10 +22,10 @@
 		</div>
 
     <div id="content">
-      <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+      <form id="parts-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
          
          <!-- BOF GRIDVIEW -->
-         <div id="grid-parts-materials" class="grid jq-grid" style="min-height:146px;">
+         <div id="grid-parts-materials" class="grid jq-grid" style="min-height:350px;">
            <table cellspacing="0" cellpadding="0">
              <thead>
                <tr>

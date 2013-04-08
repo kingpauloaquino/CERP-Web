@@ -65,7 +65,7 @@
         </table>
 				<br/>
      		<h3 class="form-title">Products</h3>
-     		<div class="grid jq-grid">
+     		<div class="grid jq-grid" style="min-height:200px;">
 		      <table id="tbl-order-items" cellspacing="0" cellpadding="0">
 		        <thead>
 		          <tr>

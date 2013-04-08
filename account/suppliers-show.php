@@ -41,16 +41,16 @@
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
-              <td width="150">Supplier Code:</td><td width="310"><input type="text" value="<?php echo $supplier['supplier_code'] ?>" class="text-field" disabled/></td>
-              <td width="150">Name:</td><td><input type="text" value="<?php echo $supplier['name'] ?>" class="text-field" disabled/></td>
+              <td width="130">Name:</td><td width="350"><input type="text" value="<?php echo $supplier['name'] ?>" class="text-field" style="width:288px;" disabled/></td>
+              <td width="80">Code:</td><td><input type="text" value="<?php echo $supplier['supplier_code'] ?>" class="text-field" style="width:210px;" disabled/></td>
            </tr>
            <tr>
-              <td>Type:</td><td><input type="text" value="<?php echo $supplier['supplier_type'] ?>" class="text-field" disabled/></td>
-              <td>Product/Service:</td><td><input type="text" value="<?php echo $supplier['product_service'] ?>" class="text-field" disabled/></td>
+              <td>Product/Service:</td><td><input type="text" value="<?php echo $supplier['product_service'] ?>" class="text-field" style="width:288px;" disabled/></td>
+              <td>Type:</td><td><input type="text" value="<?php echo $supplier['supplier_type'] ?>" class="text-field" style="width:210px;" disabled/></td>
            </tr>
            <tr>
-              <td>Terms of Payment:</td><td><input type="text" value="<?php echo $supplier['term_of_payment'] ?>" class="text-field" disabled/></td>
-              <td>Country:</td><td><input type="text" value="<?php echo $supplier['country'] ?>" class="text-field" disabled/></td>
+              <td>Terms of Payment:</td><td><input type="text" value="<?php echo $supplier['term_of_payment'] ?>" class="text-field" style="width:288px;" disabled/></td>
+              <td>Country:</td><td><input type="text" value="<?php echo $supplier['country'] ?>" class="text-field" style="width:210px;" disabled/></td>
            </tr>            
            <tr>
               <td>Address:</td>
@@ -71,16 +71,18 @@
 				<h3 class="form-title">Contact Information</h3>
         <table>
            <tr>
-              <td width="150">Representative:</td><td width="310"><input type="text" value="<?php echo $supplier['representative'] ?>" class="text-field" disabled/></td>
-              <td width="150"></td><td></td>
+              <td width="130">Representative:</td>
+              <td width="80" colspan="99">
+                <input type="text" value="<?php echo $supplier['representative'] ?>" class="text-field" style="width:645px" disabled/>
+              </td>
            </tr>
            <tr>
-              <td>Contact #1:</td><td><input type="text" value="<?php echo $supplier['contact_no1'] ?>" class="text-field" disabled/></td>
-              <td>Contact #2:</td><td><input type="text" value="<?php echo $supplier['contact_no2'] ?>" class="text-field" disabled/></td>
+              <td width="130">Email:</td><td width="350"><input type="text" value="<?php echo $supplier['email'] ?>" class="text-field" style="width:288px;" disabled/></td>
+              <td width="80">Contact #1:</td><td><input type="text" value="<?php echo $supplier['contact_no1'] ?>" class="text-field" style="width:210px;" disabled/></td>
            </tr>
            <tr>
-              <td>Fax #:</td><td><input type="text" value="<?php echo $supplier['fax_no'] ?>" class="text-field" disabled/></td>
-              <td>Email:</td><td><input type="text" value="<?php echo $supplier['email'] ?>" class="text-field" disabled/></td>
+              <td>Fax #:</td><td><input type="text" value="<?php echo $supplier['fax_no'] ?>" class="text-field" style="width:288px;" disabled/></td>
+              <td>Contact #2:</td><td><input type="text" value="<?php echo $supplier['contact_no2'] ?>" class="text-field" style="width:210px;" disabled/></td>
            </tr>  
            <tr><td height="5" colspan="99"></td></tr>
         </table>

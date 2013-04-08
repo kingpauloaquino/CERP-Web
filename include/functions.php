@@ -145,7 +145,7 @@ function get_lookup_code($key) {
 function build_select_suppliers($value="", $key="") {
   global $DB;
   
-  $query = array('columns' => 'id, name');
+  $query = array('columns' => 'id, name', 'order' => 'name');
   $data = $DB->Fetch('suppliers', $query);
   $options = "";
   
@@ -280,4 +280,17 @@ function if_contains($stack, $needle) {
 
 function subtract_days($date1, $days) {
 	return $newdate = date('Y-m-d', strtotime('-'.$days.' days', strtotime($date1)));
+}
+
+function generate_new_code($type) {
+	switch($type) {
+		case "purchase_number":	
+			$prefix = "CRS-13VM";
+			$table = 'purchases';
+			$column = 'purchase_number';				
+			break;
+	}
+	global $DB;
+	$result = $DB->Find($table, array('columns' => 'MAX('.$column.') AS current'));
+	return $prefix. (substr($result['current'], strpos($result['current'], 'M')+1)+1);
 }

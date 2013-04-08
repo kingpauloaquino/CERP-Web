@@ -173,10 +173,11 @@ function grid_population(table, args) {
   args['order_by'] = args['order_by'] || "";
   args['sort_by'] = args['sort_by'] || 'ASC';
 	var params = typeof args['params'] == "undefined" ? "" : args['params'];
+	
 	var opt = args['url'].indexOf("?") !== -1 ? "&" : "?";
 	//alert(params);
   // DATA POPULATION
-  
+
   $.ajax({
     url: host + args['url'] + opt + 'page='+ args['page'] +'&limit='+ args['limit'] +'&order='+ args['order_by'] +'&sort='+ args['sort_by'] +'&params='+ params,
     dataType: "json",

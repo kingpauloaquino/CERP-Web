@@ -16,7 +16,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						: '';
 	
 	$query = $DB->Fetch('production_purchase_order_product_parts', array(
-							'columns'	=> 'orders.po_number, production_purchase_order_products.lot_no AS prod_lot_no, production_purchase_orders.id AS ppoid,
+							'columns'	=> 'production_purchase_order_product_parts.id, orders.po_number, production_purchase_order_products.lot_no AS prod_lot_no, production_purchase_orders.id AS ppoid,
 														production_purchase_order_product_parts.tracking_no, production_purchase_order_product_parts.material_id,
 														production_purchase_order_product_parts.plan_qty, production_purchase_order_product_parts.pending_qty,
 														production_purchase_order_product_parts.updated_at, lookups.description AS status, production_purchase_orders.order_id AS oid,

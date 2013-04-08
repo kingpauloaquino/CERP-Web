@@ -91,14 +91,13 @@
    </div>
        
    <!-- BOF MODAL -->
-   <div id="modal-product-materials" style="display:none;width:820px;">
+   <div id="modal-product-materials" class="modal" style="display:none;width:820px;">
       <div class="modal-title"><h3>Materials</h3></div>
       <div class="modal-content">
 			<!-- BOF Search -->
       <div class="search">
         <input type="text" id="keyword" name="keyword" placeholder="Search" />
       </div>
-      	
         <!-- BOF GRIDVIEW -->
         <div id="grid-materials" class="grid jq-grid">
            <table cellspacing="0" cellpadding="0">
@@ -121,13 +120,13 @@
        </div>
       
        <div class="modal-footer">
-         <a class="btn" rel="modal:close">Close</a>
+         <a class="btn modal-close" rel="modal:close">Close</a>
          <a id="add-item" class="btn" rel="modal:close">Add</a>
          <div class="clear"></div>
        </div>
      </div>
      
-     <div id="modal-material-requests" style="display:none;width:920px;">
+     <div id="modal-material-requests" class="modal" style="display:none;width:920px;">
       <div class="modal-title"><h3>Unreleased Production Requests</h3></div>
       <div class="modal-content">
       
@@ -152,7 +151,7 @@
 	      <div id="requests-pagination"></div>
       
        <div class="modal-footer">
-         <a class="btn" rel="modal:close">Close</a>
+         <a class="btn modal-close" rel="modal:close">Close</a>
          <div class="clear"></div>
        </div>
      </div>
@@ -164,8 +163,19 @@
 					$('#suppliers').on('change', function() {
 						$('#purchase-materials').empty();
 					  populate(this.value);
-					});	
-					 	
+					});			
+					
+					// $('#modal-close').click(function(){
+						// alert('closing');
+						// $('.jquery-modal blocker').last().destroy();
+						// $('#modal-product-materials').hide();
+					// });		
+					
+					$('.modal-close').click(function(){
+					    alert('closing');
+					    $('.jquery-modal blocker').last().remove();
+					    $(this).parent('.modal').hide();
+					});	 	
 					
 			  function populate(sup_id) {
 			  	var data = { 
@@ -180,14 +190,8 @@
 					$('#add-item').append_item();
 				  $('#remove-purchase-materials').remove_item();
 				  $('#purchase_amount').formatCurrency();
-				  $('.get-amount').compute_amount();
-				  
-				 
-			  }
-			  
-			  
-			  
-			  
+				  $('.get-amount').compute_amount();	
+			  	}
 			  }); 
        
          function row_modal_materials(row) {
@@ -206,16 +210,34 @@
                
 					 var a = cell.find('.mat');                               
            $(a).click(function(e){
-           	alert($(this).attr('alt'));
            	var data = { 
-				    	"url":"/populate/material-supplier-costs.php?sid=1" ,
+				    	"url":"/populate/production-requests.php?mid=" + $(this).attr('alt') ,
 				      "limit":"10",
-							"data_key":"material-supplier-costs",
-							"row_template":"row_modal_materials",
+							"data_key":"production-requests",
+							"row_template":"row_modal_requests",
 				      "pagination":"#requests-pagination"
 						}
 						$('#grid-requests').grid(data);
            })
+           
+           return cell;
+         }
+         
+         function row_modal_requests(row) {
+           var row_id	= "mat-"+ row['id'];
+           var cell		= $("<tr id=\""+ row_id +"\"></tr>");
+           
+           cell.append("<td class=\"border-right text-center\" replace=\"#{index}\"></td>");
+           cell.append("<td class=\"mat-po_number border-right text-center\">"+ row['po_number'] +"</td>");
+           cell.append("<td class=\"mat-tracking_no border-right text-center\">"+ row['tracking_no'] +"</td>");
+           cell.append("<td class=\"mat-prod_lot_no border-right text-center\">"+ row['prod_lot_no'] +"</td>");
+           cell.append("<td class=\"mat-status border-right text-center\">"+ row['status'] +"</td>");
+           cell.append("<td class=\"mat-released border-right text-right numbers\">"+ parseFloat(row['pending_qty']) +"</td>");
+           cell.append("<td class=\"mat-prod_lot_no border-right text-right numbers\">"+ (parseFloat(row['plan_qty']) - parseFloat(row['pending_qty'])) +"</td>");
+           cell.append("<td class=\"mat-plan_qty border-right text-right numbers\">"+ parseFloat(row['plan_qty']) +"</td>");
+           
+           cell.find('.currency').formatCurrency();
+           cell.find('.numbers').digits();               
            
            return cell;
          }

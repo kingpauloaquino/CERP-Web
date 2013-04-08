@@ -120,7 +120,7 @@
        </div>
       
        <div class="modal-footer">
-         <a class="btn modal-close" rel="modal:close">Close</a>
+         <a class="btn parent-modal" rel="modal:close">Close</a>
          <a id="add-item" class="btn" rel="modal:close">Add</a>
          <div class="clear"></div>
        </div>
@@ -165,17 +165,14 @@
 					  populate(this.value);
 					});			
 					
-					// $('#modal-close').click(function(){
-						// alert('closing');
-						// $('.jquery-modal blocker').last().destroy();
-						// $('#modal-product-materials').hide();
-					// });		
+					$('.parent-modal').click(function(){
+					    $('.blocker').last().remove();
+					    $('#modal-product-materials').hide();
+					});	
 					
-					$('.modal-close').click(function(){
-					    alert('closing');
-					    $('.jquery-modal blocker').last().remove();
-					    $(this).parent('.modal').hide();
-					});	 	
+					$('.close-modal').click(function(){
+					    alert('x');
+					});	  	
 					
 			  function populate(sup_id) {
 			  	var data = { 

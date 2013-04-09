@@ -11,7 +11,7 @@ if(!$allowed) {
 	<div id="page">
 		<div id="page-title">
     	<h2>
-      	<span class="title">TITLE:<?php var_dump($Capabilities->All['users']) ?></span>
+      	<span class="title"></span>
 				<div class="clear"></div>
       </h2>
 		</div>
@@ -19,14 +19,8 @@ if(!$allowed) {
 		<div id="content">
 					<h2>usual content</h2>
 					<?php
-						$capabilities = $DB->Get('capabilities', array(
-									  			'columns' 		=> 'id, capability, title, parent',
-									  	    'conditions' 	=> 'parent IS NOT null ORDER BY parent'));
-						
-						$all = array();																		
-						foreach ($capabilities as $cap) {
-							array_push($all, array($cap['capability'] => array('name' => $cap['title'], 'url' => $cap['url'], 'parent' => $cap['parent'])));
-						}
+					$result = $Query->purchase_items_by_id(4);
+					var_dump($result);
 					?>
 		</div>
 	</div>

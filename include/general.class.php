@@ -42,5 +42,4 @@ $default_page_limit = 15;
 date_default_timezone_set('Asia/Manila');
   
 require('functions.php');
-require('tabling.php');
 ?>

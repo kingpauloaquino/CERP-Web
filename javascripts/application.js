@@ -705,6 +705,27 @@ function add_live_search(pdsply, ptype, ptable, pcol, pjoin, pcond, psearch) {
 		});
 }
 
+function is_existing(ptable, pcol, pjoin, pcond, box) {
+	$.ajax({
+			type: "POST",
+			url: "../include/is-existing.php",
+			data: { 
+							table: ptable,
+							columns: pcol,
+							joins: pjoin,
+							conditions: pcond
+						},
+			cache: false,
+			success: function(data) {
+				var stat = $('#'+box+'status');
+				if(data == 1) { 
+					stat.text(" *EXISTING");
+					stat.show();	
+				}	else { stat.hide(); }
+			}
+		});
+}
+
 function get_barcode_data(ptable, pcol, pjoin, pcond) { 
 	$.ajax({
 			type: "POST",

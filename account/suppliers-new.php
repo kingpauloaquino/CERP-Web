@@ -42,7 +42,7 @@
         <table>
            <tr>
               <td width="130">Name:</td><td width="350"><input type="text" id="supplier[name]" name="supplier[name]" class="text-field" style="width:288px;" /></td>
-              <td width="80">Code:</td><td><input type="text" id="supplier[supplier_code]" name="supplier[supplier_code]" class="text-field magenta" style="width:210px;" /></td>
+              <td width="80">Code:</td><td><input type="text" id="supplier[supplier_code]" name="supplier[supplier_code]" value="<?php echo generate_new_code('supplier_code'); ?>" class="text-field magenta" style="width:210px;" /></td>
            </tr>
            <tr>
               <td>Product/Service:</td><td><?php select_query_tag($products_services, 'id', 'description', '', 'supplier[product_service]', 'supplier[product_service]', '', 'width:300px;'); ?></td>

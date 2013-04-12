@@ -70,11 +70,15 @@
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
-              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field magenta" /></td>
+              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field magenta" />
+              	<span id="material_codestatus" class="warning"></span>
+              </td>
               <td width="150">Base Material Code:</td><td><input type="text" value="N/A" class="text-field" disabled/></td>
            </tr>
            <tr>
-              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" value="<?php echo $materials['bar_code'] ?>" class="text-field" /></td>
+              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" value="<?php echo $materials['bar_code'] ?>" class="text-field" />
+              	<span id="bar_codestatus" class="warning"></span>
+              </td>
               <td>Model:</td><td><input type="text" value="N/A" class="text-field" disabled/></td>
            </tr>
            <tr>
@@ -129,5 +133,20 @@
 		</div>
 	</div>
 
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('[name*="material[material_code]"]').keyup(function() {
+				$(this).val($(this).val().toUpperCase());
+				$('[name*="material[bar_code]"]').val($(this).val());
+				is_existing('materials', 'id', '', 'material_code=\"' +$(this).val().toUpperCase()+ '\"', 'material_code');
+				return false;    
+			});
+			$('[name*="material[bar_code]"]').keyup(function() {
+				$(this).val($(this).val().toUpperCase());
+				is_existing('materials', 'id', '', 'bar_code=\"' +$(this).val().toUpperCase()+ '\"', 'bar_code');
+				return false;    
+			});
+		});
+	</script>
 <?php }
 require('footer.php'); ?>

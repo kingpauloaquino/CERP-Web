@@ -282,15 +282,41 @@ function subtract_days($date1, $days) {
 	return $newdate = date('Y-m-d', strtotime('-'.$days.' days', strtotime($date1)));
 }
 
+function pad_number($number,$n) {
+	return str_pad((int) $number,$n,"0",STR_PAD_LEFT);
+}
+
 function generate_new_code($type) {
 	switch($type) {
 		case "purchase_number":	
-			$prefix = "CRS-13VM";
+			$prefix = "CRS-13VM";	
+			$flag = 'M';			
 			$table = 'purchases';
-			$column = 'purchase_number';				
+			$column = 'purchase_number';
+			break;
+			
+		case "supplier_code":	
+			$prefix = "SUP";
+			$flag = 'P';
+			$table = 'suppliers';
+			$column = 'supplier_code';	
+			$pad = TRUE; 
+			$pad_cnt = 3;			
+			break;
+			
+		case "employee_id":	
+			$prefix = "13-";
+			$flag = '-';
+			$table = 'users';
+			$column = 'employee_id';	
+			$pad = TRUE; 
+			$pad_cnt = 3;			
 			break;
 	}
+	
 	global $DB;
 	$result = $DB->Find($table, array('columns' => 'MAX('.$column.') AS current'));
-	return $prefix. (substr($result['current'], strpos($result['current'], 'M')+1)+1);
+	$res = substr($result['current'], strpos($result['current'], $flag)+1)+1;
+	if($pad) { $res = pad_number($res, $pad_cnt); }
+	return $prefix . $res;
 }

@@ -42,7 +42,7 @@
 				<h3 class="form-title">Details</h3>
         <table>
            <tr>
-              <td width="150">Employee ID:</td><td width="310"><input type="text" id="user[employee_id]" name="user[employee_id]" autocomplete="off" class="text-field magenta" /></td>
+              <td width="150">Employee ID:</td><td width="310"><input type="text" id="user[employee_id]" name="user[employee_id]" value="<?php echo generate_new_code('employee_id'); ?>" autocomplete="off" class="text-field magenta" /></td>
               <td width="150">Position:</td><td><input type="text" id="user[position]" name="user[position]" autocomplete="off" class="text-field" /></td>
            </tr>
            <tr>
@@ -56,7 +56,7 @@
            <tr>
               <td>Remarks:</td>
               <td colspan="99">
-                <input type="text" id="user[description]" name="user[description]" class="text-field" style="width:645px" />
+                <input type="text" id="user[description]" name="user[description]" class="text-field" value=" " style="width:645px" />
               </td>
            </tr>
            <tr><td height="5" colspan="99"></td></tr>

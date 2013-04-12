@@ -18,9 +18,11 @@ if(!$allowed) {
 				
 		<div id="content">
 					<h2>usual content</h2>
+					
 					<?php
-					$result = $Query->purchase_items_by_id(4);
-					var_dump($result);
+					echo generate_new_code('supplier_code');
+
+					
 					?>
 		</div>
 	</div>

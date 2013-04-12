@@ -59,11 +59,11 @@
               </td>
            </tr>
            <tr>
-              <td>Pack:</td><td><input type="text" value="<?php echo $products['classification'] ?>" class="text-field" disabled/></td>
+              <td>Barcode:</td><td><input type="text" value="<?php echo $products['bar_code'] ?>" class="text-field" disabled/></td>
               <td>Color:</td><td><input type="text" value="<?php echo $products['color'] ?>" class="text-field" disabled/></td>
            </tr>    
            <tr>
-              <td>Barcode:</td><td><input type="text" value="<?php echo $products['bar_code'] ?>" class="text-field" disabled/></td>
+              <td>Pack:</td><td><input type="text" value="<?php echo $products['classification'] ?>" class="text-field" disabled/></td>
               <td>Status:</td><td><input type="text" value="<?php echo $products['status'] ?>" class="text-field" disabled/></td>
            </tr>             
            <tr>

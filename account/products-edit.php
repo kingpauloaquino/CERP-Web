@@ -61,16 +61,20 @@
         <h3 class="form-title">Details</h3>
         <table>
            <tr>
-              <td width="150">Product Code:</td><td width="310"><input type="text" id="product[product_code]" name="product[product_code]" value="<?php echo $products['product_code'] ?>" class="text-field" /></td>
+              <td width="150">Product Code:</td><td width="310"><input type="text" id="product[product_code]" name="product[product_code]" value="<?php echo $products['product_code'] ?>" class="text-field magenta"/>
+              	<span id="product_codestatus" class="warning"></span>
+              </td>
               <td width="150">Brand:</td><td><?php select_query_tag($brands, 'id', 'brand_model', $products['brand'], 'product[brand_model]', 'product[brand_model]', '', 'width:192px;'); ?>
               </td>
            </tr>
            <tr>
-              <td>Pack:</td><td><?php select_query_tag($packs, 'id', 'classification', $products['product_classification'], 'product[product_classification]', 'product[product_classification]', '', 'width:192px;'); ?></td>
+              <td>Barcode:</td><td><input type="text" id="product[bar_code]" name="product[bar_code]" value="<?php echo $products['bar_code'] ?>" class="text-field" />
+              	<span id="bar_codestatus" class="warning"></span>
+              </td>
               <td>Color:</td><td><input type="text" id="product[color]" name="product[color]" value="<?php echo $products['color'] ?>" class="text-field" /></td>
            </tr>    
            <tr>
-              <td>Barcode:</td><td><input type="text" id="product[bar_code]" name="product[bar_code]" value="<?php echo $products['bar_code'] ?>" class="text-field" /></td>
+              <td>Pack:</td><td><?php select_query_tag($packs, 'id', 'classification', $products['product_classification'], 'product[product_classification]', 'product[product_classification]', '', 'width:192px;'); ?></td>
               <td>Status:</td><td><?php select_query_tag($statuses, 'id', 'description', $products['status'], 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
            </tr>            
            <tr>
@@ -111,5 +115,20 @@
 		</div>
 	</div>
 
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('[name*="product[product_code]"]').keyup(function() {
+				$(this).val($(this).val().toUpperCase());
+				$('[name*="product[bar_code]"]').val($(this).val());
+				is_existing('products', 'id', '', 'product_code=\"' +$(this).val().toUpperCase()+ '\"', 'product_code');
+				return false;    
+			});
+			$('[name*="product[bar_code]"]').keyup(function() {
+				$(this).val($(this).val().toUpperCase());
+				is_existing('products', 'id', '', 'bar_code=\"' +$(this).val().toUpperCase()+ '\"', 'bar_code');
+				return false;    
+			});
+		});
+	</script>
 <?php }
 require('footer.php'); ?>

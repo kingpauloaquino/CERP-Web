@@ -251,6 +251,10 @@ select:focus { border-color:#999999;outline:none; }
 
 .notice p strong { font-size:110%; }
 
+.warning {
+	color: #b94a48;
+}
+
 .auto_width {
 	width: 85%;
 }

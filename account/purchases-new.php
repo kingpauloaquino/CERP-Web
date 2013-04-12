@@ -149,11 +149,10 @@
 	        </table>
 	      </div>	
 	      <div id="requests-pagination"></div>
-      
-       <div class="modal-footer">
-         <a class="btn modal-close" rel="modal:close">Close</a>
-         <div class="clear"></div>
-       </div>
+     </div>     
+     <div class="modal-footer">
+       <a class="btn modal-close" rel="modal:close">Close</a>
+       <div class="clear"></div>
      </div>
 	</div>
       

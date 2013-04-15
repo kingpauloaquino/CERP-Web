@@ -77,21 +77,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     $items			= array();
 		$total_amount	= 0.00;
 	
-	if(!empty($_POST['items'])) {
-	  foreach ($_POST['items'] as $id => $attr) {
-        $item = array('item_id' => $id, 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['price']));
-	    $total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
-        array_push($items, $item);
-	  }
-	}
-	
-	$purchase['items']			= $items;
-	$purchase['total_amount']	= $total_amount;
-	
-	// Insert new purchase record
-	$purchase_id = $Posts->AddPurchase($purchase);
-	// If successfully added new purchase, redirect to display page
-	if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase_id)); 
+		if(!empty($_POST['items'])) {
+		  foreach ($_POST['items'] as $id => $attr) {
+	        $item = array('item_id' => $id, 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['price']));
+		    $total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
+	        array_push($items, $item);
+		  }
+		}
+		
+		$purchase['items']			= $items;
+		$purchase['total_amount']	= $total_amount;
+		
+		// Insert new purchase record
+		$purchase_id = $Posts->AddPurchase($purchase);
+		// If successfully added new purchase, redirect to display page
+		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase_id)); 
     break;
 	
   // ===============================================================
@@ -102,21 +102,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     $items			= array();
 		$total_amount	= 0.00;
 	
-	if(!empty($_POST['items'])) {
-	  foreach ($_POST['items'] as $id => $attr) {
-        $item = array('item_id' => $id, 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['price']));
-	    $total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
-        array_push($items, $item);
-	  }
-	}
-	
-	$purchase['items']			= $items;
-	$purchase['total_amount']	= $total_amount;
-	
-	// Update purchase record
-	$purchase_id = $Posts->EditPurchase($purchase);
-	// If successfully added new purchase, redirect to display page
-	if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase['id']));
+		if(!empty($_POST['items'])) {
+		  foreach ($_POST['items'] as $id => $attr) {
+	        $item = array('item_id' => $id, 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['price']));
+		    $total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
+	        array_push($items, $item);
+		  }
+		}
+		
+		$purchase['items']			= $items;
+		$purchase['total_amount']	= $total_amount;
+		
+		// Update purchase record
+		$purchase_id = $Posts->EditPurchase($purchase);
+		// If successfully added new purchase, redirect to display page
+		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase['id']));
     break;
 	
   // ===============================================================

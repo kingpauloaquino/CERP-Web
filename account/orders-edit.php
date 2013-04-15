@@ -33,11 +33,11 @@
                </tr>
                <tr>
                   <td>P/O Number:</td><td><input type="text" name="order[po_number]" value="<?php echo $order['po_number'] ?>" class="text-field" /></td>
-                  <td>P/O Date:</td><td><input type="text" name="order[po_date]" value="<?php echo date("F d, Y", strtotime($order['po_date'])) ?>" class="text-field datepick"/></td>
+                  <td>P/O Date:</td><td><input type="text" name="order[po_date]" value="<?php echo date("F d, Y", strtotime($order['po_date'])) ?>" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Terms:</td><td><input type="text" name="order[terms]" value="<?php echo $order['terms'] ?>" class="text-field"/></td>
-                  <td>Delivery Date:</td><td><input type="text" name="order[delivery_date]" value="<?php echo date("F d, Y", strtotime($order['delivery_date'])) ?>" class="text-field datepick"/></td>
+                  <td>Delivery Date:</td><td><input type="text" name="order[delivery_date]" value="<?php echo date("F d, Y", strtotime($order['delivery_date'])) ?>" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Payment Terms:</td>
@@ -177,13 +177,6 @@
      </div>
      
 	</div>
-<script>
-	$(function(){
-		$('.datepick').datepicker({
-			inline: true, dateFormat: 'MM dd, yy'
-		});
-	});
-</script>
       
        <script>
 				$(function() {

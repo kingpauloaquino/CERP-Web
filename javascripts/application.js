@@ -10,6 +10,7 @@ $(function() {
   $('.currency').currency();
   $('.text-currency').currency_format();
   $('.text-date').date_format();
+  $('.date-pick').date_pick();
   $('.redirect-to').redirect_to();
   $('.btn-download').download(); 
   
@@ -88,18 +89,24 @@ $.fn.download = function() {
 
 $.fn.currency = function() {
   this.live('blur', function() {
-    $(this).formatCurrency();
+    $(this).formatCurrency({region: "en-PH"});
   })
 }
 
 $.fn.currency_format = function(amount) {
   if(typeof(amount) == "undefined") amount = 0.00;
-  $(this).attr('value', amount).formatCurrency();
+  $(this).attr('value', amount).formatCurrency({region: "en-PH"});
 }
 
 $.fn.date_format = function(format) {
   if(typeof(format) == "undefined") format = "mm/dd/yyyy";
   $(this).attr('placeholder', format);
+}
+
+$.fn.date_pick = function() {
+  $(this).datepicker({
+		inline: true, dateFormat: 'MM dd, yy'
+	});
 }
 
 $.fn.digits = function(){ 
@@ -448,7 +455,7 @@ function row_template_purchases(data) {
     "<td class=\"border-right text-center\">"+ dtime_basic(data['created_at']) +"</td>" +
     "</tr>");
   
-  row.find('.text-currency').formatCurrency();
+  row.find('.text-currency').formatCurrency({region:"en-PH"});
   return row;
 }
 
@@ -466,7 +473,7 @@ function row_template_purchase_material(data) {
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price"/></td>');
   row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
            	
-  row.find('.currency').formatCurrency();
+  row.find('.currency').formatCurrency({region:"en-PH"});
   return row;   
 }
 
@@ -484,7 +491,7 @@ function row_template_purchase_material_read_only(data) {
   row.append('<td class="border-right text-right currency">'+ data['item_price'] +'</td>');
   row.append('<td class="border-right text-right currency amount">'+ amount +'</td>');
  
-  row.find('.currency').formatCurrency();
+  row.find('.currency').formatCurrency({region:"en-PH"});
   return row;   
 }
 
@@ -503,7 +510,7 @@ function row_template_order_items(data) {
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price" readonly/></td>');
   row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
            	
-  row.find('.currency').formatCurrency();
+  row.find('.currency').formatCurrency({region:"en-PH"});
   return row;   
 }
 
@@ -523,7 +530,7 @@ function row_template_order_items_read_only(data) {
   row.append('<td class="border-right text-right currency">'+ data['item_price'] +'</td>');
   row.append('<td class="border-right text-right currency amount">'+ amount +'</td>');
            	
-  row.find('.currency').formatCurrency();
+  row.find('.currency').formatCurrency({region:"en-PH"});
   return row;   
 }
 
@@ -551,7 +558,7 @@ function row_template_receiving(data) {
   row.append("<td class=\"border-right text-right\">"+ data['quantity'] +"</td>");
   row.append("<td class=\"border-right text-right\">"+ data['received'] +"</td>");
                   
-  row.find('.text-currency').formatCurrency();
+  row.find('.text-currency').formatCurrency({region:"en-PH"});
   return row;
 }
 
@@ -559,12 +566,12 @@ function row_template_deliveries(data) {
   var forward	= host + "/account/deliveries-show.php?id="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"></tr>");
   
-  row.append("<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['delivery_receipt'] +"</a></td>");
+  row.append("<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['purchase_number'] +"</a></td>");
   row.append("<td class=\"border-right\"><a>"+ data['supplier_name'] +"</a></td>");
   row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
-  row.append("<td class=\"border-right text-center\">"+ dtime_basic(data['date_received']) +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ dtime_basic(data['delivery_date']) +"</td>");
   
-  row.find('.text-currency').formatCurrency();
+  row.find('.text-currency').formatCurrency({region:"en-PH"});
   return row;
 }
 
@@ -600,7 +607,7 @@ function row_template_parts_tree(data) {
   row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][remarks]" value="'+ (data['remarks'] || '') +'" class="text-field-max" autocomplete="off"/></td>');
            	
-  row.find('.currency').formatCurrency();
+  row.find('.currency').formatCurrency({region:"en-PH"});
   return row;   
 }
 
@@ -619,7 +626,7 @@ function row_template_parts_tree_read_only(data) {
   row.append('<td class="border-right text-center currency">'+ amount +'</td>');
   row.append('<td class="border-right text-center">'+ data['remarks'] +'</td>');
            	
-  row.find('.currency').formatCurrency();
+  row.find('.currency').formatCurrency({region:"en-PH"});
   return row;   
 }
 
@@ -701,27 +708,6 @@ function add_live_search(pdsply, ptype, ptable, pcol, pjoin, pcond, psearch) {
 			success: function(data) {
 				//alert(pcond);
 				$(pdsply).html(data).show();		
-			}
-		});
-}
-
-function is_existing(ptable, pcol, pjoin, pcond, box) {
-	$.ajax({
-			type: "POST",
-			url: "../include/is-existing.php",
-			data: { 
-							table: ptable,
-							columns: pcol,
-							joins: pjoin,
-							conditions: pcond
-						},
-			cache: false,
-			success: function(data) {
-				var stat = $('#'+box+'status');
-				if(data == 1) { 
-					stat.text(" *EXISTING");
-					stat.show();	
-				}	else { stat.hide(); }
 			}
 		});
 }

@@ -75,7 +75,9 @@
 				<table>
            <tr>
               <td width="150">Production Plan ID:</td><td width="340"><input type="text" value="CPP-<?php echo $_GET['ppoid'] ?>" class="text-field" disabled/></td>
-              <td width="150">P/O Number:</td><td width="340"><input type="text" value="<?php echo $prod_detail['po_no'] ?>" class="text-field" disabled/></td>
+              <td width="150">P/O Number:</td><td width="340"><input type="text" value="<?php echo $prod_detail['po_no'] ?>" class="text-field" disabled/>
+              	<?php echo $linkto = (isset($prod_detail['po_no'])) ? link_to('orders-show.php?oid='.$prod_detail['oid']) : '' ?>
+              </td>
            </tr>
            <tr>
               <td>P/O Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($prod_detail['po_date'])) ?>" class="text-field text-date" disabled/></td>
@@ -135,7 +137,7 @@
 										echo $prod_qty = ($prod['type']=='Plan') 		
 													? '<td class="border-right text-right"><input type="text" id="production_plan['.$ctr.'][produce_qty]" name="production_plan['.$ctr.'][produce_qty]" value="'.$prod['produce_qty'].'" class="auto_width_right" /></td>'
 													: '<td class="border-right text-right">'.$prod['produce_qty'].'</td>';	
-										echo '<td class="border-right text-right"><input type="text" id="production_plan['.$ctr.'][prod_ship_date]" name="production_plan['.$ctr.'][prod_ship_date]" value="'.date("F d, Y", strtotime($prod['prod_ship_date'])).'" class="auto_width_center datepick" /></td>';							
+										echo '<td class="border-right text-right"><input type="text" id="production_plan['.$ctr.'][prod_ship_date]" name="production_plan['.$ctr.'][prod_ship_date]" value="'.date("F d, Y", strtotime($prod['prod_ship_date'])).'" class="auto_width_center date-pick" /></td>';							
 										echo '<td class="border-right text-center">'.$prod['type'].'</td>';
 										echo '</tr>';
 										$ctr+=1;										
@@ -156,13 +158,6 @@
 			</form>	
 		</div>
 	</div>
-<script>
-	$(function(){
-		$('.datepick').datepicker({
-			inline: true, dateFormat: 'MM dd, yy'
-		});
-	});
-</script>
 
 <?php }
 require('footer.php'); ?>

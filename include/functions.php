@@ -288,6 +288,15 @@ function pad_number($number,$n) {
 
 function generate_new_code($type) {
 	switch($type) {
+		case "order_number":	
+			$prefix = "STJ-";	
+			$flag = '-';			
+			$table = 'orders';
+			$column = 'po_number';
+			$pad = TRUE; 
+			$pad_cnt = 3;			
+			break;
+			
 		case "purchase_number":	
 			$prefix = "CRS-13VM";	
 			$flag = 'M';			

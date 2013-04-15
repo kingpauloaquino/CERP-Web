@@ -834,7 +834,7 @@ class Posts {
       'purchase_number'	=> strtoupper(trim($params['purchase_number'])),
       'supplier_id'		=> $params['supplier_id'],
       'delivery_via'	=> trim($params['delivery_via']),
-      'delivery_date'	=> strdate($params['delivery_date'], 'Y-m-d'),
+      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
       'trade_terms'		=> trim($params['trade_terms']),
       'payment_terms'	=> trim($params['payment_terms']),
       'total_amount'	=> $params['total_amount'],
@@ -842,15 +842,15 @@ class Posts {
       'remarks'			=> trim($params['remarks'])
     );
 	
-	$purchase_id = $this->DB->InsertRecord('purchases', $purchase);
-	
-	if(!empty($params['items'])) {
-	  // Add Each Purchase Item
-	  foreach ($params['items'] as $index => $item) {
-        $item['purchase_id'] = $purchase_id;
-        $this->DB->InsertRecord('purchase_items', $item);
-	  }
-	}
+		$purchase_id = $this->DB->InsertRecord('purchases', $purchase);
+		
+		if(!empty($params['items'])) {
+		  // Add Each Purchase Item
+		  foreach ($params['items'] as $index => $item) {
+	        $item['purchase_id'] = $purchase_id;
+	        $this->DB->InsertRecord('purchase_items', $item);
+		  }
+		}
 	
     return $purchase_id;
   }
@@ -901,9 +901,9 @@ class Posts {
 	   'receive_item'	=> $params['item_id'],
 	   'quantity'		=> $params['quantity'],
 	   'remarks'		=> $params['remarks']
-	);
+		);
 	
-	$receive_id = $this->DB->InsertRecord('receive_items', $data);
+		$receive_id = $this->DB->InsertRecord('receive_items', $data);
     return $receive_id;
   	/*
     $data = array(
@@ -932,27 +932,52 @@ class Posts {
   
   // Posts::AddDelivery
   // Return: ID
+  // function AddDelivery($params) {
+  	// global $Query;
+// 	
+		// if(trim($params['receipt']) == "") return -1;
+// 		
+		// $delivery = $Query->uniqueness_of_delivery(trim($params['receipt']));
+// 		
+		// if(!empty($delivery)) return 0;
+// 		
+	    // $data = array(
+	      // 'delivery_receipt'	=> $params['receipt'],
+	      // 'delivery_date'		=> strdate($params['date'], 'Y-m-d'),
+	      // 'supplier_id'			=> $params['supplier'],
+	      // 'delivery_via'		=> strtoupper(trim($params['via'])),
+	      // 'trade_terms'			=> strtoupper(trim($params['trade_terms'])),
+	      // 'payment_terms'		=> strtoupper(trim($params['payment_terms']))
+	    // );
+// 		
+		// $delivery_id = $this->DB->InsertRecord('deliveries', $data);
+		// return $delivery_id;
+  // }
+  
   function AddDelivery($params) {
-  	global $Query;
-	
-	if(trim($params['receipt']) == "") return -1;
-	
-  	$delivery = $Query->uniqueness_of_delivery(trim($params['receipt']));
-	
-	if(!empty($delivery)) return 0;
-	
-    $data = array(
-      'delivery_receipt'	=> $params['receipt'],
-      'delivery_date'		=> strdate($params['date'], 'Y-m-d'),
-      'supplier_id'			=> $params['supplier'],
-      'delivery_via'		=> strtoupper(trim($params['via'])),
-      'trade_terms'			=> strtoupper(trim($params['trade_terms'])),
-      'payment_terms'		=> strtoupper(trim($params['payment_terms']))
+  	$delivery = array(
+      'purchase_number'	=> strtoupper(trim($params['purchase_number'])),
+      'supplier_id'		=> $params['supplier_id'],
+      'delivery_via'	=> trim($params['delivery_via']),
+      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
+      'trade_terms'		=> trim($params['trade_terms']),
+      'total_amount'	=> $params['total_amount'],
+      'status'			=> $params['status'],
+      'remarks'			=> trim($params['remarks'])
     );
 	
-	$delivery_id = $this->DB->InsertRecord('deliveries', $data);
-	return $delivery_id;
-  }
+		$delivery_id = $this->DB->InsertRecord('deliveries', $delivery);
+		
+		if(!empty($params['items'])) {
+		  // Add Each Purchase Item
+		  foreach ($params['items'] as $index => $item) {
+	        $item['purchase_id'] = $purchase_id;
+	        $this->DB->InsertRecord('purchase_items', $item);
+		  }
+		}
+	
+    return $purchase_id;
+  }
 
   // Posts::UpdateDelivery
   // Return: ID

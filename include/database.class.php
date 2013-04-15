@@ -83,6 +83,7 @@ class MySQL {
     $sql .= $args['order'];
 	
 	// echo $sql; exit();
+	//echo '<br/><br/>';
 	//var_dump($sql); die();
 	$this->statement = $sql;
     $sql .= $args['limit'];

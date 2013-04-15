@@ -51,7 +51,9 @@
 				<table>
            <tr>
               <td width="150">Production Plan ID:</td><td width="340"><input type="text" value="CPP-<?php echo $_GET['ppoid'] ?>" class="text-field" disabled/></td>
-              <td width="150">P/O Number:</td><td width="340"><input type="text" value="<?php echo $prod_detail['po_no'] ?>" class="text-field" disabled/></td>
+              <td width="150">P/O Number:</td><td width="340"><input type="text" value="<?php echo $prod_detail['po_no'] ?>" class="text-field" disabled/>
+              	<?php echo $linkto = (isset($prod_detail['po_no'])) ? link_to('orders-show.php?oid='.$prod_detail['oid']) : '' ?>
+              </td>
            </tr>
            <tr>
               <td>P/O Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($prod_detail['po_date'])) ?>" class="text-field text-date" disabled/></td>

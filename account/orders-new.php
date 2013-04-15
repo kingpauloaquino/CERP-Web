@@ -35,12 +35,12 @@
                   <td width="120"></td><td width="340"></td>
                </tr>
                <tr>
-                  <td>P/O Number:</td><td><input type="text" name="order[po_number]" value="" class="text-field"/></td>
-                  <td>P/O Date:</td><td><input type="text" name="order[po_date]" value="" class="text-field datepick"/></td>
+                  <td>P/O Number:</td><td><input type="text" name="order[po_number]" value="<?php echo generate_new_code('order_number') ?>" class="text-field magenta"/></td>
+                  <td>P/O Date:</td><td><input type="text" name="order[po_date]" value="" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Terms:</td><td><input type="text" name="order[terms]" value="" class="text-field"/></td>
-                  <td>Delivery Date:</td><td><input type="text" name="order[delivery_date]" value="" class="text-field datepick"/></td>
+                  <td>Delivery Date:</td><td><input type="text" name="order[delivery_date]" value="" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Payment Terms:</td>
@@ -180,14 +180,7 @@
      </div>
      
 	</div>
-      
-<script>
-	$(function(){
-		$('.datepick').datepicker({
-			inline: true, dateFormat: 'MM dd, yy'
-		});
-	});
-</script>
+
        <script>
 				$(function() {
 			  	var data = { 

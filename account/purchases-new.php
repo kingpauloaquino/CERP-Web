@@ -36,7 +36,7 @@
                </tr>
                <tr>
                   <td>Delivery Via:</td><td><input type="text" name="purchase[delivery_via]" value="" class="text-field"/></td>
-                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="" class="text-field text-date"/></td>
+                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Trade Terms:</td><td><input type="text" name="purchase[trade_terms]" value="" class="text-field"/></td>

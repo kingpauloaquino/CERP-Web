@@ -51,9 +51,15 @@
 		settings = $.extend(defaults, settings);
 
 		// check for region setting
-		if (settings.region.length > 0) {
-			settings = $.extend(settings, getRegionOrCulture(settings.region));
-		}
+		// if (settings.region.length > 0) {
+			// settings = $.extend(settings, getRegionOrCulture(settings.region));
+		// }
+		
+		var tsettings = defaults;
+		if (settings.region.length > 0)
+			tsettings = $.extend(defaults, getRegionOrCulture(settings.region));
+		settings = $.extend(tsettings, settings);
+		
 		settings.regex = generateRegex(settings);
 
 		return this.each(function() {

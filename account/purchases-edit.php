@@ -40,7 +40,7 @@
                  </tr>
                  <tr>
                     <td>Delivery Via:</td><td><input type="text" name="purchase[delivery_via]" value="<?php echo $purchase['delivery_via']; ?>" class="text-field"/></td>
-                    <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="<?php echo dformat($purchase['delivery_date'], 'm/d/Y'); ?>" class="text-field text-date"/></td>
+                    <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="<?php echo date("F d, Y", strtotime($purchase['delivery_date'])); ?>" class="text-field date-pick"/></td>
                  </tr>
                  <tr>
                     <td>Trade Terms:</td><td><input type="text" name="purchase[trade_terms]" value="<?php echo $purchase['trade_terms']; ?>" class="text-field"/></td>

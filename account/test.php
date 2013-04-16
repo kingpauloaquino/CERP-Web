@@ -20,7 +20,7 @@ if(!$allowed) {
 					<h2>usual content</h2>
 					
 					<?php
-					echo generate_new_code('supplier_code');
+					echo generate_new_code('purchase_number');
 
 					
 					?>

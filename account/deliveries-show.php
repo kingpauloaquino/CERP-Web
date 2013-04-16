@@ -25,8 +25,10 @@
              <div>
              	<table>
                    <tr>
-                      <td width="120">Purchase Number:</td><td width="340"><input type="text" value="<?php echo $delivery['purchase_number']; ?>" class="text-field" disabled/></td>
-                      <td width="120"></td><td width="340"></td>
+                      <td width="120">Purchase Number:</td><td width="340"><input type="text" value="<?php echo $delivery['purchase_number']; ?>" class="text-field" disabled/>
+                      	<?php echo $linkto = (isset($delivery['pid'])) ? link_to('purchases-show.php?id='.$delivery['pid']) : '' ?>
+                      </td>
+                      <td width="120">Receipt:</td><td width="340"><input type="text" value="<?php echo $delivery['receipt']; ?>" class="text-field" disabled/></td>
                    </tr>
                    <tr>
                       <td>Supplier:</td>
@@ -51,14 +53,12 @@
                <table cellspacing="0" cellpadding="0">
                  <thead>
                    <tr>
-                     <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all" disabled/></td>
+<!--                      <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all" disabled/></td> -->
                      <td width="30" class="border-right text-center">No.</td>
                      <td width="140" class="border-right">Item Code</td>
                      <td class="border-right">Description</td>
-                     <td width="55" class="border-right text-center">Qty</td>
+                     <td width="70" class="border-right text-center">Qty</td>
                      <td width="60" class="border-right text-center">Unit</td>
-                     <td width="100" class="border-right text-center">Unit Price</td>
-                     <td width="100" class="text-center">Amount Price</td>
                    </tr>
                  </thead>
                  <tbody id="delivery-materials"></tbody>
@@ -73,7 +73,7 @@
                    <tr><td height="5" colspan="99"></td></tr>
                    <tr>
                       <td></td>
-                      <td align="right"><strong>Total Amount:</strong>&nbsp;&nbsp;<input id="purchase_amount" type="text" class="text-right" style="width:95px;" disabled/></td>
+                      <td align="right"></td>
                    </tr>
                    <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $delivery['remarks']; ?></textarea></td></tr>
                 </table>
@@ -81,13 +81,13 @@
              
              <div class="field-command">
            	   <div class="text-post-status">
-           	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
+           	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
                </div>
-           	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=purchase&id='. $delivery['id']); ?>"/>
+           	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=delivery&id='. $delivery['id']); ?>"/>
                <?php if($delivery['status'] != "Publish") { ?>
-               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('purchases-edit.php?id='. $delivery['id']); ?>"/>
+               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('deliveries-edit.php?id='. $delivery['id']); ?>"/>
            	   <?php } ?>
-               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('purchases.php'); ?>"/>
+               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>
              </div>
           </form>
        </div>

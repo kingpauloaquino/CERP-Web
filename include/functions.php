@@ -324,8 +324,9 @@ function generate_new_code($type) {
 	}
 	
 	global $DB;
-	$result = $DB->Find($table, array('columns' => 'MAX('.$column.') AS current'));
-	$res = substr($result['current'], strpos($result['current'], $flag)+1)+1;
+	$result = $DB->Find($table, array('columns' => 'MAX(id) AS current'));
+	//$res = substr($result['current'], strpos($result['current'], $flag)+1)+1;
+	$res = $result['current'] + 1;
 	if($pad) { $res = pad_number($res, $pad_cnt); }
 	return $prefix . $res;
 }

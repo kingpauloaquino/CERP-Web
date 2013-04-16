@@ -35,7 +35,8 @@
                       </td>
                    </tr>
                    <tr>
-                      <td>Delivery Via:</td><td><input type="text" value="<?php echo $purchase['delivery_via']; ?>" class="text-field" disabled/></td>
+                      <td>Delivery Via:</td><td><input type="text" value="<?php echo $purchase['delivery_via']; ?>" class="text-field" disabled/>
+                      </td>
                       <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
                    </tr>
                    <tr>

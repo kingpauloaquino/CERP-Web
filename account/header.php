@@ -91,6 +91,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		// Insert new purchase record
 		$purchase_id = $Posts->AddPurchase($purchase);
 		// If successfully added new purchase, redirect to display page
+		
+		// Add Delivery entry if published status
+		if($purchase['status'] == '137') { 
+			if(!empty($_POST['items'])) {
+			  foreach ($_POST['items'] as $id => $attr) {
+		        $item = array('item_id' => $id, 'quantity' => $attr['quantity']);
+		        array_push($items, $item);
+			  }
+			}
+			$purchase['purchase_id'] = $purchase_id;
+			$purchase['items'] = $items;
+			$delivery_id = $Posts->AddDelivery($purchase);
+		}
+		
 		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase_id)); 
     break;
 	
@@ -117,25 +131,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$purchase_id = $Posts->EditPurchase($purchase);
 		// If successfully added new purchase, redirect to display page
 		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase['id']));
-    break;
-	
-  // ===============================================================
-  // Post::Add Delivery
-  // ===============================================================
-  case 'add_delivery':
-  	echo $Posts->AddDelivery($_POST['delivery']);
-  	exit();
-  	break;
+    break;	  
 	
   // ===============================================================
   // Post::Update Delivery
   // ===============================================================
   case 'edit_delivery':
-    $delivery			= $_POST['delivery'];
-		$delivery['items']	= $_POST['items'];
-	
-  	$delivery_id = $Posts->UpdateDelivery($delivery);
-	if($delivery_id > 0) redirect_to(host('deliveries-show.php?id='.$delivery['id']));
+		$_POST['delivery']['delivery_date'] = date('Y-m-d', strtotime($_POST['delivery']['delivery_date']));
+		$Posts->UpdateDelivery(array('variables' => $_POST['delivery'], 'conditions' => 'id='.$_POST['did']));
+		redirect_to(host('deliveries-show.php?id='.$_POST['did']));
   	break;
   
   // ===============================================================

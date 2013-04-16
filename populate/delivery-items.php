@@ -14,7 +14,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('delivery_items', array(
                'columns' => 'delivery_items.id, delivery_items.item_id, material_code AS code, materials.description, 
-                             lookups.description AS unit, brand_model, material_type, quantity, item_price',
+                             lookups.description AS unit, brand_model, material_type, quantity',
                'joins' => 'INNER JOIN materials ON materials.id = delivery_items.item_id
                            LEFT OUTER JOIN item_costs ON item_type = "MAT" AND item_costs.item_id = delivery_items.item_id
                            LEFT OUTER JOIN lookups ON lookups.id = item_costs.unit',

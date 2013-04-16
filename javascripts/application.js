@@ -282,6 +282,7 @@ function row_template_materials_inventory(data) {
     "<td class=\"border-right text-right numbers \">"+ data['qty'] +"</td>" +
     "</tr>");
 
+  row.find('.numbers').digits();
   return row;
 }
 
@@ -307,6 +308,7 @@ function row_template_products_inventory(data) {
     "<td class=\"border-right text-right numbers \">"+ data['qty'] +"</td>" +
     "</tr>");
 
+  row.find('.numbers').digits();
   return row;
 }
 
@@ -567,11 +569,27 @@ function row_template_deliveries(data) {
   var row		= $("<tr forward=\""+ forward +"\"></tr>");
   
   row.append("<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['purchase_number'] +"</a></td>");
-  row.append("<td class=\"border-right\"><a>"+ data['supplier_name'] +"</a></td>");
+  row.append("<td class=\"border-right\">"+ data['supplier_name'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ dtime_basic(data['delivery_date']) +"</td>");
   
   row.find('.text-currency').formatCurrency({region:"en-PH"});
+  return row;
+}
+
+function row_template_delivery_items_read_only(data) {
+  var forward	= host + "/account/materials-show.php?mid="+ data['item_id'] +"";
+  var row		= $("<tr forward=\""+ forward +"\"></tr>");
+  
+  //row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-all\" disabled/></td>");
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append("<td class=\"border-right text-center\"><a target=\"_blank\"  href=\""+ forward +"\">"+ data['code'] +"</a></td>");
+  row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
+  row.append("<td class=\"border-right text-right numbers \">"+ parseFloat(data['quantity']) +"</td>");
+  row.append("<td class=\"border-right text-center \">"+ data['unit'] +"</td>");
+  
+  row.find('.numbers').digits();
+  
   return row;
 }
 

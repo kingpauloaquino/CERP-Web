@@ -23,7 +23,7 @@
     <div id="content">
       <form id="order-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
       	 <input type="hidden" name="action" value="edit_order"/>
-          	 <input type="hidden" name="order[id]" value="<?php echo $order['id']; ?>"/>
+      	 <input type="hidden" name="order[id]" value="<?php echo $order['id']; ?>"/>
          <!-- BOF TEXTFIELDS -->
          <div>
          	<table>

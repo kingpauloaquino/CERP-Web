@@ -107,9 +107,8 @@ class Query {
 	  // Get Delivery By ID
   function delivery_by_id($id) {
   	$query = $this->DB->Fetch('deliveries', array(
-               'columns'  => 'deliveries.id, purchases.purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
-                              suppliers.address AS supplier_address, suppliers.contact_no1 AS supplier_phone, suppliers.fax_no AS supplier_fax,
-                              suppliers.representative AS supplier_person, deliveries.delivery_date, purchases.delivery_via, purchases.trade_terms, 
+               'columns'  => 'deliveries.id, deliveries.receipt, purchases.id AS pid, purchases.purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
+                              deliveries.delivery_date, deliveries.delivery_via, purchases.trade_terms, 
                               purchases.payment_terms, purchases.total_amount, deliveries.remarks, lookups.description AS status,
                               deliveries.created_at',
                'joins' => 'INNER JOIN purchases ON purchases.id = deliveries.purchase_id 

@@ -1,8 +1,8 @@
 <?php
   /*
-   * Module: Deliveries 
+   * Module: Supplier Deliveries 
   */
-  $capability_key = 'deliveries';  
+  $capability_key = 'supplier_delivery';  
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -15,7 +15,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['supplier_delivery']['url'].'" class="nav">'.$Capabilities->All['supplier_delivery']['title'].'</a>';
+				  echo '<a href="'.$Capabilities->All['deliveries']['url'].'" class="nav">'.$Capabilities->All['deliveries']['title'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>

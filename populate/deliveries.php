@@ -19,7 +19,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						: '';
 	
 	$query = $DB->Fetch('deliveries', array(
-							'columns'	=> 'deliveries.id, purchases.purchase_number, deliveries.delivery_date, supplier_id, name AS supplier_name, 
+							'columns'	=> 'deliveries.id, purchases.purchase_number, deliveries.receipt, deliveries.invoice, deliveries.delivery_date, supplier_id, name AS supplier_name, 
                            lookups.description AS status',
 					    'joins'		=> 'INNER JOIN purchases ON purchases.id = deliveries.purchase_id
 					    						INNER JOIN suppliers ON suppliers.id = supplier_id

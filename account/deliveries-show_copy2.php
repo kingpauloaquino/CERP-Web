@@ -1,6 +1,6 @@
 <?php
-  /* Module: Edit Deliveries  */
-  $capability_key = 'edit_deliveries';
+  /* Module: Dashboard  */
+  $capability_key = 'show_deliveries';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -21,8 +21,6 @@
 
         <div id="content">
           <form id="delivery-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
-	      	 <input type="hidden" name="action" value="edit_delivery"/>
-	      	 <input type="hidden" name="did" value="<?php echo $delivery['id']; ?>"/>
              <!-- BOF TEXTFIELDS -->
              <div>
              	<table>
@@ -43,12 +41,12 @@
                       <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
                    </tr>
                    <tr>
-                      <td>Invoice:</td><td><input type="text" id="delivery[invoice]" name="delivery[invoice]" value="<?php echo $delivery['invoice']; ?>" class="text-field" /></td>
-                      <td>Receipt:</td><td><input type="text" id="delivery[receipt]" name="delivery[receipt]" value="<?php echo $delivery['receipt'] ?>" class="text-field" /></td>
+                      <td>Invoice:</td><td><input type="text" value="<?php echo $delivery['invoice']; ?>" class="text-field" disabled/></td>
+                      <td>Receipt:</td><td><input type="text" value="<?php echo $delivery['receipt'] ?>" class="text-field" disabled/></td>
                    </tr>
                    <tr>
-                      <td>Delivery Via:</td><td><input type="text" id="delivery[delivery_via]" name="delivery[delivery_via]" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" /></td>
-                      <td>Delivery Date:</td><td><input type="text" id="delivery[delivery_date]" name="delivery[delivery_date]" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field date-pick" /></td>
+                      <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" disabled/></td>
+                      <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
                    </tr>
                    <tr><td height="5" colspan="99"></td></tr>
                 </table>
@@ -81,17 +79,20 @@
                       <td></td>
                       <td align="right"></td>
                    </tr>
-                   <tr><td colspan="2">Remarks:<br/><textarea id="delivery[remarks]" name="delivery[remarks]" style="min-width:650px;width:98.9%;height:50px;" ><?php echo $delivery['remarks']; ?></textarea></td></tr>
+                   <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $delivery['remarks']; ?></textarea></td></tr>
                 </table>
              </div>
              
-		         <div class="field-command">
-		       	   <div class="text-post-status">
-		       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="delivery[status]"><?php echo build_select_post_status("", $delivery['status']); ?></select>
-		           </div>
-		       	   <input type="submit" value="Save" class="btn"/>
-		           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('deliveries-show.php?id='. $delivery['id']); ?>"/>
-		         </div>
+             <div class="field-command">
+           	   <div class="text-post-status">
+           	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
+               </div>
+           	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=delivery&id='. $delivery['id']); ?>"/>
+               <?php if($delivery['status'] != "Publish") { ?>
+               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('deliveries-edit.php?id='. $delivery['id']); ?>"/>
+           	   <?php } ?>
+               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>
+             </div>
           </form>
        </div>
        

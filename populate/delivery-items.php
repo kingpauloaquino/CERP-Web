@@ -4,7 +4,7 @@ require('../include/general.class.php');
 $keyword	= $_GET['params'];
 $page			= ($_GET['page'] != "" ? $_GET['page'] : 1);
 $limit		= ($_GET['limit'] != "" ? $_GET['limit'] : 15);
-$order		= ($_GET['order'] != "" ? $_GET['order'] : "id");
+$order		= ($_GET['order'] != "" ? $_GET['order'] : "status, id");
 $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 
 function populate_records($keyword='', $page, $limit, $order, $sort) {
@@ -14,10 +14,11 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('delivery_items', array(
                'columns' => 'delivery_items.id, delivery_items.item_id, material_code AS code, materials.description, 
-                             lookups.description AS unit, brand_model, material_type, quantity',
+														lookups.description AS unit, quantity, delivered, received, additional, remarks, lookup_status.description AS status',
                'joins' => 'INNER JOIN materials ON materials.id = delivery_items.item_id
-                           LEFT OUTER JOIN item_costs ON item_type = "MAT" AND item_costs.item_id = delivery_items.item_id
-                           LEFT OUTER JOIN lookups ON lookups.id = item_costs.unit',
+												    LEFT OUTER JOIN item_costs ON item_type = "MAT" AND item_costs.item_id = delivery_items.item_id
+												    LEFT OUTER JOIN lookups ON lookups.id = item_costs.unit
+												    INNER JOIN lookup_status ON lookup_status.id = delivery_items.status',
 						    'order' 	=> $order .' '.$sort,
 	    					'limit'		=> $startpoint .', '.$limit,
                 'conditions' => $search)

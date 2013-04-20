@@ -32,9 +32,11 @@
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-							<td class="border-right text-center" width="130"><a class="sort default active up" column="purchase_number">P/O Number</a></td>
+							<td class="border-right text-center" width="130"><a class="sort default active up" column="purchase_number">P/O Number</a></td> 
+              <td class="border-right text-center" width="100"><a class="sort" column="receipt">Receipt</a></td>    
+              <td class="border-right text-center" width="100"><a class="sort" column="invoice">Invoice</a></td>   
               <td class="border-right text-center"><a class="sort down" column="supplier_name">Supplier</a></td>
-              <td class="border-right text-center" width="90"><a class="sort" column="status">Status</a></td>   
+              <td class="border-right text-center" width="90"><a class="sort" column="status">Status</a></td>  
               <td class="border-right text-center" width="100"><a class="sort" column="delivery_date">Delivery Date</a></td>  
             </tr>
           </thead>

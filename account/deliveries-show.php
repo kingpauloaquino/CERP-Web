@@ -14,7 +14,7 @@
       <div id="page">
         <div id="page-title">
           <h2>
-            <span class="title">Delivery &raquo; <span class="red"><?php echo $delivery['purchase_number']; ?></span></span>
+            <span class="title"><?php echo $Capabilities->GetTitle(); ?></span></span>
             <div class="clear"></div>
           </h2>
         </div>
@@ -28,7 +28,7 @@
                       <td width="120">Purchase Number:</td><td width="340"><input type="text" value="<?php echo $delivery['purchase_number']; ?>" class="text-field" disabled/>
                       	<?php echo $linkto = (isset($delivery['pid'])) ? link_to('purchases-show.php?id='.$delivery['pid']) : '' ?>
                       </td>
-                      <td width="120">Receipt:</td><td width="340"><input type="text" value="<?php echo $delivery['receipt']; ?>" class="text-field" disabled/></td>
+                      <td width="120"></td><td width="340"></td>
                    </tr>
                    <tr>
                       <td>Supplier:</td>
@@ -37,12 +37,16 @@
                       </td>
                    </tr>
                    <tr>
-                      <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" disabled/></td>
-                      <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
-                   </tr>
-                   <tr>
                       <td>Trade Terms:</td><td><input type="text" value="<?php echo $delivery['trade_terms']; ?>" class="text-field" disabled/></td>
                       <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
+                   </tr>
+                   <tr>
+                      <td>Invoice:</td><td><input type="text" value="<?php echo $delivery['invoice']; ?>" class="text-field" disabled/></td>
+                      <td>Receipt:</td><td><input type="text" value="<?php echo $delivery['receipt'] ?>" class="text-field" disabled/></td>
+                   </tr>
+                   <tr>
+                      <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" disabled/></td>
+                      <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
                    </tr>
                    <tr><td height="5" colspan="99"></td></tr>
                 </table>
@@ -59,6 +63,7 @@
                      <td class="border-right">Description</td>
                      <td width="70" class="border-right text-center">Qty</td>
                      <td width="60" class="border-right text-center">Unit</td>
+                     <td width="70" class="border-right text-center">Status</td>
                    </tr>
                  </thead>
                  <tbody id="delivery-materials"></tbody>
@@ -91,6 +96,7 @@
              </div>
           </form>
        </div>
+     </div>
        
        <script>
        	$(function() {

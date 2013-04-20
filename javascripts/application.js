@@ -549,18 +549,36 @@ function row_template_deliver_materials(data) {
 }
 
 function row_template_receiving(data) {
-  var purchase	= host + "/account/purchases-show.php?id="+ data['purchase_id'] +"";
-  var row		= $("<tr quantity=\""+ data['quantity'] +"\" received=\""+ data['received'] +"\"" + 
-                    "item=\""+ data['id'] +"\" title=\""+ data['material_code'] +"\"></tr>");
+  var row		= $("<tr quantity=\""+ data['quantity'] + "\" id=\""+ data['id'] +"\"" + 
+                    "item=\""+ data['id'] +"\" title=\""+ data['code'] +"\"></tr>");
   
-  row.append("<td class=\"border-right\"><a href=\""+ purchase +"\">"+ data['purchase_number'] +"</a</td>");
-  row.append("<td class=\"border-right\"><a href=\"#\">"+ data['material_code'] +"</a></td>");
-  row.append("<td class=\"border-right\">"+ data['material_description'] +"</td>");
+  var code = data['status'] != "Complete" ? "<a href=\"#\">"+ data['code'] +"</a>" : data['code']; //remove lin
+  row.append("<td class=\"border-right\">"+ code +"</td>");
+  row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['unit'] +"</td>");
-  row.append("<td class=\"border-right text-right\">"+ data['quantity'] +"</td>");
-  row.append("<td class=\"border-right text-right\">"+ data['received'] +"</td>");
+  row.append("<td class=\"border-right text-right numbers\">"+ data['quantity'] +"</td>");
+  row.append("<td class=\"border-right text-right numbers\">"+ (data['delivered'] || 0) +"</td>");
+  row.append("<td class=\"border-right text-right numbers\">"+ (data['received'] || 0) +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
                   
   row.find('.text-currency').formatCurrency({region:"en-PH"});
+  row.find('.numbers').digits();
+  return row;
+}
+
+function row_template_receiving_read_only(data) {
+  var row = $("<tr></tr>");
+  
+  row.append("<td class=\"border-right\">"+ data['code'] +"</td>");
+  row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ data['unit'] +"</td>");
+  row.append("<td class=\"border-right text-right numbers\">"+ data['quantity'] +"</td>");
+  row.append("<td class=\"border-right text-right numbers\">"+ (data['delivered'] || 0) +"</td>");
+  row.append("<td class=\"border-right text-right numbers\">"+ (data['received'] || 0) +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
+                  
+  row.find('.text-currency').formatCurrency({region:"en-PH"});
+  row.find('.numbers').digits();
   return row;
 }
 
@@ -569,6 +587,8 @@ function row_template_deliveries(data) {
   var row		= $("<tr forward=\""+ forward +"\"></tr>");
   
   row.append("<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['purchase_number'] +"</a></td>");
+  row.append("<td class=\"border-right text-center\">"+ (data['receipt'] || '-') +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ (data['invoice'] || '-') +"</td>");
   row.append("<td class=\"border-right\">"+ data['supplier_name'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ dtime_basic(data['delivery_date']) +"</td>");
@@ -587,6 +607,7 @@ function row_template_delivery_items_read_only(data) {
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
   row.append("<td class=\"border-right text-right numbers \">"+ parseFloat(data['quantity']) +"</td>");
   row.append("<td class=\"border-right text-center \">"+ data['unit'] +"</td>");
+  row.append("<td class=\"border-right text-center \">"+ data['status'] +"</td>");
   
   row.find('.numbers').digits();
   

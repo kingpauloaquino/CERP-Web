@@ -103,6 +103,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			$purchase['purchase_id'] = $purchase_id;
 			$purchase['items'] = $items;
 			$delivery_id = $Posts->AddDelivery($purchase);
+			redirect_to(host('purchases-show.php?id='.$purchase_id.'&did='.$delivery_id));
 		}
 		
 		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase_id)); 
@@ -147,6 +148,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   case 'add_receiving':
     echo $Posts->AddReceiving($_POST['receiving']);
+    exit();
+    break;
+		
+	// ===============================================================
+  // Post::Edit Receiving
+  // ===============================================================
+  case 'edit_receiving':
+		$args = array('variables' => $_POST['receiving'], 'conditions' => 'id='.$_POST['rid']); 
+		$num_of_records = $Posts->EditReceiving($args);
     exit();
     break;
 		
@@ -328,7 +338,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 <html lang="en">
 	<head>
     <meta charset="utf-8">
-		<title><?php echo $Title; ?> - CERP</title>
+		<title>CERP - <?php echo $Title; ?></title>
     <meta name="description" content="">
     <meta name="author" content="">
 		<link rel="stylesheet" href="../stylesheets/main.css" />

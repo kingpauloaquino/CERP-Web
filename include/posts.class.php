@@ -954,6 +954,10 @@ class Posts {
 		// return $delivery_id;
   // }
   
+  function EditReceiving($params) {
+    return $this->DB->UpdateRecord('delivery_items', $params);
+  }
+  
   function AddDelivery($params) {
   	$delivery = array(
       'purchase_id'	=> $params['purchase_id'],

@@ -26,7 +26,11 @@
              	<table>
                    <tr>
                       <td width="120">Purchase Number:</td><td width="340"><input type="text" value="<?php echo $purchase['purchase_number']; ?>" class="text-field" disabled/></td>
-                      <td width="120"></td><td width="340"></td>
+                      <td width="120"></td><td width="340">
+                      	<?php
+                      		if(isset($_GET['did'])) echo '<a href="deliveries-show.php?id='.$_GET['did'].'" class="magenta">[ NEW DELIVERY CREATED ]</a>';
+                      	?>
+                      </td>
                    </tr>
                    <tr>
                       <td>Supplier:</td>

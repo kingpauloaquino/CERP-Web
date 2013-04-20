@@ -1,6 +1,6 @@
 <?php
   /* Module: Receiving  */
-  $capability_key = 'edit_receiving';
+  $capability_key = 'show_receiving';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -82,11 +82,16 @@
                 </table>
              </div>
              
-					<div class="field-command">
-	       	   <div class="text-post-status"></div>
-         	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=receiving&id='. $delivery['id']); ?>"/>
-	           <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('receiving-show.php?id='.$_GET['id']); ?>"/>
-	         </div>
+             <div class="field-command">
+           	   <div class="text-post-status">
+           	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
+               </div>
+           	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=receiving&id='. $delivery['id']); ?>"/>
+               	<?php if($delivery['status'] != "Publish") { ?>
+               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='. $delivery['id']); ?>"/>
+           	   	<?php } ?>
+               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('receiving.php'); ?>"/>
+             </div>
           </form>
        </div>
      </div>
@@ -129,7 +134,6 @@
 						 <div class="field">
 						    <label>Remarks:</label>
 						    <textarea rows="2" id="receiving-remarks" name="receiving[remarks]" class="text-field" style="width:220px;"></textarea>
-						    <input type="hidden" id="receiving-status" name="receiving[status]" value=""/>
 						 </div>
 			</form>
 		</div>
@@ -145,107 +149,11 @@
     	"url":"/populate/delivery-items.php?did=<?php echo $_GET['id']; ?>",
       "limit":"50",
 			"data_key":"delivery_items",
-			"row_template":"row_template_receiving",
+			"row_template":"row_template_receiving_read_only",
       "pagination":"#receiving-items-pagination"
 		}	
 		$('#grid-receiving-items').grid(data);
-    
-    $('#tbl-materials').find('tbody tr a').show_receiving_modal();
-    $('#submit-receive-material').add_receiving();
-  })
-        
-  $.fn.show_receiving_modal = function() {
-  	$()
-    this.live('click', function(e) {
-    	e.preventDefault();
-    	
-    	var row = $('#tbl-materials').find('tbody tr');
-    	
-    	var index		= $(row).index();
-    	var modal		= $('#btn-receive-material').attr('href');
-    	var id	= $(row).attr('id');
-    	var item_id		= $(row).attr('item');
-    	var title		= 'Receive: ' + $(row).attr('title');
-    	var quantity	= $(row).attr('quantity');
-    	
-    	reset_form($(modal).find(':input'));
-    	
-    	$(modal).find('.notice').empty();
-    	$(modal).find('.modal-title h3').html(title);
-    	$(modal).find('#material-index').val(index);
-    	$(modal).find('#rid').val(id);
-    	$(modal).find('#receiving-item-id').val(item_id);
-    	$(modal).find('#receiving-quantity').val(quantity);
-    	
-    	$('#btn-receive-material').click();
-    })
-  }
-  
-  $.fn.add_receiving = function() {
-    this.click(function(e) {
-    	e.preventDefault();
-
-      var form		= $(this).attr('href');
-      var index		= $(form).find('#material-index').val();
-      var quantity	= $(form).find('#receiving-quantity').val();
-      var received	= $(form).find('#receiving-received').val();
-      var delivered	= $(form).find('#receiving-delivered').val();
-      var additional	= $(form).find('#receiving-additional').val();
-      var trow		= $('#tbl-materials tbody tr:eq('+ index +')');
-      
-      // if(parseFloat(delivered) > (parseFloat(quantity) - parseFloat(received)) || delivered == 0) {
-      	// $(form).find('.notice').html('<p>Delivered must not be 0 or greater than the remaining quantity.</p>');
-      	// return false;
-      // }
-      
-      if(parseFloat(delivered) == parseFloat(quantity)) {
-      	$(form).find('#receiving-status').val(6);
-      }
-      
-      if(parseFloat(delivered) < parseFloat(quantity)) {
-      	$(form).find('#receiving-status').val(5);
-      }
-
-    	
-    	$.post(document.URL, $(form).serialize(), function(data) {
-    	   $('#mdl-receive-material').find('.close').click();
-    	   
-    	   $('#receiving-items').empty();
-    	   
-    	   var data = { 
-		    	"url":"/populate/delivery-items.php?did=<?php echo $_GET['id']; ?>",
-		      "limit":"50",
-					"data_key":"delivery_items",
-					"row_template":"row_template_receiving",
-		      "pagination":"#receiving-items-pagination"
-				}	
-				$('#grid-receiving-items').grid(data);
-    	   
-    	  // var total_receive = (parseFloat(received) + parseFloat(delivered)); 
-    	  // if(total_receive != quantity) {
-    	    // trow.attr('received', total_receive);
-    	    // trow.find('td:eq(5)').html(trow.attr('received'));
-    	    // return false;
-    	  // }
-    	  // trow.remove();
-
-    	});
-    })
-  }
-  
-  function reset_form(form) {
-    // ex: form.not('#accountType')
-    form.each( function() {
-      if(this.type == "text" || this.type == 'textarea')  {
-        this.value = "";
-        $(this).val($(this).attr('default'));
-      }
-      
-      if(this.type == 'radio' || this.type == 'checkbox') this.checked = false;
-      if(this.type == 'select-one' || this.type == 'select-multiple') $(this).val($(this).find('option:first').val());
-      // $(this).find('option:first-child').attr("selected", "selected");
-    });
-  }      	
+	});
 </script>
 
 <?php }

@@ -104,10 +104,10 @@ class Query {
 	return null;
   }
 
-	  // Get Delivery By ID
+	// Get Delivery By ID
   function delivery_by_id($id) {
   	$query = $this->DB->Fetch('deliveries', array(
-               'columns'  => 'deliveries.id, deliveries.receipt, purchases.id AS pid, purchases.purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
+               'columns'  => 'deliveries.id, deliveries.receipt, deliveries.invoice, purchases.id AS pid, purchases.purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
                               deliveries.delivery_date, deliveries.delivery_via, purchases.trade_terms, 
                               purchases.payment_terms, purchases.total_amount, deliveries.remarks, lookups.description AS status,
                               deliveries.created_at',
@@ -120,4 +120,6 @@ class Query {
 		if(!empty($query)) return $query[0];
 		return null;
   }
+	
+	
 }

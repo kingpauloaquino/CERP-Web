@@ -60,7 +60,7 @@
                      <td width="30" class="border-right text-center">No.</td>
                      <td width="140" class="border-right">Item Code</td>
                      <td class="border-right">Description</td>
-                     <td width="55" class="border-right text-center">Qty</td>
+                     <td width="55" class="border-right text-center">P/O Qty</td>
                      <td width="60" class="border-right text-center">Unit</td>
                      <td width="100" class="border-right text-center">Unit Price</td>
                      <td width="100" class="text-center">Amount Price</td>

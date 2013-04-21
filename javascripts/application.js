@@ -452,7 +452,7 @@ function row_template_purchases(data) {
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['purchase_number'] || '--') +"</a></td>" +
     "<td class=\"border-right\"><a href=\"\">"+ data['supplier_name'] +"</a></td>" +
     "<td class=\"border-right text-right text-currency\">"+ data['total_amount'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['status'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['completion_status'] +"</td>" +
     "<td class=\"border-right text-center\">"+ dtime_basic(data['delivery_date']) +"</td>" +
     "<td class=\"border-right text-center\">"+ dtime_basic(data['created_at']) +"</td>" +
     "</tr>");
@@ -572,13 +572,13 @@ function row_template_receiving(data) {
   
   var code = data['status'] != "Complete" ? "<a href=\"#\">"+ data['code'] +"</a>" : data['code']; //remove line
   
-  row.append("<td class=\"border-right\">"+ (data['invoice'] || '') +"</td>");
+  row.append("<td class=\"border-right magenta\">"+ (data['invoice'] || '') +"</td>");
   row.append("<td class=\"border-right\">"+ code +"</td>");
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
-  row.append("<td class=\"border-right text-center\">"+ data['unit'] +"</td>");
   row.append("<td class=\"border-right text-right numbers\">"+ data['quantity'] +"</td>");
   //row.append("<td class=\"border-right text-right numbers\">"+ (data['delivered'] || 0) +"</td>");
   row.append("<td class=\"border-right text-right numbers\">"+ (data['received'] || 0) +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ data['unit'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
                   
   row.find('.text-currency').formatCurrency({region:"en-PH"});
@@ -624,6 +624,7 @@ function row_template_delivery_items_read_only(data) {
   row.append("<td class=\"border-right text-center\"><a target=\"_blank\"  href=\""+ forward +"\">"+ data['code'] +"</a></td>");
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
   row.append("<td class=\"border-right text-right numbers \">"+ parseFloat(data['quantity']) +"</td>");
+  row.append("<td class=\"border-right text-right numbers \">"+ (parseFloat(data['delivered']) || 0) +"</td>");
   row.append("<td class=\"border-right text-center \">"+ data['unit'] +"</td>");
   row.append("<td class=\"border-right text-center \">"+ data['status'] +"</td>");
   

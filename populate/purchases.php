@@ -20,9 +20,10 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('purchases', array(
 							'columns'	=> 'purchases.id, purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
-                            delivery_date, total_amount, lookup_status.description AS status, purchases.created_at',
+                            delivery_date, total_amount, lookup_status.description AS status,lookup_status2.description AS completion_status, purchases.created_at',
 					    'joins'		=> 'INNER JOIN suppliers ON suppliers.id = purchases.supplier_id 
-                            INNER JOIN lookup_status ON lookup_status.id = purchases.status',
+                            INNER JOIN lookup_status ON lookup_status.id = purchases.status
+                            INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = purchases.completion_status',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

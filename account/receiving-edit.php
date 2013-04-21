@@ -47,7 +47,7 @@
                    </tr>
                    <tr>
                       <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" disabled/></td>
-                      <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
+                      <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime(date('Y-m-d'))) ?>" class="text-field text-date" disabled/></td>
                    </tr>
                    <tr><td height="5" colspan="99"></td></tr>
                 </table>
@@ -61,10 +61,10 @@
 	                  <td class="border-right text-center" width="100"><a class="sort" column="invoice">Invoice</a></td>
 	                  <td class="border-right text-center" width="120"><a class="sort" column="material_code">Code</a></td>
 	                  <td class="border-right"><a class="sort down" column="material_description">Description</a></td>
-	                  <td class="border-right text-center text-date" width="80"><a class="sort" column="unit">Unit</a></td>
 	                  <td class="border-right text-center text-date" width="60"><a class="sort" column="quantity">P/O Qty</a></td>
 <!-- 	                  <td class="border-right text-center" width="60"><a class="sort" column="delivered">Delivered</a></td> -->
 	                  <td class="border-right text-center" width="60"><a class="sort" column="received">Received</a></td>
+	                  <td class="border-right text-center text-date" width="80"><a class="sort" column="unit">Unit</a></td>
 	                  <td class="border-right text-center" width="60"><a class="sort" column="status">Status</a></td>
 	                </tr>
 	              </thead>
@@ -84,7 +84,9 @@
              </div>
              
 					<div class="field-command">
-	       	   <div class="text-post-status"></div>
+	       	   <div class="text-post-status">
+	       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]"><?php echo build_select_post_status(); ?></select>
+	           </div>
          	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=receiving&id='. $delivery['id']); ?>"/>
 	           <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('receiving-show.php?id='.$_GET['id']); ?>"/>
 	         </div>

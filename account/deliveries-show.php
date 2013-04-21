@@ -58,6 +58,7 @@
                      <td width="140" class="border-right">Item Code</td>
                      <td class="border-right">Description</td>
                      <td width="70" class="border-right text-center">P/O Qty</td>
+                     <td width="70" class="border-right text-center">Delivered</td>
                      <td width="60" class="border-right text-center">Unit</td>
                      <td width="70" class="border-right text-center">Status</td>
                    </tr>
@@ -88,7 +89,7 @@
                <?php if($delivery['status'] != "Publish") { ?>
                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('deliveries-edit.php?id='. $delivery['id']); ?>"/>
            	   <?php } ?>
-           	   <input type="button" value="Receive" class="btn redirect-to" rel="<?php echo host('receiving-show.php?id='.$_GET['id']); ?>"/>
+           	   <input type="button" value="Receive" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='.$_GET['id']); ?>"/>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>
              </div>
           </form>

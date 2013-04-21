@@ -839,6 +839,7 @@ class Posts {
       'payment_terms'	=> trim($params['payment_terms']),
       'total_amount'	=> $params['total_amount'],
       'status'			=> $params['status'],
+      'completion_status'			=> 2, //pending
       'remarks'			=> trim($params['remarks'])
     );
 	

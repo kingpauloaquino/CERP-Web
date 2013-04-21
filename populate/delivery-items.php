@@ -14,12 +14,21 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('delivery_items', array(
                'columns' => 'delivery_items.id, purchase_items.item_id, materials.material_code AS code, materials.description, purchase_items.quantity, 
-														delivery_items.received, lookups.description AS unit, lookup_status.description AS status',
+													    delivery_items.invoice, delivery_items.received, lookups.description AS unit, lookup_status.description AS status, 
+													    (
+													        SELECT SUM(received) 
+													        FROM delivery_items AS del 
+													        INNER JOIN purchase_items AS pi ON pi.id = del.purchase_item_id
+													        INNER JOIN purchases AS p ON p.id = pi.purchase_id
+													        INNER JOIN materials AS m ON m.id = pi.item_id
+													        WHERE del.delivery_id=8 AND m.id = purchase_items.item_id
+													    ) AS delivered',
                'joins' => 'INNER JOIN purchase_items ON purchase_items.id = delivery_items.purchase_item_id
-														INNER JOIN materials ON materials.id = purchase_items.item_id
-														INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
-														INNER JOIN lookups ON lookups.id = item_costs.unit
-														INNER JOIN lookup_status ON lookup_status.id = delivery_items.status',
+												    INNER JOIN purchases ON purchases.id = purchase_items.purchase_id
+												    INNER JOIN materials ON materials.id = purchase_items.item_id
+												    INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT" AND item_costs.supplier = purchases.supplier_id
+												    INNER JOIN lookups ON lookups.id = item_costs.unit
+												    INNER JOIN lookup_status ON lookup_status.id = delivery_items.status',
 						    'order' 	=> $order .' '.$sort,
 	    					'limit'		=> $startpoint .', '.$limit,
                 'conditions' => $search)

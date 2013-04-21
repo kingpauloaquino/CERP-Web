@@ -25,8 +25,15 @@
              <div>
              	<table>
                    <tr>
-                      <td width="120">Purchase Number:</td><td width="340"><?php select_query_tag($pos, 'id', 'purchase_number', '', 'purchase_id', 'purchase_id', '', 'width:192px;'); ?>
-                      	<span class="magenta">(Pending and Partial)</span>
+                      <td width="120">Purchase Number:</td><td width="340">
+                      	<?php 
+                      		if(!isset($pos['id'])) {
+                      			echo '<span class="magenta">NO OPEN PURCHASE ORDERS</span>';
+                      		} else {
+                    				select_query_tag($pos, 'id', 'purchase_number', '', 'purchase_id', 'purchase_id', '', 'width:192px;'); 
+														echo '<span class="magenta">(Pending and Partial)</span>';
+                      		}
+                      		?>
                       </td>
                       <td width="120"></td><td width="340"></td>
                    </tr>

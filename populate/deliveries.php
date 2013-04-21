@@ -14,16 +14,16 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						? 
 						'purchases.purchase_number LIKE "%'. $keyword .'%" OR '.
 						'suppliers.name LIKE "%'. $keyword .'%" OR '.
-						'lookups.description LIKE "%'. $keyword .'%" '
+						'lookup_status.description LIKE "%'. $keyword .'%" '
 						//'materials.tags LIKE "%'. $keyword .'%" '
 						: '';
 	
 	$query = $DB->Fetch('deliveries', array(
-							'columns'	=> 'deliveries.id, purchases.purchase_number, deliveries.receipt, deliveries.invoice, deliveries.delivery_date, supplier_id, name AS supplier_name, 
-                           lookups.description AS status',
+							'columns'	=> 'deliveries.id, purchases.purchase_number, deliveries.delivery_date, supplier_id, name AS supplier_name, 
+                           lookup_status.description AS status',
 					    'joins'		=> 'INNER JOIN purchases ON purchases.id = deliveries.purchase_id
 					    						INNER JOIN suppliers ON suppliers.id = supplier_id
-                         	INNER JOIN lookups ON lookups.id = deliveries.status',
+                         	INNER JOIN lookup_status ON lookup_status.id = deliveries.status',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

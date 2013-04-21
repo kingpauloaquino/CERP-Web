@@ -14,7 +14,7 @@
       <div id="page">
         <div id="page-title">
           <h2>
-            <span class="title"><?php echo $Capabilities->GetTitle(); ?></span></span>
+            <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
             <div class="clear"></div>
           </h2>
         </div>
@@ -41,10 +41,6 @@
                       <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
                    </tr>
                    <tr>
-                      <td>Invoice:</td><td><input type="text" value="<?php echo $delivery['invoice']; ?>" class="text-field" disabled/></td>
-                      <td>Receipt:</td><td><input type="text" value="<?php echo $delivery['receipt'] ?>" class="text-field" disabled/></td>
-                   </tr>
-                   <tr>
                       <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" disabled/></td>
                       <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
                    </tr>
@@ -61,7 +57,7 @@
                      <td width="30" class="border-right text-center">No.</td>
                      <td width="140" class="border-right">Item Code</td>
                      <td class="border-right">Description</td>
-                     <td width="70" class="border-right text-center">Qty</td>
+                     <td width="70" class="border-right text-center">P/O Qty</td>
                      <td width="60" class="border-right text-center">Unit</td>
                      <td width="70" class="border-right text-center">Status</td>
                    </tr>
@@ -92,6 +88,7 @@
                <?php if($delivery['status'] != "Publish") { ?>
                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('deliveries-edit.php?id='. $delivery['id']); ?>"/>
            	   <?php } ?>
+           	   <input type="button" value="Receive" class="btn redirect-to" rel="<?php echo host('receiving-show.php?id='.$_GET['id']); ?>"/>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>
              </div>
           </form>

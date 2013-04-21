@@ -190,8 +190,8 @@ function build_options($query, $columns=array(), $value="", $key="") {
 function build_select_post_status($key="", $keyname="") {
   global $DB;
   
-  $query = array('columns' => 'id, description', 'conditions' => 'parent = "PSTATS"');
-  $data = $DB->Fetch('lookups', $query);
+  $query = array('columns' => 'id, description', 'conditions' => 'parent = "APRVL"');
+  $data = $DB->Fetch('lookup_status', $query);
   $options = "";
   
   foreach ($data as $value) {

@@ -10,15 +10,16 @@ $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
   $startpoint = $limit * ($page - 1);
-	$search = 'delivery_id='.$_GET['did'];
+	$search = 'delivery_items.delivery_id='.$_GET['did'];
 	
 	$query = $DB->Fetch('delivery_items', array(
-               'columns' => 'delivery_items.id, delivery_items.item_id, material_code AS code, materials.description, 
-														lookups.description AS unit, quantity, delivered, received, additional, remarks, lookup_status.description AS status',
-               'joins' => 'INNER JOIN materials ON materials.id = delivery_items.item_id
-												    LEFT OUTER JOIN item_costs ON item_type = "MAT" AND item_costs.item_id = delivery_items.item_id
-												    LEFT OUTER JOIN lookups ON lookups.id = item_costs.unit
-												    INNER JOIN lookup_status ON lookup_status.id = delivery_items.status',
+               'columns' => 'delivery_items.id, purchase_items.item_id, materials.material_code AS code, materials.description, purchase_items.quantity, 
+														delivery_items.received, lookups.description AS unit, lookup_status.description AS status',
+               'joins' => 'INNER JOIN purchase_items ON purchase_items.id = delivery_items.purchase_item_id
+														INNER JOIN materials ON materials.id = purchase_items.item_id
+														INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
+														INNER JOIN lookups ON lookups.id = item_costs.unit
+														INNER JOIN lookup_status ON lookup_status.id = delivery_items.status',
 						    'order' 	=> $order .' '.$sort,
 	    					'limit'		=> $startpoint .', '.$limit,
                 'conditions' => $search)

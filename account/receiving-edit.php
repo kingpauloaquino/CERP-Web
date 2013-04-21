@@ -58,11 +58,12 @@
 	            <table id="tbl-materials" cellspacing="0" cellpadding="0">
 	              <thead>
 	                <tr>
-	                  <td class="border-right text-center" width="100"><a class="sort" column="material_code">Code</a></td>
+	                  <td class="border-right text-center" width="100"><a class="sort" column="invoice">Invoice</a></td>
+	                  <td class="border-right text-center" width="120"><a class="sort" column="material_code">Code</a></td>
 	                  <td class="border-right"><a class="sort down" column="material_description">Description</a></td>
 	                  <td class="border-right text-center text-date" width="80"><a class="sort" column="unit">Unit</a></td>
-	                  <td class="border-right text-center text-date" width="60"><a class="sort" column="quantity">Quantity</a></td>
-	                  <td class="border-right text-center" width="60"><a class="sort" column="delivered">Delivered</a></td>
+	                  <td class="border-right text-center text-date" width="60"><a class="sort" column="quantity">P/O Qty</a></td>
+<!-- 	                  <td class="border-right text-center" width="60"><a class="sort" column="delivered">Delivered</a></td> -->
 	                  <td class="border-right text-center" width="60"><a class="sort" column="received">Received</a></td>
 	                  <td class="border-right text-center" width="60"><a class="sort" column="status">Status</a></td>
 	                </tr>
@@ -98,14 +99,13 @@
 				<span class="notice"></span>     
 					<input type="hidden" name="action" value="edit_receiving"/>
 					<input type="hidden" id="material-index" name="material-index" value="0"/>
-					<input type="hidden" id="receiving-item-id" name="receiving[item_id]"/>
+<!-- 					<input type="hidden" id="receiving-item-id" name="receiving[item_id]"/> -->
 					<input type="hidden" id="rid" name="rid"/>
-     
+					
 						 <div class="field">
-						    <label>Quantity:</label>
+						    <label>P/O Quantity:</label>
 						    <input type="text" id="receiving-quantity" class="text-field disabled" default="0" disabled="disabled"/>
 						 </div>
-						 
 						 <!-- <div class="field">
 						    <label>Delivery Receipt:</label>
 						    <select name="receiving[delivery_id]" class="text-select" style="width:191px;"><?php echo build_select_delivery_receipts(); ?></select>
@@ -113,17 +113,17 @@
 						 
 						 <div class="field">
 						    <label>Delivered:</label>
-						    <input type="text" id="receiving-delivered" name="receiving[delivered]" class="text-field" default="0"/>
+						    <input type="text" id="receiving-delivered" class="text-field" default="0" disabled="disabled"/>
+						 </div>
+						 
+							<div class="field">
+						    <label>Invoice #:</label>
+						    <input type="text" id="receiving-invoice" name="receiving[invoice]" class="text-field" />
 						 </div>
 						 
 						 <div class="field">
 						    <label>Received:</label>
 						    <input type="text" id="receiving-received" name="receiving[received]" class="text-field" default="0"/>
-						 </div>
-						 
-						 <div class="field">
-						    <label>Additional:</label>
-						    <input type="text" id="receiving-additional" name="receiving[additional]" class="text-field" default="0"/>
 						 </div>
 						 
 						 <div class="field">
@@ -159,8 +159,8 @@
     this.live('click', function(e) {
     	e.preventDefault();
     	
-    	var row = $('#tbl-materials').find('tbody tr');
-    	
+    	//var row = $('#tbl-materials').find('tbody tr');
+    	var row = $(this).closest('tr');
     	var index		= $(row).index();
     	var modal		= $('#btn-receive-material').attr('href');
     	var id	= $(row).attr('id');
@@ -190,7 +190,6 @@
       var quantity	= $(form).find('#receiving-quantity').val();
       var received	= $(form).find('#receiving-received').val();
       var delivered	= $(form).find('#receiving-delivered').val();
-      var additional	= $(form).find('#receiving-additional').val();
       var trow		= $('#tbl-materials tbody tr:eq('+ index +')');
       
       // if(parseFloat(delivered) > (parseFloat(quantity) - parseFloat(received)) || delivered == 0) {
@@ -198,11 +197,11 @@
       	// return false;
       // }
       
-      if(parseFloat(delivered) == parseFloat(quantity)) {
+      if(parseFloat(received) == parseFloat(quantity)) {
       	$(form).find('#receiving-status').val(6);
       }
       
-      if(parseFloat(delivered) < parseFloat(quantity)) {
+      if(parseFloat(received) < parseFloat(quantity)) {
       	$(form).find('#receiving-status').val(5);
       }
 

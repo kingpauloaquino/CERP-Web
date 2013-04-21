@@ -862,10 +862,8 @@ class Posts {
   function EditPurchase($params) {
     $purchase = array(
       'variables' => array(
-        'purchase_number'	=> strtoupper(trim($params['purchase_number'])),
-        'supplier_id'		=> $params['supplier_id'],
         'delivery_via'	=> trim($params['delivery_via']),
-        'delivery_date'	=> strdate($params['delivery_date'], 'Y-m-d'),
+      	'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
         'trade_terms'		=> trim($params['trade_terms']),
         'payment_terms'	=> trim($params['payment_terms']),
         'total_amount'	=> $params['total_amount'],
@@ -879,7 +877,6 @@ class Posts {
 	
 	if($row > 0) {
 	  $this->DB->DeleteRecord('purchase_items', array('conditions' => 'purchase_id ='.$params['id']));
-		
 	  if(!empty($params['items'])) {
 	    // Add Each Purchase Item
 	    foreach ($params['items'] as $index => $item) {
@@ -963,16 +960,16 @@ class Posts {
       'purchase_id'	=> $params['purchase_id'],
       'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
       'delivery_via'	=> trim($params['delivery_via']),
-      //'status'			=> $params['status'],
-      'status'			=> 136, //pending status
+      'status'			=> 2, //pending status
       'remarks'			=> trim($params['remarks'])
     );
 	
 		$delivery_id = $this->DB->InsertRecord('deliveries', $delivery);
-		
+
 		if(!empty($params['items'])) {
 		  foreach ($params['items'] as $index => $item) {
 	        $item['delivery_id'] = $delivery_id;
+	        $item['status'] = 2; //pending status
 	        $this->DB->InsertRecord('delivery_items', $item);
 		  }
 		}

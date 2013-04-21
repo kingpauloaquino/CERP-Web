@@ -14,10 +14,10 @@ class Query {
                'columns'  => 'purchases.id, purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
                               suppliers.address AS supplier_address, suppliers.contact_no1 AS supplier_phone, suppliers.fax_no AS supplier_fax,
                               suppliers.representative AS supplier_person, delivery_date, delivery_via, trade_terms, 
-                              payment_terms, total_amount, remarks, lookups.description AS status,
+                              payment_terms, total_amount, remarks, lookup_status.description AS status,
                               purchases.created_at',
                'joins' => 'INNER JOIN suppliers ON suppliers.id = purchases.supplier_id 
-                           INNER JOIN lookups ON lookups.id = purchases.status',
+                           INNER JOIN lookup_status ON lookup_status.id = purchases.status',
                'conditions' => 'purchases.id = '. $id)
              );
 	
@@ -107,7 +107,7 @@ class Query {
 	// Get Delivery By ID
   function delivery_by_id($id) {
   	$query = $this->DB->Fetch('deliveries', array(
-               'columns'  => 'deliveries.id, deliveries.receipt, deliveries.invoice, purchases.id AS pid, purchases.purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
+               'columns'  => 'deliveries.id, purchases.id AS pid, purchases.purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
                               deliveries.delivery_date, deliveries.delivery_via, purchases.trade_terms, 
                               purchases.payment_terms, purchases.total_amount, deliveries.remarks, lookups.description AS status,
                               deliveries.created_at',

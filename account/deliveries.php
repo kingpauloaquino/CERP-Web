@@ -15,7 +15,8 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['supplier_delivery']['url'].'" class="nav">'.$Capabilities->All['supplier_delivery']['title'].'</a>';
+				  //echo '<a href="'.$Capabilities->All['supplier_delivery']['url'].'" class="nav">'.$Capabilities->All['supplier_delivery']['title'].'</a>';
+				  echo '<a href="'.$Capabilities->All['add_deliveries']['url'].'" class="nav">'.$Capabilities->All['add_deliveries']['title'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>
@@ -33,8 +34,6 @@
           <thead>
             <tr>
 							<td class="border-right text-center" width="130"><a class="sort default active up" column="purchase_number">P/O Number</a></td> 
-              <td class="border-right text-center" width="100"><a class="sort" column="receipt">Receipt</a></td>    
-              <td class="border-right text-center" width="100"><a class="sort" column="invoice">Invoice</a></td>   
               <td class="border-right text-center"><a class="sort down" column="supplier_name">Supplier</a></td>
               <td class="border-right text-center" width="90"><a class="sort" column="status">Status</a></td>  
               <td class="border-right text-center" width="100"><a class="sort" column="delivery_date">Delivery Date</a></td>  

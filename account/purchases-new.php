@@ -274,6 +274,7 @@
            	     var item = $('#mat-'+ $(this).val());
            	     var data = {
            	       'id':id,
+           	       'item_id':id,
            	       'code':item.find('.mat-code').html(),
            	       'description':item.find('.mat-description').html(),
            	       'unit':item.find('.mat-unit').html(),

@@ -24,7 +24,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
                     				brand_models.brand_model AS model, item_classifications.classification AS classification',
 					    'joins'		=> 'INNER JOIN brand_models ON materials.brand_model = brand_models.id 
 					                  INNER JOIN item_classifications ON materials.material_classification = item_classifications.id 
-					                  AND material_type=70',
+					                  AND material_type=70 AND materials.status = 73',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

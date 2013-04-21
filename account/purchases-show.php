@@ -14,7 +14,7 @@
       <div id="page">
         <div id="page-title">
           <h2>
-            <span class="title">Purchases &raquo; <span class="red"><?php echo $purchase['purchase_number']; ?></span></span>
+            <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
             <div class="clear"></div>
           </h2>
         </div>

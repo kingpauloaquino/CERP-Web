@@ -163,6 +163,7 @@ class MySQL {
   	if(!is_array($arguments)) return 'Error::InvalidArguments';	
 	
     $sql = "DELETE FROM ".$table." WHERE ".$arguments['conditions']; 
+//echo '<br/><br/>';
 //var_dump($sql); die();
 		$this->Query($sql);
 		return mysql_affected_rows();

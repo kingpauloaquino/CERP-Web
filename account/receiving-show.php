@@ -58,12 +58,13 @@
 	            <table id="tbl-materials" cellspacing="0" cellpadding="0">
 	              <thead>
 	                <tr>
-	                  <td class="border-right text-center" width="100"><a class="sort" column="material_code">Code</a></td>
+	                  <td class="border-right text-center" width="100"><a class="sort" column="invoice">Invoice</a></td>
+	                  <td class="border-right text-center" width="120"><a class="sort" column="material_code">Code</a></td>
 	                  <td class="border-right"><a class="sort down" column="material_description">Description</a></td>
-	                  <td class="border-right text-center text-date" width="80"><a class="sort" column="unit">Unit</a></td>
-	                  <td class="border-right text-center text-date" width="60"><a class="sort" column="quantity">Quantity</a></td>
-	                  <td class="border-right text-center" width="60"><a class="sort" column="delivered">Delivered</a></td>
+	                  <td class="border-right text-center text-date" width="60"><a class="sort" column="quantity">P/O Qty</a></td>
+<!-- 	                  <td class="border-right text-center" width="60"><a class="sort" column="delivered">Delivered</a></td> -->
 	                  <td class="border-right text-center" width="60"><a class="sort" column="received">Received</a></td>
+	                  <td class="border-right text-center text-date" width="80"><a class="sort" column="unit">Unit</a></td>
 	                  <td class="border-right text-center" width="60"><a class="sort" column="status">Status</a></td>
 	                </tr>
 	              </thead>

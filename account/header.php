@@ -170,8 +170,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // Post::Edit Receiving
   // ===============================================================
   case 'edit_receiving':
-		$args = array('variables' => $_POST['receiving'], 'conditions' => 'id='.$_POST['rid']); 
+		$args = array('variables' => $_POST['delivery'], 'conditions' => 'id='.$_POST['id']); 
 		$num_of_records = $Posts->EditReceiving($args);
+		redirect_to(host('deliveries-show.php?id='.$_POST['id']));
+    exit();
+    break;
+  
+  case 'edit_receiving_items':
+		$args = array('variables' => $_POST['receiving'], 'conditions' => 'id='.$_POST['rid']); 
+		$num_of_records = $Posts->EditReceivingItems($args);
+		
     exit();
     break;
 		

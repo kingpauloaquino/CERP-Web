@@ -14,7 +14,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('delivery_items', array(
                'columns' => 'delivery_items.id, purchase_items.item_id, materials.material_code AS code, materials.description, purchase_items.quantity, 
-													    delivery_items.invoice, delivery_items.received, lookups.description AS unit, lookup_status.description AS status, 
+													    delivery_items.invoice, delivery_items.received, delivery_items.remarks, lookups.description AS unit, lookup_status.description AS status, 
 													    (
 													        SELECT SUM(received) 
 													        FROM delivery_items AS del 

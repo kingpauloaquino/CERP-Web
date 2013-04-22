@@ -953,6 +953,10 @@ class Posts {
   // }
   
   function EditReceiving($params) {
+    return $this->DB->UpdateRecord('deliveries', $params);
+  }
+	
+	function EditReceivingItems($params) {
     return $this->DB->UpdateRecord('delivery_items', $params);
   }
   

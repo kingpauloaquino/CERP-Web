@@ -568,11 +568,13 @@ function row_template_deliver_materials(data) {
 
 function row_template_receiving(data) {
   var row		= $("<tr quantity=\""+ data['quantity'] + "\" id=\""+ data['id'] +"\"" + 
-                    "item=\""+ data['id'] +"\" title=\""+ data['code'] +"\"></tr>");
+                    "item=\""+ data['id'] +"\" title=\""+ data['code'] +"\" invoice=\""+ (data['invoice'] || '') +"\"" +
+                    "received=\""+ (data['received'] || 0) +"\" remarks=\""+ (data['remarks'] || '') +"\" \"></tr>");
   
-  var code = data['status'] != "Complete" ? "<a href=\"#\">"+ data['code'] +"</a>" : data['code']; //remove line
+  //var code = data['status'] != "Complete" ? "<a href=\"#\">"+ data['code'] +"</a>" : data['code']; //remove line
+  var code = "<a href=\"#\">"+ data['code'] +"</a>";
   
-  row.append("<td class=\"border-right magenta\">"+ (data['invoice'] || '') +"</td>");
+  row.append("<td class=\"border-right text-center magenta\">"+ (data['invoice'] || '') +"</td>");
   row.append("<td class=\"border-right\">"+ code +"</td>");
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
   row.append("<td class=\"border-right text-right numbers\">"+ data['quantity'] +"</td>");
@@ -589,12 +591,13 @@ function row_template_receiving(data) {
 function row_template_receiving_read_only(data) {
   var row = $("<tr></tr>");
   
+  row.append("<td class=\"border-right text-center magenta\">"+ (data['invoice'] || '') +"</td>");
   row.append("<td class=\"border-right\">"+ data['code'] +"</td>");
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
-  row.append("<td class=\"border-right text-center\">"+ data['unit'] +"</td>");
   row.append("<td class=\"border-right text-right numbers\">"+ data['quantity'] +"</td>");
-  row.append("<td class=\"border-right text-right numbers\">"+ (data['delivered'] || 0) +"</td>");
+  // row.append("<td class=\"border-right text-right numbers\">"+ (data['delivered'] || 0) +"</td>");
   row.append("<td class=\"border-right text-right numbers\">"+ (data['received'] || 0) +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ data['unit'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
                   
   row.find('.text-currency').formatCurrency({region:"en-PH"});

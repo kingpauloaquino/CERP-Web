@@ -21,7 +21,9 @@
 
         <div id="content">
         	<a id="btn-receive-material" href="#mdl-receive-material" rel="modal:open"></a>
-          <form class="form-container">
+          <form class="form-container" method="POST" >
+		      	 <input type="hidden" name="action" value="edit_receiving"/>
+		      	 <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>"/>
              <!-- BOF TEXTFIELDS -->
              <div>
              	<table>
@@ -82,14 +84,14 @@
                    <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $delivery['remarks']; ?></textarea></td></tr>
                 </table>
              </div>
-             
-					<div class="field-command">
-	       	   <div class="text-post-status">
-	       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]"><?php echo build_select_post_status(); ?></select>
-	           </div>
-         	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=receiving&id='. $delivery['id']); ?>"/>
-	           <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('receiving-show.php?id='.$_GET['id']); ?>"/>
-	         </div>
+	         
+         <div class="field-command">
+       	   <div class="text-post-status">
+       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="delivery[status]"><?php echo build_select_post_status1(); ?></select>
+           </div>
+       	   <input type="submit" value="Save" class="btn"/>
+           <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('receiving-show.php?id='.$_GET['id']); ?>"/>
+         </div>
           </form>
        </div>
      </div>
@@ -99,7 +101,7 @@
 		<div class="modal-content">
 			<form id="frm-receive-material" method="POST">
 				<span class="notice"></span>     
-					<input type="hidden" name="action" value="edit_receiving"/>
+					<input type="hidden" name="action" value="edit_receiving_items"/>
 					<input type="hidden" id="material-index" name="material-index" value="0"/>
 <!-- 					<input type="hidden" id="receiving-item-id" name="receiving[item_id]"/> -->
 					<input type="hidden" id="rid" name="rid"/>
@@ -169,6 +171,9 @@
     	var item_id		= $(row).attr('item');
     	var title		= 'Receive: ' + $(row).attr('title');
     	var quantity	= $(row).attr('quantity');
+    	var invoice	= $(row).attr('invoice');
+    	var received	= $(row).attr('received');
+    	var remarks	= $(row).attr('remarks');
     	
     	reset_form($(modal).find(':input'));
     	
@@ -178,6 +183,9 @@
     	$(modal).find('#rid').val(id);
     	$(modal).find('#receiving-item-id').val(item_id);
     	$(modal).find('#receiving-quantity').val(quantity);
+    	$(modal).find('#receiving-invoice').val(invoice);
+    	$(modal).find('#receiving-received').val(received);
+    	$(modal).find('#receiving-remarks').val(remarks);
     	
     	$('#btn-receive-material').click();
     })

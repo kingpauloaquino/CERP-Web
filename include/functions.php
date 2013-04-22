@@ -204,6 +204,24 @@ function build_select_post_status($key="", $keyname="") {
   return $options;
 }
 
+//TODO: make generic
+function build_select_post_status1($key="", $keyname="") {
+  global $DB;
+  
+  $query = array('columns' => 'id, description', 'conditions' => 'parent = "RCVNG"');
+  $data = $DB->Fetch('lookup_status', $query);
+  $options = "";
+  
+  foreach ($data as $value) {
+    $options .= "<option value=\"". $value['id'] ."\" ";
+	if($key != "") $options .= ($key == $value['id'] ? "selected" : "");
+	if($keyname != "") $options .= ($keyname == $value['description'] ? "selected" : "");
+    $options .= ">". $value['description'] ."</option>";
+  }
+
+  return $options;
+}
+
 function to_double($value) {
   return preg_replace('/[^0-9_\.\-]/s', '', $value);
 }

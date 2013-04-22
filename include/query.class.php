@@ -109,11 +109,11 @@ class Query {
   	$query = $this->DB->Fetch('deliveries', array(
                'columns'  => 'deliveries.id, purchases.id AS pid, purchases.purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
                               deliveries.delivery_date, deliveries.delivery_via, purchases.trade_terms, 
-                              purchases.payment_terms, purchases.total_amount, deliveries.remarks, lookups.description AS status,
-                              deliveries.created_at',
+                              purchases.payment_terms, purchases.total_amount, deliveries.remarks, lookup_status.description AS status,
+                              deliveries.created_at AS receive_date',
                'joins' => 'INNER JOIN purchases ON purchases.id = deliveries.purchase_id 
                						 INNER JOIN suppliers ON suppliers.id = purchases.supplier_id 
-                           INNER JOIN lookups ON lookups.id = deliveries.status',
+                           INNER JOIN lookup_status ON lookup_status.id = deliveries.status',
                'conditions' => 'deliveries.id = '. $id)
              );
 	

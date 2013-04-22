@@ -28,7 +28,7 @@
                       <td width="120">Purchase Number:</td><td width="340"><input type="text" value="<?php echo $purchase['purchase_number']; ?>" class="text-field" disabled/></td>
                       <td width="120"></td><td width="340">
                       	<?php
-                      		if(isset($_GET['did'])) echo '<a href="deliveries-show.php?id='.$_GET['did'].'" class="magenta">[ NEW DELIVERY CREATED ]</a>';
+                      		if(isset($_GET['did'])) echo '<a target="_blank" href="deliveries-show.php?id='.$_GET['did'].'" class="magenta">[ NEW DELIVERY CREATED ]</a>';
                       	?>
                       </td>
                    </tr>
@@ -39,13 +39,13 @@
                       </td>
                    </tr>
                    <tr>
+                      <td>Trade Terms:</td><td><input type="text" value="<?php echo $purchase['trade_terms']; ?>" class="text-field" disabled/></td>
+                      <td>Payment Terms:</td><td><input type="text" value="<?php echo $purchase['payment_terms']; ?>" class="text-field" disabled/></td>
+                   </tr>
+                   <tr>
                       <td>Delivery Via:</td><td><input type="text" value="<?php echo $purchase['delivery_via']; ?>" class="text-field" disabled/>
                       </td>
                       <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
-                   </tr>
-                   <tr>
-                      <td>Trade Terms:</td><td><input type="text" value="<?php echo $purchase['trade_terms']; ?>" class="text-field" disabled/></td>
-                      <td>Payment Terms:</td><td><input type="text" value="<?php echo $purchase['payment_terms']; ?>" class="text-field" disabled/></td>
                    </tr>
                    <tr><td height="5" colspan="99"></td></tr>
                 </table>
@@ -86,7 +86,7 @@
              
              <div class="field-command">
            	   <div class="text-post-status">
-           	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $purchase['status']; ?>
+           	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $purchase['status']; ?>
                </div>
            	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=purchase&id='. $purchase['id']); ?>"/>
                <?php if($purchase['status'] != "Publish") { ?>

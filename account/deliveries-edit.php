@@ -46,6 +46,10 @@
                       <td>Delivery Via:</td><td><input type="text" id="delivery[delivery_via]" name="delivery[delivery_via]" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" /></td>
                       <td>Delivery Date:</td><td><input type="text" id="delivery[delivery_date]" name="delivery[delivery_date]" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field date-pick" /></td>
                    </tr>
+                   <tr>
+                      <td>Status:</td><td><input type="text" value="<?php echo $delivery['status']; ?>" class="text-field" disabled/></td>
+                      <td>Receive Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['receive_date'])) ?>" class="text-field text-date" disabled/></td>
+                   </tr>
                    <tr><td height="5" colspan="99"></td></tr>
                 </table>
              </div>

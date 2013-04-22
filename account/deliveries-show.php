@@ -44,6 +44,10 @@
                       <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" disabled/></td>
                       <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
                    </tr>
+                   <tr>
+                      <td>Status:</td><td><input type="text" value="<?php echo $delivery['status']; ?>" class="text-field" disabled/></td>
+                      <td>Receive Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['receive_date'])) ?>" class="text-field text-date" disabled/></td>
+                   </tr>
                    <tr><td height="5" colspan="99"></td></tr>
                 </table>
              </div>
@@ -83,13 +87,13 @@
              
              <div class="field-command">
            	   <div class="text-post-status">
-           	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
+           	     <strong>Status:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
                </div>
            	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=delivery&id='. $delivery['id']); ?>"/>
-               <?php if($delivery['status'] != "Publish") { ?>
+               <?php if($delivery['status'] != "Close") { ?>
                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('deliveries-edit.php?id='. $delivery['id']); ?>"/>
-           	   <?php } ?>
            	   <input type="button" value="Receive" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='.$_GET['id']); ?>"/>
+           	   <?php } ?>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>
              </div>
           </form>

@@ -148,7 +148,7 @@ CREATE TABLE `deliveries` (
   `updated_at` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +157,7 @@ CREATE TABLE `deliveries` (
 
 LOCK TABLES `deliveries` WRITE;
 /*!40000 ALTER TABLE `deliveries` DISABLE KEYS */;
-INSERT INTO `deliveries` VALUES (6,26,'','1970-01-01','',2,NULL,'2013-04-21 15:00:47');
+INSERT INTO `deliveries` VALUES (11,29,'','2013-04-19','',2,NULL,'2013-04-21 22:05:58');
 /*!40000 ALTER TABLE `deliveries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -180,7 +180,7 @@ CREATE TABLE `delivery_items` (
   `updated_at` datetime NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -189,7 +189,7 @@ CREATE TABLE `delivery_items` (
 
 LOCK TABLES `delivery_items` WRITE;
 /*!40000 ALTER TABLE `delivery_items` DISABLE KEYS */;
-INSERT INTO `delivery_items` VALUES (1,6,112,'123',NULL,23,'',5,'2013-04-21 17:03:22','2013-04-21 15:00:47'),(2,6,113,NULL,NULL,NULL,NULL,2,'0000-00-00 00:00:00','2013-04-21 15:00:47');
+INSERT INTO `delivery_items` VALUES (11,11,122,'SI001',NULL,500,'ok',6,'2013-04-21 22:09:49','2013-04-21 22:05:58'),(12,11,123,'SI001',NULL,500,'ok',5,'2013-04-21 22:10:08','2013-04-21 22:05:58');
 /*!40000 ALTER TABLE `delivery_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -839,7 +839,7 @@ CREATE TABLE `lookup_status` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -848,7 +848,7 @@ CREATE TABLE `lookup_status` (
 
 LOCK TABLES `lookup_status` WRITE;
 /*!40000 ALTER TABLE `lookup_status` DISABLE KEYS */;
-INSERT INTO `lookup_status` VALUES (1,'PRCHSE','Purchase',NULL,NULL,NULL),(2,'PNDNG','Pending','PRCHSE',NULL,NULL),(3,'DLVRD','Delivered','PRCHSE',NULL,NULL),(4,'RECVD','Received','PRCHSE',NULL,NULL),(5,'PRTIAL','Partial','PRCHSE',NULL,NULL),(6,'CMPLTE','Complete','PRCHSE',NULL,NULL),(7,'CNCELD','Cancelled','PRCHSE',NULL,NULL),(8,'APRVL','Approval',NULL,NULL,NULL),(9,'DRAFT','Draft','APRVL',NULL,NULL),(10,'PENDNG','Pending','APRVL',NULL,NULL),(11,'PUBLSH','Publish','APRVL',NULL,NULL);
+INSERT INTO `lookup_status` VALUES (1,'PRCHSE','Purchase',NULL,NULL,NULL),(2,'PNDNG','Pending','PRCHSE',NULL,NULL),(3,'DLVRD','Delivered','PRCHSE',NULL,NULL),(4,'RECVD','Received','PRCHSE',NULL,NULL),(5,'PRTIAL','Partial','PRCHSE',NULL,NULL),(6,'CMPLTE','Complete','PRCHSE',NULL,NULL),(7,'CNCELD','Cancelled','PRCHSE',NULL,NULL),(8,'APRVL','Approval',NULL,NULL,NULL),(9,'DRAFT','Draft','APRVL',NULL,NULL),(10,'PENDNG','Pending','APRVL',NULL,NULL),(11,'PUBLSH','Publish','APRVL',NULL,NULL),(12,'RCVNG','Receiving',NULL,NULL,NULL),(13,NULL,'Open','RCVNG',NULL,NULL),(14,NULL,'Close','RCVNG',NULL,NULL);
 /*!40000 ALTER TABLE `lookup_status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1473,7 +1473,7 @@ CREATE TABLE `purchase_items` (
   `updated_at` datetime NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=114 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM AUTO_INCREMENT=124 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1482,7 +1482,7 @@ CREATE TABLE `purchase_items` (
 
 LOCK TABLES `purchase_items` WRITE;
 /*!40000 ALTER TABLE `purchase_items` DISABLE KEYS */;
-INSERT INTO `purchase_items` VALUES (112,26,2,31,1,2,'0000-00-00 00:00:00','2013-04-21 15:00:47'),(113,26,3,41,1,2,'0000-00-00 00:00:00','2013-04-21 15:00:47');
+INSERT INTO `purchase_items` VALUES (122,29,1,500,1,2,'0000-00-00 00:00:00','2013-04-21 22:05:58'),(123,29,2,600,1,2,'0000-00-00 00:00:00','2013-04-21 22:05:58');
 /*!40000 ALTER TABLE `purchase_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1504,13 +1504,14 @@ CREATE TABLE `purchases` (
   `total_amount` double DEFAULT NULL,
   `remarks` varchar(180) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `status` int(3) DEFAULT '9',
+  `completion_status` int(11) DEFAULT NULL,
   `publish_by` bigint(20) DEFAULT '0',
   `updated_by` bigint(20) DEFAULT '0',
   `updated_at` datetime DEFAULT NULL,
   `created_by` bigint(20) DEFAULT '0',
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1519,7 +1520,7 @@ CREATE TABLE `purchases` (
 
 LOCK TABLES `purchases` WRITE;
 /*!40000 ALTER TABLE `purchases` DISABLE KEYS */;
-INSERT INTO `purchases` VALUES (26,'CRS-13VM1',41,'','1970-01-01','','',72,'',11,0,0,NULL,0,'2013-04-21 15:00:47');
+INSERT INTO `purchases` VALUES (29,'CRS-13VM1',41,'','2013-04-19','','',1100,'',11,2,0,0,NULL,0,'2013-04-21 22:05:58');
 /*!40000 ALTER TABLE `purchases` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2103,4 +2104,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-21 18:04:54
+-- Dump completed on 2013-04-22 10:56:50

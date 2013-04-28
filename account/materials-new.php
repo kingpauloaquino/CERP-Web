@@ -55,7 +55,7 @@
               <td width="150"></td>
            </tr>
            <tr>
-              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" class="text-field" />
+              <td>Barcode:</td><td><input type="text" id="material[bar_code]" name="material[bar_code]" class="text-field" required />
               	<span id="bar_codestatus" class="warning"></span>
               </td>
               <td>Model:</td><td><?php select_query_tag($models, 'id', 'brand_model', '', 'material[brand_model]', 'material[brand_model]', '', 'width:192px;'); ?></td>

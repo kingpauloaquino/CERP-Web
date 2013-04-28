@@ -18,7 +18,9 @@ if(!$allowed) {
 				
 		<div id="content">
 					<h2>usual content</h2>
-					
+					<span class="notice">
+	          <p class="error"><strong>Notice!</strong> Material codes should be unique.</p>
+	        </span>
 					<?php
 					echo generate_new_code('purchase_number');
 

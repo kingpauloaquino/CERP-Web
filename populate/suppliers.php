@@ -20,8 +20,9 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('suppliers', array(
 							'columns'	=> 'suppliers.id AS id, suppliers.supplier_code AS code, suppliers.name AS name, 
-                            lookups.description AS prodserv',
-					    'joins'		=> 'INNER JOIN lookups ON suppliers.product_service = lookups.id',
+                            lookups.description AS prodserv, lookups2.description AS type',
+					    'joins'		=> 'INNER JOIN lookups ON suppliers.product_service = lookups.id
+					    							INNER JOIN lookups AS lookups2 ON lookups2.id = suppliers.supplier_type',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

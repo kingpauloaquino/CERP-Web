@@ -187,10 +187,10 @@ function build_options($query, $columns=array(), $value="", $key="") {
   return $options;
 }
 
-function build_select_post_status($key="", $keyname="") {
+function build_select_post_status($parent="APRVL", $key="", $keyname="") {
   global $DB;
   
-  $query = array('columns' => 'id, description', 'conditions' => 'parent = "APRVL"');
+  $query = array('columns' => 'id, description', 'conditions' => 'parent = "'.$parent.'"');
   $data = $DB->Fetch('lookup_status', $query);
   $options = "";
   

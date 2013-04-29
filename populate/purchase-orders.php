@@ -29,7 +29,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
     					'conditions' => $search
              )
            );
-	return array("purchases" => $query, "total" => $DB->totalRows());
+	return array("purchase-orders" => $query, "total" => $DB->totalRows());
 }
 echo json_encode(populate_records($keyword, $page, $limit, $order, $sort));
 //$JSON->build_pretty_json(populate_records($keyword, $page, $limit, $order, $sort));

@@ -140,8 +140,12 @@
 	           </tr>
 	           <tr>
 	              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $cost['unit'], 'item_cost['.$cost['id'].'][unit]', 'item_cost['.$cost['id'].'][unit]', '', 'width:192px;'); ?></td>
-	              <td>Transportation Rate:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" value="<?php echo $cost['transportation_rate'] ?>" class="text-field text-right" /></td>
+	              <td>MOQ:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" value="<?php echo $cost['moq'] ?>" class="text-field text-right" /></td>
 	           </tr>    
+	           <tr>
+	              <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" value="<?php echo $cost['transportation_rate'] ?>" class="text-field text-right" /></td>
+	              <td></td><td></td>
+	           </tr>   
 	           <tr><td height="5" colspan="99"></td></tr>
 						<?php
 						}

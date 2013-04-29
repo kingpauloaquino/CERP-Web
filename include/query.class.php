@@ -93,10 +93,10 @@ class Query {
   function order_by_id($id) {
 		$query = $this->DB->Fetch('orders', array(
 			  			'columns' => 'orders.id, orders.po_number, orders.po_date, orders.terms, orders.delivery_date, orders.description, orders.payment_terms AS payment_terms_id,
-			  										orders.status AS status_id, lookups2.description AS status, orders.total_amount, orders.remarks, suppliers.name AS client, lookups.description AS payment_terms', 
+			  										orders.status AS status_id, lookup_status.description AS status, orders.total_amount, orders.remarks, suppliers.name AS client, lookups.description AS payment_terms', 
 			  	  	'joins' => 'INNER JOIN suppliers ON suppliers.id = orders.client_id
 			  	  							INNER JOIN lookups ON lookups.id = orders.payment_terms
-			  	  							INNER JOIN lookups AS lookups2 ON lookups2.id = orders.status',
+			  	  							INNER JOIN lookup_status ON lookup_status.id = orders.status',
 			  	  	'conditions' => 'orders.id = '.$id)
 						);	 
 						 

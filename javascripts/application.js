@@ -316,6 +316,19 @@ function row_template_suppliers(data) {
   var forward	= host + "/account/suppliers-show.php?sid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right\">"+ data['name'] +"</td>" +
+    "<td class=\"border-right\">"+ data['type'] +"</td>" +
+    "<td class=\"border-right\">"+ data['prodserv'] +"</td>" +
+    "</tr>");
+
+  return row;
+}
+
+function row_template_material_plan(data) {
+  var forward	= host + "/account/material-plan-show.php?sid="+ data['id'] +"";
+  var row		= $("<tr forward=\""+ forward +"\">" +
+  	"<td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
+    "<td class=\"border-right\">"+ data['name'] +"</td>" +
+    "<td class=\"border-right\">"+ data['type'] +"</td>" +
     "<td class=\"border-right\">"+ data['prodserv'] +"</td>" +
     "</tr>");
 
@@ -448,7 +461,7 @@ function row_template_users(data) {
 }
 
 function row_template_purchases(data) {
-  var forward	= host + "/account/purchases-show.php?id="+ data['id'] +"";
+  var forward	= host + "/account/purchase-orders-show.php?id="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['purchase_number'] || '--') +"</a></td>" +
     "<td class=\"border-right\"><a href=\"\">"+ data['supplier_name'] +"</a></td>" +
     "<td class=\"border-right text-right text-currency\">"+ data['total_amount'] +"</td>" +

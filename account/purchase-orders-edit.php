@@ -1,6 +1,6 @@
 <?php
-  /* Module: Purchases - New  */
-  $capability_key = 'add_purchase';
+  /* Module: Purchases - Edit  */
+  $capability_key = 'edit_purchase_order';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -8,6 +8,7 @@
 		require('inaccessible.php');	
 	}else{
 		
+		$purchase = $Query->purchase_by_id($_GET['id']);
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -20,27 +21,29 @@
 
     <div id="content">
       <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
-      	 <input type="hidden" name="action" value="add_purchase"/>
+      	 <input type="hidden" name="action" value="edit_purchase_order"/>
+      	 <input type="hidden" name="purchase[id]" value="<?php echo $_GET['id']; ?>"/>
          <!-- BOF TEXTFIELDS -->
          <div>
          	<table>
                <tr>
-                  <td width="120">Purchase Number:</td><td width="340"><input type="text" name="purchase[purchase_number]" value="<?php echo generate_new_code('purchase_number') ?>" class="text-field magenta" autofocus/></td>
+                  <td width="120">Purchase Number:</td><td width="340"><input type="text" value="<?php echo $purchase['purchase_number']; ?>" class="text-field" disabled/></td>
                   <td width="120"></td><td width="340"></td>
                </tr>
                <tr>
                   <td>Supplier:</td>
                   <td colspan="99">
-                    <select id="suppliers" name="purchase[supplier_id]" style="width:655px;"><?php echo build_select_suppliers(); ?></select>
+                  	<input type="hidden" id="supplier_id" value="<?php echo $purchase['supplier_id'] ?>" />
+                    <input type="text" value="<?php echo $purchase['supplier_name']; ?>" class="text-field" style="width:644px;" disabled/>
                   </td>
                </tr>
                <tr>
-                  <td>Delivery Via:</td><td><input type="text" name="purchase[delivery_via]" value="" class="text-field"/></td>
-                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="" class="text-field date-pick"/></td>
+                  <td>Delivery Via:</td><td><input type="text" name="purchase[delivery_via]" value="<?php echo $purchase['delivery_via']; ?>" class="text-field"/></td>
+                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="<?php echo date("F d, Y", strtotime($purchase['delivery_date'])) ?>" class="text-field date-pick"/></td>
                </tr>
                <tr>
-                  <td>Trade Terms:</td><td><input type="text" name="purchase[trade_terms]" value="" class="text-field"/></td>
-                  <td>Payment Terms:</td><td><input type="text" name="purchase[payment_terms]" value="" class="text-field"/></td>
+                  <td>Trade Terms:</td><td><input type="text" name="purchase[trade_terms]" value="<?php echo $purchase['trade_terms']; ?>" class="text-field"/></td>
+                  <td>Payment Terms:</td><td><input type="text" name="purchase[payment_terms]" value="<?php echo $purchase['payment_terms']; ?>" class="text-field"/></td>
                </tr>
                <tr><td height="5" colspan="99"></td></tr>
             </table>
@@ -85,7 +88,7 @@
        	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]"><?php echo build_select_post_status(); ?></select>
            </div>
        	   <input type="submit" value="Save" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchases.php'); ?>"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchase-orders-show.php?id='.$_GET['id']); ?>"/>
          </div>
       </form>
    </div>
@@ -158,11 +161,17 @@
       
        <script>
 				$(function() {
-					populate($('#suppliers').val());
-					$('#suppliers').on('change', function() {
-						$('#purchase-materials').empty();
-					  populate(this.value);
-					});			
+					var data = { 
+			    	"url":"/populate/purchases-items.php?pid=<?php echo $purchase['id']; ?>",
+			      "limit":"50",
+						"data_key":"purchase_items",
+						"row_template":"row_template_purchase_material"
+					}
+					$('#grid-purchase-materials').grid(data);
+					
+					$('#purchase_amount').currency_format(<?php echo $purchase['total_amount']; ?>);
+					
+					populate($('#supplier_id').val());
 					
 					$('.parent-modal').click(function(){
 					    $('.blocker').last().remove();
@@ -181,7 +190,7 @@
 					
 					$('#add-item').append_item();
 				  $('#remove-purchase-materials').remove_item();
-				  $('#purchase_amount').formatCurrency();
+				  $('#purchase_amount').formatCurrency({region:"en-PH"});
 				  $('.get-amount').compute_amount();	
 			  	}
 			  }); 
@@ -197,8 +206,9 @@
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            
-           cell.find('.currency').formatCurrency();
+           cell.find('.currency').formatCurrency({region:"en-PH"});
            cell.find('.numbers').digits();
+           
                
 					 var a = cell.find('.mat');                               
            $(a).click(function(e){
@@ -228,7 +238,7 @@
            cell.append("<td class=\"mat-prod_lot_no border-right text-right numbers\">"+ (parseFloat(row['plan_qty']) - parseFloat(row['pending_qty'])) +"</td>");
            cell.append("<td class=\"mat-plan_qty border-right text-right numbers\">"+ parseFloat(row['plan_qty']) +"</td>");
            
-           cell.find('.currency').formatCurrency();
+           cell.find('.currency').formatCurrency({region:"en-PH"});
            cell.find('.numbers').digits();               
            
            return cell;
@@ -242,7 +252,7 @@
              var price		= row.find('.item-price').val();
              var amount		= parseFloat(quantity * clean_currency(price));
              
-             row.find('.item-amount').val(amount).formatCurrency();
+             row.find('.item-amount').val(amount).formatCurrency({region:"en-PH"});
              compute_total_amount();
            })
          }
@@ -256,22 +266,22 @@
              var amount_price = clean_currency($(this).val());
              total_amount.val(parseFloat(total_amount.val()) + amount_price);
            })
-           total_amount.formatCurrency();
+           total_amount.formatCurrency({region:"en-PH"});
          }
                   
          $.fn.append_item = function() {
-           this.click(function(e) {
+           this.click(function(e) { 
              var table = $('#grid-materials').find('table');
              var grid = $('#purchase-materials');
              
            	 table.find('.chk-item:checked').each(function() {
-           	   var id		= $(this).val()
+           	   var id		= $(this).val(); 
            	   var row_id	= "mat-"+ id;
            	   
            	   $(this).prop('checked', false);
            	   
            	   if(grid.find('#'+ row_id).length == 0) {
-           	     var item = $('#mat-'+ $(this).val());
+           	     var item = $('#mat-'+ $(this).val()); 
            	     var data = {
            	       'id':id,
            	       'item_id':id,

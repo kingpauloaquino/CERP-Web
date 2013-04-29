@@ -112,8 +112,12 @@
            </tr>
            <tr>
               <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
-              <td>Transportation Rate:</td><td><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right" /></td>
-           </tr>    
+              <td>MOQ:</td><td><input type="text" id="item_cost[moq]" name="item_cost[moq]" class="text-field text-right" /></td>
+           </tr>   
+           <tr>
+              <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right" /></td>
+              <td></td><td></td>
+           </tr>     
            <tr><td height="5" colspan="99"></td></tr>
         </table>   
             

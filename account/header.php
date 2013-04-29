@@ -72,7 +72,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   // Post::Add Purchase
   // ===============================================================
-  case 'add_purchase':
+  case 'add_purchase_order':
     $purchase		= $_POST['purchase'];
     $items			= array();
 		$total_amount	= 0.00;
@@ -104,16 +104,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			$purchase['purchase_id'] = $purchase_id;
 			$purchase['items'] = $items;
 			$delivery_id = $Posts->AddDelivery($purchase);
-			redirect_to(host('purchases-show.php?id='.$purchase_id.'&did='.$delivery_id));
+			redirect_to(host('purchase-orders-show.php?id='.$purchase_id.'&did='.$delivery_id));
 		}
 		
-		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase_id)); 
+		if($purchase_id > 0) redirect_to(host('purchase-orders-show.php?id='.$purchase_id)); 
     break;
 	
   // ===============================================================
   // Post::Edit Purchase
   // ===============================================================
-  case 'edit_purchase':
+  case 'edit_purchase_order':
     $purchase		= $_POST['purchase'];
     $items			= array();
 		$total_amount	= 0.00;
@@ -146,7 +146,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		// }
 		
 		// If successfully added new purchase, redirect to display page
-		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase['id']));
+		if($purchase_id > 0) redirect_to(host('purchase-orders-show.php?id='.$purchase['id']));
     break;	  
 	
   // ===============================================================
@@ -245,7 +245,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$order_id = $Posts->AddOrder($order);
 		
 		// Intialize Purchase Order
-		if($order['status'] == 137) { //published status id
+		if($order['status'] == 11) { //published status id
 			$args = array('order_id' => $order_id, 'head_time_days' => 7); //7 days before P/O shipment
 			$num_of_records = $Posts->InitPurchaseOrder($args);	
 		}	
@@ -413,7 +413,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
             <div class="glyphicons-halflings"></div>
         	  <ul>
         	    <li><a href="orders.php">Orders</a></li>
-        	    <li><a href="purchases.php">Purchases</a></li>
+        	    <li><a href="material-plan.php">Material Plan</a></li>
+        	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
+        	    <li><a href="work-orders.php">Work Orders</a></li>
         	    <li><a href="deliveries.php">Deliveries</a></li>
         	    <li><a href="receiving.php">Receiving</a></li>
         	    <li><a href="suppliers.php">Suppliers</a></li>

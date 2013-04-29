@@ -1,8 +1,8 @@
 <?php
   /*
-   * Module: Suppliers 
+   * Module: Material Plan 
   */
-  $capability_key = 'suppliers';  
+  $capability_key = 'material_plan';  
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -15,7 +15,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['add_supplier']['url'].'" class="nav">'.$Capabilities->All['add_supplier']['name'].'</a>';
+				  //echo '<a href="'.$Capabilities->All['add_supplier']['url'].'" class="nav">'.$Capabilities->All['add_supplier']['name'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>
@@ -52,7 +52,7 @@
     	"url":"/populate/suppliers.php",
       "limit":"15",
 			"data_key":"suppliers",
-			"row_template":"row_template_suppliers",
+			"row_template":"row_template_material_plan",
       "pagination":"#suppliers-pagination"
 		}
 	

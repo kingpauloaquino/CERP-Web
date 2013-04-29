@@ -2,7 +2,7 @@
   /*
    * Module: Purchases 
   */
-  $capability_key = 'purchases';
+  $capability_key = 'purchase_orders';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -15,7 +15,7 @@
         <h2>
           <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
           <?php
-				  	echo '<a href="'.$Capabilities->All['add_purchase']['url'].'" class="nav">'.$Capabilities->All['add_purchase']['name'].'</a>';
+				  	echo '<a href="'.$Capabilities->All['add_purchase_order']['url'].'" class="nav">'.$Capabilities->All['add_purchase_order']['name'].'</a>';
 					?>
           <div class="clear"></div>
         </h2>
@@ -52,9 +52,9 @@
 	<script>
 	$(function() {
   	var data = { 
-    	"url":"/populate/purchases.php",
+    	"url":"/populate/purchase-orders.php",
       "limit":"15",
-			"data_key":"purchases",
+			"data_key":"purchase-orders",
 			"row_template":"row_template_purchases",
       "pagination":"#purchases-pagination"
 		}

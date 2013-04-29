@@ -98,7 +98,7 @@
         <h3 class="form-title">Purchase Information</h3>
         <table>
         	<?php
-        		$costs = $DB->Get('materials', array('columns' => 'suppliers.id AS sid, suppliers.name AS supplier, item_costs.id AS cost_id, item_costs.cost,  
+        		$costs = $DB->Get('materials', array('columns' => 'suppliers.id AS sid, suppliers.name AS supplier, item_costs.id AS cost_id, item_costs.cost, item_costs.moq,
 																															item_costs.transportation_rate, lookups1.description AS unit, lookups2.code AS currency', 
 		 																				'joins' => 'INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
 																												INNER JOIN suppliers ON suppliers.id = item_costs.supplier
@@ -120,7 +120,11 @@
 	           </tr>
 	           <tr>
 	              <td width="150">Unit:</td><td width="310"><input type="text" value="<?php echo $cost['unit'] ?>" class="text-field" disabled/></td>
-	              <td>Transportation Rate:</td><td><input type="text" value="<?php echo $cost['transportation_rate'] ?>" class="text-field text-right" disabled/></td>
+	              <td>MOQ:</td><td><input type="text" value="<?php echo $cost['moq'] ?>" class="text-field text-right" disabled/></td>
+	           </tr>   
+	           <tr>
+	              <td width="150">Transportation Rate:</td><td width="310"><input type="text" value="<?php echo $cost['Transportation Rate'] ?>" class="text-field text-right" disabled/></td>
+	              <td></td><td></td>
 	           </tr>    
 	           <tr><td height="5" colspan="99"></td></tr>
 						<?php
@@ -140,7 +144,11 @@
            </tr>
            <tr>
               <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
-              <td>Transportation Rate:</td><td><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right" /></td>
+              <td>MOQ:</td><td><input type="text" id="item_cost[moq]" name="item_cost[moq]" class="text-field text-right" /></td>
+           </tr>  
+           <tr>
+              <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right" /></td>
+              <td></td><td></td>
            </tr>    
            <tr><td height="5" colspan="99"></td></tr>
         </table>   

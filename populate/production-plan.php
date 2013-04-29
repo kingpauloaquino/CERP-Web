@@ -20,20 +20,20 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 										'orders.po_number LIKE UCASE("%'. $keyword .'%") OR '.
 										'orders.po_date LIKE "%'. $keyword .'%" OR '.
 										'production_purchase_orders.target_date LIKE "%'. $keyword .'%" OR '.
-										'lookups.description LIKE "%'. $keyword .'%" '
+										'lookup_status.description LIKE "%'. $keyword .'%" '
 									:
 										'orders.po_number LIKE UCASE("%'. $keyword .'%") OR '.
 										'orders.po_date LIKE "%'. $keyword .'%" OR '.
 										'production_purchase_orders.target_date LIKE "%'. $keyword .'%" OR '.
-										'lookups.description LIKE "%'. $keyword .'%" '
+										'lookup_status.description LIKE "%'. $keyword .'%" '
 							: ''
 						: '';
 	
 	$query = $DB->Fetch('production_purchase_orders', array(
 							'columns'	=> 'production_purchase_orders.id AS id, production_purchase_orders.order_id AS oid, orders.po_number AS po_number, 
-														orders.po_date AS po_date, production_purchase_orders.target_date AS target_date, lookups.description AS status',
+														orders.po_date AS po_date, production_purchase_orders.target_date AS target_date, lookup_status.description AS status',
 					    'joins'		=> 'INNER JOIN orders ON orders.id = production_purchase_orders.order_id
-														INNER JOIN lookups ON lookups.id = production_purchase_orders.status',
+														INNER JOIN lookup_status ON lookup_status.id = production_purchase_orders.status',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

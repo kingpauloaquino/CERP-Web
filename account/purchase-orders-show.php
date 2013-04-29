@@ -1,6 +1,6 @@
 <?php
   /* Module: Dashboard  */
-  $capability_key = 'show_purchase';
+  $capability_key = 'show_purchase_order';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -88,11 +88,11 @@
            	   <div class="text-post-status">
            	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $purchase['status']; ?>
                </div>
-           	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=purchase&id='. $purchase['id']); ?>"/>
+<!--            	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=purchase&id='. $purchase['id']); ?>"/> -->
                <?php if($purchase['status'] != "Publish") { ?>
-               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('purchases-edit.php?id='. $purchase['id']); ?>"/>
+               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('purchase-orders-edit.php?id='. $purchase['id']); ?>"/>
            	   <?php } ?>
-               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('purchases.php'); ?>"/>
+               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('purchase-orders.php'); ?>"/>
              </div>
           </form>
        </div>

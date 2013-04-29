@@ -44,7 +44,6 @@ class Posts {
   
   // Posts::AddUser
   // Descriptions: Use to create new user
-  // Parameters: Param[Employee ID, First Name, Last Name, Position, Email, Role, Status]
   // Return: ID
   function AddUser($params) {
     $user = array(
@@ -186,6 +185,7 @@ class Posts {
 		  'unit'			=> $params['unit'],
 		  'currency'	=> $params['currency'],
 		  'cost'			=> $params['cost'],
+		  'moq'				=> $params['moq'],
 		  'transportation_rate'	=> $params['transportation_rate']
 		);
     return $this->DB->InsertRecord('item_costs', $item_cost);
@@ -527,7 +527,7 @@ class Posts {
 			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
 			'set_2' 	=> 'SET @order_id = '.$params['order_id'],
 			'set_3' 	=> 'SET @head_time_days = '.$params['head_time_days'],
-			'set_4' 	=> 'SET @status = 73', // lookups active status id
+			'set_4' 	=> 'SET @status = 16', // lookups active status id
 			'query_1' => 'INSERT INTO production_purchase_orders (order_id, target_date, status, created_at) 
 										SELECT @order_id, DATE_SUB(delivery_date,INTERVAL @head_time_days DAY), @status, @created_at FROM orders WHERE orders.id=@order_id'
 		);		

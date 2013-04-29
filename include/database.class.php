@@ -171,7 +171,8 @@ class MySQL {
 	
 	public function ExecuteQuery($arguments) {
 		if(!is_array($arguments)) return 'Error::InvalidArguments';		
-//var_dump($arguments);
+// echo '<br/><br/>';	
+// var_dump($arguments); die();
 		//loop query, mysql_query doesnt support multiple query in one call
 		$conn = $this->Connect();		
 		foreach ($arguments as $key => $value) {

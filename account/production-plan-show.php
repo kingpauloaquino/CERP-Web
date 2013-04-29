@@ -17,10 +17,10 @@
 			));
 			
 			$prod_detail = $DB->Find('production_purchase_orders', array(
-					  			'columns' 		=> 'production_purchase_orders.id AS ppoid, production_purchase_orders.order_id AS oid, orders.po_number AS po_no, lookups.description AS status,
+					  			'columns' 		=> 'production_purchase_orders.id AS ppoid, production_purchase_orders.order_id AS oid, orders.po_number AS po_no, lookup_status.description AS status,
 																		orders.po_date AS po_date, orders.delivery_date AS delivery_date, production_purchase_orders.target_date AS target_date',
 					  	    'joins' 			=> 'INNER JOIN orders ON orders.id = production_purchase_orders.order_id
-					  	    									INNER JOIN lookups ON lookups.id = production_purchase_orders.status',
+					  	    									INNER JOIN lookup_status ON lookup_status.id = production_purchase_orders.status',
 									'sort_column'	=> '',
 					  	    'conditions' 	=> 'production_purchase_orders.id = '.$_GET['ppoid']
 			));		

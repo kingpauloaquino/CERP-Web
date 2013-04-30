@@ -35,8 +35,7 @@
           <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
              <!-- BOF TEXTFIELDS -->
              <div>
-			        <h3 class="form-title">Details</h3>
-			        <a class="toggler" href="#" rel="div_details">Hide</a>
+			        <h3 class="form-title">Details - <a class="toggler" href="#" rel="div_details">Hide</a></h3>			        
 			        <div id="div_details">
 			        	<table>
 				           <tr>
@@ -86,8 +85,7 @@
 				        </table>	
 			        </div>
 			        <br/>
-			        <h3 class="form-title">Purchase Information</h3>
-			        <a class="toggler" href="#" rel="div_purchase">Hide</a>
+			        <h3 class="form-title">Purchase Information - <a class="toggler" href="#" rel="div_purchase">Hide</a></h3>		
 			        <div id="div_purchase">
 				        <table>
 				        	<?php
@@ -128,22 +126,16 @@
 			        
         
              </div>
-             
+            <br/> 
+						<h3 class="form-title">Models</h3>		
              <!-- BOF GRIDVIEW -->
              <div id="grid-material-plan" class="grid jq-grid" style="min-height:146px;">
                <table cellspacing="0" cellpadding="0">
                  <thead>
                    <tr>
-                     <td width="160" class="border-right text-center">Item Code</td>
-                     <td class="border-right text-center">Model</td>
-                     <td width="50" class="border-right text-center">DR</td>
-                     <td width="100" class="border-right text-center">Prod. Plan</td>
-                     <td width="100" class="border-right text-center">Inventory</td>
-                     <td width="100" class="border-right text-center">Open P/O</td>
-                     <td width="100" class="border-right text-center">Balance</td>
-                     <td width="90" class="border-right text-center">MOQ</td>
-                     <td width="90" class="border-right text-center">Unit Price</td>
-                     <td width="90" class="text-center">P/O Qty</td>
+                     <td width="160" class="border-right text-center">Product Code</td>
+                     <td class="border-right text-center">Brand</td>
+                     <td width="90" class="text-center">Qty</td>
                    </tr>
                  </thead>
                  <tbody id="material-plan"></tbody>
@@ -186,10 +178,10 @@
        		
        		
 			  	var data = { 
-			    	"url":"/populate/material-plan.php?sid=<?php echo $_GET['sid']; ?>",
+			    	"url":"/populate/material-plan-model.php?sid=<?php echo $_GET['sid']; ?>",
 			      "limit":"50",
-						"data_key":"material_plan",
-						"row_template":"row_template_material_plan"
+						"data_key":"material_plan_model",
+						"row_template":"row_template_material_plan_model"
 					}
 				
 					$('#grid-material-plan').grid(data);

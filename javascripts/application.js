@@ -338,8 +338,8 @@ function row_template_supplier_material_plan(data) {
 function row_template_material_plan(data) {
   var forward	= host + "/account/material-plan-model-show.php?mid="+ data['item_id'] +"";
   
-  var prod_plan = (parseFloat(data['prod_plan']) * parseFloat(data['defect_rate'])) + parseFloat(data['prod_plan']);
-  var balance = ((parseFloat(data['open_po']) || 0) + (parseFloat(data['inventory']) || 0) - (parseFloat(data['prod_plan'])) || 0);
+  var prod_plan = parseFloat((parseFloat(data['prod_plan']) * parseFloat(data['defect_rate'])) + parseFloat(data['prod_plan']));
+  var balance = ((parseFloat(data['open_po']) || 0) + (parseFloat(data['inventory']) || 0) - prod_plan);
   var po_qty = (Math.ceil(parseFloat(parseFloat(Math.abs(balance) / parseFloat(data['moq'])).toFixed(1)) * 1) / 1) * parseFloat(data['moq']);
   
   var row		= $("<tr forward=\""+ forward +"\">" +
@@ -357,6 +357,20 @@ function row_template_material_plan(data) {
 
   row.find('.numbers').digits();
   row.find('.text-currency').formatCurrency({region:"en-PH"});
+  return row;
+}
+
+function row_template_material_plan_model(data) {
+  var forward	= host + "/account/material-plan-model-show.php?mid="+ data['item_id'] +"";
+    
+  var row		= $("<tr forward=\""+ forward +"\">" +
+  	"<td class=\"border-right\"><a target=\"_blank\" href=\""+ forward +"\">"+ data['product_code'] +"</a></td>" +
+    "<td class=\"border-right\">"+ data['brand'] +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (data['price'] || 0) +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (data['qty'] || 0) +"</td>" +
+    "</tr>");
+
+  row.find('.numbers').digits();
   return row;
 }
 

@@ -26,9 +26,9 @@
              	<table>
                    <tr>
                       <td width="120">Purchase Number:</td><td width="340"><input type="text" value="<?php echo $purchase['purchase_number']; ?>" class="text-field" disabled/></td>
-                      <td width="120"></td><td width="340">
+                      <td width="120">Completion:</td><td width="340"><input type="text" value="<?php echo $purchase['completion_status']; ?>" class="text-field" disabled/>
                       	<?php
-                      		if(isset($_GET['did'])) echo '<a target="_blank" href="deliveries-show.php?id='.$_GET['did'].'" class="magenta">[ NEW DELIVERY CREATED ]</a>';
+                      		//if(isset($_GET['did'])) echo '<a target="_blank" href="deliveries-show.php?id='.$_GET['did'].'" class="magenta">[ NEW DELIVERY CREATED ]</a>';
                       	?>
                       </td>
                    </tr>

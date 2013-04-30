@@ -13,7 +13,7 @@ if(!$allowed) {
   if(isset($_GET['mid'])) {
   	$materials = $DB->Find('materials', array(
 					  			'columns' 		=> 'materials.id AS mid, materials.base, materials.parent, materials.material_code, materials.description, brand_models.brand_model, materials.bar_code,
-																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
+																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, materials.defect_rate,
 																  	lookups3.description AS material_type, lookups4.description AS status, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
 					  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
@@ -91,7 +91,7 @@ if(!$allowed) {
               <td>Address:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
               	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
               </td>
-              <td></td><td></td>
+              <td>Defect Rate %:</td><td><input type="text" value="<?php echo ($materials['defect_rate'] * 100) ?>" class="text-field text-right" disabled/></td>
            </tr>             
            <tr>
               <td>Description:</td>

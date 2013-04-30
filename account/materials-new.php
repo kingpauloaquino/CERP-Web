@@ -14,6 +14,7 @@
 	if($_POST['action'] == 'add_material') {
 		$_POST['material']['base'] = TRUE;
 		$_POST['material']['parent'] = NULL;
+		$_POST['material']['defect_rate'] = $_POST['material']['defect_rate'] / 100;
 		$base_id = $Posts->AddMaterial($_POST['material']);
 				
 		$_POST['item_cost']['item_id'] = $base_id;
@@ -71,7 +72,7 @@
            <tr>
               <td>Address:</td><td><input type="text"  class="text-field" />
               </td>
-              <td></td><td></td>
+              <td>Defect Rate %:</td><td><input id="material[defect_rate]" name="material[defect_rate]" type="text"  class="text-field text-right" placeholder="5" />
            </tr>              
            <tr>
               <td>Description:</td>

@@ -141,6 +141,7 @@ class Posts {
 		  'brand_model'							=> $params['brand_model'],
 		  'person_in_charge'				=> $params['person_in_charge'],
 		  'status'									=> $params['status'],
+		  'defect_rate'							=> $params['defect_rate'],
 		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] 
 		);
     return $this->DB->InsertRecord('materials', $material);

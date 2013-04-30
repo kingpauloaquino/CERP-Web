@@ -12,6 +12,7 @@
 	}else{
   
 	if($_POST['action'] == 'edit_material') {
+		$_POST['material']['defect_rate'] = $_POST['material']['defect_rate'] / 100;
 		$num_of_records1 = $Posts->EditMaterial(array('variables' => $_POST['material'], 'conditions' => 'id='.$_POST['mid']));
 		
 		echo '<br/><br/>';
@@ -105,7 +106,7 @@
               <td>Address:</td><td><input type="text"  value="<?php echo $address['address'] ?>" class="text-field" />
           			<?php echo $linkto = ($address['add_id']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$address['add_id'].'">change</a>' : '' ?>
               </td>
-              <td></td><td></td>
+              <td>Defect Rate %:</td><td><input id="material[defect_rate]" name="material[defect_rate]" type="text" value="<?php echo ($materials['defect_rate'] * 100) ?>" class="text-field text-right"/></td>
            </tr>             
            <tr>
               <td>Description:</td>

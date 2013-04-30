@@ -323,7 +323,7 @@ function row_template_suppliers(data) {
   return row;
 }
 
-function row_template_material_plan(data) {
+function row_template_supplier_material_plan(data) {
   var forward	= host + "/account/material-plan-show.php?sid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\">" +
   	"<td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
@@ -332,6 +332,31 @@ function row_template_material_plan(data) {
     "<td class=\"border-right\">"+ data['prodserv'] +"</td>" +
     "</tr>");
 
+  return row;
+}
+
+function row_template_material_plan(data) {
+  var forward	= host + "/account/material-plan-model-show.php?mid="+ data['item_id'] +"";
+  
+  var prod_plan = (parseFloat(data['prod_plan']) * parseFloat(data['defect_rate'])) + parseFloat(data['prod_plan']);
+  var balance = ((parseFloat(data['open_po']) || 0) + (parseFloat(data['inventory']) || 0) - (parseFloat(data['prod_plan'])) || 0);
+  var po_qty = (Math.ceil(parseFloat(parseFloat(Math.abs(balance) / parseFloat(data['moq'])).toFixed(1)) * 1) / 1) * parseFloat(data['moq']);
+  
+  var row		= $("<tr forward=\""+ forward +"\">" +
+  	"<td class=\"border-right\"><a target=\"_blank\" href=\""+ forward +"\">"+ data['material_code'] +"</a></td>" +
+    "<td class=\"border-right\">"+ data['model'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ (parseFloat(data['defect_rate'])*100) +"%</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (prod_plan || 'N/A') +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['inventory']) || 0) +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['open_po']) || 0) +"</td>" +
+    "<td class=\"border-right text-right numbers "+ ((balance < 0) ? "red" : "") +"\">"+ balance +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['moq']) || 0) + data['unit'] +"</td>" +
+    "<td class=\"border-right text-right numbers text-currency\">"+ (parseFloat(data['price']) || 0) +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (po_qty || 'N/A') +"</td>" +
+    "</tr>");
+
+  row.find('.numbers').digits();
+  row.find('.text-currency').formatCurrency({region:"en-PH"});
   return row;
 }
 

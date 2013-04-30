@@ -52,7 +52,7 @@
     	"url":"/populate/suppliers.php",
       "limit":"15",
 			"data_key":"suppliers",
-			"row_template":"row_template_material_plan",
+			"row_template":"row_template_supplier_material_plan",
       "pagination":"#suppliers-pagination"
 		}
 	

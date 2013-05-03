@@ -54,7 +54,8 @@
       "limit":"15",
 			"data_key":"deliveries",
 			"row_template":"row_template_deliveries",
-      "pagination":"#deliveries-pagination"
+      "pagination":"#deliveries-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-deliveries').grid(data);

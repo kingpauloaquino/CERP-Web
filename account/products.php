@@ -54,7 +54,8 @@
       "limit":"15",
 			"data_key":"products",
 			"row_template":"row_template_products",
-      "pagination":"#products-pagination"
+      "pagination":"#products-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-products').grid(data);

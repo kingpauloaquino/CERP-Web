@@ -283,67 +283,44 @@ class Posts {
   // Descriptions: Use to add clients order
   // Parameters: 
   // Return: ID
-  function AddOrder2($params) {
-  	$order = array(
-  	  'client_id'		=> $params['client_id'],
-  	  'po_number'		=> $params['po_number'],
-  	  'po_date'			=> strdate($params['po_date'], 'Y-m-d'),
-  	  'payment_terms'	=> $params['payment_terms'],
-  	  'terms'			=> $params['terms'],
-  	  'delivery_date'	=> strdate($params['delivery_date'], 'Y-m-d'),
-  	  'description'		=> $params['description'],
-  	  'remarks'			=> $params['remarks'],
-  	  'date_received'	=> strdate($params['date_received'], 'Y-m-d'),
-  	  'total_quantity'	=> $params['total_quantity'],
-  	  'unit'			=> $params['unit'],
-  	  'total_amount'	=> $params['total_amount'],
-  	  'created_by'		=> $Signed['id'],
-		);	
-		return $this->DB->InsertRecord('orders', $order);
-  }
 	
-	function AddOrder($params) {		
-    $order = array(
+	function AddPurchaseOrder($params) {		
+    $purchase_order = array(
   	  'client_id'		=> $params['client_id'],
   	  'po_number'		=> $params['po_number'],
-  	  //'po_date'			=> strdate($params['po_date'], 'Y-m-d'),
   	  'po_date'			=> date('Y-m-d', strtotime($params['po_date'])),
   	  'payment_terms'	=> $params['payment_terms'],
   	  'terms'			=> $params['terms'],
-  	  //'delivery_date'	=> strdate($params['delivery_date'], 'Y-m-d'),
-  	  'delivery_date'	=> date('Y-m-d', strtotime($params['delivery_date'])),
-  	  'description'		=> $params['description'],
+  	  'ship_date'	=> date('Y-m-d', strtotime($params['delivery_date'])),
   	  'status'			=> $params['status'],
+  	  'completion_status'			=> $params['completion_status'],
   	  'remarks'			=> $params['remarks'],
-  	  'date_received'	=> strdate($params['date_received'], 'Y-m-d'),
-  	  'total_quantity'	=> $params['total_quantity'],
-  	  'unit'			=> $params['unit'],
   	  'total_amount'	=> $params['total_amount'],
   	  'created_by'		=> $Signed['id'],
 		);	
-		$order_id = $this->DB->InsertRecord('orders', $order);
+		$purchase_order_id = $this->DB->InsertRecord('purchase_orders', $purchase_order);
 	
 		if(!empty($params['items'])) {
 		  // Add Each Order Item
 		  foreach ($params['items'] as $index => $item) {
-	        $item['order_id'] = $order_id;
-	        $this->DB->InsertRecord('order_items', $item);
+	        $item['purchase_order_id'] = $purchase_order_id;
+	        $this->DB->InsertRecord('purchase_order_items', $item);
 		  }
 		}
 	
-    return $order_id;
+    return $purchase_order_id;
   }
 	
-	function EditOrder($params) {
+	function EditPurchaseOrder($params) {
     $order = array(
       'variables' => array(
 		  	  'po_number'		=> $params['po_number'],
 		  	  'po_date'			=> strdate($params['po_date'], 'Y-m-d'),
 		  	  'payment_terms'	=> $params['payment_terms'],
 		  	  'terms'			=> $params['terms'],
-		  	  'delivery_date'	=> strdate($params['delivery_date'], 'Y-m-d'),
-		  	  'description'		=> $params['description'],
+		  	  'delivery_date'	=> strdate($params['delivery_date'], 'Y-m-d'),    
   	  		'status'			=> $params['status'],
+  	  		'completion_status'			=> $params['completion_status'],
 		  	  'remarks'			=> $params['remarks'],
 		  	  'date_received'	=> strdate($params['date_received'], 'Y-m-d'),
 		  	  'total_quantity'	=> $params['total_quantity'],
@@ -367,6 +344,70 @@ class Posts {
 	
     return $row;
   }
+
+	function AddWorkOrder($params) {		
+    $work_order = array(
+  	  'wo_number'		=> $params['wo_number'],
+  	  'wo_date'			=> date('Y-m-d', strtotime($params['wo_date'])),
+  	  'ship_date'	=> date('Y-m-d', strtotime($params['ship_date'])),
+  	  'status'			=> $params['status'],
+  		'completion_status'	=> $params['completion_status'],
+  	  'remarks'			=> $params['remarks'],
+  	  'total_amount'	=> $params['total_amount'],
+		);	
+		$work_order_id = $this->DB->InsertRecord('work_orders', $work_order);
+	
+		if(!empty($params['items'])) {
+		  // Add Each Work Order Item
+		  foreach ($params['items'] as $index => $item) {
+	        $item['work_order_id'] = $work_order_id;
+	        $work_order_item_id = $this->DB->InsertRecord('work_order_items', $item);
+					
+					$this->AddWorkOrderProductParts(array('work_order_item_id' => $work_order_item_id, 'product_id' => $item['product_id']));
+		  }
+		}
+    return $work_order_id;
+  }
+
+function EditWorkOrder($params) {
+    $work_order = array(
+      'variables' => array(
+		  	  //'wo_number'		=> $params['wo_number'],
+		  	  'wo_date'			=> strdate($params['wo_date'], 'Y-m-d'),
+		  	  'ship_date'	=> strdate($params['ship_date'], 'Y-m-d'),
+  	  		'status'			=> $params['status'],
+  	  		'completion_status'	=> $params['completion_status'],
+		  	  'remarks'			=> $params['remarks'],
+		  	  'total_amount'	=> $params['total_amount']
+	  ),
+	  'conditions' => 'id = '.$params['id']
+    );
+	
+		$row = $this->DB->UpdateRecord('work_orders', $work_order);
+	if($row > 0) {
+	  $this->DB->DeleteRecord('work_order_items', array('conditions' => 'work_order_id ='.$params['id']));
+			
+	  	if(!empty($params['items'])) {
+	    	foreach ($params['items'] as $index => $item) {
+          $item['work_order_id'] = $params['id'];
+          $this->DB->InsertRecord('work_order_items', $item); 
+	    	}
+	  	}
+		}
+	
+    return $row;
+  }
+
+	function AddWorkOrderProductParts($params) {
+		$query = array(
+			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
+			'set_2' 	=> 'SET @work_order_item_id = '.$params['work_order_item_id'],
+			'set_3' 	=> 'SET @product_id = '.$params['product_id'],
+			'query_1' => 'INSERT INTO work_order_item_parts (work_order_item_id, material_id, parts_tree_qty, created_at) 
+										SELECT @work_order_item_id, material_id, material_qty, @created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
+		);		
+		return $this->DB->ExecuteQuery($query);
+	}
 	
 	function EditOrder2($params) {
     return $this->DB->UpdateRecord('orders', $params);

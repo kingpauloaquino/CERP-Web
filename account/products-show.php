@@ -15,9 +15,9 @@
 					  			'columns' 		=> 'products.product_code, products.description, brand_models.brand_model AS brand, lookups3.description AS status, item_classifications.classification,
 					  												products.bar_code, products.color,  
 					  												suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.code AS currency, item_costs.cost', 
-					  	    'conditions' 	=> 'item_costs.item_type="PRD" AND products.id = '.$_GET['pid'], 
+					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id
-																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id
+																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id AND item_costs.item_type = "PRD"
 																		LEFT OUTER JOIN suppliers ON item_costs.supplier = suppliers.id
 																		LEFT OUTER JOIN lookups AS lookups1 ON item_costs.unit = lookups1.id
 																		LEFT OUTER JOIN lookups AS lookups2 ON item_costs.currency = lookups2.id

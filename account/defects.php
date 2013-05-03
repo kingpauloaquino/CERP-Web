@@ -48,7 +48,8 @@
       "limit":"15",
 			"data_key":"defects",
 			"row_template":"row_template_defects",
-      "pagination":"#defects-pagination"
+      "pagination":"#defects-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-defects').grid(data);

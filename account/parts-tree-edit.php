@@ -108,7 +108,8 @@
 			      "limit":"10",
 						"data_key":"material-costs",
 						"row_template":"row_modal_materials",
-			      "pagination":"#materials-pagination"
+			      "pagination":"#materials-pagination",
+			      "searchable":true
 					}
 					$('#grid-materials').grid(data);
 					

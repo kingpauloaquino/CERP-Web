@@ -52,7 +52,8 @@
       "limit":"15",
 			"data_key":"devices",
 			"row_template":"row_template_devices",
-      "pagination":"#devices-pagination"
+      "pagination":"#devices-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-devices').grid(data);

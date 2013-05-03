@@ -52,7 +52,8 @@
       "limit":"15",
 			"data_key":"indirect_materials",
 			"row_template":"row_template_indirect_materials",
-      "pagination":"#indirect-materials-pagination"
+      "pagination":"#indirect-materials-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-indirect-materials').grid(data);

@@ -53,7 +53,8 @@
       "limit":"15",
 			"data_key":"users",
 			"row_template":"row_template_users",
-      "pagination":"#users-pagination"
+      "pagination":"#users-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-users').grid(data);

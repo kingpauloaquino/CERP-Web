@@ -10,6 +10,7 @@
 	
 		$order = $Query->order_by_id($_GET['oid']);	
 		$pay_terms = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('term_of_payment').'"', 'sort_column' => 'description'));
+		$completion = $DB->Get('lookup_status', array('columns' => 'id, description', 'conditions'  => 'parent = "CMPLTN"'));
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -44,13 +45,11 @@
                   <td colspan="99">
                     <?php select_query_tag($pay_terms, 'id', 'description', $order['payment_terms_id'], 'order[payment_terms]', 'order[payment_terms]', '', 'width:655px;'); ?>
                   </td>
-               </tr>               
+               </tr>      
                <tr>
-                  <td>Description:</td>
-                  <td colspan="99">
-                    <input type="text" name="order[description]" value="<?php echo $order['description'] ?>" class="text-field" style="width:645px"/>
-                  </td>
-               </tr>
+                  <td>Completion:</td><td><?php select_query_tag($completion, 'id', 'description', $order['completion_status'], 'work_order[completion_status]', 'work_order[completion_status]', '', 'width:192px;'); ?></td>
+                  <td></td><td></td>
+               </tr> 
                <tr><td height="5" colspan="99"></td></tr>
             </table>
          </div>
@@ -94,7 +93,7 @@
          </div>
          <div class="field-command">
        	   <div class="text-post-status">
-       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="order[status]"><?php echo build_select_post_status("", $order['status']); ?></select>
+       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="order[status]"><?php echo build_select_post_status("APRVL", $order['status_id']); ?></select>
            </div>
        	   <input type="submit" value="Save" class="btn"/>
            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('orders-show.php?oid='.$order['id']); ?>"/>
@@ -195,7 +194,8 @@
 			      "limit":"10",
 						"data_key":"products",
 						"row_template":"row_modal_products",
-			      "pagination":"#products-pagination"
+			      "pagination":"#products-pagination",
+      			"searchable":true
 					}
 					$('#grid-products').grid(products);
 					
@@ -204,7 +204,8 @@
 			      "limit":"10",
 						"data_key":"material-costs",
 						"row_template":"row_modal_materials",
-			      "pagination":"#materials-pagination"
+			      "pagination":"#materials-pagination",
+      			"searchable":true
 					}
 					$('#grid-materials').grid(materials);
 					

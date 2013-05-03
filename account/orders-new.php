@@ -13,6 +13,8 @@
 								  	  	'conditions' => 'suppliers.name LIKE "ST SANGYO%"'));
 		
 		$pay_terms = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('term_of_payment').'"', 'sort_column' => 'description'));
+		
+		$completion = $DB->Get('lookup_status', array('columns' => 'id, description', 'conditions'  => 'parent = "CMPLTN"'));
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -36,7 +38,7 @@
                </tr>
                <tr>
                   <td>P/O Number:</td><td><input type="text" name="order[po_number]" value="<?php echo generate_new_code('order_number') ?>" class="text-field magenta"/></td>
-                  <td>P/O Date:</td><td><input type="text" name="order[po_date]" value="" class="text-field date-pick"/></td>
+                  <td>P/O Date:</td><td><input type="text" name="order[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Terms:</td><td><input type="text" name="order[terms]" value="" class="text-field"/></td>
@@ -47,13 +49,11 @@
                   <td colspan="99">
                     <?php select_query_tag($pay_terms, 'id', 'description', '', 'order[payment_terms]', 'order[payment_terms]', '', 'width:655px;'); ?>
                   </td>
-               </tr>               
+               </tr>   
                <tr>
-                  <td>Description:</td>
-                  <td colspan="99">
-                    <input type="text" name="order[description]" value="" class="text-field" style="width:645px"/>
-                  </td>
-               </tr>
+                  <td>Completion:</td><td><?php select_query_tag($completion, 'id', 'description', 19, 'work_order[completion_status]', 'work_order[completion_status]', '', 'width:192px;', TRUE); ?></td>
+                  <td></td><td></td>
+               </tr> 
                <tr><td height="5" colspan="99"></td></tr>
             </table>
          </div>
@@ -84,9 +84,9 @@
                <tr><td height="5" colspan="99"></td></tr>
                <tr>
                   <td>
-                     <strong><a href="#modal-products" class="" rel="modal:open">Add Products</a></strong>
+                     <strong><a id="aPRD" href="#modal-products" class="" rel="modal:open">Add Products</a></strong>
                      &nbsp;|&nbsp;
-                     <strong><a href="#modal-materials" class="" rel="modal:open">Add Materials</a></strong>
+                     <strong><a id="aMAT" href="#modal-materials" class="" rel="modal:open">Add Materials</a></strong>
                      &nbsp;|&nbsp;
                      <strong><a id="remove-order-materials" href="#" class="" grid="#order-materials">Remove Item</a></strong>
                   </td>
@@ -111,7 +111,7 @@
       <div class="modal-content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
       
         <!-- BOF GRIDVIEW -->
@@ -148,7 +148,7 @@
       <div class="modal-content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
       
         <!-- BOF GRIDVIEW -->
@@ -183,32 +183,51 @@
 
        <script>
 				$(function() {
-			  	var data = { 
-			    	"url":"/populate/products.php",
-			      "limit":"10",
-						"data_key":"products",
-						"row_template":"row_modal_products",
-			      "pagination":"#products-pagination"
+					function loadPRD() {
+						var data = { 
+				    	"url":"/populate/products.php",
+				      "limit":"10",
+							"data_key":"products",
+							"row_template":"row_modal_products",
+				      "pagination":"#products-pagination",
+	      			"searchable":true
+						}
+						$('#grid-products').grid(data);	
 					}
-					$('#grid-products').grid(data);
+					function loadMAT() {
+						var data2 = { 
+				    	"url":"/populate/material-costs.php",
+				      "limit":"10",
+							"data_key":"material-costs",
+							"row_template":"row_modal_materials",
+				      "pagination":"#materials-pagination",
+	      			"searchable":true
+						}
+						$('#grid-materials').grid(data2);	
+					}
 					
-					var data2 = { 
-			    	"url":"/populate/material-costs.php",
-			      "limit":"10",
-						"data_key":"material-costs",
-						"row_template":"row_modal_materials",
-			      "pagination":"#materials-pagination"
-					}
-					$('#grid-materials').grid(data2);
+					loadPRD();
+					loadMAT();
 					
 					
 					$('#grid-order-items').grid({});
-					
 					$('.add-item').append_item();
 				  $('#remove-order-materials').remove_item();
-				  $('#order_amount').formatCurrency();
-				  $('.get-amount').compute_amount();
+				  $('#order_amount').formatCurrency({region:"en-PH"});
+				  $('.get-amount').compute_amount();	
+			  	
+				  $('#aPRD').click(function(){
+				  	loadPRD();
+				  })
+				  $('#aMAT').click(function(){
+				  	loadMAT();
+				  })
+				  
+				  $('.add-item').click(function(){
+				  	$('.keyword').val('');
+				  })
 			  }) 
+			  
 			  
 			  function row_modal_products(row) {
            var row_id	= "mat-"+ row['id'];
@@ -221,7 +240,7 @@
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            
-           cell.find('.currency').formatCurrency();
+           cell.find('.currency').formatCurrency({region:"en-PH"});
            return cell;
          }
         
@@ -236,7 +255,7 @@
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            
-           cell.find('.currency').formatCurrency();
+           cell.find('.currency').formatCurrency({region:"en-PH"});
            return cell;
          }
          
@@ -248,7 +267,7 @@
              var price		= row.find('.item-price').val();
              var amount		= parseFloat(quantity * clean_currency(price));
              
-             row.find('.item-amount').val(amount).formatCurrency();
+             row.find('.item-amount').val(amount).formatCurrency({region:"en-PH"});
              compute_total_amount();
            })
          }

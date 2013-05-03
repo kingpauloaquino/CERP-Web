@@ -40,13 +40,11 @@
                   <td colspan="99">
                     <input type="text" value="<?php echo $order['payment_terms'] ?>" class="text-field" style="width:645px" disabled/>
                   </td>
-               </tr>               
+               </tr>    
                <tr>
-                  <td>Description:</td>
-                  <td colspan="99">
-                    <input type="text" value="<?php echo $order['description'] ?>" class="text-field" style="width:645px" disabled/>
-                  </td>
-               </tr>
+                  <td>Completion:</td><td><input type="text" value="<?php echo $order['completion_status'] ?>" class="text-field" disabled/></td>
+                  <td></td><td></td>
+               </tr> 
                <tr><td height="5" colspan="99"></td></tr>
             </table>
          </div>

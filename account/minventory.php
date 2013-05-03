@@ -55,7 +55,8 @@
       "limit":"15",
 			"data_key":"material_inventory",
 			"row_template":"row_template_materials_inventory",
-      "pagination":"#materials-pagination"
+      "pagination":"#materials-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-materials').grid(data);

@@ -54,7 +54,8 @@
       "limit":"15",
 			"data_key":"production_purchase_orders",
 			"row_template":"row_template_production_plans",
-      "pagination":"#production-plan-pagination"
+      "pagination":"#production-plan-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-production-plan').grid(data);

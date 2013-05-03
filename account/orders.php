@@ -24,7 +24,7 @@
 		<div id="content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
         
       <!-- BOF GridView -->
@@ -32,12 +32,12 @@
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <td class="border-right text-center" width="110"><a class="sort default active up" column="po_number">PO Number</a></td>
-              <td class="border-right text-center" width="100"><a class="sort" column="po_date">PO Date</a></td>
-              <td class="border-right text-center"><a class="sort" column="description">Description</a></td>
-              <td class="border-right text-center" width="240"><a class="sort" column="payment_terms">Payment Terms</a></td>
-              <td class="border-right text-center" width="100"><a class="sort" column="delivery_date">Delivery</a></td>
-              <td class="border-right text-center" width="100"><a class="sort" column="status">Status</a></td>
+              <td class="border-right text-center" width="140"><a class="sort default active up" column="po_number">P/O Number</a></td>
+              <td class="border-right text-center" width="140"><a class="sort" column="po_date">P/O Date</a></td>
+              <td class="border-right text-center"><a class="sort" column="payment_terms">Payment Terms</a></td>
+              <td class="border-right text-center" width="120"><a class="sort" column="delivery_date">Delivery Date</a></td>
+              <td class="border-right text-center" width="120"><a class="sort" column="status">Aprroval</a></td>
+              <td class="border-right text-center" width="120"><a class="sort" column="completion_status">Completion</a></td>
             </tr>
           </thead>
           <tbody></tbody>
@@ -55,7 +55,8 @@
       "limit":"15",
 			"data_key":"orders",
 			"row_template":"row_template_orders",
-      "pagination":"#orders-pagination"
+      "pagination":"#orders-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-orders').grid(data);

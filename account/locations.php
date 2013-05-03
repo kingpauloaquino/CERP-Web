@@ -54,7 +54,8 @@
       "limit":"15",
 			"data_key":"location_addresses",
 			"row_template":"row_template_locations",
-      "pagination":"#locations-pagination"
+      "pagination":"#locations-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-locations').grid(data);

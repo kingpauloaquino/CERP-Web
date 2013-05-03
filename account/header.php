@@ -72,7 +72,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   // Post::Add Purchase
   // ===============================================================
-  case 'add_purchase_order':
+  case 'add_purchase':
     $purchase		= $_POST['purchase'];
     $items			= array();
 		$total_amount	= 0.00;
@@ -113,7 +113,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   // Post::Edit Purchase
   // ===============================================================
-  case 'edit_purchase_order':
+  case 'edit_purchase':
     $purchase		= $_POST['purchase'];
     $items			= array();
 		$total_amount	= 0.00;
@@ -224,6 +224,36 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     break;	
 		
 	// ===============================================================
+  // Post::Add Purchase Order
+  // ===============================================================
+  case 'add_purchase_order':
+    $purchase_order	= $_POST['purchase_order'];
+    $items			= array();
+		$total_amount	= 0.00;
+	
+		if(!empty($_POST['items'])) {
+		  foreach ($_POST['items'] as $id => $attr) {
+	        $item = array('item_id' => $attr['item_id'], 'item_type' => $attr['item_type'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['price']), 'remarks' => $attr['remarks'], 'completion_status' => 19);
+		    	$total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
+	        array_push($items, $item);
+		  }
+		}
+		
+		$purchase_order['items']			= $items;
+		$purchase_order['total_amount']	= $total_amount;
+		
+		$purchase_order_id = $Posts->AddPurchaseOrder($purchase_order);
+		
+		// Intialize Purchase Order
+		// if($order['status'] == 11) { //published status id
+			// $args = array('order_id' => $purchase_order_id, 'head_time_days' => 7); //7 days before P/O shipment
+			// $num_of_records = $Posts->InitPurchaseOrder($args);	
+		// }	
+		
+		if($purchase_order_id > 0) redirect_to(host('purchase-orders-show.php?pid='.$purchase_order_id)); 
+    break;	
+		
+	// ===============================================================
   // Post::Add Order
   // ===============================================================
   case 'add_order':
@@ -275,11 +305,71 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 	$order_id = $Posts->EditOrder($order);
 	
 	// Intialize Purchase Order
-	if($order['status'] == 137) { //published status id
+	if($order['status'] == 11) { //published status id
 		$args = array('order_id' => $order['id'], 'head_time_days' => 7); //7 days before P/O shipment
 		$num_of_records = $Posts->InitPurchaseOrder($args);	
 	}	
 	if($order_id > 0) redirect_to(host('orders-show.php?oid='.$order['id'])); 
+    break;	
+	
+	// ===============================================================
+  // Post::Add Work Order
+  // ===============================================================
+  case 'add_work_order':
+    $work_order	= $_POST['work_order'];
+    $items			= array();
+		$total_amount	= 0.00;
+	
+		if(!empty($_POST['items'])) {
+		  foreach ($_POST['items'] as $id => $attr) {
+	        $item = array('product_id' => $attr['product_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['price']), 'remarks' => $attr['remarks']);
+		    	$total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
+	        array_push($items, $item);
+		  }
+		}
+		
+		$work_order['items']			= $items;
+		$work_order['total_amount']	= $total_amount;
+		$work_order['completion_status'] = 19; // pending
+		
+		$work_order_id = $Posts->AddWorkOrder($work_order);
+		
+		// Intialize Purchase Order
+		// if($order['status'] == 11) { //published status id
+			// $args = array('order_id' => $order_id, 'head_time_days' => 7); //7 days before P/O shipment
+			// $num_of_records = $Posts->InitPurchaseOrder($args);	
+		// }	
+		
+		if($work_order_id > 0) redirect_to(host('work-orders-show.php?wid='.$work_order_id)); 
+    break;	
+	
+	// ===============================================================
+  // Post::Edit Work Order
+  // ===============================================================
+  case 'edit_work_order':
+    $work_order	= $_POST['work_order'];
+    $items			= array();
+		$total_amount	= 0.00;
+			
+	if(!empty($_POST['items'])) {
+	  foreach ($_POST['items'] as $id => $attr) {
+        $item = array('product_id' => $attr['product_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['price']), 'remarks' => $attr['remarks']);
+	    	$total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
+        array_push($items, $item);
+	  }
+	}
+	
+	$work_order['items']			= $items;
+	$work_order['total_amount']	= $total_amount;
+	
+	$work_order_id = $Posts->EditWorkOrder($work_order);
+	
+	// Intialize Purchase Order
+	// if($order['status'] == 137) { //published status id
+		// $args = array('order_id' => $order['id'], 'head_time_days' => 7); //7 days before P/O shipment
+		// $num_of_records = $Posts->InitPurchaseOrder($args);	
+	// }	
+	if($work_order_id > 0) redirect_to(host('work-orders-show.php?wid='.$work_order['id'])); 
     break;	
 		
 	// ===============================================================
@@ -408,14 +498,23 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	</div>
         </div>
         <div class="menu">
+          <a href="#" alt="#menu-plan" class="show-submenu">Plan</a>
+        	<div id="menu-plan" class="main-sub-menu">
+            <div class="glyphicons-halflings"></div>
+        	  <ul>
+        	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
+        	    <li><a href="work-orders.php">Work Orders</a></li>
+        	    <li><a href="production-plan.php">Production Plan</a></li>
+        	    <li><a href="material-plan.php">Material Plan</a></li>
+        	  </ul>
+        	</div>
+        </div>
+        <div class="menu">
           <a href="#" alt="#menu-purchasing" class="show-submenu">Puchasing</a>
         	<div id="menu-purchasing" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
         	  <ul>
-        	    <li><a href="orders.php">Orders</a></li>
-        	    <li><a href="material-plan.php">Material Plan</a></li>
-        	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
-        	    <li><a href="work-orders.php">Work Orders</a></li>
+        	    <li><a href="purchases.php">Purchases</a></li>
         	    <li><a href="deliveries.php">Deliveries</a></li>
         	    <li><a href="receiving.php">Receiving</a></li>
         	    <li><a href="suppliers.php">Suppliers</a></li>
@@ -427,7 +526,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	<div id="menu-production" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
         	  <ul>
-        	    <li><a href="production-plan.php">Production Plan</a></li>
         	    <li><a href="material-requests.php">Material Requests</a></li>
         	    <li><a href="terminal-production.php">Terminal Entry</a></li>
         	    <li><a href="#">Requests</a></li>

@@ -149,7 +149,8 @@
       "limit":"15",
 			"data_key":"receiving",
 			"row_template":"row_template_receiving",
-      "pagination":"#receiving-items-pagination"
+      "pagination":"#receiving-items-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-receiving-items').grid(data);

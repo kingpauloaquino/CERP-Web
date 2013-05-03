@@ -52,7 +52,8 @@
       "limit":"15",
 			"data_key":"notifications",
 			"row_template":"row_template_notifications",
-      "pagination":"#notifications-pagination"
+      "pagination":"#notifications-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-notifications').grid(data);

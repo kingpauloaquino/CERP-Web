@@ -55,7 +55,8 @@
       "limit":"15",
 			"data_key":"warehouse2_inventories",
 			"row_template":"row_template_products_inventory",
-      "pagination":"#products-pagination"
+      "pagination":"#products-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-products').grid(data);

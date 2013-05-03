@@ -12,25 +12,24 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
   $startpoint = $limit * ($page - 1);
 	$search = (isset($keyword) || $keyword != '') 
 						? 
-						'purchase_orders.po_number LIKE UCASE("%'. $keyword .'%") OR '.
-						'lookups.description LIKE "%'. $keyword .'%" OR '.
+						'work_orders.wo_number LIKE UCASE("%'. $keyword .'%") OR '.
+						'work_orders.ship_date LIKE "%'. $keyword .'%" OR '.
 						'lookup_status.description LIKE "%'. $keyword .'%" OR '.
 						'lookup_status2.description LIKE "%'. $keyword .'%" '
 						//'materials.tags LIKE "%'. $keyword .'%" '
 						: '';
 	
-	$query = $DB->Fetch('purchase_orders', array(
-							'columns'	=> 'purchase_orders.id AS id, purchase_orders.po_number, purchase_orders.po_date, lookups.description AS payment_terms, 
-														purchase_orders.ship_date, lookup_status.description AS status, lookup_status2.description AS completion_status',
-					    'joins'		=> 'INNER JOIN lookups ON purchase_orders.payment_terms = lookups.id
-					    							INNER JOIN lookup_status ON lookup_status.id = purchase_orders.status
-					    							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = purchase_orders.completion_status',
+	$query = $DB->Fetch('work_orders', array(
+							'columns'	=> 'work_orders.id, work_orders.wo_number, work_orders.ship_date, work_orders.remarks,
+														lookup_status.description AS status, lookup_status2.description AS completion_status',
+					    'joins'		=> 'INNER JOIN lookup_status ON lookup_status.id = work_orders.status
+					    							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = work_orders.completion_status',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search
              )
            );
-	return array("purchase_orders" => $query, "total" => $DB->totalRows());
+	return array("work_orders" => $query, "total" => $DB->totalRows());
 }
 echo json_encode(populate_records($keyword, $page, $limit, $order, $sort));
 //$JSON->build_pretty_json(populate_records($keyword, $page, $limit, $order, $sort));

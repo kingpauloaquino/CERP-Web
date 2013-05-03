@@ -51,7 +51,8 @@
       "limit":"15",
 			"data_key":"roles",
 			"row_template":"row_template_roles",
-      "pagination":"#roles-pagination"
+      "pagination":"#roles-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-roles').grid(data);

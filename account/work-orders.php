@@ -28,16 +28,14 @@
       </div>
         
       <!-- BOF GridView -->
-      <div id="grid-orders" class="grid jq-grid" style="min-height:400px;">
+      <div id="grid-work-orders" class="grid jq-grid" style="min-height:400px;">
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <td class="border-right text-center" width="110"><a class="sort default active up" column="po_number">W/O Number</a></td>
-              <td class="border-right text-center" width="100"><a class="sort" column="po_date">PO Date</a></td>
-              <td class="border-right text-center"><a class="sort" column="description">Description</a></td>
-              <td class="border-right text-center" width="240"><a class="sort" column="payment_terms">Payment Terms</a></td>
-              <td class="border-right text-center" width="100"><a class="sort" column="delivery_date">Delivery</a></td>
-              <td class="border-right text-center" width="100"><a class="sort" column="status">Status</a></td>
+              <td class="border-right text-center" width="140"><a class="sort default active up" column="wo_number">W/O Number</a></td>
+              <td class="border-right text-center" width="140"><a class="sort" column="ship_date">Ship Date</a></td>
+              <td class="border-right text-center"><a class="sort" column="description">Remarks</a></td>
+              <td class="border-right text-center" width="120"><a class="sort" column="completion_status">Completion</a></td>
             </tr>
           </thead>
           <tbody></tbody>
@@ -45,20 +43,21 @@
       </div>
       
       <!-- BOF Pagination -->
-      <div id="orders-pagination"></div>
+      <div id="work-orders-pagination"></div>
 		</div>
 	</div>
 <script>
 	$(function() {
   	var data = { 
-    	"url":"/populate/orders.php",
+    	"url":"/populate/work-orders.php",
       "limit":"15",
-			"data_key":"orders",
-			"row_template":"row_template_orders",
-      "pagination":"#orders-pagination"
+			"data_key":"work_orders",
+			"row_template":"row_template_work_orders",
+      "pagination":"#work-orders-pagination",
+      "searchable":true
 		}
 	
-		$('#grid-orders').grid(data);
+		$('#grid-work-orders').grid(data);
   }) 
  </script>
 

@@ -13,17 +13,18 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	$search = (isset($keyword) || $keyword != '') 
 						? 
 						'orders.po_number LIKE UCASE("%'. $keyword .'%") OR '.
-						'orders.description LIKE "%'. $keyword .'%" OR '.
 						'lookups.description LIKE "%'. $keyword .'%" OR '.
-						'lookups2.description LIKE "%'. $keyword .'%" '
+						'lookup_status.description LIKE "%'. $keyword .'%" OR '.
+						'lookup_status2.description LIKE "%'. $keyword .'%" '
 						//'materials.tags LIKE "%'. $keyword .'%" '
 						: '';
 	
 	$query = $DB->Fetch('orders', array(
-							'columns'	=> 'orders.id AS id, orders.po_number AS po_number, orders.po_date AS po_date, orders.description AS description, 
-														lookups.description AS payment_terms, orders.delivery_date AS delivery_date, lookups2.description AS status',
+							'columns'	=> 'orders.id AS id, orders.po_number, orders.po_date, lookups.description AS payment_terms, 
+														orders.delivery_date, lookup_status.description AS status, lookup_status2.description AS completion_status',
 					    'joins'		=> 'INNER JOIN lookups ON orders.payment_terms = lookups.id
-					    							INNER JOIN lookups AS lookups2 ON lookups2.id = orders.status',
+					    							INNER JOIN lookup_status ON lookup_status.id = orders.status
+					    							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = orders.completion_status',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

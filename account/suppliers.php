@@ -53,7 +53,8 @@
       "limit":"15",
 			"data_key":"suppliers",
 			"row_template":"row_template_suppliers",
-      "pagination":"#suppliers-pagination"
+      "pagination":"#suppliers-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-suppliers').grid(data);

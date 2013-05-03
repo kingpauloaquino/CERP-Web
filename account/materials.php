@@ -24,7 +24,7 @@
 		<div id="content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
         
       <!-- BOF GridView -->
@@ -53,10 +53,12 @@
       "limit":"15",
 			"data_key":"materials",
 			"row_template":"row_template_materials",
-      "pagination":"#materials-pagination"
+      "pagination":"#materials-pagination",
+      "searchable":true
 		}
 	
 		$('#grid-materials').grid(data);
+		
   }) 
  </script>
 

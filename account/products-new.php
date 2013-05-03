@@ -12,6 +12,7 @@
 	
 		if($_POST['action'] == 'add_product') { 
 			$id = $Posts->AddProduct($_POST['product']);
+			$_POST['item_cost']['supplier'] = 1; // CRESC
 			$_POST['item_cost']['item_id'] = $id;
 			$Posts->AddItemCost($_POST['item_cost']);
 			if(isset($id)){ redirect_to($Capabilities->All['show_product']['url'].'?pid='.$id); }
@@ -72,7 +73,7 @@
            <tr>
               <td width="150">Supplier:</td>
               <td colspan="99">
-                <?php select_query_tag($suppliers, 'id', 'name', '', 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;'); ?>
+                <?php select_query_tag($suppliers, 'id', 'name', '1', 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;', TRUE); ?>
               </td>
            </tr>
            <tr>
@@ -85,7 +86,6 @@
            </tr>    
            <tr><td height="5" colspan="99"></td></tr>
         </table>       
-        
             
          <div class="field-command">
        	   <div class="text-post-status"></div>

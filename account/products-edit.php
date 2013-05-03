@@ -13,6 +13,7 @@
 		if($_POST['action'] == 'edit_product') {
 			$args = array('variables' => $_POST['product'], 'conditions' => 'id='.$_POST['pid']); 
 			$num_of_records = $Posts->EditProduct($args);
+			
 			$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'id='.$_POST['item_cost_id']));
 			redirect_to($Capabilities->All['show_product']['url'].'?pid='.$_POST['pid']);		
 		} 
@@ -91,7 +92,7 @@
            <tr>
               <td width="150">Supplier:</td>
               <td colspan="99">
-                <?php select_query_tag($suppliers, 'id', 'name', $item_costs['supplier'], 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;'); ?>
+                <?php select_query_tag($suppliers, 'id', 'name', $item_costs['supplier'], 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;', TRUE); ?>
               </td>
            </tr>
            <tr>

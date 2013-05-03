@@ -72,7 +72,7 @@ function select_tag2($items=array(), $selected='', $id='', $name='', $option='',
 }
   
 function select_query_tag2($rows=array(), $key='', $value='', $selected='', $id='', $name='', $option='', $class='text', $readonly = FALSE) {
-  $tag = '<select id="'.$id.'" name="'.$name.'" class="'.$class.'" '.$ro=($readonly)?'readonly="readonly"':''.'>';
+  $tag = '<select id="'.$id.'" name="'.$name.'" class="'.$class.'" '. ($ro=($readonly)?'readonly="readonly"':'') .'>';
   $tag .= ($option == '' ? '' : '<option value="">'.$option.'</option>');
   if (!empty($rows)) {
     foreach($rows as $row) {
@@ -87,7 +87,7 @@ function select_query_tag2($rows=array(), $key='', $value='', $selected='', $id=
 }
 
 function select_query_tag($rows=array(), $key='', $value='', $selected='', $id='', $name='', $option='', $style='', $readonly = FALSE) {
-  $tag = '<select id="'.$id.'" name="'.$name.'" style="'.$style.'" '.$ro=($readonly)?'readonly="readonly"':''.'>';
+  $tag = '<select id="'.$id.'" name="'.$name.'" style="'.$style.'" '. ($ro=($readonly) ? 'disabled' : '') .'>';
   $tag .= ($option == '' ? '' : '<option value="">'.$option.'</option>');
   if (!empty($rows)) {
     foreach($rows as $row) {
@@ -306,7 +306,7 @@ function pad_number($number,$n) {
 
 function generate_new_code($type) {
 	switch($type) {
-		case "order_number":	
+		case "purchase_order_number":	
 			$prefix = "STJ-";	
 			$flag = '-';			
 			$table = 'orders';
@@ -336,6 +336,15 @@ function generate_new_code($type) {
 			$flag = '-';
 			$table = 'users';
 			$column = 'employee_id';	
+			$pad = TRUE; 
+			$pad_cnt = 3;			
+			break;
+			
+		case "work_order_number":	
+			$prefix = "WO".date('n').'-';
+			$flag = '-';
+			$table = 'work_orders';
+			$column = 'wo_number';	
 			$pad = TRUE; 
 			$pad_cnt = 3;			
 			break;

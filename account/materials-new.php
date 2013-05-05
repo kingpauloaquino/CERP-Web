@@ -15,6 +15,7 @@
 		$_POST['material']['base'] = TRUE;
 		$_POST['material']['parent'] = NULL;
 		$_POST['material']['defect_rate'] = $_POST['material']['defect_rate'] / 100;
+		$_POST['material']['sorting_percentage'] = $_POST['material']['sorting_percentage'] / 100;
 		$base_id = $Posts->AddMaterial($_POST['material']);
 				
 		$_POST['item_cost']['item_id'] = $base_id;
@@ -107,7 +108,7 @@
            </tr>    
            <tr>
               <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right" /></td>
-              <td></td><td></td>
+              <td>Sorting %:</td><td><input type="text" id="materials[sorting_percentage]" name="materials[sorting_percentage]" class="text-field text-right" /></td>
            </tr>    
            <tr><td height="5" colspan="99"></td></tr>
         </table>   

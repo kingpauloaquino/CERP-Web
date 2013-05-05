@@ -158,5 +158,16 @@ class Query {
 		if(!empty($query)) return $query[0];
 		return null;
 	}
+
+	function product_by_purchase_order_item($id) {
+		$query = $this->DB->Fetch('purchase_order_items', array(
+			  			'columns' => 'purchase_order_items.id, purchase_order_items.item_id, products.product_code', 
+			  			'joins' => 'INNER JOIN products ON products.id = purchase_order_items.item_id AND purchase_order_items.item_type = "PRD"',
+			  	  	'conditions' => 'purchase_order_items.id = '.$id)
+						);	 
+						 
+		if(!empty($query)) return $query[0];
+		return null;
+	}
 	
 }

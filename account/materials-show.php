@@ -140,7 +140,7 @@ if(!$allowed) {
 	           </tr>   
 	           <tr>
 	              <td width="150">Transportation Rate:</td><td width="310"><input type="text" value="<?php echo $cost['transportation_rate'] ?>" class="text-field text-right" disabled/></td>
-	              <td></td><td></td>
+	              <td>Sorting %:</td><td><input type="text" value="<?php echo $cost['sorting_percentage'] ?>" class="text-field text-right" disabled/></td>
 	           </tr>    
 	           <tr><td height="5" colspan="99"></td></tr>
 						<?php

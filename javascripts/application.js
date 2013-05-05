@@ -698,6 +698,31 @@ function row_template_purchase_order_items_read_only(data) {
   return row;   
 }
 
+function row_template_purchase_order_item_parts_read_only(data) {
+  var forward	= host + "/account/materials-show.php?mid="+ data['material_id'];
+  var row		= $('<tr id="mat-'+ data['id'] +'"></tr>');
+  
+  var total_qty = parseFloat(data['parts_tree_qty']) * parseFloat(data['po_qty']);
+  var po_qty = (Math.ceil(parseFloat(parseFloat(Math.abs(total_qty) / parseFloat(data['moq'])).toFixed(1)) * 1) / 1) * parseFloat(data['moq']);
+  var amount	= po_qty * clean_currency(data['item_price']);
+
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['material_code'] +'</a></td>');
+  row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-right text-center numbers">'+ parseFloat(data['parts_tree_qty']) +'</td>');
+  row.append('<td class="border-right text-right text-center numbers">'+ parseFloat(data['po_qty']) +'</td>');
+  row.append('<td class="border-right text-right text-center numbers">'+ total_qty +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right text-center numbers">'+ parseFloat(data['moq']) +'</td>');
+  row.append('<td class="border-right text-right currency">'+ parseFloat(data['item_price']) +'</td>');
+  row.append('<td class="border-right text-right text-center numbers po_qty">'+ po_qty +'</td>');
+  row.append('<td class="border-right text-right currency amount">'+ amount +'</td>');
+           	
+  row.find('.numbers').digits();
+  row.find('.currency').formatCurrency({region:"en-PH"});
+  return row;   
+}
+
 function row_template_deliver_materials(data) {
   var row = $("<tr></tr>");
   

@@ -87,7 +87,7 @@
            <tr>
               <td>Address:</td><td><input type="text"  class="text-field" />
               </td>
-              <td></td><td></td>
+              <td>Defect Rate %:</td><td><input id="material[defect_rate]" name="material[defect_rate]" type="text"  class="text-field text-right" placeholder="5" />
            </tr>              
            <tr>
               <td>Description:</td>
@@ -116,7 +116,7 @@
            </tr>   
            <tr>
               <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right" /></td>
-              <td></td><td></td>
+              <td>Sorting %:</td><td><input type="text" id="materials[sorting_percentage]" name="materials[sorting_percentage]" class="text-field text-right" /></td>
            </tr>     
            <tr><td height="5" colspan="99"></td></tr>
         </table>   

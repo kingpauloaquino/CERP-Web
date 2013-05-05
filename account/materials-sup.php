@@ -21,7 +21,7 @@
 			
 			$materials = $DB->Find('materials', array(
 					  			'columns' 		=> 'materials.id AS mid, materials.parent, materials.material_code, materials.bar_code, materials.description, brand_models.brand_model, 
-																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,																  	
+																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, materials.defect_rate, materials.sorting_percentage,																  	
 																  	lookups3.description AS material_type, lookups4.description AS status, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
 					  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
@@ -84,7 +84,7 @@
               <td>Address:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
               	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
               </td>
-              <td></td><td></td>
+              <td>Defect Rate %:</td><td><input value="<?php echo ($materials['defect_rate'] * 100) ?>" id="material[defect_rate]" name="material[defect_rate]" type="text"  class="text-field text-right" placeholder="5" />
            </tr>             
            <tr>
               <td>Description:</td>

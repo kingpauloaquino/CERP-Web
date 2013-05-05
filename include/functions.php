@@ -309,7 +309,7 @@ function generate_new_code($type) {
 		case "purchase_order_number":	
 			$prefix = "STJ-";	
 			$flag = '-';			
-			$table = 'orders';
+			$table = 'purchase_orders';
 			$column = 'po_number';
 			$pad = TRUE; 
 			$pad_cnt = 3;			

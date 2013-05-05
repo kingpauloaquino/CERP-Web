@@ -104,7 +104,7 @@
        <script>
 				$(function() {
 			  	var data = { 
-			    	"url":"/populate/purchase-order-item-parts.php?woid=<?php echo $_GET['wopid'] ?>",
+			    	"url":"/populate/purchase-order-item-parts.php?poid=<?php echo $_GET['popid'] ?>",
 			      "limit":"50",
 						"data_key":"purchase_order_item_parts",
 						"row_template":"row_template_purchase_order_item_parts_read_only",

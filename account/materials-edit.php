@@ -13,6 +13,7 @@
   
 	if($_POST['action'] == 'edit_material') {
 		$_POST['material']['defect_rate'] = $_POST['material']['defect_rate'] / 100;
+		$_POST['material']['sorting_percentage'] = $_POST['material']['sorting_percentage'] / 100;
 		$num_of_records1 = $Posts->EditMaterial(array('variables' => $_POST['material'], 'conditions' => 'id='.$_POST['mid']));
 		
 		echo '<br/><br/>';
@@ -145,7 +146,7 @@
 	           </tr>    
 	           <tr>
 	              <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" value="<?php echo $cost['transportation_rate'] ?>" class="text-field text-right" /></td>
-	              <td></td><td></td>
+	              <td>Sorting %</td><td><input id="material[defect_rate]" name="material[sorting_percentage]" type="text" value="<?php echo ($materials['sorting_percentage'] * 100) ?>" class="text-field text-right"/></td>
 	           </tr>   
 	           <tr><td height="5" colspan="99"></td></tr>
 						<?php

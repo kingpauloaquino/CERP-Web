@@ -304,7 +304,9 @@ class Posts {
 		  // Add Each Order Item
 		  foreach ($params['items'] as $index => $item) {
 	        $item['purchase_order_id'] = $purchase_order_id;
-	        $this->DB->InsertRecord('purchase_order_items', $item);
+	        $purchase_order_item_id = $this->DB->InsertRecord('purchase_order_items', $item);
+					
+					$this->AddPurchaseOrderProductParts(array('purchase_order_item_id' => $purchase_order_item_id, 'product_id' => $item['item_id']));
 		  }
 		}
 	
@@ -344,6 +346,19 @@ class Posts {
 	
     return $row;
   }
+
+	function AddPurchaseOrderProductParts($params) {
+		$query = array(
+			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
+			'set_2' 	=> 'SET @purchase_order_item_id = '.$params['purchase_order_item_id'],
+			'set_3' 	=> 'SET @product_id = '.$params['product_id'],
+			'query_1' => 'INSERT INTO purchase_order_item_parts (purchase_order_item_id, material_id, parts_tree_qty, created_at) 
+										SELECT @purchase_order_item_id, material_id, material_qty, @created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
+		);		
+		// echo '<br/><br/>';
+		// var_dump($query); die();
+		return $this->DB->ExecuteQuery($query);
+	}
 
 	function AddWorkOrder($params) {		
     $work_order = array(

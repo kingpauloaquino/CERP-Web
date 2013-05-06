@@ -42,7 +42,7 @@
                </tr>
                <tr>
                   <td>Terms:</td><td><input type="text" name="purchase_order[terms]" value="" class="text-field"/></td>
-                  <td>Delivery Date:</td><td><input type="text" name="purchase_order[delivery_date]" value="" class="text-field date-pick"/></td>
+                  <td>Ship Date:</td><td><input type="text" name="purchase_order[delivery_date]" value="" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Payment Terms:</td>

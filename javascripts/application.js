@@ -339,7 +339,7 @@ function row_template_supplier_material_plan(data) {
 }
 
 function row_template_material_plan(data) {
-  var forward	= host + "/account/material-plan-model-show.php?mid="+ data['item_id'] +"";
+  var forward	= host + "/account/material-plan-model-show.php?mid="+ data['id'] +"";
   
   var prod_plan = parseFloat((parseFloat(data['prod_plan']) * parseFloat(data['defect_rate'])) + parseFloat(data['prod_plan']));
   var balance = ((parseFloat(data['open_po']) || 0) + (parseFloat(data['inventory']) || 0) - prod_plan);
@@ -349,7 +349,7 @@ function row_template_material_plan(data) {
   	"<td class=\"border-right\"><a target=\"_blank\" href=\""+ forward +"\">"+ data['material_code'] +"</a></td>" +
     "<td class=\"border-right\">"+ data['model'] +"</td>" +
     "<td class=\"border-right text-center\">"+ (parseFloat(data['defect_rate'])*100) +"%</td>" +
-    "<td class=\"border-right text-right numbers\">"+ (prod_plan || 'N/A') +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (prod_plan.toFixed(2) || 'N/A') +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['inventory']) || 0) +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['open_po']) || 0) +"</td>" +
     "<td class=\"border-right text-right numbers "+ ((balance < 0) ? "red" : "") +"\">"+ balance +"</td>" +
@@ -420,8 +420,10 @@ function row_template_purchase_orders(data) {
 function row_template_work_orders(data) {
   var forward	= host + "/account/work-orders-show.php?wid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['wo_number'] || '--') +"</a></td>" +
-    "<td class=\"border-right text-center\">"+ data['ship_date'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['wo_date'] +"</td>" +
     "<td class=\"border-right\">"+ data['remarks'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['ship_date'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['status'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['completion_status'] +"</td>" +
     "</tr>");
 
@@ -480,7 +482,7 @@ function row_template_work_order_item_parts_read_only(data) {
   row.append('<td class="border-right">'+ data['description'] +'</td>');
   row.append('<td class="border-right text-right text-center numbers">'+ parseFloat(data['parts_tree_qty']) +'</td>');
   row.append('<td class="border-right text-right text-center numbers">'+ parseFloat(data['wo_qty']) +'</td>');
-  row.append('<td class="border-right text-right text-center numbers">'+ total_qty +'</td>');
+  row.append('<td class="border-right text-right text-center numbers">'+ total_qty.toFixed(2) +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right text-center numbers">'+ parseFloat(data['moq']) +'</td>');
   row.append('<td class="border-right text-right currency">'+ parseFloat(data['item_price']) +'</td>');
@@ -711,7 +713,7 @@ function row_template_purchase_order_item_parts_read_only(data) {
   row.append('<td class="border-right">'+ data['description'] +'</td>');
   row.append('<td class="border-right text-right text-center numbers">'+ parseFloat(data['parts_tree_qty']) +'</td>');
   row.append('<td class="border-right text-right text-center numbers">'+ parseFloat(data['po_qty']) +'</td>');
-  row.append('<td class="border-right text-right text-center numbers">'+ total_qty +'</td>');
+  row.append('<td class="border-right text-right text-center numbers">'+ total_qty.toFixed(2) +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right text-center numbers">'+ parseFloat(data['moq']) +'</td>');
   row.append('<td class="border-right text-right currency">'+ parseFloat(data['item_price']) +'</td>');

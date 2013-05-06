@@ -82,7 +82,6 @@ class MySQL {
     $sql .= $args['group'];
     $sql .= $args['order'];
 	
-	// echo $sql; exit();
 	//echo '<br/><br/>';
 	//var_dump($sql); die();
 	$this->statement = $sql;

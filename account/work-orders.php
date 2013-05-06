@@ -33,9 +33,11 @@
           <thead>
             <tr>
               <td class="border-right text-center" width="140"><a class="sort default active up" column="wo_number">W/O Number</a></td>
-              <td class="border-right text-center" width="140"><a class="sort" column="ship_date">Ship Date</a></td>
+              <td class="border-right text-center" width="120"><a class="sort default active up" column="wo_date">W/O Date</a></td>
               <td class="border-right text-center"><a class="sort" column="description">Remarks</a></td>
-              <td class="border-right text-center" width="120"><a class="sort" column="completion_status">Completion</a></td>
+              <td class="border-right text-center" width="120"><a class="sort" column="ship_date">Ship Date</a></td>
+              <td class="border-right text-center" width="120"><a class="sort" column="status">Approval</a></td>
+              <td class="text-center" width="120"><a class="sort" column="completion_status">Completion</a></td>
             </tr>
           </thead>
           <tbody></tbody>

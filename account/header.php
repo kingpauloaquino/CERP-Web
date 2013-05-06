@@ -498,7 +498,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	</div>
         </div>
         <div class="menu">
-          <a href="#" alt="#menu-plan" class="show-submenu">Plan</a>
+          <a href="#" alt="#menu-plan" class="show-submenu">Planning</a>
         	<div id="menu-plan" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
         	  <ul>

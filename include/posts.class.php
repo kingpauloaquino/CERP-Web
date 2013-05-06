@@ -352,8 +352,10 @@ class Posts {
 			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
 			'set_2' 	=> 'SET @purchase_order_item_id = '.$params['purchase_order_item_id'],
 			'set_3' 	=> 'SET @product_id = '.$params['product_id'],
-			'query_1' => 'INSERT INTO purchase_order_item_parts (purchase_order_item_id, material_id, parts_tree_qty, created_at) 
-										SELECT @purchase_order_item_id, material_id, material_qty, @created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
+			'query_1' => 'INSERT INTO purchase_order_item_parts (purchase_order_item_id, material_id, parts_tree_qty, price, created_at) 
+										SELECT @purchase_order_item_id, material_id, material_qty, 
+										(SELECT cost FROM item_costs WHERE item_id = material_id AND item_type="MAT") AS price,
+										@created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
 		);		
 		// echo '<br/><br/>';
 		// var_dump($query); die();
@@ -418,8 +420,10 @@ function EditWorkOrder($params) {
 			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
 			'set_2' 	=> 'SET @work_order_item_id = '.$params['work_order_item_id'],
 			'set_3' 	=> 'SET @product_id = '.$params['product_id'],
-			'query_1' => 'INSERT INTO work_order_item_parts (work_order_item_id, material_id, parts_tree_qty, created_at) 
-										SELECT @work_order_item_id, material_id, material_qty, @created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
+			'query_1' => 'INSERT INTO work_order_item_parts (work_order_item_id, material_id, parts_tree_qty, price, created_at) 
+										SELECT @work_order_item_id, material_id, material_qty, 
+										(SELECT cost FROM item_costs WHERE item_id = material_id AND item_type="MAT") AS price,
+										@created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
 		);		
 		return $this->DB->ExecuteQuery($query);
 	}

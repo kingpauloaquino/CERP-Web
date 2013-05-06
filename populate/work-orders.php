@@ -20,7 +20,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						: '';
 	
 	$query = $DB->Fetch('work_orders', array(
-							'columns'	=> 'work_orders.id, work_orders.wo_number, work_orders.ship_date, work_orders.remarks,
+							'columns'	=> 'work_orders.id, work_orders.wo_number, work_orders.wo_date, work_orders.ship_date, work_orders.remarks,
 														lookup_status.description AS status, lookup_status2.description AS completion_status',
 					    'joins'		=> 'INNER JOIN lookup_status ON lookup_status.id = work_orders.status
 					    							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = work_orders.completion_status',

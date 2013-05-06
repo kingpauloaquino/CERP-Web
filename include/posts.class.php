@@ -142,6 +142,7 @@ class Posts {
 		  'person_in_charge'				=> $params['person_in_charge'],
 		  'status'									=> $params['status'],
 		  'defect_rate'							=> $params['defect_rate'],
+		  'sorting_percentage'			=> $params['sorting_percentage'],
 		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] 
 		);
     return $this->DB->InsertRecord('materials', $material);
@@ -312,34 +313,30 @@ class Posts {
 	
     return $purchase_order_id;
   }
-	
+
 	function EditPurchaseOrder($params) {
-    $order = array(
+    $purchase_order = array(
       'variables' => array(
-		  	  'po_number'		=> $params['po_number'],
 		  	  'po_date'			=> strdate($params['po_date'], 'Y-m-d'),
 		  	  'payment_terms'	=> $params['payment_terms'],
 		  	  'terms'			=> $params['terms'],
-		  	  'delivery_date'	=> strdate($params['delivery_date'], 'Y-m-d'),    
+		  	  'ship_date'	=> strdate($params['ship_date'], 'Y-m-d'),    
   	  		'status'			=> $params['status'],
   	  		'completion_status'			=> $params['completion_status'],
 		  	  'remarks'			=> $params['remarks'],
-		  	  'date_received'	=> strdate($params['date_received'], 'Y-m-d'),
-		  	  'total_quantity'	=> $params['total_quantity'],
-		  	  'unit'			=> $params['unit'],
 		  	  'total_amount'	=> $params['total_amount']
 	  ),
 	  'conditions' => 'id = '.$params['id']
     );
-	
-		$row = $this->DB->UpdateRecord('orders', $order);
+		
+		$row = $this->DB->UpdateRecord('purchase_orders', $purchase_order);
 	if($row > 0) {
-	  $this->DB->DeleteRecord('order_items', array('conditions' => 'order_id ='.$params['id']));
+	  $this->DB->DeleteRecord('purchase_order_items', array('conditions' => 'purchase_order_id ='.$params['id']));
 			
 	  	if(!empty($params['items'])) {
 	    	foreach ($params['items'] as $index => $item) {
-          $item['order_id'] = $params['id'];
-          $this->DB->InsertRecord('order_items', $item); 
+          $item['purchase_order_id'] = $params['id'];
+          $this->DB->InsertRecord('purchase_order_items', $item); 
 	    	}
 	  	}
 		}
@@ -352,10 +349,8 @@ class Posts {
 			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
 			'set_2' 	=> 'SET @purchase_order_item_id = '.$params['purchase_order_item_id'],
 			'set_3' 	=> 'SET @product_id = '.$params['product_id'],
-			'query_1' => 'INSERT INTO purchase_order_item_parts (purchase_order_item_id, material_id, parts_tree_qty, price, created_at) 
-										SELECT @purchase_order_item_id, material_id, material_qty, 
-										(SELECT cost FROM item_costs WHERE item_id = material_id AND item_type="MAT") AS price,
-										@created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
+			'query_1' => 'INSERT INTO purchase_order_item_parts (purchase_order_item_id, material_id, parts_tree_qty, created_at) 
+										SELECT @purchase_order_item_id, material_id, material_qty, @created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
 		);		
 		// echo '<br/><br/>';
 		// var_dump($query); die();
@@ -386,7 +381,7 @@ class Posts {
     return $work_order_id;
   }
 
-function EditWorkOrder($params) {
+	function EditWorkOrder($params) {
     $work_order = array(
       'variables' => array(
 		  	  //'wo_number'		=> $params['wo_number'],
@@ -420,10 +415,8 @@ function EditWorkOrder($params) {
 			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
 			'set_2' 	=> 'SET @work_order_item_id = '.$params['work_order_item_id'],
 			'set_3' 	=> 'SET @product_id = '.$params['product_id'],
-			'query_1' => 'INSERT INTO work_order_item_parts (work_order_item_id, material_id, parts_tree_qty, price, created_at) 
-										SELECT @work_order_item_id, material_id, material_qty, 
-										(SELECT cost FROM item_costs WHERE item_id = material_id AND item_type="MAT") AS price,
-										@created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
+			'query_1' => 'INSERT INTO work_order_item_parts (work_order_item_id, material_id, parts_tree_qty, created_at) 
+										SELECT @work_order_item_id, material_id, material_qty, @created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
 		);		
 		return $this->DB->ExecuteQuery($query);
 	}
@@ -892,14 +885,15 @@ function EditWorkOrder($params) {
   // Return: ID
   function AddPurchase($params) {
     $purchase = array(
-      'purchase_number'	=> strtoupper(trim($params['purchase_number'])),
       'supplier_id'		=> $params['supplier_id'],
+      'po_number'	=> strtoupper(trim($params['po_number'])),
+      'po_date' => date('Y-m-d', strtotime($params['po_date'])),
+      'payment_terms'	=> trim($params['payment_terms']),
+      'terms'		=> trim($params['terms']),
       'delivery_via'	=> trim($params['delivery_via']),
       'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
-      'trade_terms'		=> trim($params['trade_terms']),
-      'payment_terms'	=> trim($params['payment_terms']),
       'total_amount'	=> $params['total_amount'],
-      'status'			=> $params['status'],
+      'status'			=> 2, //pending
       'completion_status'			=> 2, //pending
       'remarks'			=> trim($params['remarks'])
     );
@@ -924,13 +918,15 @@ function EditWorkOrder($params) {
   function EditPurchase($params) {
     $purchase = array(
       'variables' => array(
-        'delivery_via'	=> trim($params['delivery_via']),
-      	'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
-        'trade_terms'		=> trim($params['trade_terms']),
-        'payment_terms'	=> trim($params['payment_terms']),
-        'total_amount'	=> $params['total_amount'],
-        'status'			=> $params['status'],
-        'remarks'			=> trim($params['remarks'])
+	      'po_date' => date('Y-m-d', strtotime($params['po_date'])),
+	      'payment_terms'	=> trim($params['payment_terms']),
+	      'terms'		=> trim($params['terms']),
+	      'delivery_via'	=> trim($params['delivery_via']),
+	      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
+	      'total_amount'	=> $params['total_amount'],
+	      'status'			=> $params['status'],
+      	'completion_status'		=> $params['completion_status'],
+	      'remarks'			=> trim($params['remarks']),
 	  ),
 	  'conditions' => 'id = '.$params['id']
     );

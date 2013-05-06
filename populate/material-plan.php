@@ -38,7 +38,11 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 												            WHERE material_id = materials.id
 												            GROUP BY work_order_item_parts.material_id
 												        ) 
-												    ) AS prod_plan
+												    ) AS prod_plan,
+														(
+															SELECT COALESCE(SUM(purchase_items.quantity), 0) AS qty FROM purchase_items 
+															WHERE purchase_items.item_id = purchase_order_item_parts.material_id
+														) AS open_po
 												    ',
 					    'joins'		=> 'INNER JOIN brand_models ON brand_models.id = materials.brand_model
 														INNER JOIN item_classifications ON item_classifications.id = materials.material_classification

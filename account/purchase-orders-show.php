@@ -33,7 +33,7 @@
                </tr>
                <tr>
                   <td>Terms:</td><td><input type="text" value="<?php echo $purchase_order['terms'] ?>" class="text-field" disabled/></td>
-                  <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['delivery_date']))?>" class="text-field" disabled/></td>
+                  <td>Ship Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['ship_date']))?>" class="text-field" disabled/></td>
                </tr>
                <tr>
                   <td>Payment Terms:</td>

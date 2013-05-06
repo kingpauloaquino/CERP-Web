@@ -9,9 +9,12 @@ if(!$allowed) {
 }else{
 ?>
 	<div id="page">
+  	<div class="breadcrumb">
+  		<a href="#">Parent</a> &raquo; Current
+  	</div>
 		<div id="page-title">
     	<h2>
-      	<span class="title"></span>
+      	<span class="title">Title</span>
 				<div class="clear"></div>
       </h2>
 		</div>

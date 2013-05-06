@@ -23,7 +23,7 @@
           
           <!-- BOF Search -->
       <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
             
           <!-- BOF GridView -->

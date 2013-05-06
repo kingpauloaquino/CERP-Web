@@ -9,6 +9,8 @@
 	}else{
 		
 		$purchase = $Query->purchase_by_id($_GET['id']);
+		
+		$completion = $DB->Get('lookup_status', array('columns' => 'id, description', 'conditions'  => 'parent = "CMPLTN"'));
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -21,14 +23,14 @@
 
     <div id="content">
       <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
-      	 <input type="hidden" name="action" value="edit_purchase_order"/>
+      	 <input type="hidden" name="action" value="edit_purchase"/>
       	 <input type="hidden" name="purchase[id]" value="<?php echo $_GET['id']; ?>"/>
          <!-- BOF TEXTFIELDS -->
          <div>
          	<table>
                <tr>
-                  <td width="120">Purchase Number:</td><td width="340"><input type="text" value="<?php echo $purchase['purchase_number']; ?>" class="text-field" disabled/></td>
-                  <td width="120"></td><td width="340"></td>
+                  <td width="120">P/O Number:</td><td width="340"><input type="text" value="<?php echo $purchase['po_number']; ?>" class="text-field magenta" disabled/></td>
+                  <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y", strtotime($purchase['po_date'])) ?>" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Supplier:</td>
@@ -42,8 +44,12 @@
                   <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="<?php echo date("F d, Y", strtotime($purchase['delivery_date'])) ?>" class="text-field date-pick"/></td>
                </tr>
                <tr>
-                  <td>Trade Terms:</td><td><input type="text" name="purchase[trade_terms]" value="<?php echo $purchase['trade_terms']; ?>" class="text-field"/></td>
+                  <td>Trade Terms:</td><td><input type="text" name="purchase[terms]" value="<?php echo $purchase['terms']; ?>" class="text-field"/></td>
                   <td>Payment Terms:</td><td><input type="text" name="purchase[payment_terms]" value="<?php echo $purchase['payment_terms']; ?>" class="text-field"/></td>
+               </tr>
+               <tr>
+                  <td>Completion:</td><td><?php select_query_tag($completion, 'id', 'description', $purchase['completion_status_id'], 'purchase[completion_status]', 'purchase[completion_status]', '', 'width:192px;'); ?></td>
+                  <td></td><td></td>
                </tr>
                <tr><td height="5" colspan="99"></td></tr>
             </table>
@@ -85,10 +91,10 @@
          </div>
          <div class="field-command">
        	   <div class="text-post-status">
-       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]"><?php echo build_select_post_status(); ?></select>
+       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]"><?php echo build_select_post_status("APRVL", $purchase['status_id']); ?></select>
            </div>
        	   <input type="submit" value="Save" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchase-orders-show.php?id='.$_GET['id']); ?>"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchases-show.php?id='.$_GET['id']); ?>"/>
          </div>
       </form>
    </div>
@@ -99,7 +105,7 @@
       <div class="modal-content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
         <!-- BOF GRIDVIEW -->
         <div id="grid-materials" class="grid jq-grid">
@@ -168,30 +174,35 @@
 						"row_template":"row_template_purchase_material"
 					}
 					$('#grid-purchase-materials').grid(data);
-					
 					$('#purchase_amount').currency_format(<?php echo $purchase['total_amount']; ?>);
 					
 					populate($('#supplier_id').val());
+					
+					$('#add-item').click(function(){
+						$('#keyword').val('');
+						populate($('#supplier_id').val());
+					});
 					
 					$('.parent-modal').click(function(){
 					    $('.blocker').last().remove();
 					    $('#modal-product-materials').hide();
 					});	
 					
-			  function populate(sup_id) {
-			  	var data = { 
-			    	"url":"/populate/material-supplier-costs.php?sid=" + sup_id,
-			      "limit":"10",
-						"data_key":"material-supplier-costs",
-						"row_template":"row_modal_materials",
-			      "pagination":"#materials-pagination"
-					}
-					$('#grid-materials').grid(data);
-					
-					$('#add-item').append_item();
-				  $('#remove-purchase-materials').remove_item();
-				  $('#purchase_amount').formatCurrency({region:"en-PH"});
-				  $('.get-amount').compute_amount();	
+				  function populate(sup_id) {
+				  	var data = { 
+				    	"url":"/populate/material-supplier-costs.php?sid=" + sup_id,
+				      "limit":"10",
+							"data_key":"material-supplier-costs",
+							"row_template":"row_modal_materials",
+				      "pagination":"#materials-pagination",
+				      "searchable": true
+						}
+						$('#grid-materials').grid(data);
+						
+						$('#add-item').append_item();
+					  $('#remove-purchase-materials').remove_item();
+					  $('#purchase_amount').formatCurrency({region:"en-PH"});
+					  $('.get-amount').compute_amount();	
 			  	}
 			  }); 
        

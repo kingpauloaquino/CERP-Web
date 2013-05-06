@@ -42,7 +42,7 @@
                </tr>
                <tr>
                   <td>Terms:</td><td><input type="text" name="purchase_order[terms]" value="" class="text-field"/></td>
-                  <td>Ship Date:</td><td><input type="text" name="purchase_order[delivery_date]" value="" class="text-field date-pick"/></td>
+                  <td>Ship Date:</td><td><input type="text" name="purchase_order[ship_date]" value="" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Payment Terms:</td>
@@ -90,7 +90,7 @@
                      &nbsp;|&nbsp;
                      <strong><a id="remove-purchase-order-materials" href="#" class="" grid="#purchase-order-materials">Remove Item</a></strong>
                   </td>
-                  <td align="right"><strong>Total Amount:</strong>&nbsp;&nbsp;<input id="order_amount" type="text" value="" class="text-right text-currency" style="width:95px;" disabled/></td>
+                  <td align="right"><strong>Total Amount:</strong>&nbsp;&nbsp;<input id="order_amount"  type="text" value="" class="text-right text-currency" style="width:95px;" disabled/></td>
                </tr>
                <tr><td colspan="2">Remarks:<br/><textarea name="purchase_order[remarks]" style="min-width:650px;width:98.9%;height:50px;"></textarea></td></tr>
             </table>
@@ -281,7 +281,7 @@
              var amount_price = clean_currency($(this).val());
              total_amount.val(parseFloat(total_amount.val()) + amount_price);
            })
-           total_amount.formatCurrency();
+           total_amount.formatCurrency({region:"en-PH"});
          }
                   
          $.fn.append_item = function() {

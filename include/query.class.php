@@ -11,11 +11,11 @@ class Query {
   // Get Purchase By ID
   function purchase_by_id($id) {
   	$query = $this->DB->Fetch('purchases', array(
-               'columns'  => 'purchases.id, purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
+               'columns'  => 'purchases.id, po_number, purchases.po_date, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
                               suppliers.address AS supplier_address, suppliers.contact_no1 AS supplier_phone, suppliers.fax_no AS supplier_fax,
-                              suppliers.representative AS supplier_person, delivery_date, delivery_via, trade_terms, 
-                              payment_terms, total_amount, remarks, lookup_status.description AS status,lookup_status2.description AS completion_status,
-                              purchases.created_at',
+                              suppliers.representative AS supplier_person, delivery_date, delivery_via, terms, 
+                              purchases.status AS status_id, purchases.completion_status AS completion_status_id,
+                              payment_terms, total_amount, remarks, lookup_status.description AS status,lookup_status2.description AS completion_status',
                'joins' => 'INNER JOIN suppliers ON suppliers.id = purchases.supplier_id 
                            INNER JOIN lookup_status ON lookup_status.id = purchases.status
                            INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = purchases.completion_status',

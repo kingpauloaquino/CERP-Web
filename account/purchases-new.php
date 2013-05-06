@@ -20,13 +20,13 @@
 
     <div id="content">
       <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
-      	 <input type="hidden" name="action" value="add_purchase_order"/>
+      	 <input type="hidden" name="action" value="add_purchase"/>
          <!-- BOF TEXTFIELDS -->
          <div>
          	<table>
                <tr>
-                  <td width="120">Purchase Number:</td><td width="340"><input type="text" name="purchase[purchase_number]" value="<?php echo generate_new_code('purchase_number') ?>" class="text-field magenta" autofocus/></td>
-                  <td width="120"></td><td width="340"></td>
+                  <td width="120">P/O Number:</td><td width="340"><input type="text" name="purchase[purchase_number]" value="<?php echo generate_new_code('purchase_number') ?>" class="text-field magenta" autofocus/></td>
+                  <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Supplier:</td>
@@ -39,7 +39,7 @@
                   <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="" class="text-field date-pick"/></td>
                </tr>
                <tr>
-                  <td>Trade Terms:</td><td><input type="text" name="purchase[trade_terms]" value="" class="text-field"/></td>
+                  <td>Trade Terms:</td><td><input type="text" name="purchase[terms]" value="" class="text-field"/></td>
                   <td>Payment Terms:</td><td><input type="text" name="purchase[payment_terms]" value="" class="text-field"/></td>
                </tr>
                <tr><td height="5" colspan="99"></td></tr>
@@ -85,7 +85,7 @@
        	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]"><?php echo build_select_post_status(); ?></select>
            </div>
        	   <input type="submit" value="Save" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchase-orders.php'); ?>"/>
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchases.php'); ?>"/>
          </div>
       </form>
    </div>
@@ -96,7 +96,7 @@
       <div class="modal-content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
         <!-- BOF GRIDVIEW -->
         <div id="grid-materials" class="grid jq-grid">
@@ -159,8 +159,10 @@
        <script>
 				$(function() {
 					populate($('#suppliers').val());
+					
 					$('#suppliers').on('change', function() {
 						$('#purchase-materials').empty();
+						$('#keyword').val('');
 					  populate(this.value);
 					});			
 					
@@ -169,22 +171,31 @@
 					    $('#modal-product-materials').hide();
 					});	
 					
-			  function populate(sup_id) {
-			  	var data = { 
-			    	"url":"/populate/material-supplier-costs.php?sid=" + sup_id,
-			      "limit":"10",
-						"data_key":"material-supplier-costs",
-						"row_template":"row_modal_materials",
-			      "pagination":"#materials-pagination"
-					}
-					$('#grid-materials').grid(data);
-					
-					$('#add-item').append_item();
-				  $('#remove-purchase-materials').remove_item();
-				  $('#purchase_amount').formatCurrency();
-				  $('.get-amount').compute_amount();	
+					$('#add-item').click(function(){
+						$('#keyword').val('');
+						populate($('#suppliers').val());
+					});
+						
+				  function populate(sup_id) {
+				  	var data = { 
+				    	"url":"/populate/material-supplier-costs.php?sid=" + sup_id,
+				      "limit":"10",
+							"data_key":"material-supplier-costs",
+							"row_template":"row_modal_materials",
+				      "pagination":"#materials-pagination",
+				      "searchable": true
+						}
+						$('#grid-materials').grid(data);
+						
+						$('#add-item').append_item();
+					  $('#remove-purchase-materials').remove_item();
+					  $('#purchase_amount').formatCurrency({region:"en-PH"});
+					  $('.get-amount').compute_amount();	
 			  	}
+					
 			  }); 
+			  
+				
        
          function row_modal_materials(row) {
            var row_id	= "mat-"+ row['id'];
@@ -197,7 +208,7 @@
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            
-           cell.find('.currency').formatCurrency();
+           cell.find('.currency').formatCurrency({region:"en-PH"});
            cell.find('.numbers').digits();
                
 					 var a = cell.find('.mat');                               
@@ -228,7 +239,7 @@
            cell.append("<td class=\"mat-prod_lot_no border-right text-right numbers\">"+ (parseFloat(row['plan_qty']) - parseFloat(row['pending_qty'])) +"</td>");
            cell.append("<td class=\"mat-plan_qty border-right text-right numbers\">"+ parseFloat(row['plan_qty']) +"</td>");
            
-           cell.find('.currency').formatCurrency();
+           cell.find('.currency').formatCurrency({region:"en-PH"});
            cell.find('.numbers').digits();               
            
            return cell;
@@ -242,7 +253,7 @@
              var price		= row.find('.item-price').val();
              var amount		= parseFloat(quantity * clean_currency(price));
              
-             row.find('.item-amount').val(amount).formatCurrency();
+             row.find('.item-amount').val(amount).formatCurrency({region:"en-PH"});
              compute_total_amount();
            })
          }
@@ -256,7 +267,7 @@
              var amount_price = clean_currency($(this).val());
              total_amount.val(parseFloat(total_amount.val()) + amount_price);
            })
-           total_amount.formatCurrency();
+           total_amount.formatCurrency({region:"en-PH"});
          }
                   
          $.fn.append_item = function() {

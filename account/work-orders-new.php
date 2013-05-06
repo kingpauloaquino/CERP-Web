@@ -98,7 +98,7 @@
       <div class="modal-content">
 			<!-- BOF Search -->
       <div class="search">
-        <input type="text" id="keyword" name="keyword" placeholder="Search" />
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
       
         <!-- BOF GRIDVIEW -->
@@ -139,7 +139,8 @@
 			      "limit":"10",
 						"data_key":"products",
 						"row_template":"row_modal_products",
-			      "pagination":"#products-pagination"
+			      "pagination":"#products-pagination",
+			      "searchable": true
 					}
 					$('#grid-products').grid(products);
 					

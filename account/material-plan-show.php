@@ -26,6 +26,10 @@
 
         <div id="content">
           <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+      	 <input type="hidden" name="action" value="add_purchase"/>
+      	 <input type="hidden" name="purchase[supplier_id]" value="<?php echo $_GET['sid'] ?>"/>
+      	 <input type="hidden" name="purchase[po_date]" value="<?php echo date("F d, Y") ?>"/>
+      	 <input type="hidden" name="purchase[delivery_date]" value="<?php echo date("F d, Y") ?>"/>
              <!-- BOF TEXTFIELDS -->
              <div>
 			        <table>
@@ -87,13 +91,14 @@
              </div> -->
              
              <div class="field-command">
-           	   <div class="text-post-status">
+           	   <!-- <div class="text-post-status">
            	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $purchase['status']; ?>
-               </div>
+               </div> -->
 <!--            	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=purchase&id='. $purchase['id']); ?>"/> -->
                <?php if($purchase['status'] != "Publish") { ?>
 <!--                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('material-plan-edit.php?sid='. $_GET['sid']); ?>"/> -->
            	   <?php } ?>
+               <input type="submit" value="Create P/O" class="btn"/>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('material-plan.php'); ?>"/>
              </div>
           </form>

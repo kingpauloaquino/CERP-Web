@@ -305,6 +305,14 @@ img {
   text-decoration:none;
 }
 
+.breadcrumb {
+	padding:50px 15px 10px;
+}
+
+.breadcrumb a {
+	color: #D11560;
+}
+
 /* PAGE TITLE */
 #page-title { 
   margin:0 15px 10px;

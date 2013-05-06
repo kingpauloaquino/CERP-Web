@@ -341,6 +341,37 @@ function row_template_supplier_material_plan(data) {
 function row_template_material_plan(data) {
   var forward	= host + "/account/material-plan-model-show.php?mid="+ data['id'] +"";
   
+  var sorting_percentage = parseFloat(data['sorting_percentage']);
+  var open_po = (sorting_percentage > 0) ? sorting_percentage * parseFloat(data['open_po']) : parseFloat(data['open_po']);
+  var prod_plan = parseFloat((parseFloat(data['prod_plan']) * parseFloat(data['defect_rate'])) + parseFloat(data['prod_plan']));
+  var balance = (open_po + (parseFloat(data['inventory']) || 0) - prod_plan);
+  var po_qty = (Math.ceil(parseFloat(parseFloat(Math.abs(balance) / parseFloat(data['moq'])).toFixed(1)) * 1) / 1) * parseFloat(data['moq']);
+  
+  var row		= $("<tr forward=\""+ forward +"\">" +
+  	"<td class=\"border-right\">" +
+  		"<input type=\"hidden\" name=\"items["+data['id']+"][item_id]\" value=\""+ data['id'] +"\" />" +
+  		"<input type=\"hidden\" name=\"items["+data['id']+"][quantity]\" value=\""+ po_qty +"\" />" +
+  		"<input type=\"hidden\" name=\"items["+data['id']+"][item_price]\" value=\""+ parseFloat(data['price']) +"\" />" +
+  	"<a target=\"_blank\" href=\""+ forward +"\">"+ data['material_code'] +"</a></td>" +
+    "<td class=\"border-right\">"+ data['model'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ (parseFloat(data['defect_rate'])*100) +"%</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (prod_plan.toFixed(2) || 'N/A') +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['inventory']) || 0) +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (open_po.toFixed(2) || 0) +"</td>" +
+    "<td class=\"border-right text-right numbers "+ ((balance < 0) ? "red" : "") +"\">"+ balance +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['moq']) || 0) + data['unit'] +"</td>" +
+    "<td class=\"border-right text-right numbers text-currency\">"+ (parseFloat(data['price']) || 0) +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (po_qty || 'N/A') +"</td>" +
+    "</tr>");
+
+  row.find('.numbers').digits();
+  row.find('.text-currency').formatCurrency({region:"en-PH"});
+  return row;
+}
+
+function row_template_material_plan1(data) {
+  var forward	= host + "/account/material-plan-model-show.php?mid="+ data['id'] +"";
+  
   var prod_plan = parseFloat((parseFloat(data['prod_plan']) * parseFloat(data['defect_rate'])) + parseFloat(data['prod_plan']));
   var balance = ((parseFloat(data['open_po']) || 0) + (parseFloat(data['inventory']) || 0) - prod_plan);
   var po_qty = (Math.ceil(parseFloat(parseFloat(Math.abs(balance) / parseFloat(data['moq'])).toFixed(1)) * 1) / 1) * parseFloat(data['moq']);
@@ -361,6 +392,22 @@ function row_template_material_plan(data) {
   row.find('.numbers').digits();
   row.find('.text-currency').formatCurrency({region:"en-PH"});
   return row;
+  ///////////////////
+  var id		= data['id'];
+  var row		= $('<tr id="mat-'+ data['item_id'] +'"></tr>');
+  var amount	= parseFloat(data['quantity'] * clean_currency(data['item_price']));
+  
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /><input type="hidden" name="items['+id+'][item_id]" value="'+ data['item_id'] +'" /></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right">'+ data['code'] +'</td>');
+  row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
+ 
+  row.find('.currency').formatCurrency({region:"en-PH"});
+  return row; 
 }
 
 function row_template_material_plan_model(data) {
@@ -594,13 +641,14 @@ function row_template_users(data) {
 }
 
 function row_template_purchases(data) {
-  var forward	= host + "/account/purchase-orders-show.php?id="+ data['id'] +"";
-  var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['purchase_number'] || '--') +"</a></td>" +
+  var forward	= host + "/account/purchases-show.php?id="+ data['id'] +"";
+  var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['po_number'] || '--') +"</a></td>" +
     "<td class=\"border-right\"><a href=\"\">"+ data['supplier_name'] +"</a></td>" +
-    "<td class=\"border-right text-right text-currency\">"+ data['total_amount'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['completion_status'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ dtime_basic(data['po_date']) +"</td>" +
     "<td class=\"border-right text-center\">"+ dtime_basic(data['delivery_date']) +"</td>" +
-    "<td class=\"border-right text-center\">"+ dtime_basic(data['created_at']) +"</td>" +
+    "<td class=\"border-right text-right text-currency\">"+ data['total_amount'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['status'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['completion_status'] +"</td>" +
     "</tr>");
   
   row.find('.text-currency').formatCurrency({region:"en-PH"});
@@ -636,7 +684,7 @@ function row_template_purchase_material(data) {
   row.append('<td class="border-right">'+ data['description'] +'</td>');
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
-  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][item_price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price"/></td>');
   row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
  
   row.find('.currency').formatCurrency({region:"en-PH"});
@@ -652,12 +700,13 @@ function row_template_purchase_material_read_only(data) {
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
   row.append('<td class="border-right">'+ data['code'] +'</td>');
   row.append('<td class="border-right">'+ data['description'] +'</td>');
-  row.append('<td class="border-right text-right">'+ data['quantity'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ data['quantity'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right currency">'+ data['item_price'] +'</td>');
   row.append('<td class="border-right text-right currency amount">'+ amount +'</td>');
  
   row.find('.currency').formatCurrency({region:"en-PH"});
+  row.find('.numbers').digits();
   return row;   
 }
 
@@ -669,7 +718,7 @@ function row_template_purchase_order_items(data) {
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item"/></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
   row.append('<td class="border-right">'+ data['code'] +'<input type="hidden" name="items['+id+'][item_id]" value="'+ data['item_id'] +'" /></td>');
-  row.append('<td class="border-right">'+ data['item_type'] +'<input type="hidden" name="items['+id+'][item_type]" value="'+ data['item_type'] +'" /></td>');
+  row.append('<td class="border-right text-center">'+ data['item_type'] +'<input type="hidden" name="items['+id+'][item_type]" value="'+ data['item_type'] +'" /></td>');
   row.append('<td class="border-right"><input type="text" name="items['+id+'][remarks]" value="'+ (data['remarks'] || '') +'" class="text-field-max"/></td>');
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
@@ -691,12 +740,13 @@ function row_template_purchase_order_items_read_only(data) {
   row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
   row.append('<td class="border-right text-center">'+ data['item_type'] +'</td>');
   row.append('<td class="border-right">'+ data['remarks'] +'</td>');
-  row.append('<td class="border-right text-center">'+ data['quantity'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ data['quantity'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right currency">'+ data['item_price'] +'</td>');
   row.append('<td class="border-right text-right currency amount">'+ amount +'</td>');
            	
   row.find('.currency').formatCurrency({region:"en-PH"});
+  row.find('.numbers').digits();
   return row;   
 }
 

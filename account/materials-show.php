@@ -13,7 +13,7 @@ if(!$allowed) {
   if(isset($_GET['mid'])) {
   	$materials = $DB->Find('materials', array(
 					  			'columns' 		=> 'materials.id AS mid, materials.base, materials.parent, materials.material_code, materials.description, brand_models.brand_model, materials.bar_code,
-																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, materials.defect_rate,
+																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, materials.defect_rate, materials.sorting_percentage,
 																  	lookups3.description AS material_type, lookups4.description AS status, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
 					  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
@@ -140,7 +140,7 @@ if(!$allowed) {
 	           </tr>   
 	           <tr>
 	              <td width="150">Transportation Rate:</td><td width="310"><input type="text" value="<?php echo $cost['transportation_rate'] ?>" class="text-field text-right" disabled/></td>
-	              <td>Sorting %:</td><td><input type="text" value="<?php echo $cost['sorting_percentage'] ?>" class="text-field text-right" disabled/></td>
+	              <td>Sorting %:</td><td><input type="text" value="<?php echo ($materials['sorting_percentage'] * 100) ?>" class="text-field text-right" disabled/></td>
 	           </tr>    
 	           <tr><td height="5" colspan="99"></td></tr>
 						<?php

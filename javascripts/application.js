@@ -342,6 +342,7 @@ function row_template_material_plan(data) {
   var forward	= host + "/account/material-plan-model-show.php?mid="+ data['id'] +"";
   
   var sorting_percentage = parseFloat(data['sorting_percentage']);
+  var sp = (sorting_percentage > 0) ? (sorting_percentage*100) + '%' : 'N/A';
   var open_po = (sorting_percentage > 0) ? sorting_percentage * parseFloat(data['open_po']) : parseFloat(data['open_po']);
   var prod_plan = parseFloat((parseFloat(data['prod_plan']) * parseFloat(data['defect_rate'])) + parseFloat(data['prod_plan']));
   var balance = (open_po + (parseFloat(data['inventory']) || 0) - prod_plan);
@@ -358,10 +359,11 @@ function row_template_material_plan(data) {
     "<td class=\"border-right text-right numbers\">"+ (prod_plan.toFixed(2) || 'N/A') +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['inventory']) || 0) +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (open_po.toFixed(2) || 0) +"</td>" +
+    "<td class=\"border-right text-center numbers\">"+ sp +"</td>" +
     "<td class=\"border-right text-right numbers "+ ((balance < 0) ? "red" : "") +"\">"+ balance +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['moq']) || 0) + data['unit'] +"</td>" +
-    "<td class=\"border-right text-right numbers text-currency\">"+ (parseFloat(data['price']) || 0) +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (po_qty || 'N/A') +"</td>" +
+    "<td class=\"border-right text-right numbers text-currency\">"+ (parseFloat(data['price']) || 0) +"</td>" +
     "</tr>");
 
   row.find('.numbers').digits();

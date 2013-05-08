@@ -61,16 +61,17 @@
                <table cellspacing="0" cellpadding="0">
                  <thead>
                    <tr>
-                     <td width="160" class="border-right text-center">Item Code</td>
-                     <td class="border-right text-center">Model</td>
-                     <td width="50" class="border-right text-center">DR</td>
+                     <td class="border-right text-center">Item Code</td>
+                     <td width="90" class="border-right text-center">Model</td>
+                     <td width="40" class="border-right text-center">DR</td>
                      <td width="100" class="border-right text-center">Prod. Plan</td>
                      <td width="100" class="border-right text-center">Inventory</td>
                      <td width="100" class="border-right text-center">Open P/O</td>
+                     <td width="40" class="border-right text-center">SP</td>
                      <td width="100" class="border-right text-center">Balance</td>
                      <td width="90" class="border-right text-center">MOQ</td>
-                     <td width="90" class="border-right text-center">Unit Price</td>
-                     <td width="90" class="text-center">P/O Qty</td>
+                     <td width="90" class="border-right text-center">P/O Qty</td>
+                     <td width="90" class="text-center">Unit Price</td>
                    </tr>
                  </thead>
                  <tbody id="material-plan"></tbody>

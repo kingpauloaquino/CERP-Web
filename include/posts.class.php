@@ -280,10 +280,6 @@ class Posts {
     return $this->DB->DeleteRecord('products_parts_tree', $params);
   }
 	
-	// Posts::AddOrder
-  // Descriptions: Use to add clients order
-  // Parameters: 
-  // Return: ID
 	
 	function AddPurchaseOrder($params) {		
     $purchase_order = array(
@@ -321,7 +317,7 @@ class Posts {
 		  	  'payment_terms'	=> $params['payment_terms'],
 		  	  'terms'			=> $params['terms'],
 		  	  'ship_date'	=> strdate($params['ship_date'], 'Y-m-d'),    
-  	  		'status'			=> $params['status'],
+  	  		'status'		=> $params['status'],
   	  		'completion_status'			=> $params['completion_status'],
 		  	  'remarks'			=> $params['remarks'],
 		  	  'total_amount'	=> $params['total_amount']
@@ -331,14 +327,23 @@ class Posts {
 		
 		$row = $this->DB->UpdateRecord('purchase_orders', $purchase_order);
 	if($row > 0) {
+		$purchase_order_item_ids = $this->DB->Get('purchase_order_items', array('columns' => 'id', 'conditions' => 'purchase_order_id ='. $params['id']));
+		foreach($purchase_order_item_ids as $prod) {
+			// delete parts under product
+			$this->DB->DeleteRecord('purchase_order_item_parts', array('conditions' => 'purchase_order_item_id ='. $prod['id']));
+		}
+		
 	  $this->DB->DeleteRecord('purchase_order_items', array('conditions' => 'purchase_order_id ='.$params['id']));
 			
 	  	if(!empty($params['items'])) {
-	    	foreach ($params['items'] as $index => $item) {
-          $item['purchase_order_id'] = $params['id'];
-          $this->DB->InsertRecord('purchase_order_items', $item); 
-	    	}
-	  	}
+			  // Add Each Order Item
+			  foreach ($params['items'] as $index => $item) {
+		        $item['purchase_order_id'] = $params['id'];
+		        $purchase_order_item_id = $this->DB->InsertRecord('purchase_order_items', $item);
+						
+						$this->AddPurchaseOrderProductParts(array('purchase_order_item_id' => $purchase_order_item_id, 'product_id' => $item['item_id']));
+			  }
+			}
 		}
 	
     return $row;
@@ -397,14 +402,23 @@ class Posts {
 	
 		$row = $this->DB->UpdateRecord('work_orders', $work_order);
 	if($row > 0) {
+		$work_order_item_ids = $this->DB->Get('work_order_items', array('columns' => 'id', 'conditions' => 'work_order_id ='. $params['id']));
+		foreach($work_order_item_ids as $prod) {
+			// delete parts under product
+			$this->DB->DeleteRecord('work_order_item_parts', array('conditions' => 'work_order_item_id ='. $prod['id']));
+		}
+		
 	  $this->DB->DeleteRecord('work_order_items', array('conditions' => 'work_order_id ='.$params['id']));
 			
 	  	if(!empty($params['items'])) {
-	    	foreach ($params['items'] as $index => $item) {
-          $item['work_order_id'] = $params['id'];
-          $this->DB->InsertRecord('work_order_items', $item); 
-	    	}
-	  	}
+			  // Add Each Order Item
+			  foreach ($params['items'] as $index => $item) {
+		        $item['work_order_id'] = $params['id'];
+		        $work_order_item_id = $this->DB->InsertRecord('work_order_items', $item);
+						
+						$this->AddWorkOrderProductParts(array('work_order_item_id' => $work_order_item_id, 'product_id' => $item['product_id']));
+			  }
+			}
 		}
 	
     return $row;
@@ -420,29 +434,203 @@ class Posts {
 		);		
 		return $this->DB->ExecuteQuery($query);
 	}
+
+  // Posts::AddPurchase
+  // Descriptions: Used to add purchases from suppliers
+  // Parameters: 
+  // Return: ID
+	function AddPurchase($params) {
+    $purchase = array(
+      'supplier_id'		=> $params['supplier_id'],
+      'po_number'	=> strtoupper(trim($params['po_number'])),
+      'po_date' => date('Y-m-d', strtotime($params['po_date'])),
+      'payment_terms'	=> trim($params['payment_terms']),
+      'terms'		=> trim($params['terms']),
+      'delivery_via'	=> trim($params['delivery_via']),
+      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
+      'total_amount'	=> $params['total_amount'],
+      'status'			=> $params['status'],
+      'completion_status'			=> 2, //pending
+      'remarks'			=> trim($params['remarks'])
+    );
 	
-	function EditOrder2($params) {
-    return $this->DB->UpdateRecord('orders', $params);
+		$purchase_id = $this->DB->InsertRecord('purchases', $purchase);
+		
+		if(!empty($params['items'])) {
+		  // Add Each Purchase Item
+		  foreach ($params['items'] as $index => $item) {
+	        $item['purchase_id'] = $purchase_id;
+	        $this->DB->InsertRecord('purchase_items', $item);
+		  }
+		}
+	
+    return $purchase_id;
   }
+
+  // Posts::EditPurchase
+  // Descriptions: Used to update purchases from suppliers
+  // Parameters: 
+  // Return: ID
+  function EditPurchase($params) {
+    $purchase = array(
+      'variables' => array(
+	      'po_date' => date('Y-m-d', strtotime($params['po_date'])),
+	      'payment_terms'	=> trim($params['payment_terms']),
+	      'terms'		=> trim($params['terms']),
+	      'delivery_via'	=> trim($params['delivery_via']),
+	      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
+	      'total_amount'	=> $params['total_amount'],
+	      'status'			=> $params['status'],
+      	'completion_status'		=> $params['completion_status'],
+	      'remarks'			=> trim($params['remarks']),
+	  ),
+	  'conditions' => 'id = '.$params['id']
+    );
 	
-	function AddOrderItem($params) {
-    $items = array(
-		  'order_id'	=> $params['order_id'],	  
-		  'item_id'		=> $params['item_id'],	  
-		  'item_type'	=> $params['item_type'],	  
-		  'quantity'	=> $params['quantity'],			  
-		  'remarks'		=> $params['remarks']
+	$row = $this->DB->UpdateRecord('purchases', $purchase);
+	
+	if($row > 0) {
+	  $this->DB->DeleteRecord('purchase_items', array('conditions' => 'purchase_id ='.$params['id']));
+	  if(!empty($params['items'])) {
+	    // Add Each Purchase Item
+	    foreach ($params['items'] as $index => $item) {
+          $item['purchase_id'] = $params['id'];
+          $this->DB->InsertRecord('purchase_items', $item);
+	    }
+	  }
+	}
+    return $row;
+  }
+
+  // Posts::AddReceiving
+  // Descriptions: Use to received purchase materials
+  // Parameters: 
+  // Return: ID
+  function AddReceiving($params) {
+  	$data = array(
+	   'delivery_id'	=> $params['delivery_id'],
+	   'receive_item'	=> $params['item_id'],
+	   'quantity'		=> $params['quantity'],
+	   'remarks'		=> $params['remarks']
 		);
-    return $this->DB->InsertRecord('order_items', $items);
+	
+		$receive_id = $this->DB->InsertRecord('receive_items', $data);
+    return $receive_id;
+  	/*
+    $data = array(
+      'purchase_id'			=> $params['purchase_id'],
+      'invoice_number'		=> strtoupper(trim($params['invoice_number'])),
+      'invoice_date'		=> strdate($params['invoice_date'], 'Y-m-d'),
+      'delivery_receipt'	=> strtoupper(trim($params['delivery_receipt'])),
+      'delivery_date'		=> strdate($params['delivery_date'], 'Y-m-d'),
+      'delivery_by'			=> trim($params['delivery_by']),
+      'shipment_status'		=> trim($params['shipment_status']),
+      'remarks'				=> trim($params['remarks'])
+    );
+	
+	$received = $this->DB->Fetch('receiving', array('columns' => 'id', 'conditions' => 'purchase_id = '. $params['purchase_id']));
+	
+	if(empty($received)) {
+      $row = $this->DB->InsertRecord('receiving', $data);
+	} else {
+      $row = $this->DB->UpdateRecord('receiving', array('variables' => $data, 'conditions' => 'purchase_id = '. $params['purchase_id']));
+	}
+	
+    return $row;
+	 */
+  }
+  
+  
+  // Posts::AddDelivery
+  // Return: ID
+  // function AddDelivery($params) {
+  	// global $Query;
+// 	
+		// if(trim($params['receipt']) == "") return -1;
+// 		
+		// $delivery = $Query->uniqueness_of_delivery(trim($params['receipt']));
+// 		
+		// if(!empty($delivery)) return 0;
+// 		
+	    // $data = array(
+	      // 'delivery_receipt'	=> $params['receipt'],
+	      // 'delivery_date'		=> strdate($params['date'], 'Y-m-d'),
+	      // 'supplier_id'			=> $params['supplier'],
+	      // 'delivery_via'		=> strtoupper(trim($params['via'])),
+	      // 'trade_terms'			=> strtoupper(trim($params['trade_terms'])),
+	      // 'payment_terms'		=> strtoupper(trim($params['payment_terms']))
+	    // );
+// 		
+		// $delivery_id = $this->DB->InsertRecord('deliveries', $data);
+		// return $delivery_id;
+  // }
+  
+  function EditReceiving($params) {
+    return $this->DB->UpdateRecord('deliveries', $params);
   }
 	
-	function EditOrderItem($params) {
-    return $this->DB->UpdateRecord('order_items', $params);
+	function EditReceivingItems($params) {
+    return $this->DB->UpdateRecord('delivery_items', $params);
   }
+  
+  function AddDelivery($params) {
+  	$delivery = array(
+      'purchase_id'	=> $params['purchase_id'],
+      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
+      'delivery_via'	=> trim($params['delivery_via']),
+      'status'			=> 2, //pending status
+      'remarks'			=> trim($params['remarks'])
+    );
 	
-	function RemoveOrderItem($params) {
-    return $this->DB->DeleteRecord('order_items', $params);
+		$delivery_id = $this->DB->InsertRecord('deliveries', $delivery);
+
+		if(!empty($params['items'])) {
+		  foreach ($params['items'] as $index => $item) {
+	        $item['delivery_id'] = $delivery_id;
+	        $item['status'] = 2; //pending status
+	        $this->DB->InsertRecord('delivery_items', $item);
+		  }
+		}
+	
+    return $delivery_id;
   }
+
+
+  // Posts::UpdateDelivery
+  // Return: ID
+  
+    
+   function UpdateDelivery($params) {
+		return $this->DB->UpdateRecord('deliveries', $params);
+	 }
+  // function UpdateDelivery($params) {
+    // $data = array(
+      // 'variables' => array(
+        // 'delivery_receipt'	=> $params['receipt'],
+        // 'delivery_date'		=> strdate($params['date'], 'Y-m-d'),
+        // 'delivery_via'		=> strtoupper(trim($params['via'])),
+        // 'trade_terms'		=> strtoupper(trim($params['trade_terms'])),
+        // 'payment_terms'		=> strtoupper(trim($params['payment_terms'])),
+        // 'remarks'			=> strtoupper(trim($params['remarks'])),
+	    // 'status'			=> $params['status']),
+	  // 'conditions' => 'id = '. $params['id']
+    // );
+// 	
+	// // Reset Received Items
+		// $this->DB->UpdateRecord('receive_items', array('variables' => array('passed' => 0), 
+		                        // 'conditions' => 'delivery_id ='. $params['id']));
+// 		
+		// if(!empty($params['items'])) {
+	      // foreach ($params['items'] as $key => $value) {
+		    // $this->DB->UpdateRecord('receive_items', array('variables' => array('passed' => 1), 
+		                            // 'conditions' => 'id ='. $key));
+		  // }
+		// }
+// 		
+		// return $this->DB->UpdateRecord('deliveries', $data);
+  // }
+
+	
 
 	function AddLocation($params) {
   	$location = array(
@@ -879,200 +1067,7 @@ class Posts {
 		return $this->DB->ExecuteQuery($query);
 	}
 	
-	// Posts::AddPurchase
-  // Descriptions: Use to add purchase order
-  // Parameters: 
-  // Return: ID
-  function AddPurchase($params) {
-    $purchase = array(
-      'supplier_id'		=> $params['supplier_id'],
-      'po_number'	=> strtoupper(trim($params['po_number'])),
-      'po_date' => date('Y-m-d', strtotime($params['po_date'])),
-      'payment_terms'	=> trim($params['payment_terms']),
-      'terms'		=> trim($params['terms']),
-      'delivery_via'	=> trim($params['delivery_via']),
-      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
-      'total_amount'	=> $params['total_amount'],
-      'status'			=> 2, //pending
-      'completion_status'			=> 2, //pending
-      'remarks'			=> trim($params['remarks'])
-    );
-	
-		$purchase_id = $this->DB->InsertRecord('purchases', $purchase);
-		
-		if(!empty($params['items'])) {
-		  // Add Each Purchase Item
-		  foreach ($params['items'] as $index => $item) {
-	        $item['purchase_id'] = $purchase_id;
-	        $this->DB->InsertRecord('purchase_items', $item);
-		  }
-		}
-	
-    return $purchase_id;
-  }
-
-  // Posts::EditPurchase
-  // Descriptions: Use to add purchase order
-  // Parameters: 
-  // Return: ID
-  function EditPurchase($params) {
-    $purchase = array(
-      'variables' => array(
-	      'po_date' => date('Y-m-d', strtotime($params['po_date'])),
-	      'payment_terms'	=> trim($params['payment_terms']),
-	      'terms'		=> trim($params['terms']),
-	      'delivery_via'	=> trim($params['delivery_via']),
-	      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
-	      'total_amount'	=> $params['total_amount'],
-	      'status'			=> $params['status'],
-      	'completion_status'		=> $params['completion_status'],
-	      'remarks'			=> trim($params['remarks']),
-	  ),
-	  'conditions' => 'id = '.$params['id']
-    );
-	
-	$row = $this->DB->UpdateRecord('purchases', $purchase);
-	
-	if($row > 0) {
-	  $this->DB->DeleteRecord('purchase_items', array('conditions' => 'purchase_id ='.$params['id']));
-	  if(!empty($params['items'])) {
-	    // Add Each Purchase Item
-	    foreach ($params['items'] as $index => $item) {
-          $item['purchase_id'] = $params['id'];
-          $this->DB->InsertRecord('purchase_items', $item);
-	    }
-	  }
-	}
-    return $row;
-  }
-
-  // Posts::AddReceiving
-  // Descriptions: Use to received purchase materials
-  // Parameters: 
-  // Return: ID
-  function AddReceiving($params) {
-  	$data = array(
-	   'delivery_id'	=> $params['delivery_id'],
-	   'receive_item'	=> $params['item_id'],
-	   'quantity'		=> $params['quantity'],
-	   'remarks'		=> $params['remarks']
-		);
-	
-		$receive_id = $this->DB->InsertRecord('receive_items', $data);
-    return $receive_id;
-  	/*
-    $data = array(
-      'purchase_id'			=> $params['purchase_id'],
-      'invoice_number'		=> strtoupper(trim($params['invoice_number'])),
-      'invoice_date'		=> strdate($params['invoice_date'], 'Y-m-d'),
-      'delivery_receipt'	=> strtoupper(trim($params['delivery_receipt'])),
-      'delivery_date'		=> strdate($params['delivery_date'], 'Y-m-d'),
-      'delivery_by'			=> trim($params['delivery_by']),
-      'shipment_status'		=> trim($params['shipment_status']),
-      'remarks'				=> trim($params['remarks'])
-    );
-	
-	$received = $this->DB->Fetch('receiving', array('columns' => 'id', 'conditions' => 'purchase_id = '. $params['purchase_id']));
-	
-	if(empty($received)) {
-      $row = $this->DB->InsertRecord('receiving', $data);
-	} else {
-      $row = $this->DB->UpdateRecord('receiving', array('variables' => $data, 'conditions' => 'purchase_id = '. $params['purchase_id']));
-	}
-	
-    return $row;
-	 */
-  }
   
-  
-  // Posts::AddDelivery
-  // Return: ID
-  // function AddDelivery($params) {
-  	// global $Query;
-// 	
-		// if(trim($params['receipt']) == "") return -1;
-// 		
-		// $delivery = $Query->uniqueness_of_delivery(trim($params['receipt']));
-// 		
-		// if(!empty($delivery)) return 0;
-// 		
-	    // $data = array(
-	      // 'delivery_receipt'	=> $params['receipt'],
-	      // 'delivery_date'		=> strdate($params['date'], 'Y-m-d'),
-	      // 'supplier_id'			=> $params['supplier'],
-	      // 'delivery_via'		=> strtoupper(trim($params['via'])),
-	      // 'trade_terms'			=> strtoupper(trim($params['trade_terms'])),
-	      // 'payment_terms'		=> strtoupper(trim($params['payment_terms']))
-	    // );
-// 		
-		// $delivery_id = $this->DB->InsertRecord('deliveries', $data);
-		// return $delivery_id;
-  // }
-  
-  function EditReceiving($params) {
-    return $this->DB->UpdateRecord('deliveries', $params);
-  }
-	
-	function EditReceivingItems($params) {
-    return $this->DB->UpdateRecord('delivery_items', $params);
-  }
-  
-  function AddDelivery($params) {
-  	$delivery = array(
-      'purchase_id'	=> $params['purchase_id'],
-      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
-      'delivery_via'	=> trim($params['delivery_via']),
-      'status'			=> 2, //pending status
-      'remarks'			=> trim($params['remarks'])
-    );
-	
-		$delivery_id = $this->DB->InsertRecord('deliveries', $delivery);
-
-		if(!empty($params['items'])) {
-		  foreach ($params['items'] as $index => $item) {
-	        $item['delivery_id'] = $delivery_id;
-	        $item['status'] = 2; //pending status
-	        $this->DB->InsertRecord('delivery_items', $item);
-		  }
-		}
-	
-    return $delivery_id;
-  }
-
-  // Posts::UpdateDelivery
-  // Return: ID
-  
-    
-   function UpdateDelivery($params) {
-		return $this->DB->UpdateRecord('deliveries', $params);
-	 }
-  // function UpdateDelivery($params) {
-    // $data = array(
-      // 'variables' => array(
-        // 'delivery_receipt'	=> $params['receipt'],
-        // 'delivery_date'		=> strdate($params['date'], 'Y-m-d'),
-        // 'delivery_via'		=> strtoupper(trim($params['via'])),
-        // 'trade_terms'		=> strtoupper(trim($params['trade_terms'])),
-        // 'payment_terms'		=> strtoupper(trim($params['payment_terms'])),
-        // 'remarks'			=> strtoupper(trim($params['remarks'])),
-	    // 'status'			=> $params['status']),
-	  // 'conditions' => 'id = '. $params['id']
-    // );
-// 	
-	// // Reset Received Items
-		// $this->DB->UpdateRecord('receive_items', array('variables' => array('passed' => 0), 
-		                        // 'conditions' => 'delivery_id ='. $params['id']));
-// 		
-		// if(!empty($params['items'])) {
-	      // foreach ($params['items'] as $key => $value) {
-		    // $this->DB->UpdateRecord('receive_items', array('variables' => array('passed' => 1), 
-		                            // 'conditions' => 'id ='. $key));
-		  // }
-		// }
-// 		
-		// return $this->DB->UpdateRecord('deliveries', $data);
-  // }
-
 	
 	
 }

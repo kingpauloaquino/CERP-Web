@@ -22,13 +22,13 @@
 			$materials = $DB->Find('materials', array(
 					  			'columns' 		=> 'materials.id AS mid, materials.parent, materials.material_code, materials.bar_code, materials.description, brand_models.brand_model, 
 																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, materials.defect_rate, materials.sorting_percentage,																  	
-																  	lookups3.description AS material_type, lookups4.description AS status, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
+																  	lookups3.description AS material_type, lookup_status.description AS status, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
 					  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
 																		LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
 																		LEFT OUTER JOIN users ON materials.person_in_charge = users.id
 																		LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
-																		LEFT OUTER JOIN lookups AS lookups4 ON materials.status = lookups4.id
+																		LEFT OUTER JOIN lookup_status ON materials.status = lookup_status.id
 																		LEFT OUTER JOIN terminals ON terminals.id=materials.production_entry_terminal_id'
 	  	  )
 			);
@@ -38,7 +38,7 @@
 	$status = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"', 'sort_column' => 'description'));
 	$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
 	$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
-  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+  $currencies = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
 ?>
 
 	<div id="page">
@@ -59,7 +59,7 @@
 				<h3 class="form-title">Details</h3>						
         <table>
            <tr>
-              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field" disabled/></td>
+              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field magenta" disabled/></td>
               <td width="150">Base Material Code:</td><td><input type="text" value="<?php echo $parent_material['material_code'] ?>" class="text-field" disabled/>
               	<?php //echo $linkto = (isset($parent_material['material_code'])) ? link_to('materials-show.php?mid='.$parent_material['base_id'].'&base=1') : '' ?>
               </td>
@@ -84,7 +84,7 @@
               <td>Address:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
               	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
               </td>
-              <td>Defect Rate %:</td><td><input value="<?php echo ($materials['defect_rate'] * 100) ?>" id="material[defect_rate]" name="material[defect_rate]" type="text"  class="text-field text-right" placeholder="5" />
+              <td>Defect Rate %:</td><td><input value="<?php echo ($materials['defect_rate'] * 100) ?>" id="material[defect_rate]" name="material[defect_rate]" type="text"  class="text-field text-right" />
            </tr>             
            <tr>
               <td>Description:</td>
@@ -99,7 +99,7 @@
         <table>
         	<?php
         		$costs = $DB->Get('materials', array('columns' => 'suppliers.id AS sid, suppliers.name AS supplier, item_costs.id AS cost_id, item_costs.cost, item_costs.moq,
-																															item_costs.transportation_rate, lookups1.description AS unit, lookups2.code AS currency', 
+																															item_costs.transportation_rate, lookups1.description AS unit, lookups2.description AS currency', 
 		 																				'joins' => 'INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
 																												INNER JOIN suppliers ON suppliers.id = item_costs.supplier
 																												INNER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
@@ -139,7 +139,7 @@
               </td>
            </tr>
            <tr>
-           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'code', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'description', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
            		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" class="text-field text-right" /></td>
            </tr>
            <tr>

@@ -62,13 +62,12 @@
 	                <tr>
                  		<td width="20" class="border-right text-center"></td>
 	                  <td class="border-right text-center" width="120"><a class="sort" column="material_code">Code</a></td>
-	                  <td class="border-right" width="300"><a class="sort down" column="material_description">Description</a></td>
-	                  <td class="border-right text-center text-date" width="70"><a class="sort" column="quantity">P/O Qty</a></td>
+	                  <td class="border-right"><a class="sort down" column="material_description">Description</a></td>
+	                  <td class="border-right text-center text-date" width="60"><a class="sort" column="quantity">P/O Qty</a></td>
 <!-- 	                  <td class="border-right text-center" width="60"><a class="sort" column="delivered">Delivered</a></td> -->
-	                  <td class="border-right text-center text-date" width="60"><a class="sort" column="unit">Unit</a></td>
+	                  <td class="border-right text-center" width="60"><a class="sort" column="received">Received</a></td>
+	                  <td class="border-right text-center text-date" width="80"><a class="sort" column="unit">Unit</a></td>
 	                  <td class="border-right text-center" width="60"><a class="sort" column="status">Status</a></td>
-	                  <td class="border-right text-center" width="70"><a class="sort" column="received">Received</a></td>
-	                  <td><a class="sort" column="remarks">Remarks</a></td>
 	                </tr>
 	              </thead>
 	              <tbody id="receiving-items"></tbody>
@@ -102,9 +101,9 @@
 		<div class="modal-content">
 			<form id="frm-receive-material" method="POST">
 				<span class="notice"></span>     
-<!-- 					<input type="hidden" name="action" value="edit_receiving_items"/> -->
+					<input type="hidden" name="action" value="edit_receiving_items"/>
 					<input type="hidden" id="material-index" name="material-index" value="0"/>
-					<input type="hidden" id="receiving-item-id" name="receiving[item_id]"/>
+<!-- 					<input type="hidden" id="receiving-item-id" name="receiving[item_id]"/> -->
 					<input type="hidden" id="rid" name="rid"/>
 					
 						 <div class="field">
@@ -134,8 +133,8 @@
 			</form>
 		</div>
 		<div class="modal-footer">
-			<a id="closeModal" rel="modal:close" class="close btn" style="width:50px;">Cancel</a>
-			<a id="submit-receive-material" rel="modal:close" href="#frm-receive-material" class="btn" style="width:50px;">Receive</a>
+			<a rel="modal:close" class="close btn" style="width:50px;">Cancel</a>
+			<a id="submit-receive-material" href="#frm-receive-material" class="btn" style="width:50px;">Receive</a>
 		</div>
 	</div>
        
@@ -196,10 +195,6 @@
 			  })
 	    	
 	    	$('#btn-receive-material').click();	
-    	} else {
-	    		var row = $(this).closest('tr');
-    			row.find('.item-received').val('0');
-			  	row.find('.item-remarks').val('');
     	}
     	
     })
@@ -214,7 +209,6 @@
       var quantity	= $(form).find('#receiving-quantity').val();
       var received	= $(form).find('#receiving-received').val();
       var delivered	= $(form).find('#receiving-delivered').val();
-      var remarks	= $(form).find('#receiving-remarks').val();
       var trow		= $('#tbl-materials tbody tr:eq('+ index +')');
       
       // if(parseFloat(delivered) > (parseFloat(quantity) - parseFloat(received)) || delivered == 0) {
@@ -229,40 +223,31 @@
       if(parseFloat(received) < parseFloat(quantity)) {
       	$(form).find('#receiving-status').val(5);
       }
-      
-      if(parseFloat(received) > parseFloat(quantity)) {
-      	return false;
-      }
-      
-      $(trow).find('.item-received').val(received);
-      $(trow).find('.item-remarks').val(remarks);
 
-			$(trow).find('.chk-item').prop('checked', true);
-			
-			
-    	// $.post(document.URL, $(form).serialize(), function(data) {
-    	   // $('#mdl-receive-material').find('.close').click();
-//     	   
-    	   // $('#receiving-items').empty();
-//     	   
-    	   // var data = { 
-		    	// "url":"/populate/delivery-items.php?did=<?php echo $_GET['id']; ?>",
-		      // "limit":"50",
-					// "data_key":"delivery_items",
-					// "row_template":"row_template_receiving",
-		      // "pagination":"#receiving-items-pagination"
-				// }	
-				// $('#grid-receiving-items').grid(data);
-//     	   
-    	  // // var total_receive = (parseFloat(received) + parseFloat(delivered)); 
-    	  // // if(total_receive != quantity) {
-    	    // // trow.attr('received', total_receive);
-    	    // // trow.find('td:eq(5)').html(trow.attr('received'));
-    	    // // return false;
-    	  // // }
-    	  // // trow.remove();
-// 
-    	// });
+    	
+    	$.post(document.URL, $(form).serialize(), function(data) {
+    	   $('#mdl-receive-material').find('.close').click();
+    	   
+    	   $('#receiving-items').empty();
+    	   
+    	   var data = { 
+		    	"url":"/populate/delivery-items.php?did=<?php echo $_GET['id']; ?>",
+		      "limit":"50",
+					"data_key":"delivery_items",
+					"row_template":"row_template_receiving",
+		      "pagination":"#receiving-items-pagination"
+				}	
+				$('#grid-receiving-items').grid(data);
+    	   
+    	  // var total_receive = (parseFloat(received) + parseFloat(delivered)); 
+    	  // if(total_receive != quantity) {
+    	    // trow.attr('received', total_receive);
+    	    // trow.find('td:eq(5)').html(trow.attr('received'));
+    	    // return false;
+    	  // }
+    	  // trow.remove();
+
+    	});
     })
   }
   

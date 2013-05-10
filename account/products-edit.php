@@ -35,7 +35,7 @@
 	  $packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification', 'conditions' => 'item_type = "PRD"'));
 		$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
 		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
-	  $currencies = $DB->Get('lookups', array('columns' => 'id, code', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+	  $currencies = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
 	  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
 		$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 'conditions' => 'item_type="PRD" AND item_id = '.$_GET['pid']));	
 ?>
@@ -96,7 +96,7 @@
               </td>
            </tr>
            <tr>
-              <td width="150">Currency:</td><td><?php select_query_tag($currencies, 'id', 'code', $item_costs['currency'], 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+              <td width="150">Currency:</td><td><?php select_query_tag($currencies, 'id', 'description', $item_costs['currency'], 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
               <td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" value="<?php echo $item_costs['cost'] ?>" class="text-field text-right" /></td>
            </tr>
            <tr>

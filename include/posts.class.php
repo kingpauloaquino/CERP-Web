@@ -49,11 +49,11 @@ class Posts {
     $user = array(
 		  'employee_id'	=> strtoupper($params['employee_id']),
 		  'password'		=> md5($params['password']),
-		  'first_name'	=> ucwords(strtolower($params['first_name'])),
-		  'last_name'		=> ucwords(strtolower($params['last_name'])),
+		  'first_name'	=> mysql_real_escape_string(ucwords(strtolower($params['first_name']))),
+		  'last_name'	=> mysql_real_escape_string(ucwords(strtolower($params['last_name']))),
 		  'email'				=> $params['email'],
-		  'position'		=> ucwords(strtolower($params['position'])),
-		  'description'	=> ucwords(strtolower($params['description'])),
+		  'position'	=> mysql_real_escape_string(ucwords(strtolower($params['position']))),
+		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		  'status'			=> $params['status']
 		);  
     return $this->DB->InsertRecord('users', $user);
@@ -79,9 +79,9 @@ class Posts {
 	}
   
   function AddRole($params) {
-    $items = array(
-		  'name'	=> $params['name'],	  
-		  'description'	=> $params['description']
+    $items = array(  
+		  'name'	=> mysql_real_escape_string(ucwords(strtolower($params['name']))),
+		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		);
     return $this->DB->InsertRecord('roles', $items);
 	}
@@ -109,7 +109,7 @@ class Posts {
 	function AddSupplier($params) {
     $supplier = array(
 		  'supplier_code'		=> $params['supplier_code'],
-		  'name'						=> ucwords(strtolower($params['name'])),
+		  'name'	=> mysql_real_escape_string(ucwords(strtolower($params['name']))),
 		  'address'					=> ucwords(strtolower($params['address'])),
 		  'country'					=> $params['country'],
 		  'representative'	=> ucwords(strtolower($params['representative'])),
@@ -120,7 +120,7 @@ class Posts {
 		  'supplier_type'		=> $params['supplier_type'],
 		  'product_service'	=> $params['product_service'],
 		  'term_of_payment'	=> $params['term_of_payment'],
-		  'description'			=> $params['description']
+		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		);
     return $this->DB->InsertRecord('suppliers', $supplier);
   }
@@ -136,8 +136,8 @@ class Posts {
 		  'material_code'						=> strtoupper($params['material_code']),
 		  'bar_code'								=> $params['bar_code'],	
 		  'material_type'						=> $params['material_type'],	
-		  'material_classification'	=> $params['material_classification'],		  
-		  'description'							=> $params['description'],
+		  'material_classification'	=> $params['material_classification'],		 
+		  'description'							=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		  'brand_model'							=> $params['brand_model'],
 		  'person_in_charge'				=> $params['person_in_charge'],
 		  'status'									=> $params['status'],
@@ -157,8 +157,8 @@ class Posts {
 		  'material_code'						=> strtoupper($params['material_code']),
 		  'bar_code'								=> $params['bar_code'],	
 		  'material_type'						=> $params['material_type'],	
-		  'material_classification'	=> $params['material_classification'],		  
-		  'description'							=> $params['description'],
+		  'material_classification'	=> $params['material_classification'],	
+		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		  'person_in_charge'				=> $params['person_in_charge'],
 		  'status'									=> $params['status'],
 		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] 
@@ -201,8 +201,8 @@ class Posts {
     $product = array(
 		  'product_code'						=> $params['product_code'],		  
 		  'product_classification'	=> $params['product_classification'],		  
-		  'brand_model'							=> $params['brand_model'],	  
-		  'description'							=> $params['description'],  
+		  'brand_model'							=> $params['brand_model'],	
+		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		  'color'										=> $params['color'], 
 		  'bar_code'								=> $params['bar_code'],
 		  'status'									=> $params['status']
@@ -217,8 +217,8 @@ class Posts {
 	function AddInventory($params) {
     $inventory = array(
 		  'item_id'					=> $params['item_id'],	
-		  'item_type'				=> $params['item_type'],	  
-		  'description'			=> $params['description'],	  
+		  'item_type'				=> $params['item_type'],	 
+		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))), 
 		  'current_qty'			=> $params['current_qty'],		  
 		  'reorder_level'		=> $params['reorder_level'],		  
 		  'reorder_qty'			=> $params['reorder_qty'],	
@@ -238,7 +238,7 @@ class Posts {
 		  'terminal_device_id'	=> $params['terminal_device_id'],	
 		  'status'		=> $params['status'],
 		  'quantity'	=> $params['quantity'],
-		  'remarks'		=> $params['remarks'],
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);
     return $this->DB->InsertRecord('item_inventory_locations', $inventory);
   }
@@ -255,7 +255,7 @@ class Posts {
 		  'terminal_device_id'	=> $params['terminal_device_id'],	
 		  'inventory_status'		=> $params['inventory_status'],
 		  'inventory_status_value'	=> $params['inventory_status_value'],
-		  'remarks'		=> $params['remarks'],
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);
     return $this->DB->InsertRecord('item_inventory_location_history', $inventory);
   }
@@ -266,8 +266,8 @@ class Posts {
 		  'material_id'		=> $params['material_id'],	  
 		  'material_qty'	=> $params['material_qty'],		  
 		  //'unit'					=> $params['unit'],		  
-		  //'supplier_id'		=> $params['supplier_id'],		  
-		  'remarks'				=> $params['remarks'],	
+		  //'supplier_id'		=> $params['supplier_id'],	
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);
     return $this->DB->InsertRecord('products_parts_tree', $parts_tree);
   }
@@ -291,7 +291,7 @@ class Posts {
   	  'ship_date'	=> date('Y-m-d', strtotime($params['delivery_date'])),
   	  'status'			=> $params['status'],
   	  'completion_status'			=> $params['completion_status'],
-  	  'remarks'			=> $params['remarks'],
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
   	  'total_amount'	=> $params['total_amount'],
   	  'created_by'		=> $Signed['id'],
 		);	
@@ -319,7 +319,7 @@ class Posts {
 		  	  'ship_date'	=> strdate($params['ship_date'], 'Y-m-d'),    
   	  		'status'		=> $params['status'],
   	  		'completion_status'			=> $params['completion_status'],
-		  	  'remarks'			=> $params['remarks'],
+		  		'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		  	  'total_amount'	=> $params['total_amount']
 	  ),
 	  'conditions' => 'id = '.$params['id']
@@ -369,7 +369,7 @@ class Posts {
   	  'ship_date'	=> date('Y-m-d', strtotime($params['ship_date'])),
   	  'status'			=> $params['status'],
   		'completion_status'	=> $params['completion_status'],
-  	  'remarks'			=> $params['remarks'],
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
   	  'total_amount'	=> $params['total_amount'],
 		);	
 		$work_order_id = $this->DB->InsertRecord('work_orders', $work_order);
@@ -394,7 +394,7 @@ class Posts {
 		  	  'ship_date'	=> strdate($params['ship_date'], 'Y-m-d'),
   	  		'status'			=> $params['status'],
   	  		'completion_status'	=> $params['completion_status'],
-		  	  'remarks'			=> $params['remarks'],
+		  		'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		  	  'total_amount'	=> $params['total_amount']
 	  ),
 	  'conditions' => 'id = '.$params['id']
@@ -451,18 +451,39 @@ class Posts {
       'total_amount'	=> $params['total_amount'],
       'status'			=> $params['status'],
       'completion_status'			=> 2, //pending
-      'remarks'			=> trim($params['remarks'])
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
     );
 	
 		$purchase_id = $this->DB->InsertRecord('purchases', $purchase);
 		
+		// Add delivery if status = Published
+		$delivery_id = 0;
+		if($params['status'] == '11') {
+			$delivery = array();
+			$delivery['purchase_id'] = $purchase_id;
+			$delivery['delivery_via'] = trim($params['delivery_via']);
+			$delivery['delivery_date'] = date('Y-m-d', strtotime($params['delivery_date']));
+			$delivery['remarks'] = mysql_real_escape_string(ucwords(strtolower($params['remarks'])));
+			$delivery['status'] = 19;
+			$delivery_id = $this->AddDelivery($delivery);
+		}
+		
 		if(!empty($params['items'])) {
 		  // Add Each Purchase Item
 		  foreach ($params['items'] as $index => $item) {
-	        $item['purchase_id'] = $purchase_id;
-	        $this->DB->InsertRecord('purchase_items', $item);
+        $item['purchase_id'] = $purchase_id;
+        $purchase_item_id = $this->DB->InsertRecord('purchase_items', $item);
+				if($delivery_id > 0) {
+					$delivery_item = array();
+					$delivery_item['delivery_id'] = $delivery_id;
+					$delivery_item['purchase_item_id'] = $purchase_item_id;
+					$delivery_item['status'] = 19;
+        	$delivery_item_id = $this->DB->InsertRecord('delivery_items', $delivery_item);
+				}
 		  }
 		}
+		
+		if($delivery_id > 0) redirect_to(host('purchases-show.php?id='.$purchase_id.'&did='.$delivery_id));
 	
     return $purchase_id;
   }
@@ -482,24 +503,19 @@ class Posts {
 	      'total_amount'	=> $params['total_amount'],
 	      'status'			=> $params['status'],
       	'completion_status'		=> $params['completion_status'],
-	      'remarks'			=> trim($params['remarks']),
+		  	'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 	  ),
 	  'conditions' => 'id = '.$params['id']
     );
 	
 	$row = $this->DB->UpdateRecord('purchases', $purchase);
 	
-	if($row > 0) {
-	  $this->DB->DeleteRecord('purchase_items', array('conditions' => 'purchase_id ='.$params['id']));
-	  if(!empty($params['items'])) {
-	    // Add Each Purchase Item
-	    foreach ($params['items'] as $index => $item) {
-          $item['purchase_id'] = $params['id'];
-          $this->DB->InsertRecord('purchase_items', $item);
-	    }
-	  }
-	}
-    return $row;
+	$this->DB->DeleteRecord('purchase_items', array('conditions' => 'purchase_id ='.$params['id']));
+  foreach ($params['items'] as $index => $item) {
+    $item['purchase_id'] = $params['id'];
+    $this->DB->InsertRecord('purchase_items', $item);
+  }
+  return $row;
   }
 
   // Posts::AddReceiving
@@ -511,7 +527,7 @@ class Posts {
 	   'delivery_id'	=> $params['delivery_id'],
 	   'receive_item'	=> $params['item_id'],
 	   'quantity'		=> $params['quantity'],
-	   'remarks'		=> $params['remarks']
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);
 	
 		$receive_id = $this->DB->InsertRecord('receive_items', $data);
@@ -578,19 +594,10 @@ class Posts {
       'purchase_id'	=> $params['purchase_id'],
       'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
       'delivery_via'	=> trim($params['delivery_via']),
-      'status'			=> 2, //pending status
-      'remarks'			=> trim($params['remarks'])
+      'status'			=> 19, //pending status
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
     );
-	
 		$delivery_id = $this->DB->InsertRecord('deliveries', $delivery);
-
-		if(!empty($params['items'])) {
-		  foreach ($params['items'] as $index => $item) {
-	        $item['delivery_id'] = $delivery_id;
-	        $item['status'] = 2; //pending status
-	        $this->DB->InsertRecord('delivery_items', $item);
-		  }
-		}
 	
     return $delivery_id;
   }
@@ -642,7 +649,7 @@ class Posts {
   	  'rack'				=> $params['rack'],
   	  'number'			=> $params['number'],
   	  'address'			=> $params['address'],
-  	  'description'	=> $params['description'],
+		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
   	  'terminal_id'	=> $params['terminal_id']
   	  //'color'				=> $params['color']
 		);	
@@ -670,7 +677,7 @@ class Posts {
   	  'terminal_code'	=> $params['terminal_code'],
   	  'terminal_name'	=> $params['terminal_name'],
   	  'type'	=> $params['type'],
-  	  'description'	=> $params['description']
+		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		);	
 		return $this->DB->InsertRecord('terminals', $terminal);
   }
@@ -697,7 +704,7 @@ class Posts {
   	  'make'	=> $params['make'],
   	  'model'	=> $params['model'],
   	  'serial_no'	=> $params['serial_no'],
-  	  'description'	=> $params['description']
+		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		);	
 		return $this->DB->InsertRecord('devices', $device);
   }
@@ -727,7 +734,7 @@ class Posts {
   	  'request_qty'	=> $params['request_qty'],
   	  'request_date'	=> $params['request_date'],
   	  'requestor_id'	=> $params['requestor_id'],
-  	  'remarks'	=> $params['remarks']
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);	
 		return $this->DB->InsertRecord('material_requests', $req);
   }
@@ -741,8 +748,8 @@ class Posts {
 		  'material_request_id'	=> $params['material_request_id'],	  
 		  'material_id'		=> $params['material_id'],	  
 		  'request_qty'	=> $params['request_qty'],	  
-		  'issue_qty'	=> $params['issue_qty'],			  
-		  'remarks'		=> $params['remarks']
+		  'issue_qty'	=> $params['issue_qty'],	
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);
     return $this->DB->InsertRecord('material_request_items', $items);
   }
@@ -849,7 +856,7 @@ class Posts {
   	  'terminal_id'	=> $params['terminal'],
   	  //'status'		=> $params['status'],
   	  'qty'	=> $params['qty'],
-  	  'remarks'		=> $params['remarks']
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);	
 		return $this->DB->InsertRecord('warehouse_inventories', $invt);
   }
@@ -945,7 +952,7 @@ class Posts {
   	  'terminal_device_id'	=> $params['terminal_device_id'],
   	  'status'		=> $params['status'],
   	  'qty'			=> $params['qty'],
-  	  'remarks'	=> $params['remarks']
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);	
 		var_dump($params); die();
 		$id = $this->DB->InsertRecord('production_inventories', $params);
@@ -1026,7 +1033,7 @@ class Posts {
   	  'track_no'	=> $params['track_no'],
   	  'terminal_id'	=> $params['terminal_id'],
   	  'qty'				=> $params['qty'],
-  	  'remarks'		=> $params['remarks']
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);	
 		return $this->DB->InsertRecord('item_tracks', $track);
   }
@@ -1049,7 +1056,7 @@ class Posts {
 		  'defect_b'	=> $params['defect_b'],
 		  'output_partial'	=> $params['output_partial'],
 		  'output'	=> $params['output'],
-		  'remarks'		=> $params['remarks'],
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);
     return $this->DB->InsertRecord('item_inventory_locations', $inventory);
   }

@@ -25,10 +25,10 @@
              <div>
              	<table>
                    <tr>
-                      <td width="120">Purchase Number:</td><td width="340"><input type="text" value="<?php echo $delivery['purchase_number']; ?>" class="text-field" disabled/>
+                      <td width="120">P/O Number:</td><td width="340"><input type="text" value="<?php echo $delivery['po_number']; ?>" class="text-field magenta" disabled/>
                       	<?php echo $linkto = (isset($delivery['pid'])) ? link_to('purchases-show.php?id='.$delivery['pid']) : '' ?>
                       </td>
-                      <td width="120"></td><td width="340"></td>
+                      <td width="120">P/O Date:</td><td width="340"><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['po_date'])); ?>" class="text-field" disabled/>
                    </tr>
                    <tr>
                       <td>Supplier:</td>
@@ -37,16 +37,16 @@
                       </td>
                    </tr>
                    <tr>
-                      <td>Trade Terms:</td><td><input type="text" value="<?php echo $delivery['trade_terms']; ?>" class="text-field" disabled/></td>
-                      <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
-                   </tr>
-                   <tr>
                       <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" disabled/></td>
                       <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
                    </tr>
                    <tr>
-                      <td>Status:</td><td><input type="text" value="<?php echo $delivery['status']; ?>" class="text-field" disabled/></td>
-                      <td>Receive Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['receive_date'])) ?>" class="text-field text-date" disabled/></td>
+                      <td>Trade Terms:</td><td><input type="text" value="<?php echo $delivery['trade_terms']; ?>" class="text-field" disabled/></td>
+                      <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
+                   </tr>
+                   <tr>
+                      <td>Completion:</td><td><input type="text" value="<?php echo $delivery['completion_status']; ?>" class="text-field" disabled/></td>
+                      <td></td><td></td>
                    </tr>
                    <tr><td height="5" colspan="99"></td></tr>
                 </table>
@@ -89,9 +89,9 @@
            	   <div class="text-post-status">
            	     <strong>Status:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
                </div>
-           	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=delivery&id='. $delivery['id']); ?>"/>
+<!--            	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=delivery&id='. $delivery['id']); ?>"/> -->
                <?php if($delivery['status'] != "Close") { ?>
-               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('deliveries-edit.php?id='. $delivery['id']); ?>"/>
+<!--                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('deliveries-edit.php?id='. $delivery['id']); ?>"/> -->
            	   <input type="button" value="Receive" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='.$_GET['id']); ?>"/>
            	   <?php } ?>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>

@@ -14,7 +14,7 @@
 	  	$products = $DB->Find('products', array(
 					  			'columns' 		=> 'products.product_code, products.description, brand_models.brand_model AS brand, lookups3.description AS status, item_classifications.classification,
 					  												products.bar_code, products.color,  
-					  												suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.code AS currency, item_costs.cost', 
+					  												suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.description AS currency, item_costs.cost', 
 					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id
 																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id AND item_costs.item_type = "PRD"

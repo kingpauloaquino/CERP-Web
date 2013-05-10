@@ -106,7 +106,7 @@
 								<td class="border-right text-center" width="20"><input type="checkbox" class="chk-all"/></td> 
 								<td class="border-right text-center" width="140"><a class="sort default active up" column="code">Code</a></td>
 								<td class="border-right text-center" width="80"><a class="sort" column="stock">Stock</a></td> 
-								<td class="border-right text-center"><a class="sort" column="description">Supplier</a></td> 
+								<td class="border-right text-center"><a class="sort" column="description">Description</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="price">Price</a></td> 
                </tr>
@@ -204,7 +204,7 @@
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
            cell.append("<td class=\"mat-code border-right\"><a class=\"mat\" alt=\"" + row['id'] + "\" rel=\"modal:open\" href=\"#modal-material-requests\">"+ row['code'] +"</a></td>");
            cell.append("<td class=\"mat-stock border-right text-right numbers\">"+ (parseFloat(row['stock']) || '0') +"</td>");
-           cell.append("<td class=\"mat-description border-right text-center\">"+ row['supplier'] +"</td>");
+           cell.append("<td class=\"mat-description border-right \">"+ row['description'] +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            

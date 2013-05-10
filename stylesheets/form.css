@@ -94,6 +94,7 @@ select {
 
 input.text-field { width:180px; }
 input.text-field-price { width:90px; }
+input.text-field-number { width:65px; text-align: right; }
 input.text-field-medium { width:90px; }
 input.text-field-smallest { width:45px; }
 input.text-field-max { width:96%; }

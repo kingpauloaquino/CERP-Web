@@ -42,7 +42,7 @@
                </tr>
                <tr>
                   <td>Terms:</td><td><input type="text" name="purchase_order[terms]" value="" class="text-field"/></td>
-                  <td>Ship Date:</td><td><input type="text" name="purchase_order[ship_date]" value="" class="text-field date-pick"/></td>
+                  <td>Ship Date:</td><td><input type="text" name="purchase_order[ship_date]" value="<?php echo date("F d, Y", strtotime('next Thursday', strtotime(date("F d, Y")))) ?>" class="text-field date-pick"/></td>
                </tr>
                <tr>
                   <td>Payment Terms:</td>

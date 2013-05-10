@@ -80,7 +80,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		if(!empty($_POST['items'])) {
 		  foreach ($_POST['items'] as $id => $attr) {
 	      $item = array('item_id' => $attr['item_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['item_price']));
-		    $total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
+		    $total_amount += (to_double($attr['quantity']) * to_double($attr['item_price']));
 	        array_push($items, $item);
 		  }
 		}
@@ -94,20 +94,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		
 		$purchase_item_ids = $DB->Get('purchase_items', array('columns' => 'id', 'conditions' => 'purchase_id = '.$purchase_id));
 		
-		// Add Delivery entry if published status
-		// if($purchase['status'] == '11') {
-			// $items = array(); 
-			// foreach ($purchase_item_ids as $item) {
-				// $item = array('purchase_item_id' => $item['id']);
-				// array_push($items, $item);
-			// }
-// 			
-			// $purchase['purchase_id'] = $purchase_id;
-			// $purchase['items'] = $items;
-			// $delivery_id = $Posts->AddDelivery($purchase);
-			// redirect_to(host('purchase-orders-show.php?id='.$purchase_id.'&did='.$delivery_id));
-		// }
-		
 		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase_id)); 
     break;
 	
@@ -118,35 +104,29 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     $purchase		= $_POST['purchase'];
     $items			= array();
 		$total_amount	= 0.00;
-		if(!empty($_POST['items'])) {
-		  foreach ($_POST['items'] as $id => $attr) {
-        $item = array('item_id' => $attr['item_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['item_price']));
-		    $total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
-        array_push($items, $item);
-		  }
-		} 
-		
+		foreach ($_POST['items'] as $id => $attr) {
+      $item = array('item_id' => $attr['item_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['item_price']));
+	    $total_amount += (to_double($attr['quantity']) * to_double($attr['item_price']));
+      array_push($items, $item);
+	  }
 		$purchase['items']			= $items;
 		$purchase['total_amount']	= $total_amount;
-		
-		// Update purchase record
 		$purchase_id = $Posts->EditPurchase($purchase);
 		
 		// Add Delivery entry if published status
-		// if($purchase['status'] == '11') { 
-			// if(!empty($_POST['items'])) {
-			  // foreach ($_POST['items'] as $id => $attr) {
-		        // $item = array('item_id' => $id, 'quantity' => $attr['quantity']);
-		        // array_push($items, $item);
-			  // }
-			// }
-			// $purchase['purchase_id'] = $purchase_id;
-			// $purchase['items'] = $items;
-			// $delivery_id = $Posts->AddDelivery($purchase);
-			// redirect_to(host('purchases-show.php?id='.$purchase_id.'&did='.$delivery_id));
-		// }
+		if($purchase['status'] == '11') {
+			unset($items); 
+    	$items = array();
+			foreach ($_POST['items'] as $id => $attr) {
+        $item = array('purchase_item_id' => $id, 'quantity' => $attr['quantity']);
+        array_push($items, $item);
+		  }
+			$purchase['purchase_id'] = $purchase_id;
+			$purchase['items'] = $items;
+			$delivery_id = $Posts->AddDelivery($purchase);
+			redirect_to(host('purchases-show.php?id='.$purchase_id.'&did='.$delivery_id));
+		}
 		
-		// If successfully added new purchase, redirect to display page
 		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase['id']));
     break;	  
 	

@@ -136,7 +136,7 @@ function dformat($datetime, $format='Y-m-d H:i:s') {
 
 function get_lookup_code($key) {
 	$codes = array('supplier_type' => 'SUPTYP', 'term_of_payment' => 'TRMPAY', 'unit_of_measure' => 'UNITS', 'currency' => 'CURNCY', 'country' => 'CTRY', 
-					'product_service' => 'PRDSVC', 'material_type' => 'MATTYP', 'item_status' => 'ITMSTA', 'user_status' => 'USRSTA',	'loc_bldg' => 'BLDG', 
+					'product_service' => 'PRDSVC', 'material_type' => 'MATTYP', 'item_status' => 'ITEM', 'user_status' => 'USRSTA',	'loc_bldg' => 'BLDG', 
 					'loc_bldg_no' => 'BLDGNUM', 'loc_deck' => 'DECK', 'loc_area' => 'AREA', 'wh1_terminal' => 'WH1TRML','wh2_terminal' => 'WH2TRML', 
 					'wip_terminal' => 'WIPTRML', 'inventory_status' => 'INVSTA', 'packing_type' => 'PACTYP', 'mat_req_type' => 'REQTYP', 'inventory_type' => 'INVTYP');
 	return $codes[$key];

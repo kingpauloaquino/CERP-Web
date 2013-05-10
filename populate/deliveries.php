@@ -12,18 +12,18 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
   $startpoint = $limit * ($page - 1);
 	$search = (isset($keyword) || $keyword != '') 
 						? 
-						'purchases.purchase_number LIKE "%'. $keyword .'%" OR '.
+						'purchases.po_number LIKE "%'. $keyword .'%" OR '.
 						'suppliers.name LIKE "%'. $keyword .'%" OR '.
 						'lookup_status.description LIKE "%'. $keyword .'%" '
 						//'materials.tags LIKE "%'. $keyword .'%" '
 						: '';
 	
 	$query = $DB->Fetch('deliveries', array(
-							'columns'	=> 'deliveries.id, purchases.purchase_number, deliveries.delivery_date, supplier_id, name AS supplier_name, 
-                           lookup_status.description AS status',
+							'columns'	=> 'deliveries.id, purchases.po_number, deliveries.delivery_date, supplier_id, name AS supplier_name, 
+                           lookup_status.description AS completion_status',
 					    'joins'		=> 'INNER JOIN purchases ON purchases.id = deliveries.purchase_id
 					    						INNER JOIN suppliers ON suppliers.id = supplier_id
-                         	INNER JOIN lookup_status ON lookup_status.id = deliveries.status',
+                         	INNER JOIN lookup_status ON lookup_status.id = purchases.completion_status',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

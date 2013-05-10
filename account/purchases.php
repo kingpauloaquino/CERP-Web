@@ -34,7 +34,7 @@
             <tr>
               <td width="110" class="border-right text-center"><a class="sort default active up" column="purchase_number">P/O #</a></td>
               <td class="border-right"><a class="sort down" column="supplier_name">Supplier</a></td>
-              <td width="90" class="text-center text-date"><a class="sort" column="po_date">P/O Date</a></td>
+              <td width="90" class="border-right text-center text-date"><a class="sort" column="po_date">P/O Date</a></td>
               <td width="90" class="border-right text-center text-date"><a class="sort"column="delivery_date">Delivery</a></td>
               <td width="90" class="border-right text-center"><a class="sort" column="total_amount">Amount</a></td>
               <td width="70" class="border-right text-center"><a class="sort" column="status">Approval</a></td>

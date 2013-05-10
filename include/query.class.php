@@ -111,19 +111,20 @@ class Query {
 	// Get Delivery By ID
   function delivery_by_id($id) {
   	$query = $this->DB->Fetch('deliveries', array(
-               'columns'  => 'deliveries.id, purchases.id AS pid, purchases.purchase_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
-                              deliveries.delivery_date, deliveries.delivery_via, purchases.trade_terms, 
-                              purchases.payment_terms, purchases.total_amount, deliveries.remarks, lookup_status.description AS status,
-                              deliveries.created_at AS receive_date',
+               'columns'  => 'deliveries.id, purchases.id AS pid, purchases.po_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
+                              deliveries.delivery_date, deliveries.delivery_via, purchases.terms, 
+                              purchases.payment_terms, purchases.total_amount, deliveries.remarks, lookup_status.description AS completion_status,
+                              purchases.po_date',
                'joins' => 'INNER JOIN purchases ON purchases.id = deliveries.purchase_id 
                						 INNER JOIN suppliers ON suppliers.id = purchases.supplier_id 
-                           INNER JOIN lookup_status ON lookup_status.id = deliveries.status',
+                           INNER JOIN lookup_status ON lookup_status.id = purchases.completion_status',
                'conditions' => 'deliveries.id = '. $id)
              );
 	
 		if(!empty($query)) return $query[0];
 		return null;
   }
+	
 	
 	function work_order_by_id($id) {
 		$query = $this->DB->Fetch('work_orders', array(

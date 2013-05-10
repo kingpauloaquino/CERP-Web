@@ -168,7 +168,6 @@ $.fn.grid = function(args) {
 }
 
 function grid_population(table, args) {
-
   var tbody			= table.find('tbody');
   var min_height	= 500;
   
@@ -237,8 +236,8 @@ function grid_population(table, args) {
   })
 }
 
-$.fn.toggle_check_items = function(table) {
-  this.click(function() {
+$.fn.toggle_check_items = function(table) { 
+  this.click(function() { 
   	var checked = this.checked;
   	var check_items = table.find('.chk-item'); 	
   	
@@ -780,7 +779,7 @@ function row_template_purchase_order_item_parts_read_only(data) {
 function row_template_deliver_materials(data) {
   var row = $("<tr></tr>");
   
-  row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-all\"/></td>");
+  row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-item\"/></td>");
   row.append("<td class=\"border-right\">"+ data['material_code'] +"</td>");
   row.append("<td class=\"border-right\">"+ data['material_description'] +"</td>");
   row.append("<td class=\"border-right text-right\">"+ data['quantity'] +"</td>");
@@ -795,16 +794,18 @@ function row_template_receiving(data) {
                     "received=\""+ (data['received'] || 0) +"\" remarks=\""+ (data['remarks'] || '') +"\" \"></tr>");
   
   //var code = data['status'] != "Complete" ? "<a href=\"#\">"+ data['code'] +"</a>" : data['code']; //remove line
-  var code = "<a href=\"#\">"+ data['code'] +"</a>";
+  //var code = "<a href=\"#\">"+ data['code'] +"</a>";
+  var code = data['code'];
   
-  row.append("<td class=\"border-right text-center magenta\">"+ (data['invoice'] || '') +"</td>");
+  row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-item\"/></td>");
   row.append("<td class=\"border-right\">"+ code +"</td>");
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
   row.append("<td class=\"border-right text-right numbers\">"+ data['quantity'] +"</td>");
   //row.append("<td class=\"border-right text-right numbers\">"+ (data['delivered'] || 0) +"</td>");
-  row.append("<td class=\"border-right text-right numbers\">"+ (data['received'] || 0) +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['unit'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
+  row.append("<td class=\"border-right text-right\"><input type='text' value='0' class='text-field-number item-received' readonly/></td>");
+  row.append("<td class=\"border-right\"><input type='text' value='' class='text-field-max item-remarks' readonly/></td>");
                   
   row.find('.text-currency').formatCurrency({region:"en-PH"});
   row.find('.numbers').digits();
@@ -832,10 +833,10 @@ function row_template_deliveries(data) {
   var forward	= host + "/account/deliveries-show.php?id="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"></tr>");
   
-  row.append("<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['purchase_number'] +"</a></td>");
+  row.append("<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['po_number'] +"</a></td>");
   row.append("<td class=\"border-right\">"+ data['supplier_name'] +"</td>");
-  row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ dtime_basic(data['delivery_date']) +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ data['completion_status'] +"</td>");
   
   row.find('.text-currency').formatCurrency({region:"en-PH"});
   return row;
@@ -845,9 +846,9 @@ function row_template_delivery_items_read_only(data) {
   var forward	= host + "/account/materials-show.php?mid="+ data['item_id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"></tr>");
   
-  //row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-all\" disabled/></td>");
+  //row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-item\" disabled/></td>");
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append("<td class=\"border-right text-center\"><a target=\"_blank\"  href=\""+ forward +"\">"+ data['code'] +"</a></td>");
+  row.append("<td class=\"border-right \"><a target=\"_blank\"  href=\""+ forward +"\">"+ data['code'] +"</a></td>");
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
   row.append("<td class=\"border-right text-right numbers \">"+ parseFloat(data['quantity']) +"</td>");
   row.append("<td class=\"border-right text-right numbers \">"+ (parseFloat(data['delivered']) || 0) +"</td>");

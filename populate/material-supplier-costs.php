@@ -27,7 +27,8 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 					    'joins'		=> 'LEFT OUTER JOIN warehouse_inventories ON warehouse_inventories.item_id = materials.id AND warehouse_inventories.item_type = "MAT"
 												    INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
 												    INNER JOIN suppliers ON suppliers.id = item_costs.supplier
-												    INNER JOIN lookups ON lookups.id = item_costs.unit',
+												    INNER JOIN lookups ON lookups.id = item_costs.unit
+												    AND materials.status = 16',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,

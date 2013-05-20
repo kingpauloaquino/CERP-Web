@@ -105,7 +105,7 @@ $.fn.date_format = function(format) {
 
 $.fn.date_pick = function() {
   $(this).datepicker({
-		inline: true, dateFormat: 'MM dd, yy'
+		inline: true, dateFormat: 'MM d, yy'
 	});
 }
 
@@ -114,6 +114,8 @@ $.fn.digits = function(){
         $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
     })
 }
+
+
 
 // $.fn.search = function() {  
 	// $(document).keypress(function(e) {
@@ -343,7 +345,11 @@ function row_template_material_plan(data) {
   var sorting_percentage = parseFloat(data['sorting_percentage']);
   var sp = (sorting_percentage > 0) ? (sorting_percentage*100) + '%' : 'N/A';
   var open_po = (sorting_percentage > 0) ? sorting_percentage * parseFloat(data['open_po']) : parseFloat(data['open_po']);
-  var prod_plan = parseFloat((parseFloat(data['prod_plan']) * parseFloat(data['defect_rate'])) + parseFloat(data['prod_plan']));
+  var po_plan = parseFloat((data['po_plan'] || 0));
+  var wo_plan = parseFloat((data['wo_plan'] || 0));
+  var po_wo_plan = parseFloat(po_plan + wo_plan);
+  
+  var prod_plan = (parseFloat((po_wo_plan * parseFloat(data['defect_rate'])) + po_wo_plan)).toFixed(2);
   var balance = (open_po + (parseFloat(data['inventory']) || 0) - prod_plan);
   var po_qty = (Math.ceil(parseFloat(parseFloat(Math.abs(balance) / parseFloat(data['moq'])).toFixed(1)) * 1) / 1) * parseFloat(data['moq']);
   
@@ -352,14 +358,15 @@ function row_template_material_plan(data) {
   		"<input type=\"hidden\" name=\"items["+data['id']+"][item_id]\" value=\""+ data['id'] +"\" />" +
   		"<input type=\"hidden\" name=\"items["+data['id']+"][quantity]\" value=\""+ po_qty +"\" />" +
   		"<input type=\"hidden\" name=\"items["+data['id']+"][item_price]\" value=\""+ parseFloat(data['price']) +"\" />" +
+  		"<input type=\"hidden\" name=\"items["+data['id']+"][currency]\" value=\""+ data['currency'] +"\" />" +
   	"<a target=\"_blank\" href=\""+ forward +"\">"+ data['material_code'] +"</a></td>" +
     "<td class=\"border-right\">"+ data['model'] +"</td>" +
     "<td class=\"border-right text-center\">"+ (parseFloat(data['defect_rate'])*100) +"%</td>" +
-    "<td class=\"border-right text-right numbers\">"+ (prod_plan.toFixed(2) || 'N/A') +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ (isNaN(prod_plan) ? '0' : prod_plan) +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['inventory']) || 0) +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (open_po.toFixed(2) || 0) +"</td>" +
     "<td class=\"border-right text-center numbers\">"+ sp +"</td>" +
-    "<td class=\"border-right text-right numbers "+ ((balance < 0) ? "red" : "") +"\">"+ balance +"</td>" +
+    "<td class=\"border-right text-right numbers "+ (((isNaN(balance) ? 0 : balance) < 0) ? "red" : "") +"\">"+ (isNaN(balance) ? 0 : balance) +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['moq']) || 0) + data['unit'] +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (po_qty || 'N/A') +"</td>" +
     "<td class=\"border-right text-right numbers text-currency\">"+ (parseFloat(data['price']) || 0) +"</td>" +
@@ -681,7 +688,7 @@ function row_template_purchase_material(data) {
   
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /><input type="hidden" name="items['+id+'][item_id]" value="'+ data['item_id'] +'" /></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append('<td class="border-right">'+ data['code'] +'</td>');
+  row.append('<td class="border-right"><input type="hidden" name="items['+id+'][currency]" value="'+ data['currency'] +'" />'+ data['code'] +'</td>');
   row.append('<td class="border-right">'+ data['description'] +'</td>');
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
@@ -790,22 +797,22 @@ function row_template_deliver_materials(data) {
 
 function row_template_receiving(data) {
   var row		= $("<tr quantity=\""+ data['quantity'] + "\" id=\""+ data['id'] +"\"" + 
-                    "item=\""+ data['id'] +"\" title=\""+ data['code'] +"\" invoice=\""+ (data['invoice'] || '') +"\"" +
-                    "received=\""+ (data['received'] || 0) +"\" remarks=\""+ (data['remarks'] || '') +"\" \"></tr>");
+                    "item=\""+ data['id'] +"\" title=\""+ data['code'] +"\" invoice=\""+ (data['invoice'] || '') +"\"" + "\" status=\""+ (data['status'] || '') +"\"" +
+                    "received=\""+ (data['received'] || 0) +"\" delivered=\""+ (data['delivered'] || 0) +"\" remarks=\""+ (data['remarks'] || '') +"\" \"></tr>");
   
   //var code = data['status'] != "Complete" ? "<a href=\"#\">"+ data['code'] +"</a>" : data['code']; //remove line
   //var code = "<a href=\"#\">"+ data['code'] +"</a>";
   var code = data['code'];
   
-  row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-item\"/></td>");
+  row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-item\" name='items["+data['id']+"][id]' value='"+data['id']+"'/><input type='hidden' name='items["+data['id']+"][delivered]' class='delivered' value='"+data['delivered']+"' /><input type='hidden' name='items["+data['id']+"][received]' class='received' value='' /><input type='hidden' name='items["+data['id']+"][status]' class='status' value='' /></td>");
   row.append("<td class=\"border-right\">"+ code +"</td>");
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
   row.append("<td class=\"border-right text-right numbers\">"+ data['quantity'] +"</td>");
-  //row.append("<td class=\"border-right text-right numbers\">"+ (data['delivered'] || 0) +"</td>");
+  row.append("<td class=\"border-right text-right numbers\">"+ (data['delivered'] || 0) +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['unit'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
   row.append("<td class=\"border-right text-right\"><input type='text' value='0' class='text-field-number item-received' readonly/></td>");
-  row.append("<td class=\"border-right\"><input type='text' value='' class='text-field-max item-remarks' readonly/></td>");
+  row.append("<td class=\"border-right\"><input type='text' name='items["+data['id']+"][remarks]' value='' class='text-field-max item-remarks' readonly/></td>");
                   
   row.find('.text-currency').formatCurrency({region:"en-PH"});
   row.find('.numbers').digits();
@@ -836,6 +843,7 @@ function row_template_deliveries(data) {
   row.append("<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['po_number'] +"</a></td>");
   row.append("<td class=\"border-right\">"+ data['supplier_name'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ dtime_basic(data['delivery_date']) +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['completion_status'] +"</td>");
   
   row.find('.text-currency').formatCurrency({region:"en-PH"});
@@ -849,9 +857,33 @@ function row_template_delivery_items_read_only(data) {
   //row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-item\" disabled/></td>");
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
   row.append("<td class=\"border-right \"><a target=\"_blank\"  href=\""+ forward +"\">"+ data['code'] +"</a></td>");
+  row.append("<td class=\"border-right \">"+ (data['invoice'] || 'N/A') +"</td>");
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
   row.append("<td class=\"border-right text-right numbers \">"+ parseFloat(data['quantity']) +"</td>");
   row.append("<td class=\"border-right text-right numbers \">"+ (parseFloat(data['delivered']) || 0) +"</td>");
+  row.append("<td class=\"border-right text-center \">"+ data['unit'] +"</td>");
+  row.append("<td class=\"border-right text-center \">"+ data['status'] +"</td>");
+  
+  row.find('.numbers').digits();
+  
+  return row;
+}
+
+function row_template_delivery_items_partial_read_only(data) {
+	var id = data['id'];
+  var forward	= host + "/account/materials-show.php?mid="+ data['item_id'] +"";
+  var row		= $("<tr forward=\""+ forward +"\"></tr>");
+  var po_qty = parseFloat(data['quantity'] || 0);
+  var delivered = parseFloat(data['delivered'] || 0);
+  var undelivered = po_qty - delivered;
+  
+  //row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-item\" disabled/></td>");
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append("<td class=\"border-right \"><a target=\"_blank\"  href=\""+ forward +"\">"+ data['code'] +"</a><input type='hidden' name='items["+id+"][purchase_item_id]' value='"+data['purchase_item_id']+"' /></td>");
+  row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
+  row.append("<td class=\"border-right text-right numbers \">"+ po_qty +"</td>");
+  row.append("<td class=\"border-right text-right numbers \">"+ delivered +"</td>");
+  row.append("<td class=\"border-right text-right numbers \">"+ undelivered +"</td>");
   row.append("<td class=\"border-right text-center \">"+ data['unit'] +"</td>");
   row.append("<td class=\"border-right text-center \">"+ data['status'] +"</td>");
   
@@ -875,6 +907,37 @@ function row_template_receiving_materials(data) {
   row.append('<td class="border-right text-center"><input type="text" name="" value="" class="text-field-medium text-left"/></td>');
            	
   return row;   
+}
+
+function row_template_invoices(data) {
+  var forward	= host + "/account/invoice-show.php?inv="+ data['invoice'] +"";
+  var row		= $("<tr forward=\""+ forward +"\"></tr>");
+  
+  row.append("<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['invoice'] +"</a></td>");
+  row.append("<td class=\"border-right\">"+ data['supplier'] +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ data['terms'] +"</td>");
+  row.append("<td class=\"border-right text-center\">"+ dtime_basic(data['receive_date']) +"</td>");
+  
+  return row;
+}
+
+function row_template_invoices_items_read_only(data) {
+  var forward	= host + "/account/purchases-show.php?id="+ data['purchase_id'] +"";
+  var row		= $("<tr forward=\""+ forward +"\"></tr>");
+  var amount = parseFloat(data['received']) * parseFloat(data['item_price']);
+  
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append("<td class=\"border-right \"><a target=\"_blank\"  href=\""+ forward +"\">"+ data['po_number'] +"</a><input type=\"hidden\" class=\"amount\" value=\""+ parseFloat(amount)+"\" /></td>");
+  row.append("<td class=\"border-right \">"+ data['material_code'] +"</td>");
+  row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
+  row.append("<td class=\"border-right text-right numbers \">"+ parseFloat(data['po_qty']) +"</td>");
+  row.append("<td class=\"border-right text-right numbers \">"+ parseFloat(data['received']) +"</td>");
+  row.append("<td class=\"border-right text-right currency \">"+ parseFloat(data['item_price']) +"</td>");
+  row.append("<td class=\"border-right text-right currency \">"+ parseFloat(amount) +"</td>");
+  
+  row.find('.numbers').digits();
+  row.find('.currency').formatCurrency({region:"en-PH"});
+  return row;
 }
 
 function row_template_parts_tree(data) {
@@ -937,6 +1000,128 @@ function row_template_roles(data) {
     "</tr>");
 
   return row;
+}
+
+function row_template_forecast_items_read_only(data) {
+	var forward	= host + "/account/roles-show.php?rid="+ data['id'] +"";
+  var row		= $("<tr forward=\""+ forward +"\">"+
+  	"<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['week'] +"</a></td>" +
+    "<td class=\"border-right \">"+ (data['remarks'] || '') +"</td>" +
+    "<td class=\"border-right text-center\">"+ (data['ship_date'] || '') +"</td>" +
+    "<td class=\"border-right text-right numbers\">"+ data['qty'] +"</td>" +
+    "</tr>");
+
+  return row;
+}
+
+function row_template_forecast_items(data) {
+	var forward	= host + "/account/roles-show.php?rid="+ data['id'] +"";
+  var row		= $("<tr forward=\""+ forward +"\">"+
+  	"<td class=\"border-right text-center\"><input type=\"hidden\" name=\"items["+data['id']+"][forecast_cal_id]\" value=\""+data['id']+"\" class=\"item-week-id\" /><a href=\""+ forward +"\">"+ data['week'] +"</a></td>" +
+    "<td class=\"border-right text-center \"><input type=\"text\" name=\"items["+data['id']+"][remarks]\" class=\"text-field-max\" /></td>" +
+    "<td class=\"border-right text-center \"><input type=\"text\" name=\"items["+data['id']+"][ship_date]\" class=\"date-pick text-center\" /></td>" +
+    "<td class=\"border-right text-right \"><input type=\"text\" name=\"items["+data['id']+"][qty]\" class=\"text-field-medium text-right item-quantity\" /></td>" +
+    "</tr>");
+
+	row.find('.date-pick').date_pick();
+
+  return row;
+}
+
+function row_template_forecast_read_only(data) {
+	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+  var id		= data['product_id'];
+  var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
+  var total = (parseInt(data['jan']) || 0) + (parseInt(data['feb']) || 0) + (parseInt(data['mar']) || 0) + (parseInt(data['apr']) || 0) + (parseInt(data['may']) || 0) + (parseInt(data['jun']) || 0) +
+  						(parseInt(data['jul']) || 0) + (parseInt(data['aug']) || 0) + (parseInt(data['sep']) || 0) + (parseInt(data['oct']) || 0) + (parseInt(data['nov']) || 0) + (parseInt(data['dece']) || 0);
+
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['jan'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['feb'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['mar'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['apr'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['may'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['jun'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['jul'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['aug'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['sep'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['oct'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['nov'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['dece'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (total || 0) +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row; 
+}
+
+function row_template_forecast_h1(data) {
+	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+  var id		= data['product_id'];
+  var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a><input type="hidden" name="items['+id+'][product_id]" value="'+ (id || '') +'" /></td>');
+  row.append('<td class="border-right text-center">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][jan]" value="'+ (data['jan'] || 0) +'" class="text-field-medium text-right item-qty-jan" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][feb]" value="'+ (data['feb'] || 0) +'" class="text-field-medium text-right item-qty-feb" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][mar]" value="'+ (data['mar'] || 0) +'" class="text-field-medium text-right item-qty-mar" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][apr]" value="'+ (data['apr'] || 0) +'" class="text-field-medium text-right item-qty-apr" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][may]" value="'+ (data['may'] || 0) +'" class="text-field-medium text-right item-qty-may" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][jun]" value="'+ (data['jun'] || 0) +'" class="text-field-medium text-right item-qty-jun" autocomplete="off"/></td>');
+           	
+  return row; 
+}
+
+function row_template_forecast_h1_read_only(data) {
+	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+  var id		= data['product_id'];
+  var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['jan'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['feb'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['mar'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['apr'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['may'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['jun'] || 0) +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row; 
+}
+
+function row_template_forecast_h2(data) {
+	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+  var id		= data['product_id'];
+  var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a><input type="hidden" name="items['+id+'][product_id]" value="'+ (id || '') +'" /></td>');
+  row.append('<td class="border-right text-center">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][jul]" value="'+ (data['jul'] || 0) +'" class="text-field-medium text-right item-qty-jul" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][aug]" value="'+ (data['aug'] || 0) +'" class="text-field-medium text-right item-qty-aug" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][sep]" value="'+ (data['sep'] || 0) +'" class="text-field-medium text-right item-qty-sep" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][oct]" value="'+ (data['oct'] || 0) +'" class="text-field-medium text-right item-qty-oct" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][nov]" value="'+ (data['nov'] || 0) +'" class="text-field-medium text-right item-qty-nov" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][dece]" value="'+ (data['dece'] || 0) +'" class="text-field-medium text-right item-qty-dece" autocomplete="off"/></td>');
+           	
+  return row; 
+}
+
+function row_template_forecast_h2_read_only(data) {
+	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+  var id		= data['product_id'];
+  var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['jul'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['aug'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['sep'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['oct'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['nov'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['dece'] || 0) +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row; 
 }
 
 

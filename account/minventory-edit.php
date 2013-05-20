@@ -153,8 +153,8 @@
 																	INNER JOIN orders ON orders.id = production_purchase_orders.order_id
 																	INNER JOIN lookups ON lookups.id = production_purchase_order_product_parts.status',
 							  	    'conditions' => 'production_purchase_order_product_parts.material_id = '.$_GET['id'], 
-							  	    'sort_column' => 'production_purchase_order_product_parts.created_at',
-							  	    'sort_order' => 'DESC '
+							  	    'order' => 'production_purchase_order_product_parts.created_at',
+							  	    
 							  	    ));
 											// status id 149 = production request pending
 									$total_req = 0.0;

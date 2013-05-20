@@ -48,7 +48,7 @@ $(function() {
 									  			'columns' => 'terminals.id AS terminal_id, terminals.terminal_code, terminals.terminal_name, terminals.type AS terminal_type', 
 									  			'joins' => 'INNER JOIN locations ON locations.id = terminals.location_id', 
 									  	    'conditions' => 'locations.location_code = "WIP" AND terminals.type="IN"',
-									  	    'sort_column' => 'terminals.id'
+									  	    'order' => 'terminals.id'
 					  	    ));
 							foreach ($terminals as $trml) {
 								echo '<h3><a href="#">'.$trml['terminal_name'].'</a></h3>';
@@ -66,7 +66,7 @@ $(function() {
 								  	    'conditions' => 'locations.location_code = "WIP" 
 								  	    						AND production_inventories.item_type = "MAT" AND production_inventories.tracking_no = "'.$_GET['trk_no'].'"
 								  	    						AND production_inventories.qty > 0 AND production_inventories.prod_lot_no ="'.$_GET['lot'].'" AND production_inventories.terminal_id ='.$trml['terminal_id'],
-								  	    'sort_column' => 'terminals.id'
+								  	    'order' => 'terminals.id'
 								  	    ));
 									echo '<div class="grid jq-grid"><table cellspacing="0" cellpadding="0">';
 									echo '<thead><tr>';

@@ -21,7 +21,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 													        INNER JOIN purchase_items AS pi ON pi.id = del.purchase_item_id
 													        INNER JOIN purchases AS p ON p.id = pi.purchase_id
 													        INNER JOIN materials AS m ON m.id = pi.item_id
-													        WHERE del.delivery_id=8 AND m.id = purchase_items.item_id
+													        WHERE del.purchase_item_id = delivery_items.purchase_item_id
 													    ) AS delivered',
                'joins' => 'INNER JOIN purchase_items ON purchase_items.id = delivery_items.purchase_item_id
 												    INNER JOIN purchases ON purchases.id = purchase_items.purchase_id

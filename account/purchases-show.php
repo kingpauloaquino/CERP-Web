@@ -15,6 +15,9 @@
         <div id="page-title">
           <h2>
             <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
+		        <?php
+		        	echo '<a href="'.$Capabilities->All['deliveries_po']['url'].'?pid='.$_GET['id'].'" class="nav">'.$Capabilities->All['deliveries_po']['name'].'</a>';
+						?>
             <div class="clear"></div>
           </h2>
         </div>
@@ -92,12 +95,19 @@
            	   <div class="text-post-status">
            	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $purchase['status']; ?>
                </div>
-<!--            	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=purchase&id='. $purchase['id']); ?>"/> -->
                <?php if($purchase['status'] != "Publish") { ?>
                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('purchases-edit.php?id='. $purchase['id']); ?>"/>
            	   <?php } ?>
+           	   <input type="button" value="To Excel" class="btn btn-download" rel="<?php echo export_file('?type=xls&cat=purchases&id='. $purchase['id']); ?>"/>
+<!--            	   <input type="button" value="To PDF" class="btn btn-download" rel="<?php echo export_file('?type=pdf&cat=purchases&id='. $purchase['id']); ?>"/> -->
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('purchases.php'); ?>"/>
              </div>
+             
+							<?php 
+								$approval_item_id = $_GET['id'];
+								$approval_table = 'purchases';
+								require_once 'approval.php';
+							?>
           </form>
        </div>
        

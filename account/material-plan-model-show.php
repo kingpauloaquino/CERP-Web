@@ -159,7 +159,6 @@
            	   <div class="text-post-status">
            	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $purchase['status']; ?>
                </div>
-<!--            	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=purchase&id='. $purchase['id']); ?>"/> -->
                <?php if($purchase['status'] != "Publish") { ?>
 <!--                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('material-plan-edit.php?sid='. $_GET['sid']); ?>"/> -->
            	   <?php } ?>

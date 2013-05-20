@@ -9,7 +9,7 @@
 	}else{
 	
 		$order = $Query->order_by_id($_GET['oid']);	
-		$pay_terms = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('term_of_payment').'"', 'sort_column' => 'description'));
+		$pay_terms = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('term_of_payment').'"', 'order' => 'description'));
 		$completion = $DB->Get('lookup_status', array('columns' => 'id, description', 'conditions'  => 'parent = "CMPLTN"'));
 ?>
       <!-- BOF PAGE -->

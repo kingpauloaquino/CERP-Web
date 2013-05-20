@@ -31,11 +31,11 @@
 			$item_images = $DB->Get('item_images', array('columns' => 'item_images.*',
 			 																			'conditions' => 'item_id='.$_GET['pid']));	
 	  }
-	  $brands = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'sort_column' => 'brand_model', 'conditions' => 'parent IS NULL'));
-	  $packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'sort_column' => 'classification', 'conditions' => 'item_type = "PRD"'));
-		$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'sort_column' => 'name'));
-		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'sort_column' => 'code'));
-	  $currencies = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'sort_column' => 'code'));
+	  $brands = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'order' => 'brand_model', 'conditions' => 'parent IS NULL'));
+	  $packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'order' => 'classification', 'conditions' => 'item_type = "PRD"'));
+		$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'order' => 'name'));
+		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'order' => 'code'));
+	  $currencies = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'order' => 'code'));
 	  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
 		$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 'conditions' => 'item_type="PRD" AND item_id = '.$_GET['pid']));	
 ?>

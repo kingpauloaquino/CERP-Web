@@ -3,10 +3,10 @@
   $capability_key = 'show_order';
   require('header.php');
 	
-	$allowed = $Role->isCapableByName($capability_key);	
-	if(!$allowed) {
-		require('inaccessible.php');	
-	}else{
+	// $allowed = $Role->isCapableByName($capability_key);	
+	// if(!$allowed) {
+		// require('inaccessible.php');	
+	// }else{
 	
 		$order = $Query->order_by_id($_GET['oid']);
 ?>
@@ -83,7 +83,6 @@
            	   <div class="text-post-status">
            	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $order['status']; ?>
                </div>
-           	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=order&id='. $order['id']); ?>"/>
                <?php if($order['status'] != "Publish") { ?>
                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('orders-edit.php?oid='. $order['id']); ?>"/>
            	   <?php } ?>
@@ -110,5 +109,6 @@
 			  
        </script>
 
-<?php }
+<?php 
+//}
 require('footer.php'); ?>

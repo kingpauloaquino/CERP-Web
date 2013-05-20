@@ -14,9 +14,9 @@ function redirect_to($url) {
 	echo "<script> window.location.replace('".$url."') </script>";
 }
 
-function excel_file($params='') {
-  global $HostExcel;
-  return $HostExcel."/download.php".$params;
+function export_file($params='') {
+  global $HostExport;
+  return $HostExport."/download.php".$params;
 }
 
 function strdate($str, $format='') {
@@ -204,6 +204,23 @@ function build_select_post_status($parent="APRVL", $key="", $keyname="") {
   return $options;
 }
 
+function build_select_post_status_by_level($conditions, $key="", $keyname="") {
+  global $DB;
+  
+  $query = array('columns' => 'id, description', 'conditions' => $conditions);
+  $data = $DB->Fetch('lookup_status', $query);
+  $options = "";
+  
+  foreach ($data as $value) {
+    $options .= "<option value=\"". $value['id'] ."\" ";
+	if($key != "") $options .= ($key == $value['id'] ? "selected" : "");
+	if($keyname != "") $options .= ($keyname == $value['description'] ? "selected" : "");
+    $options .= ">". $value['description'] ."</option>";
+  }
+
+  return $options;
+}
+
 //TODO: make generic
 function build_select_post_status1($key="", $keyname="") {
   global $DB;
@@ -356,4 +373,44 @@ function generate_new_code($type) {
 	$res = $result['current'] + 1;
 	if($pad) { $res = pad_number($res, $pad_cnt); }
 	return $prefix . $res;
+}
+
+function getConditionByLevel($level) {
+	switch($level) {
+		case 1:
+			return 'code="DRAFT"';
+		case 2: 
+			return 'code="DRAFT" OR code="PENDNG"';
+		case 3:
+			return 'code="DRAFT" OR code="PENDNG" OR code="PUBLSH"';
+	}
+}
+
+function setApproval($arr, $stat, $isNew = TRUE) {
+	if($isNew) {
+		switch($stat) {
+			case 9: // Draft
+				unset($arr['checked_by']); unset($arr['checked_at']); unset($arr['approved_by']); unset($arr['approved_at']);
+				break;
+			case 10: // Pending / Check
+				unset($arr['approved_by']); unset($arr['approved_at']);
+				break;
+			case 11: // Publish / Approve
+				
+				break;
+		}
+	} else {
+		switch($stat) {
+			case 9: // Draft
+				unset($arr['variables']['checked_by']); unset($arr['variables']['checked_at']); unset($arr['variables']['approved_by']); unset($arr['variables']['approved_at']);
+				break;
+			case 10: // Pending / Check
+				unset($arr['variables']['created_by']); unset($arr['variables']['approved_by']); unset($arr['variables']['approved_at']);
+				break;
+			case 11: // Publish / Approve
+				unset($arr['variables']['created_by']); unset($arr['variables']['checked_by']); unset($arr['variables']['checked_at']);;
+				break;
+		}
+	}
+	return $arr;
 }

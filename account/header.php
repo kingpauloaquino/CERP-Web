@@ -9,14 +9,16 @@ request_populate_data();
 
 function request_populate_data() {
   global $JSON;
-  if($_SERVER['REQUEST_METHOD'] == "GET" and $_GET['format'] == "json") {
-    $populate = $_GET['format'];
-    // ===============================================================
-    // Populate::Materials
-    // ===============================================================
-    $data = populate_materials();
-    $JSON->build_pretty_json($data);
-  }	
+	if(isset($_GET['format'])) {
+	  if($_SERVER['REQUEST_METHOD'] == "GET" and $_GET['format'] == "json") {
+	    $populate = $_GET['format'];
+	    // ===============================================================
+	    // Populate::Materials
+	    // ===============================================================
+	    $data = populate_materials();
+	    $JSON->build_pretty_json($data);
+	  }	
+	}
 }
 
 function populate_materials() {
@@ -79,7 +81,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 	
 		if(!empty($_POST['items'])) {
 		  foreach ($_POST['items'] as $id => $attr) {
-	      $item = array('item_id' => $attr['item_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['item_price']));
+	      $item = array('item_id' => $attr['item_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['item_price']), 'currency' => $attr['currency']);
 		    $total_amount += (to_double($attr['quantity']) * to_double($attr['item_price']));
 	        array_push($items, $item);
 		  }
@@ -92,8 +94,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		if(!isset($purchase['po_number'])) $purchase['po_number'] = generate_new_code('purchase_number');
 		$purchase_id = $Posts->AddPurchase($purchase);
 		
-		$purchase_item_ids = $DB->Get('purchase_items', array('columns' => 'id', 'conditions' => 'purchase_id = '.$purchase_id));
-		
 		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase_id)); 
     break;
 	
@@ -105,30 +105,37 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     $items			= array();
 		$total_amount	= 0.00;
 		foreach ($_POST['items'] as $id => $attr) {
-      $item = array('item_id' => $attr['item_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['item_price']));
+      $item = array('item_id' => $attr['item_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['item_price']), 'currency' => $attr['currency']);
 	    $total_amount += (to_double($attr['quantity']) * to_double($attr['item_price']));
       array_push($items, $item);
 	  }
 		$purchase['items']			= $items;
 		$purchase['total_amount']	= $total_amount;
-		$purchase_id = $Posts->EditPurchase($purchase);
+		$Posts->EditPurchase($purchase);
 		
-		// Add Delivery entry if published status
-		if($purchase['status'] == '11') {
-			unset($items); 
-    	$items = array();
-			foreach ($_POST['items'] as $id => $attr) {
-        $item = array('purchase_item_id' => $id, 'quantity' => $attr['quantity']);
-        array_push($items, $item);
-		  }
-			$purchase['purchase_id'] = $purchase_id;
-			$purchase['items'] = $items;
-			$delivery_id = $Posts->AddDelivery($purchase);
-			redirect_to(host('purchases-show.php?id='.$purchase_id.'&did='.$delivery_id));
-		}
+		redirect_to(host('purchases-show.php?id='.$purchase['id']));
+    break;	
 		
-		if($purchase_id > 0) redirect_to(host('purchases-show.php?id='.$purchase['id']));
-    break;	  
+	// ===============================================================
+  // Post::Update Delivery
+  // ===============================================================
+  case 'add_delivery_partial':
+    $delivery		= $_POST['delivery'];
+		$delivery['status'] = 13; // Open receiving status
+		$delivery['completion_status'] = 19; // pending completion status
+		$delivery_id = $Posts->AddDelivery($delivery);
+		
+		foreach ($_POST['items'] as $id => $attr) {
+			$delivery_item = array();
+			$delivery_item['delivery_id'] = $delivery_id;
+			$delivery_item['purchase_item_id'] = $attr['purchase_item_id'];
+			$delivery_item['status'] = 5; // Pending completion status
+			global $DB;
+    	$delivery_item_id = $DB->InsertRecord('delivery_items', $delivery_item);
+	  }
+		
+		redirect_to(host('deliveries-show.php?id='.$delivery_id));
+  	break;  
 	
   // ===============================================================
   // Post::Update Delivery
@@ -143,7 +150,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // Post::Add Receiving
   // ===============================================================
   case 'add_receiving':
-    echo $Posts->AddReceiving($_POST['receiving']);
+    //echo $Posts->AddReceiving($_POST['receiving']);
     exit();
     break;
 		
@@ -151,10 +158,50 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // Post::Edit Receiving
   // ===============================================================
   case 'edit_receiving':
-		$args = array('variables' => $_POST['delivery'], 'conditions' => 'id='.$_POST['id']); 
-		$num_of_records = $Posts->EditReceiving($args);
-		redirect_to(host('deliveries-show.php?id='.$_POST['id']));
-    exit();
+		$ctr = 0;
+		$complete_flag = 0;
+    $items	= $_POST['items']; 
+		
+		// set all items as incomplete status
+		$args = array('variables' => array('status' => 22), 'conditions' => 'delivery_id='.$_POST['delivery']['id']); 
+		$Posts->EditReceivingItems($args);
+		unset($args);
+		
+		foreach($items as $item) {
+			$item['invoice'] = $_POST['delivery']['invoice'];
+			$item['receipt'] = $_POST['delivery']['receipt'];
+			$item['receive_date'] = date('Y-m-d');
+			$item['received'] = $item['received'];
+			unset($item['delivered']);
+			$args = array('variables' => $item, 'conditions' => 'id='.$item['id']); 
+			$num_of_records = $Posts->EditReceivingItems($args);
+			
+			$ctr += 1;
+			if($item['status'] == 21) $complete_flag += 1;
+			
+			//TODO: add to inventory
+			// lot no??
+		}
+		
+		$purchase_completion_status = 0;
+		if($ctr > 0) {
+			if($ctr == $complete_flag) {
+				$purchase_completion_status = 6; //complete
+			}
+			if($ctr > $complete_flag) {
+				$purchase_completion_status = 5; // partial
+			}	
+		}
+		
+		// status 14 = close
+		$delivery = array('variables' => array('remarks' => $_POST['delivery']['remarks'], 'status' => 14, 'completion_status' => $purchase_completion_status), 'conditions' => 'id='.$_POST['delivery']['id']); 
+		$Posts->EditReceiving($delivery);
+		
+		$purchase = array('variables' => array('completion_status' => $purchase_completion_status), 'conditions' => 'id='.$_POST['delivery']['purchase_id']);
+		global $DB;
+		$DB->UpdateRecord('purchases', $purchase);
+		
+		redirect_to($Capabilities->All['show_purchase']['url'].'?id='.$_POST['delivery']['purchase_id']);	
     break;
   
   case 'edit_receiving_items':
@@ -192,16 +239,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     $items			= array();
 		$total_amount	= 0.00;
 	
-	$Posts->RemovePartsTree(array('conditions' => 'product_id='.$pid));
+		$Posts->RemovePartsTree(array('conditions' => 'product_id='.$pid));
 
-	if(!empty($_POST['items'])) {
-	  foreach ($_POST['items'] as $id => $attr) {
-        $parts = array('product_id' => $pid, 'material_id' => $attr['material_id'], 'material_qty' => $attr['quantity'], 'remarks' => $attr['remarks']);
-				$Posts->AddPartsTree($parts);
-				//$Posts->EditPartsTree(array('variables' => $parts, 'conditions' => 'id='.$pid));
-	  }
-	}
-	redirect_to($Capabilities->All['show_parts_tree']['url'].'?pid='.$pid.'&code='.$code);	
+		if(!empty($_POST['items'])) {
+		  foreach ($_POST['items'] as $id => $attr) {
+	        $parts = array('product_id' => $pid, 'material_id' => $attr['material_id'], 'material_qty' => $attr['quantity'], 'remarks' => $attr['remarks']);
+					$Posts->AddPartsTree($parts);
+					//$Posts->EditPartsTree(array('variables' => $parts, 'conditions' => 'id='.$pid));
+		  }
+		}
+		redirect_to($Capabilities->All['show_parts_tree']['url'].'?pid='.$pid.'&code='.$code);	
     break;	
 		
 	// ===============================================================
@@ -362,25 +409,25 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     $items			= array();
 		$total_amount	= 0.00;
 			
-	if(!empty($_POST['items'])) {
-	  foreach ($_POST['items'] as $id => $attr) {
-        $item = array('product_id' => $attr['product_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['price']), 'remarks' => $attr['remarks']);
-	    	$total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
-        array_push($items, $item);
-	  }
-	}
-	
-	$work_order['items']			= $items;
-	$work_order['total_amount']	= $total_amount;
-	
-	$work_order_id = $Posts->EditWorkOrder($work_order);
-	
-	// Intialize Purchase Order
-	// if($order['status'] == 137) { //published status id
-		// $args = array('order_id' => $order['id'], 'head_time_days' => 7); //7 days before P/O shipment
-		// $num_of_records = $Posts->InitPurchaseOrder($args);	
-	// }	
-	if($work_order_id > 0) redirect_to(host('work-orders-show.php?wid='.$work_order['id'])); 
+		if(!empty($_POST['items'])) {
+		  foreach ($_POST['items'] as $id => $attr) {
+	        $item = array('product_id' => $attr['product_id'], 'quantity' => $attr['quantity'], 'item_price' => to_double($attr['price']), 'remarks' => $attr['remarks']);
+		    	$total_amount += (to_double($attr['quantity']) * to_double($attr['price']));
+	        array_push($items, $item);
+		  }
+		}
+		
+		$work_order['items']			= $items;
+		$work_order['total_amount']	= $total_amount;
+		
+		$work_order_id = $Posts->EditWorkOrder($work_order);
+		
+		// Intialize Purchase Order
+		// if($order['status'] == 137) { //published status id
+			// $args = array('order_id' => $order['id'], 'head_time_days' => 7); //7 days before P/O shipment
+			// $num_of_records = $Posts->InitPurchaseOrder($args);	
+		// }	
+		if($work_order_id > 0) redirect_to(host('work-orders-show.php?wid='.$work_order['id'])); 
     break;	
 		
 	// ===============================================================
@@ -449,6 +496,60 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		redirect_to($Capabilities->All['roles']['url']);
     break;
 	
+	// case 'init_forecast_calendar':
+	  // global $DB;
+	  // $data = $DB->Fetch('forecasts', array('columns' => 'created_at', 'conditions' => 'product_id='.$_GET['pid'], 'limit' => 1));
+		// if(!empty($data)) {
+			// if(date('Y', strtotime($data['created_at'])) == date('Y')) {
+// 				
+			// }
+		// }
+// 		
+		// $ctr = 1; 
+		// for($i=0; $i<=52; $i++){
+			// if(date("Y", strtotime(' Thursday +'.$i.' week', strtotime(date('Y').'-01-01'))) == date('Y')) {
+				// $Posts->InitForecastCalendar(array('week' => 'Week-'.$ctr, 'day' => date("Y-m-d", strtotime(' Thursday +'.$i.' week', strtotime(date('Y').'-01-01')))));
+				// $ctr+=1;
+			// }
+		// }
+		// break;
+	case 'edit_forecast_h1':
+		$forecast = array();
+		$items = array();
+		
+		foreach($_POST['items'] as $id => $attr) {
+			$item = array('product_id' => $attr['product_id'],'jan' => $attr['jan'], 'feb' => $attr['feb'], 'mar' => $attr['mar'], 
+												'apr' => $attr['apr'], 'may' => $attr['may'], 'jun' => $attr['jun']);
+			array_push($items, $item);
+		}
+		$forecast['type'] = 'h1';
+		$forecast['forecast_year'] = $_POST['forecast_year'];
+		$forecast['items'] = $items;
+		
+		$Posts->EditForecastCalendar($forecast);
+		redirect_to($Capabilities->All['show_forecast_calendar_h1']['url']);
+		break;
+		
+	case 'edit_forecast_h2':
+		$forecast = array();
+		$items = array();
+		
+		foreach($_POST['items'] as $id => $attr) {
+			$item = array('product_id' => $attr['product_id'],'jul' => $attr['jul'], 'aug' => $attr['aug'], 'sep' => $attr['sep'], 
+												'oct' => $attr['oct'], 'nov' => $attr['nov'], 'dece' => $attr['dece']);
+			array_push($items, $item);
+		}
+		$forecast['type'] = 'h2';
+		$forecast['forecast_year'] = $_POST['forecast_year'];
+		$forecast['items'] = $items;
+		
+		$Posts->EditForecastCalendar($forecast);
+		redirect_to($Capabilities->All['show_forecast_calendar_h2']['url']);
+		break;
+		
+	case 'add_forecast':
+		
+		break;
 	
 	
 	
@@ -513,6 +614,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	<div id="menu-plan" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
         	  <ul>
+        	    <li><a href="forecasts.php">Forecasts</a></li>
         	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
         	    <li><a href="work-orders.php">Work Orders</a></li>
         	    <li><a href="production-plan.php">Production Plan</a></li>
@@ -527,7 +629,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	  <ul>
         	    <li><a href="purchases.php">Purchases</a></li>
         	    <li><a href="deliveries.php">Deliveries</a></li>
-        	    <li><a href="receiving.php">Receiving</a></li>
+        	    <li><a href="invoices.php">Invoices</a></li>
         	    <li><a href="suppliers.php">Suppliers</a></li>
         	  </ul>
         	</div>

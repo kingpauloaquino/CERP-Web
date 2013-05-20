@@ -40,7 +40,7 @@
 								$bldgs = $DB->Get('locations', array(
 									  			'columns' 		=> 'locations.id AS loc_id, locations.location_code, locations.location, locations.description',
 									  	    'conditions' 	=> 'parent = "BLDG"', 
-													'sort_column'	=> 'locations.id'));
+													'order'	=> 'locations.id'));
 								foreach ($bldgs as $bldg) {
 									echo '<tr class="highlight">';
 									echo '<td colspan="6"><b>'.$bldg['location_code'].'</b></td>';
@@ -49,7 +49,7 @@
 									$trmls = $DB->Get('terminals', array(
 										  			'columns' 		=> 'terminals.*',
 										  	    'conditions' 	=> 'terminals.location_id='.$bldg['loc_id'], 
-														'sort_column'	=> 'terminals.terminal_code'));
+														'order'	=> 'terminals.terminal_code'));
 									foreach ($trmls as $trml) {
 										echo '<tr>';
 										echo '<td class="border-right text-center"></td>';

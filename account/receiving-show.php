@@ -87,7 +87,6 @@
            	   <div class="text-post-status">
            	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
                </div>
-           	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=receiving&id='. $delivery['id']); ?>"/>
                	<?php if($delivery['status'] != "Publish") { ?>
                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='. $delivery['id']); ?>"/>
            	   	<?php } ?>

@@ -32,7 +32,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['edit_minventory']['url'].'?id='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_minventory']['name'].'</a>';
+				  //echo '<a href="'.$Capabilities->All['edit_minventory']['url'].'?id='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_minventory']['name'].'</a>';
 				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 
 			  	// echo '<a href="'.$Capabilities->All['material_inventory_history']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['id'].'" class="nav" target="_blank">'.$Capabilities->All['material_inventory_history']['name'].'</a>';
 				?>
@@ -152,8 +152,7 @@
 																	INNER JOIN orders ON orders.id = production_purchase_orders.order_id
 																	INNER JOIN lookups ON lookups.id = production_purchase_order_product_parts.status',
 							  	    'conditions' => 'production_purchase_order_product_parts.material_id = '.$_GET['id'], 
-							  	    'sort_column' => 'production_purchase_order_product_parts.created_at',
-							  	    'sort_order' => 'DESC '
+							  	    'order' => 'production_purchase_order_product_parts.created_at DESC',
 							  	    ));
 											// status id 149 = production request pending
 									$total_req = 0.0;

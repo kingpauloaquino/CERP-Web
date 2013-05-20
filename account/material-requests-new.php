@@ -78,7 +78,7 @@
 		      <label class="label">Type:</label>
 		      <div class="input">
 		        <?php 
-		        	$types = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('mat_req_type').'"', 'sort_column' => 'description'));
+		        	$types = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('mat_req_type').'"', 'order' => 'description'));
 		        	select_query_tag($types, 'id', 'description', '', 'request_type', 'request_type', '', ''); ?>
 		      </div>
 		      <div class="clear"></div>

@@ -21,7 +21,7 @@
 																		orders.po_date AS po_date, orders.delivery_date AS delivery_date, production_purchase_orders.target_date AS target_date',
 					  	    'joins' 			=> 'INNER JOIN orders ON orders.id = production_purchase_orders.order_id
 					  	    									INNER JOIN lookup_status ON lookup_status.id = production_purchase_orders.status',
-									'sort_column'	=> '',
+									'order'	=> '',
 					  	    'conditions' 	=> 'production_purchase_orders.id = '.$_GET['ppoid']
 			));		
 			
@@ -94,7 +94,7 @@
 										  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification
 										  	    									INNER JOIN lookups AS lookups2 ON lookups2.id = production_purchase_order_products.type',
 										  	    'conditions' 	=> 'production_purchase_order_products.production_purchase_order_id = '.$_GET['ppoid'],
-														'sort_column'	=> 'production_purchase_order_products.product_id',
+														'order'	=> 'production_purchase_order_products.product_id',
 						  	  ));
 									$ctr=1;
 									foreach ($po_products as $prod) {

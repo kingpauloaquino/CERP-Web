@@ -23,7 +23,8 @@
         	<a id="btn-receive-material" href="#mdl-receive-material" rel="modal:open"></a>
           <form class="form-container" method="POST" >
 		      	 <input type="hidden" name="action" value="edit_receiving"/>
-		      	 <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>"/>
+		      	 <input type="hidden" name="delivery[id]" value="<?php echo $_GET['id']; ?>"/>
+		      	 <input type="hidden" name="delivery[purchase_id]" value="<?php echo $delivery['pid']; ?>"/>
              <!-- BOF TEXTFIELDS -->
              <div>
              	<table>
@@ -41,14 +42,14 @@
                    </tr>
                    <tr>
                       <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" disabled/></td>
-                      <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime(date('Y-m-d'))) ?>" class="text-field text-date" disabled/></td>
+                      <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
                    </tr>
                    <tr>
                       <td>Trade Terms:</td><td><input type="text" value="<?php echo $delivery['terms']; ?>" class="text-field" disabled/></td>
                       <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
                    </tr>
                    <tr>
-                      <td>Invoice:</td><td><input id="delivery[invoice]" name="delivery[invoice]" type="text" class="text-field" /></td>
+                      <td>Invoice:</td><td><input id="delivery[invoice]" name="delivery[invoice]" type="text" class="text-field" required /></td>
                       <td>Receipt:</td><td><input id="delivery[receipt]" name="delivery[receipt]" type="text" class="text-field" /></td>
                    </tr>
                    <tr><td height="5" colspan="99"></td></tr>
@@ -64,7 +65,7 @@
 	                  <td class="border-right text-center" width="120"><a class="sort" column="material_code">Code</a></td>
 	                  <td class="border-right" width="300"><a class="sort down" column="material_description">Description</a></td>
 	                  <td class="border-right text-center text-date" width="70"><a class="sort" column="quantity">P/O Qty</a></td>
-<!-- 	                  <td class="border-right text-center" width="60"><a class="sort" column="delivered">Delivered</a></td> -->
+	                  <td class="border-right text-center" width="60"><a class="sort" column="delivered">Delivered</a></td>
 	                  <td class="border-right text-center text-date" width="60"><a class="sort" column="unit">Unit</a></td>
 	                  <td class="border-right text-center" width="60"><a class="sort" column="status">Status</a></td>
 	                  <td class="border-right text-center" width="70"><a class="sort" column="received">Received</a></td>
@@ -82,16 +83,20 @@
                       <td></td>
                       <td align="right"></td>
                    </tr>
-                   <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $delivery['remarks']; ?></textarea></td></tr>
+                   <tr><td colspan="2">Remarks:<br/><textarea name="delivery[remarks]" style="min-width:650px;width:98.9%;height:50px;"><?php echo $delivery['remarks']; ?></textarea></td></tr>
                 </table>
              </div>
 	         
          <div class="field-command">
        	   <div class="text-post-status">
-       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="delivery[status]"><?php echo build_select_post_status1(); ?></select>
+       	     <strong>Status:</strong>&nbsp;&nbsp;<?php echo $delivery['status'] ?>
            </div>
-       	   <input type="submit" value="Save" class="btn"/>
-           <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('receiving-show.php?id='.$_GET['id']); ?>"/>
+           <?php 
+           	if($delivery['status'] != 'Close') {
+           		echo '<input type="submit" value="Save" class="btn"/>';
+           	}
+           ?>
+           <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries-show.php?id='.$_GET['id']); ?>"/>
          </div>
           </form>
        </div>
@@ -111,10 +116,6 @@
 						    <label>P/O Quantity:</label>
 						    <input type="text" id="receiving-quantity" class="text-field disabled" default="0" disabled="disabled"/>
 						 </div>
-						 <!-- <div class="field">
-						    <label>Delivery Receipt:</label>
-						    <select name="receiving[delivery_id]" class="text-select" style="width:191px;"><?php echo build_select_delivery_receipts(); ?></select>
-						 </div> -->
 						 
 						 <div class="field">
 						    <label>Delivered:</label>
@@ -123,7 +124,7 @@
 						 
 						 <div class="field">
 						    <label>Received:</label>
-						    <input type="text" id="receiving-received" name="receiving[received]" class="text-field" default="0"/>
+						    <input type="text" id="receiving-received" name="receiving[received]" class="text-field"/>
 						 </div>
 						 
 						 <div class="field">
@@ -142,7 +143,7 @@
 <script>
 	$(function() {
   	var data = { 
-    	"url":"/populate/delivery-items.php?did=<?php echo $_GET['id']; ?>",
+    	"url":"/populate/receiving-items.php?did=<?php echo $_GET['id']; ?>",
       "limit":"50",
 			"data_key":"delivery_items",
 			"row_template":"row_template_receiving",
@@ -175,7 +176,7 @@
 	    	var item_id		= $(row).attr('item');
 	    	var title		= 'Receive: ' + $(row).attr('title');
 	    	var quantity	= $(row).attr('quantity');
-	    	var invoice	= $(row).attr('invoice');
+	    	var delivered	= $(row).attr('delivered');
 	    	var received	= $(row).attr('received');
 	    	var remarks	= $(row).attr('remarks');
 	    	
@@ -187,9 +188,9 @@
 	    	$(modal).find('#rid').val(id);
 	    	$(modal).find('#receiving-item-id').val(item_id);
 	    	$(modal).find('#receiving-quantity').val(quantity);
-	    	$(modal).find('#receiving-invoice').val(invoice);
-	    	$(modal).find('#receiving-received').val(received);
-	    	$(modal).find('#receiving-remarks').val(remarks);
+	    	$(modal).find('#receiving-delivered').val(delivered);
+	    	$(modal).find('#receiving-received').val((parseFloat(quantity) - parseFloat(delivered)));
+	    	$(modal).find('#receiving-received').focus();
 	    	
 	    	$(modal).find('.close').live('click', function(e) {
 			  	chkbox.prop('checked', false);
@@ -211,58 +212,37 @@
 
       var form		= $(this).attr('href');
       var index		= $(form).find('#material-index').val();
+      var trow		= $('#tbl-materials tbody tr:eq('+ index +')');
       var quantity	= $(form).find('#receiving-quantity').val();
       var received	= $(form).find('#receiving-received').val();
       var delivered	= $(form).find('#receiving-delivered').val();
       var remarks	= $(form).find('#receiving-remarks').val();
-      var trow		= $('#tbl-materials tbody tr:eq('+ index +')');
+      var status = $(trow).attr('status');
       
       // if(parseFloat(delivered) > (parseFloat(quantity) - parseFloat(received)) || delivered == 0) {
       	// $(form).find('.notice').html('<p>Delivered must not be 0 or greater than the remaining quantity.</p>');
       	// return false;
       // }
       
-      if(parseFloat(received) == parseFloat(quantity)) {
-      	$(form).find('#receiving-status').val(6);
+      if((parseFloat(delivered) + parseFloat(received)) == parseFloat(quantity)) {
+      	$(trow).find('.status').val('21'); // complete status
       }
       
-      if(parseFloat(received) < parseFloat(quantity)) {
-      	$(form).find('#receiving-status').val(5);
+      if((parseFloat(delivered) + parseFloat(received)) < parseFloat(quantity)) {
+      	$(trow).find('.status').val('22'); // incomplete status
       }
       
-      if(parseFloat(received) > parseFloat(quantity)) {
+      if((parseFloat(delivered) + parseFloat(received)) > parseFloat(quantity)) {
       	return false;
       }
       
+      var total_qty = (status == 'Partial') ? parseFloat(received) : parseFloat(received) + parseFloat(delivered); 
+      
+      $(trow).find('.received').val(total_qty);
       $(trow).find('.item-received').val(received);
       $(trow).find('.item-remarks').val(remarks);
 
 			$(trow).find('.chk-item').prop('checked', true);
-			
-			
-    	// $.post(document.URL, $(form).serialize(), function(data) {
-    	   // $('#mdl-receive-material').find('.close').click();
-//     	   
-    	   // $('#receiving-items').empty();
-//     	   
-    	   // var data = { 
-		    	// "url":"/populate/delivery-items.php?did=<?php echo $_GET['id']; ?>",
-		      // "limit":"50",
-					// "data_key":"delivery_items",
-					// "row_template":"row_template_receiving",
-		      // "pagination":"#receiving-items-pagination"
-				// }	
-				// $('#grid-receiving-items').grid(data);
-//     	   
-    	  // // var total_receive = (parseFloat(received) + parseFloat(delivered)); 
-    	  // // if(total_receive != quantity) {
-    	    // // trow.attr('received', total_receive);
-    	    // // trow.find('td:eq(5)').html(trow.attr('received'));
-    	    // // return false;
-    	  // // }
-    	  // // trow.remove();
-// 
-    	// });
     })
   }
   

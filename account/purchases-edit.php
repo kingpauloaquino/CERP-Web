@@ -1,6 +1,6 @@
 <?php
   /* Module: Purchases - Edit  */
-  $capability_key = 'edit_purchase_order';
+  $capability_key = 'edit_purchase';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -91,11 +91,17 @@
          </div>
          <div class="field-command">
        	   <div class="text-post-status">
-       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]"><?php echo build_select_post_status("APRVL", $purchase['status_id']); ?></select>
+       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]"><?php echo build_select_post_status_by_level(getConditionByLevel($_SESSION['user']['level']), $purchase['status_id']); ?></select>
            </div>
        	   <input type="submit" value="Save" class="btn"/>
            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchases-show.php?id='.$_GET['id']); ?>"/>
          </div>
+         
+         <?php 
+						$approval_item_id = $_GET['id'];
+						$approval_table = 'purchases';
+						require_once 'approval.php';
+					?>
       </form>
    </div>
        
@@ -211,7 +217,7 @@
            var cell		= $("<tr id=\""+ row_id +"\"></tr>");
            
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
-           cell.append("<td class=\"mat-code border-right\"><a class=\"mat\" alt=\"" + row['id'] + "\" rel=\"modal:open\" href=\"#modal-material-requests\">"+ row['code'] +"</a></td>");
+           cell.append("<td class=\"mat-code border-right\"><input type='hidden' class='mat-currency' value='"+ row['currency'] +"' /><a class=\"mat\" alt=\"" + row['id'] + "\" rel=\"modal:open\" href=\"#modal-material-requests\">"+ row['code'] +"</a></td>");
            cell.append("<td class=\"mat-stock border-right text-right numbers\">"+ (parseFloat(row['stock']) || '0') +"</td>");
            cell.append("<td class=\"mat-description border-right text-center\">"+ row['supplier'] +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
@@ -301,6 +307,7 @@
            	       'unit':item.find('.mat-unit').html(),
            	       'quantity':1,
            	       'item_price':item.find('.mat-price').html(),
+           	       'currency':item.find('.mat-currency').val(),
            	     }
            	     
            	     var row = row_template_purchase_material(data);

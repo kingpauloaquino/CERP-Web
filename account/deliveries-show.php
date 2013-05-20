@@ -15,6 +15,9 @@
         <div id="page-title">
           <h2>
             <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
+			      <?php
+						  echo '<a href="'.$Capabilities->All['deliveries']['url'].'" class="nav">'.$Capabilities->All['deliveries']['name'].'</a>'; 
+						?>
             <div class="clear"></div>
           </h2>
         </div>
@@ -41,7 +44,7 @@
                       <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
                    </tr>
                    <tr>
-                      <td>Trade Terms:</td><td><input type="text" value="<?php echo $delivery['trade_terms']; ?>" class="text-field" disabled/></td>
+                      <td>Trade Terms:</td><td><input type="text" value="<?php echo $delivery['terms']; ?>" class="text-field" disabled/></td>
                       <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
                    </tr>
                    <tr>
@@ -60,6 +63,7 @@
 <!--                      <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all" disabled/></td> -->
                      <td width="30" class="border-right text-center">No.</td>
                      <td width="140" class="border-right">Item Code</td>
+                     <td width="120" class="border-right">Invoice</td>
                      <td class="border-right">Description</td>
                      <td width="70" class="border-right text-center">P/O Qty</td>
                      <td width="70" class="border-right text-center">Delivered</td>
@@ -89,9 +93,7 @@
            	   <div class="text-post-status">
            	     <strong>Status:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
                </div>
-<!--            	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=delivery&id='. $delivery['id']); ?>"/> -->
                <?php if($delivery['status'] != "Close") { ?>
-<!--                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('deliveries-edit.php?id='. $delivery['id']); ?>"/> -->
            	   <input type="button" value="Receive" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='.$_GET['id']); ?>"/>
            	   <?php } ?>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>

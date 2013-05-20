@@ -100,7 +100,6 @@
 							  									AND production_inventories.item_type = "MAT" AND production_inventories.item_id = '.$_GET['mid'].' 
 							  	    						AND production_inventories.prod_lot_no ="'.$_GET['prod_lot_no'].'" AND production_inventories.tracking_no="'.$_GET['trk_no'].'"
 							  									INNER JOIN locations ON locations.id = terminals.location_id',
-							  	    'conditions' => 'locations.location_code = "WIP"',
 							  	    'conditions' => 'locations.location_code = "WIP" AND terminals.type="IN"',
 							  	    ));
 									foreach ($production as $invt) {

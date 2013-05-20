@@ -134,7 +134,7 @@
           <label class="label">Type:</label>
           <div class="input">
             <?php 
-		        	$types = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('inventory_type').'"', 'sort_column' => 'id'));
+		        	$types = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('inventory_type').'"', 'order' => 'id'));
 		        	select_query_tag($types, 'description', 'description', '', 'inventory_type', 'inventory_type', '', ''); ?>
           </div>
           <div class="clear"></div>

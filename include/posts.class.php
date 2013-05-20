@@ -33,11 +33,13 @@ class Posts {
   // Return: User Information
   function Authenticate($params) {
   	$employee_id = $this->EscQuery($params['employee_id']);
-	$password = md5($this->EscQuery($params['password']));
-	$user = $this->DB->Find('users', array(
-	  'columns' => 'id, employee_id, first_name, last_name, position, email, status',
-	  'conditions' => "employee_id = '".$employee_id."' AND password = '".$password."'")
-	);
+		$password = md5($this->EscQuery($params['password']));
+		$user = $this->DB->Find('users', array(
+		  'columns' => 'users.id, employee_id, first_name, last_name, position, email, status, user_roles.role_id, roles.level, roles.name AS role, roles.level',
+		  'joins' => 'INNER JOIN user_roles ON user_roles.user_id = users.id
+									INNER JOIN roles ON roles.id = user_roles.role_id',
+		  'conditions' => "employee_id = '".$employee_id."' AND password = '".$password."'")
+		);
 	
     return $user;  
   }
@@ -82,6 +84,7 @@ class Posts {
     $items = array(  
 		  'name'	=> mysql_real_escape_string(ucwords(strtolower($params['name']))),
 		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
+		  'level' => $params['level']
 		);
     return $this->DB->InsertRecord('roles', $items);
 	}
@@ -452,9 +455,14 @@ class Posts {
       'status'			=> $params['status'],
       'completion_status'			=> 2, //pending
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
+		  'created_by' => $_SESSION['user']['id'],
+		  'checked_by' => $_SESSION['user']['id'],
+		  'checked_at' => date('Y-m-d'),
+		  'approved_by' => $_SESSION['user']['id'],
+		  'approved_at' => date('Y-m-d')
     );
-	
-		$purchase_id = $this->DB->InsertRecord('purchases', $purchase);
+		
+		$purchase_id = $this->DB->InsertRecord('purchases', setApproval($purchase, $params['status']));
 		
 		// Add delivery if status = Published
 		$delivery_id = 0;
@@ -464,24 +472,23 @@ class Posts {
 			$delivery['delivery_via'] = trim($params['delivery_via']);
 			$delivery['delivery_date'] = date('Y-m-d', strtotime($params['delivery_date']));
 			$delivery['remarks'] = mysql_real_escape_string(ucwords(strtolower($params['remarks'])));
-			$delivery['status'] = 19;
+			$delivery['status'] = 13; // Open receiving status
+			$delivery['completion_status'] = 19; // pending completion status
 			$delivery_id = $this->AddDelivery($delivery);
 		}
 		
-		if(!empty($params['items'])) {
-		  // Add Each Purchase Item
-		  foreach ($params['items'] as $index => $item) {
-        $item['purchase_id'] = $purchase_id;
-        $purchase_item_id = $this->DB->InsertRecord('purchase_items', $item);
-				if($delivery_id > 0) {
-					$delivery_item = array();
-					$delivery_item['delivery_id'] = $delivery_id;
-					$delivery_item['purchase_item_id'] = $purchase_item_id;
-					$delivery_item['status'] = 19;
-        	$delivery_item_id = $this->DB->InsertRecord('delivery_items', $delivery_item);
-				}
-		  }
-		}
+		// Add Each Purchase Item
+	  foreach ($params['items'] as $index => $item) {
+      $item['purchase_id'] = $purchase_id;
+      $purchase_item_id = $this->DB->InsertRecord('purchase_items', $item);
+			if($delivery_id > 0) {
+				$delivery_item = array();
+				$delivery_item['delivery_id'] = $delivery_id;
+				$delivery_item['purchase_item_id'] = $purchase_item_id;
+				$delivery_item['status'] = 19; // Pending completion status
+      	$delivery_item_id = $this->DB->InsertRecord('delivery_items', $delivery_item);
+			}
+	  }
 		
 		if($delivery_id > 0) redirect_to(host('purchases-show.php?id='.$purchase_id.'&did='.$delivery_id));
 	
@@ -504,18 +511,45 @@ class Posts {
 	      'status'			=> $params['status'],
       	'completion_status'		=> $params['completion_status'],
 		  	'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
+			  'created_by' => $_SESSION['user']['id'],
+			  'checked_by' => $_SESSION['user']['id'],
+			  'checked_at' => date('Y-m-d'),
+			  'approved_by' => $_SESSION['user']['id'],
+			  'approved_at' => date('Y-m-d')
 	  ),
 	  'conditions' => 'id = '.$params['id']
     );
-	
-	$row = $this->DB->UpdateRecord('purchases', $purchase);
-	
-	$this->DB->DeleteRecord('purchase_items', array('conditions' => 'purchase_id ='.$params['id']));
-  foreach ($params['items'] as $index => $item) {
-    $item['purchase_id'] = $params['id'];
-    $this->DB->InsertRecord('purchase_items', $item);
-  }
-  return $row;
+		
+		$row = $this->DB->UpdateRecord('purchases', setApproval($purchase, $params['status'], FALSE));
+		
+		// Add delivery if status = Published
+		$delivery_id = 0;
+		if($params['status'] == '11') {
+			$delivery = array();
+			$delivery['purchase_id'] = $params['id'];
+			$delivery['delivery_via'] = trim($params['delivery_via']);
+			$delivery['delivery_date'] = date('Y-m-d', strtotime($params['delivery_date']));
+			$delivery['remarks'] = mysql_real_escape_string(ucwords(strtolower($params['remarks'])));
+			$delivery['status'] = 13; // Open receiving status
+			$delivery['completion_status'] = 19; // pending completion status
+			$delivery_id = $this->AddDelivery($delivery);
+		}
+		
+		$this->DB->DeleteRecord('purchase_items', array('conditions' => 'purchase_id ='.$params['id']));
+		// Add Each Purchase Item
+	  foreach ($params['items'] as $index => $item) {
+      $item['purchase_id'] = $params['id'];
+      $purchase_item_id = $this->DB->InsertRecord('purchase_items', $item);
+			if($delivery_id > 0) {
+				$delivery_item = array();
+				$delivery_item['delivery_id'] = $delivery_id;
+				$delivery_item['purchase_item_id'] = $purchase_item_id;
+				$delivery_item['status'] = 19; // Pending completion status
+      	$delivery_item_id = $this->DB->InsertRecord('delivery_items', $delivery_item);
+			}
+	  }
+		
+	  return $params['id'];
   }
 
   // Posts::AddReceiving
@@ -594,7 +628,8 @@ class Posts {
       'purchase_id'	=> $params['purchase_id'],
       'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
       'delivery_via'	=> trim($params['delivery_via']),
-      'status'			=> 19, //pending status
+      'status'			=> $params['status'],
+      'completion_status'			=> $params['completion_status'],
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
     );
 		$delivery_id = $this->DB->InsertRecord('deliveries', $delivery);
@@ -1074,7 +1109,61 @@ class Posts {
 		return $this->DB->ExecuteQuery($query);
 	}
 	
-  
+  function InitForecastCalendar() {
+		$query = array(
+			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
+			'set_2' 	=> 'SET @forecast_year = '.date('Y'),
+			'query_1' => 'INSERT INTO forecast_calendar (product_id, forecast_year, created_at) 
+										SELECT id, @forecast_year, @created_at FROM products'
+		);		
+		return $this->DB->ExecuteQuery($query);
+	}
 	
-	
+	function EditForecastCalendar($params) {
+		foreach($params['items'] as $id => $attr) {
+			if($params['type'] == 'h1') {
+				if(!($attr['jan'] == 0 && $attr['feb'] == 0 && $attr['mar'] == 0 && $attr['apr'] == 0 && $attr['may'] == 0 && $attr['jun'] == 0)) {
+					$forecast = array();
+					$item = $this->DB->Find('forecast_calendar', array('columns' => 'id', 'conditions' => 'product_id = '.$attr['product_id'].' AND forecast_year='.$params['forecast_year']));
+					
+					$forecast = array('jan' => $attr['jan'], 'feb' => $attr['feb'], 'mar' => $attr['mar'],
+														'apr' => $attr['apr'], 'may' => $attr['may'], 'jun' => $attr['jun']);
+					if(isset($item)) {
+						// update
+						$args = array('variables' => $forecast, 'conditions' => 'product_id='.$attr['product_id'].' AND forecast_year='.$params['forecast_year']);
+						$this->DB->UpdateRecord('forecast_calendar', $args); 
+					} else {
+						// add entry
+						$forecast['product_id'] = $attr['product_id'];
+						$forecast['forecast_year'] = $params['forecast_year'];
+						$this->DB->InsertRecord('forecast_calendar', $forecast); 
+					}
+					unset($forecast);	
+				} 	
+			}
+			if($params['type'] == 'h2') {
+				if(!($attr['jul'] == 0 && $attr['aug'] == 0 && $attr['sep'] == 0 && $attr['oct'] == 0 && $attr['nov'] == 0 && $attr['dece'] == 0)) {
+					$forecast = array();
+					$item = $this->DB->Find('forecast_calendar', array('columns' => 'id', 'conditions' => 'product_id = '.$attr['product_id'].' AND forecast_year='.$params['forecast_year']));
+					
+					$forecast = array('jul' => $attr['jul'], 'aug' => $attr['aug'], 'sep' => $attr['sep'],
+														'oct' => $attr['oct'], 'nov' => $attr['nov'], 'dece' => $attr['dece']);
+					if(isset($item)) {
+						// update
+						$args = array('variables' => $forecast, 'conditions' => 'product_id='.$attr['product_id'].' AND forecast_year='.$params['forecast_year']);
+						$this->DB->UpdateRecord('forecast_calendar', $args); 
+					} else {
+						// add entry
+						$forecast['product_id'] = $attr['product_id'];
+						$forecast['forecast_year'] = $params['forecast_year'];
+						$this->DB->InsertRecord('forecast_calendar', $forecast); 
+					}
+					unset($forecast);	
+				} 	
+			}
+		}
+		
+		//$args = array('variables' => $item, 'conditions' => 'product_id='.$attr['product_id'].' AND forecast_year='.$_POST['forecast_year']); 
+		//$num_of_records = $Posts->AddForecastCalendar($args);	
+	}
 }

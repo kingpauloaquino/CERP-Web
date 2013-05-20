@@ -83,7 +83,6 @@
            	   <div class="text-post-status">
            	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $purchase_order['status']; ?>
                </div>
-           	   <input type="button" value="Download" class="btn btn-download" rel="<?php echo excel_file('?category=order&id='. $purchase_order['id']); ?>"/>
                <?php if($purchase_order['status'] != "Publish") { ?>
                <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('purchase-orders-edit.php?pid='. $purchase_order['id']); ?>"/>
            	   <?php } ?>

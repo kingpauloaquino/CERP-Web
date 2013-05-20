@@ -11,14 +11,14 @@ require('role.class.php');
   
 $Host			= ""; //gethostname();
 $HostAccount	= "account";
-$HostExcel		= "excel";
+$HostExport		= "export";
 $DB				= new MySQL;
 
 // Database::Development
 // if(gethostname() == "localhost") {
   $Host			= "cerp";
   $HostAccount	= "/".$Host."/".$HostAccount; 
-  $HostExcel	= "/".$Host."/".$HostExcel; 
+  $HostExport	= "/".$Host."/".$HostExport; 
   $DB->database	= "cerpdb";
   $DB->username	= "cerpuser";  
   $DB->password	= "cerpuser";

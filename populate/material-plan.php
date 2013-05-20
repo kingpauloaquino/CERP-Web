@@ -14,7 +14,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('materials', array(
 							'columns'	=> 'materials.id, materials.material_code, brand_models.brand_model AS model, item_classifications.classification, 
-												    suppliers.name AS supplier, materials.defect_rate, lookups.code AS unit, 
+												    suppliers.name AS supplier, materials.defect_rate, lookups.code AS unit, item_costs.currency,
 												    materials.sorting_percentage, item_costs.moq, item_costs.cost AS price,
 														(
 												        SELECT COALESCE(SUM(warehouse_inventories.qty), 0) AS qty FROM warehouse_inventories 
@@ -22,26 +22,25 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 												        warehouse_inventories.item_id = work_order_item_parts.material_id
 												    ) AS inventory, 
 														(
-												        SELECT 
-												        (
-												            SELECT SUM((purchase_order_items.quantity * purchase_order_item_parts.parts_tree_qty)) AS qty
-												            FROM purchase_order_item_parts
-												            INNER JOIN purchase_order_items ON purchase_order_items.id = purchase_order_item_parts.purchase_order_item_id
-												            WHERE material_id = materials.id
-												            GROUP BY purchase_order_item_parts.material_id
-												        ) 
-												        +
-												        (
-												            SELECT SUM((work_order_items.quantity * work_order_item_parts.parts_tree_qty)) AS qty
-												            FROM work_order_item_parts
-												            INNER JOIN work_order_items ON work_order_items.id = work_order_item_parts.work_order_item_id
-												            WHERE material_id = materials.id
-												            GROUP BY work_order_item_parts.material_id
-												        ) 
-												    ) AS prod_plan,
+																SELECT SUM((purchase_order_items.quantity * purchase_order_item_parts.parts_tree_qty)) AS qty
+																FROM purchase_order_item_parts
+																INNER JOIN purchase_order_items ON purchase_order_items.id = purchase_order_item_parts.purchase_order_item_id
+																INNER JOIN purchase_orders ON purchase_orders.id = purchase_order_items.purchase_order_id AND purchase_orders.status = 11
+																WHERE material_id = materials.id
+																GROUP BY purchase_order_item_parts.material_id
+														) AS po_plan,
 														(
-															SELECT COALESCE(SUM(purchase_items.quantity), 0) AS qty FROM purchase_items 
-															WHERE purchase_items.item_id = purchase_order_item_parts.material_id
+																SELECT SUM((work_order_items.quantity * work_order_item_parts.parts_tree_qty)) AS qty
+																FROM work_order_item_parts
+																INNER JOIN work_order_items ON work_order_items.id = work_order_item_parts.work_order_item_id
+																INNER JOIN work_orders ON work_orders.id = work_order_items.work_order_id AND work_orders.status = 11
+																WHERE material_id = materials.id
+																GROUP BY work_order_item_parts.material_id
+														) AS wo_plan,
+														(
+																SELECT COALESCE(SUM(purchase_items.quantity), 0) AS qty FROM purchase_items 
+																INNER JOIN purchases ON purchases.id = purchase_items.purchase_id AND purchases.status = 11
+																WHERE purchase_items.item_id = materials.id
 														) AS open_po
 												    ',
 					    'joins'		=> 'INNER JOIN brand_models ON brand_models.id = materials.brand_model
@@ -55,7 +54,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,
-    					'group'	=> 'materials.id HAVING prod_plan > 0'
+    					'group'	=> 'materials.id HAVING po_plan > 0 OR wo_plan > 0 OR open_po > 0'
              )
            );
 	return array("material_plan" => $query, "total" => $DB->totalRows());

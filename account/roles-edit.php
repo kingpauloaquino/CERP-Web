@@ -15,6 +15,14 @@
 	  		'columns' => 'roles.*',
 	  	  'conditions' => 'id = '.$_GET['rid']
 		  ));	
+			
+			$levels = array(1 => 'Draft', 2 => 'Check', 3 => 'Approve');
+			$level = '';
+			switch($roles['level']) {
+				case 1: $level = "Draft"; break;
+				case 2: $level = "Check"; break;
+				case 3: $level = "Approve"; break;
+			}
 	  }
 	
 ?>
@@ -39,7 +47,7 @@
       <table>
          <tr>
             <td width="150">Title:</td><td width="310"><input type="text" id="role[name]" name="role[name]" value="<?php echo $roles['name'] ?>" class="text-field" /></td>
-            <td width="150"></td>
+            <td width="150">Level</td><td width="310"><?php select_tag($levels, $level, 'role[level]', 'role[level]', '', 'width:192px;'); ?></td>
          </tr>      
          <tr>
             <td>Description:</td>
@@ -55,7 +63,7 @@
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-          		<td width="12%" class="border-right text-center"><a>Title</a></td>
+          		<td width="170" class="border-right text-center"><a>Title</a></td>
           		<td class="border-right text-center"><a>Capabilities</a></td>
             </tr>
           </thead>

@@ -606,6 +606,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="minventory.php">Materials Inventory</a></li>
         	    <li><a href="products.php">Products</a></li>
         	    <li><a href="pinventory.php">Products Inventory</a></li>
+        	    <li><a href="report-inventory.php">Reports</a></li>
         	  </ul>
         	</div>
         </div>
@@ -614,7 +615,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	<div id="menu-plan" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
         	  <ul>
-        	    <li><a href="forecasts.php">Forecasts</a></li>
+        	    <li><a href="forecast-calendar.php">Forecasts</a></li>
         	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
         	    <li><a href="work-orders.php">Work Orders</a></li>
         	    <li><a href="production-plan.php">Production Plan</a></li>
@@ -631,6 +632,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="deliveries.php">Deliveries</a></li>
         	    <li><a href="invoices.php">Invoices</a></li>
         	    <li><a href="suppliers.php">Suppliers</a></li>
+        	    <li><a href="report-purchases.php">Reports</a></li>
         	  </ul>
         	</div>
         </div>
@@ -646,7 +648,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="#">Sampling Logs</a></li>
         	    <li><a href="#">Monitoring</a></li>
         	    <li><a href="#">Defects</a></li>
-        	    <li><a href="#">Reports</a></li>
+        	    <li><a href="report-production.php">Reports</a></li>
         	  </ul>
         	</div>
         </div>
@@ -703,4 +705,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
              <li><a href="/<?php echo $Host; ?>?signout=true">Sign Out</a></li>
           </ul>
 			</div>
+			
+    <div id="header_fade" class="fade_up"></div>
     </div>

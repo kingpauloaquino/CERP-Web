@@ -4,9 +4,9 @@
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
-	if(!$allowed) {
-		require('inaccessible.php');	
-	}else{
+	// if(!$allowed) {
+		// require('inaccessible.php');	
+	// }else{
 		
 		$active_year = date('Y');
 		
@@ -80,5 +80,5 @@
 		$('#grid-products').grid(data);
   }) 
  </script>
-<?php }
+<?php //}
 require('footer.php'); ?>

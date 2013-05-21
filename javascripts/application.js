@@ -112,6 +112,7 @@ $.fn.date_pick = function() {
 $.fn.digits = function(){ 
     return this.each(function(){ 
         $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+        $(this).val( $(this).val().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
     })
 }
 
@@ -1015,7 +1016,7 @@ function row_template_forecast_items_read_only(data) {
 }
 
 function row_template_forecast_items(data) {
-	var forward	= host + "/account/roles-show.php?rid="+ data['id'] +"";
+	var forward	= host + "/account/forecast-show.php?pid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\">"+
   	"<td class=\"border-right text-center\"><input type=\"hidden\" name=\"items["+data['id']+"][forecast_cal_id]\" value=\""+data['id']+"\" class=\"item-week-id\" /><a href=\""+ forward +"\">"+ data['week'] +"</a></td>" +
     "<td class=\"border-right text-center \"><input type=\"text\" name=\"items["+data['id']+"][remarks]\" class=\"text-field-max\" /></td>" +
@@ -1029,7 +1030,7 @@ function row_template_forecast_items(data) {
 }
 
 function row_template_forecast_read_only(data) {
-	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+	var forward	= host + "/account/forecast-show.php?pid="+ data['product_id'] + "";
   var id		= data['product_id'];
   var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
   var total = (parseInt(data['jan']) || 0) + (parseInt(data['feb']) || 0) + (parseInt(data['mar']) || 0) + (parseInt(data['apr']) || 0) + (parseInt(data['may']) || 0) + (parseInt(data['jun']) || 0) +
@@ -1055,7 +1056,7 @@ function row_template_forecast_read_only(data) {
 }
 
 function row_template_forecast_h1(data) {
-	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+	var forward	= host + "/account/forecast-show.php?pid="+ data['product_id'] + "";
   var id		= data['product_id'];
   var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
 
@@ -1072,7 +1073,7 @@ function row_template_forecast_h1(data) {
 }
 
 function row_template_forecast_h1_read_only(data) {
-	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+	var forward	= host + "/account/forecast-show.php?pid="+ data['product_id'] + "";
   var id		= data['product_id'];
   var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
 
@@ -1090,7 +1091,7 @@ function row_template_forecast_h1_read_only(data) {
 }
 
 function row_template_forecast_h2(data) {
-	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+	var forward	= host + "/account/forecast-show.php?pid="+ data['product_id'] + "";
   var id		= data['product_id'];
   var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
 
@@ -1107,7 +1108,7 @@ function row_template_forecast_h2(data) {
 }
 
 function row_template_forecast_h2_read_only(data) {
-	var forward	= host + "/account/products-show.php?pid="+ data['product_id'] + "";
+	var forward	= host + "/account/forecast-show.php?pid="+ data['product_id'] + "";
   var id		= data['product_id'];
   var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
 
@@ -1120,6 +1121,22 @@ function row_template_forecast_h2_read_only(data) {
   row.append('<td class="border-right text-right numbers">'+ (data['nov'] || 0) +'</td>');
   row.append('<td class="border-right text-right numbers">'+ (data['dece'] || 0) +'</td>');
            	
+  row.find('.numbers').digits();
+  return row; 
+}
+
+function row_template_forecast_weeks(data) {
+	var forward	= "#";
+  var id		= data['id'];
+  var row		= $('<tr id="wk-'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right text-center"><a id="'+ id +'" class="week" href="'+ forward +'">Week'+ id +'</a><input type="hidden" name="items['+id+'][week_id]" value="'+ (id || '') +'" /></td>');
+  row.append('<td class="border-right">'+ data['remarks'] +'</td>');
+  row.append('<td class="border-right text-center date-pick">'+ data['prod_date'] +'</td>');
+  row.append('<td class="border-right text-center date-pick">'+ data['ship_date'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['qty'] || 0) +'</td>');
+           	
+	row.find('.date-pick').date_pick();
   row.find('.numbers').digits();
   return row; 
 }

@@ -189,7 +189,7 @@ class Query {
 	function product_by_id($id) {
 		$query = $this->DB->Fetch('products', array(
 					  			'columns' 		=> 'products.product_code, products.description, brand_models.brand_model AS brand, lookups.description AS status, item_classifications.classification,
-					  												products.bar_code, products.color, products.production_qty', 
+					  												products.bar_code, products.color, products.prod_cp', 
 					  	    'conditions' 	=> 'products.id = '.$id, 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id
 																		LEFT OUTER JOIN lookups ON products.status = lookups.id
@@ -197,6 +197,18 @@ class Query {
 	  	  ));
 				
 		if(!empty($query)) return $query[0];
+		return null;
+	}
+	
+	function forecast_calendar_by_product_id_year($id, $yr) {
+		$query = $this->DB->Fetch('forecast_calendar', array(
+					  			'columns' 		=> 'forecast_calendar.id, products.id AS product_id, products.product_code AS code, products.description, forecast_calendar.forecast_year, 
+														jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dece', 
+					  	    'conditions' 	=> 'products.id = '.$id, 
+					  	    'joins' 			=> 'RIGHT OUTER JOIN products ON products.id = forecast_calendar.product_id AND forecast_calendar.forecast_year='.$yr
+	  	  ));
+				
+		if(!empty($query)) return $query;
 		return null;
 	}
 	

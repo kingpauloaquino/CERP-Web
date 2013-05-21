@@ -84,10 +84,11 @@ class MySQL {
   	if (isset($args)) {
   	  $args['columns'] = (isset($args['columns']) ? $args['columns'] : '*');
   	  $args['joins'] = (isset($args['joins']) ? $args['joins'] : '');
-	  	$args['conditions'] = ($args['conditions'] == '' ? '' : ' WHERE '.$args['conditions']);
-      $args['order'] = ($args['order'] == '' ? '' : ' ORDER BY '.$args['order']);
-      $args['limit'] = ($args['limit'] == '' ? '' : ' LIMIT '.$args['limit']);
-      $args['group'] = ($args['group'] == '' ? '' : ' GROUP BY '.$args['group']);
+			
+			$args['conditions'] = (isset($args['conditions']) ? ' WHERE '.$args['conditions'] : '');
+			$args['order'] = (isset($args['order']) ? ' ORDER BY '.$args['order'] : '');
+			$args['limit'] = (isset($args['limit']) ? ' LIMIT '.$args['limit'] : '');
+			$args['group'] = (isset($args['group']) ? ' GROUP BY '.$args['group'] : '');
       // $args['sort_column'] = ($args['sort_column'] == '' ? '' : 'ORDER BY '.$args['sort_column']);
     }
 	

@@ -1,6 +1,6 @@
 <?php
-  /* Module: Forecasts Show */
-  $capability_key = 'show_forecast';
+  /* Module: Forecasts Edit */
+  $capability_key = 'edit_forecast';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -20,8 +20,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
       	<?php
-				  echo '<a href="'.$Capabilities->All['forecast_calendar']['url'].'" class="nav">'.$Capabilities->All['forecast_calendar']['name'].'</a>';
-				  echo '<a href="'.$Capabilities->All['edit_forecast']['url'].'?pid='.$_GET['pid'].'" class="nav">'.$Capabilities->All['edit_forecast']['name'].'</a>';
+				  echo '<a href="'.$Capabilities->All['show_forecast']['url'].'?pid='.$_GET['pid'].'" class="nav">'.$Capabilities->All['show_forecast']['name'].'</a>';
       	?>
 				<div class="clear"></div>
       </h2>
@@ -45,7 +44,7 @@
 							<td>Status:</td><td><input type="text" value="<?php echo $product['status'] ?>" class="text-field" disabled/></td>
 						</tr>    
 						<tr>
-							<td>Production CP:</td><td><input type="text" value="<?php echo $product['prod_cp'] ?>" class="text-field text-right numbers" disabled/></td>
+							<td>Production CP:</td><td><input type="text" value="<?php echo $product['prod_cp'] ?>" class="text-field text-right" disabled/></td>
 							<td></td>
 						</tr>             
 						<tr>
@@ -63,7 +62,7 @@
 	        <table cellspacing="0" cellpadding="0">
 	          <thead>
 	            <tr>
-	              <td class="border-right text-center"><a>Year</a></td>
+	              <td class="border-right text-center"><a class="sort default active up">Year</a></td>
 	              <td width="60" class="border-right text-center"><a>Jan</a></td>
 	              <td width="60" class="border-right text-center"><a>Feb</a></td>
 	              <td width="60" class="border-right text-center"><a>Mar</a></td>
@@ -88,18 +87,18 @@
           		?>
 	          	<tr>
 	          		<td class="border-right text-center"><?php echo $cal['forecast_year'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['jan'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['feb'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['mar'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['apr'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['may'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['jun'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['jul'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['aug'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['sep'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['oct'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['nov'] ?></td>
-	          		<td class="border-right text-right numbers"><?php echo $cal['dece'] ?></td>
+	          		<td id="1" month="January" class="border-right text-right numbers month"><?php echo $cal['jan'] ?></td>
+	          		<td id="2" month="February" class="border-right text-right numbers month"><?php echo $cal['feb'] ?></td>
+	          		<td id="3" month="March" class="border-right text-right numbers month"><?php echo $cal['mar'] ?></td>
+	          		<td id="4" month="April" class="border-right text-right numbers month"><?php echo $cal['apr'] ?></td>
+	          		<td id="5" month="May" class="border-right text-right numbers month"><?php echo $cal['may'] ?></td>
+	          		<td id="6" month="June" class="border-right text-right numbers month"><?php echo $cal['jun'] ?></td>
+	          		<td id="7" month="July" class="border-right text-right numbers month"><?php echo $cal['jul'] ?></td>
+	          		<td id="8" month="August" class="border-right text-right numbers month"><?php echo $cal['aug'] ?></td>
+	          		<td id="9" month="September" class="border-right text-right numbers month"><?php echo $cal['sep'] ?></td>
+	          		<td id="10" month="October" class="border-right text-right numbers month"><?php echo $cal['oct'] ?></td>
+	          		<td id="11" month="November" class="border-right text-right numbers month"><?php echo $cal['nov'] ?></td>
+	          		<td id="12" month="December" class="border-right text-right numbers month"><?php echo $cal['dece'] ?></td>
 	          		<td class="border-right text-right numbers"><?php echo $total ?></td>
 	          	</tr>
 	          	<?php } ?>
@@ -107,36 +106,30 @@
 	        </table>
 	      </div>
 	      <br/>
-				<h3 class="form-title">Month &raquo; <span class="red">January</span></h3>
+				<h3 class="form-title">Month &raquo; <span class="red" id="current_month">January</span></h3>
       	<a id="btn-daily-forecast" href="#mdl-daily-forecast" rel="modal:open"></a>
-	      <div id="grid-month" class="grid jq-grid" style="min-height:140px;">
+	      <div id="grid-weeks" class="grid jq-grid" style="min-height:140px;">
 	        <table id="tbl-week" cellspacing="0" cellpadding="0">
 	          <thead>
 	            <tr>
-	              <td width="100" class="border-right text-center"><a>Week</a></td>
+	              <td width="100" class="border-right text-center"><a class="sort default active up" column="week">Week</a></td>
 	              <td class="border-right text-center"><a>Remarks</a></td>
 	              <td width="100" class="border-right text-center"><a>Prod Date</a></td>
 	              <td width="100" class="border-right text-center"><a>Ship Date</a></td>
 	              <td width="60" class="border-right text-center"><a>Qty</a></td>
 	            </tr>
 	          </thead>
-	          <tbody>
-	          	<?php
-	          		for($i=1; $i<5; $i++) {
-        			?>
-        			<tr>
-        				<td class="border-right text-center"><a href="#" class="week">Week<?php echo $i ?></a></td>
-        				<td class="border-right">test</td>
-        				<td class="border-right text-center"></td>
-        				<td class="border-right text-center"></td>
-        				<td class="border-right text-right">0</td>
-        			</tr>
-        			<?php
-	          		}
-	          	?>
-	          </tbody>
+	          <tbody></tbody>
 	        </table>
 	      </div>
+				<br/>
+				<div class="field-command">
+					<div class="text-post-status">
+						<strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]" ><?php echo build_select_post_status_by_level(getConditionByLevel($_SESSION['user']['level'])); ?></select>
+					</div>
+					<input type="submit" value="Save" class="btn"/>
+					<input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('forecast-show.php?pid='.$_GET['pid']); ?>"/>
+				</div>
       </form>
 		</div>
 	</div>
@@ -147,7 +140,7 @@
 			<form id="frm-daily-forecast" method="POST">
 				<span class="notice"></span>     
 				<input type="hidden" name="action" value="edit_daily_forecast"/>
-				<input type="hidden" name="week_id" value="1"/>
+				<input type="hidden" id="week_id" name="week_id"/>
 					
 				<div class="field">
 					<label>Day 1:</label>
@@ -182,15 +175,57 @@
 	</div>
 	<script>
 		$(function() {
-	    $('#tbl-week').find('tbody tr .week').show_daily_modal();
-	  })
-	  
-	  $.fn.show_daily_modal = function() {
+			//loadWeeks($('#current_month').html($(this).attr('id')););
+			function getWeeks(mid) {
+				var data = { 
+		    	"url":"/populate/forecast-weeks.php?pid=<?php echo $_GET['pid']; ?>&mid="+mid,
+		      "limit":"50",
+					"data_key":"forecast_weeks",
+					"row_template":"row_template_forecast_weeks",
+		      "pagination":"#receiving-items-pagination"
+				}	
+				$('#grid-weeks').grid(data);	
+			}
+			
+			getWeeks(1); // preload month 1 = january
+			
+			$('#grid-calendar').find('.month').click(function() {
+				$('#current_month').html($(this).attr('month'));
+				getWeeks($(this).attr('id'));
+			});
+			
+			$('#tbl-week').find('tbody tr .week').show_daily_modal();
+		})
+		
+		$.fn.show_daily_modal = function() {
   	$()
     	this.live('click', function(e) {
 	    	$('#btn-daily-forecast').click();	
+	    	//clear
+	    	$('#daily-day1').val('');
+	  		$('#daily-day2').val('');
+	  		$('#daily-day3').val('');
+	  		$('#daily-day4').val('');
+	  		$('#daily-day5').val('');
+	    	
+	    	$('#week_id').val($(this).attr('id'));
+	    	
+	    	$.ajax({
+				  dataType: "json",
+				  url: "/cerp/populate/forecast-week-days.php?wid="+$(this).attr('id'),
+				  success: function(data) {
+				  	if(data['forecast_week_days'].length > 0) {
+				  		$('#daily-day1').val(data['forecast_week_days'][0].day1);
+				  		$('#daily-day2').val(data['forecast_week_days'][0].day2);
+				  		$('#daily-day3').val(data['forecast_week_days'][0].day3);
+				  		$('#daily-day4').val(data['forecast_week_days'][0].day4);
+				  		$('#daily-day5').val(data['forecast_week_days'][0].day5);
+				  	}
+				  }
+				});
+				  
     })
-  }
+   }
 	</script>
 <?php }
 require('footer.php'); ?>

@@ -16,6 +16,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
+				  echo '<a href="'.$Capabilities->All['forecast_calendar']['url'].'" class="nav">'.$Capabilities->All['forecast_calendar']['name'].'</a>';
 				  echo '<a href="'.$Capabilities->All['show_forecast_calendar_h2']['url'].'" class="nav">'.$Capabilities->All['show_forecast_calendar_h2']['name'].'</a>';
 				  echo '<a href="'.$Capabilities->All['edit_forecast_calendar_h1']['url'].'" class="nav">'.$Capabilities->All['edit_forecast_calendar_h1']['name'].'</a>';
 				?>

@@ -22,8 +22,8 @@ require('../include/general.class.php');
   $objPHPExcel->getActiveSheet()->setCellValue('C9', $purchase['supplier_fax']);
   $objPHPExcel->getActiveSheet()->setCellValue('D10', $purchase['supplier_person']);
   $objPHPExcel->getActiveSheet()->setCellValue('A13', $purchase['terms']);
-  $objPHPExcel->getActiveSheet()->setCellValue('G13', $purchase['delivery_via']);
-  $objPHPExcel->getActiveSheet()->setCellValue('J13', dformat($purchase['delivery_date'], 'm/d/Y'));
+  $objPHPExcel->getActiveSheet()->setCellValue('G13', dformat($purchase['delivery_date'], 'm/d/Y'));
+  $objPHPExcel->getActiveSheet()->setCellValue('J13', $purchase['delivery_via']);
   $objPHPExcel->getActiveSheet()->setCellValue('N13', $purchase['payment_terms']);
   $objPHPExcel->getActiveSheet()->setCellValue('R13', dformat($purchase['created_at'], 'm/d/Y'));
 
@@ -38,16 +38,27 @@ require('../include/general.class.php');
   
     $objPHPExcel->getActiveSheet()->insertNewRowBefore($row, 1);
     $objPHPExcel->getActiveSheet()->setCellValue('A'.$row, $r)
-                                  ->mergeCells('B'.$row.':D'.$row)->setCellValue('B'.$row, $item['code'])
-                                  ->mergeCells('E'.$row.':K'.$row)->setCellValue('E'.$row, $item['description'])
-                                  ->mergeCells('L'.$row.':M'.$row)->setCellValue('L'.$row, $item['quantity'])
-                                  ->mergeCells('N'.$row.':O'.$row)->setCellValue('N'.$row, $item['unit'])
-                                  ->mergeCells('P'.$row.':R'.$row)->setCellValue('P'.$row, $item['item_price'])
-                                  ->mergeCells('S'.$row.':U'.$row)->setCellValue('S'.$row, '=L'.$row.'*P'.$row);
+		                                  ->mergeCells('B'.$row.':D'.$row)->setCellValue('B'.$row, $item['code'])
+		                                  ->mergeCells('E'.$row.':K'.$row)->setCellValue('E'.$row, $item['description'])
+		                                  ->mergeCells('L'.$row.':M'.$row)->setCellValue('L'.$row, $item['quantity'])
+		                                  ->mergeCells('N'.$row.':O'.$row)->setCellValue('N'.$row, $item['unit'])
+		                                  ->mergeCells('P'.$row.':R'.$row)->setCellValue('P'.$row, $item['item_price'])
+		                                  ->mergeCells('S'.$row.':U'.$row)->setCellValue('S'.$row, '=L'.$row.'*P'.$row);
+																	
+		$objPHPExcel->getActiveSheet()->getStyle('P'.$row)->getNumberFormat()->setFormatCode('"₱"#,##0.00_-');
+		$objPHPExcel->getActiveSheet()->getStyle('S'.$row)->getNumberFormat()->setFormatCode('"₱"#,##0.00_-');
   }
   $objPHPExcel->getActiveSheet()->removeRow($baseRow-1,1);
 
   $objPHPExcel->getActiveSheet()->setCellValue('A'. ($baseRow + count($purchase_items)), $purchase['remarks']);
+	
+	$objPHPExcel->getActiveSheet()->setCellValue('R'. ($baseRow + count($purchase_items) -1), $purchase['total_amount']);
+	$objPHPExcel->getActiveSheet()->getStyle('R'. ($baseRow + count($purchase_items) -1))->getNumberFormat()->setFormatCode('"₱"#,##0.00_-');
+	
+	// $objPHPExcel->getActiveSheet()->getStyle('R'. ($baseRow + count($purchase_items) -1))->getNumberFormat()
+            										// ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_USD);
+            										
+																
 
   // $objWriter->getSecurity()->setWorkbookPassword('cresc2012');
   

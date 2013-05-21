@@ -20,7 +20,7 @@
 		
 	  if(isset($_GET['pid'])) {
 	  	$products = $DB->Find('products', array(
-					  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, item_classifications.classification, products.bar_code, products.color', 
+					  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, item_classifications.classification, products.bar_code, products.color, products.prod_cp', 
 					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
 					  	    'joins' 			=> 'INNER JOIN brand_models ON products.brand_model = brand_models.id
 					  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification'
@@ -77,7 +77,11 @@
            <tr>
               <td>Pack:</td><td><?php select_query_tag($packs, 'id', 'classification', $products['product_classification'], 'product[product_classification]', 'product[product_classification]', '', 'width:192px;'); ?></td>
               <td>Status:</td><td><?php select_query_tag($statuses, 'id', 'description', $products['status'], 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
-           </tr>            
+           </tr>        
+           <tr>
+              <td>Production CP:</td><td><input type="text" id="product[prod_cp]" name="product[prod_cp]" value="<?php echo $products['prod_cp'] ?>" class="text-field text-right"/></td>
+              <td></td>
+           </tr>           
            <tr>
               <td>Description:</td>
               <td colspan="99">

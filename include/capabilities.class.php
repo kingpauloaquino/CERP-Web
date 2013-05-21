@@ -21,7 +21,7 @@ class Capabilities {
   // Return: Capability name
   function GetName() {
     global $capability_key;
-	return $this->All[$capability_key]['name'];
+		return $this->All[$capability_key]['name'];
   }
 	
   function GetTitle() {

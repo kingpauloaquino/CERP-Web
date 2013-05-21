@@ -48,7 +48,7 @@
 							<td>Status:</td><td><input type="text" value="<?php echo $product['status'] ?>" class="text-field" disabled/></td>
 						</tr>    
 						<tr>
-							<td>Production Qty:</td><td><input type="text" value="<?php echo $product['production_qty'] ?>" class="text-field text-right" disabled/></td>
+							<td>Production CP:</td><td><input type="text" value="<?php echo $product['prod_cp'] ?>" class="text-field text-right" disabled/></td>
 							<td></td>
 						</tr>             
 						<tr>

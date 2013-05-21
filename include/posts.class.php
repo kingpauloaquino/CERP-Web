@@ -208,7 +208,8 @@ class Posts {
 		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		  'color'										=> $params['color'], 
 		  'bar_code'								=> $params['bar_code'],
-		  'status'									=> $params['status']
+		  'status'									=> $params['status'],
+		  'prod_cp'									=> $params['prod_cp']
 		);
     return $this->DB->InsertRecord('products', $product);
   }

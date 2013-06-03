@@ -320,7 +320,7 @@ img {
 /* PAGE TITLE */
 #page-title { 
   margin:0 15px 10px;
-  padding:47px 0 0;
+  padding:57px 0 0;
   border-bottom:solid 1px #eeeeee;
 }
 
@@ -379,7 +379,6 @@ img {
   width:28px;
   height:28px;
 }
-
 
 /* BORDER */
 .border-top { padding-top:10px;border-top:solid 1px #dddddd; }

@@ -20,10 +20,34 @@ if(!$allowed) {
 		</div>
 				
 		<div id="content">
+			<div class="search">
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
+      </div>
+			<a href="#" class="newbutton">Button Text</a>	
+			
+			
+			
+			<div id="divfade" >
+				<span class="notice">
+	          <p class="success"><strong>Notice!</strong> will fade</p>
+	        </span>
+			</div>
+			
+		<div>
+			<?php
+				$crumbs = explode("/",$_SERVER["REQUEST_URI"]);
+				foreach($crumbs as $crumb){
+					echo '<a href="#">'.$crumb.'</a>.&raquo;';
+				    //echo ucfirst(str_replace(array(".php","_"),array(""," "),$crumb) . ' ');
+				}
+			?>
+		</div>
+			
 					<h2>usual content</h2>
 					<span class="notice">
 	          <p class="error"><strong>Notice!</strong> Material codes should be unique.</p>
 	        </span>
+	        
 	        
 	        <button class="live-tile-button">test</button>
 	        <button class="live-tile-button">test</button>
@@ -100,6 +124,52 @@ if(!$allowed) {
 		</div>
 	</div>
 <style>
+.newbutton{
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+	-webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+	background: #FF4D01
+	background:  -moz-linear-gradient(19% 75% 90deg, #FF4D01,
+	#FF8924);
+	background:  -webkit-gradient(linear, 0% 0%, 0% 100%,
+	from(#FF8924), to(#FF4D01));
+	color: #fff;
+	float: left;
+	font-family:  arial,helvetica,sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 8px 20px;
+	text-decoration: none;
+}
+
+.newbutton:hover{
+	background: #EB4701;
+	background: -moz-linear-gradient(19% 75% 90deg, #EB4701,
+	#F58423);
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%,
+	from(#F58423), to(#EB4701));
+}
+
+.newbutton:active {
+	background: #F58423;
+	background: -moz-linear-gradient(19% 75% 90deg, #F58423,
+	 #EB4701);
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%,
+	 from(#EB4701), to(#F58423));
+	position: relative;
+	top: 1px;
+}
+
+
+
+
+
+
+
+
 .live-tile-button
 {
     width:200px;
@@ -127,5 +197,16 @@ if(!$allowed) {
 }
 
 </style>	
+
+<script>
+	$(document).ready(function(){
+		setTimeout(function(){
+			$("#noticeFade").fadeOut("slow", function () {
+		  	$("#noticeFade").remove();
+	    });
+		}, 2000);
+	});
+
+</script>
 <?php }
 require('footer.php'); ?>

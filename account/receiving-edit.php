@@ -52,6 +52,10 @@
                       <td>Invoice:</td><td><input id="delivery[invoice]" name="delivery[invoice]" type="text" class="text-field" required /></td>
                       <td>Receipt:</td><td><input id="delivery[receipt]" name="delivery[receipt]" type="text" class="text-field" /></td>
                    </tr>
+                   <tr>
+                      <td>Lot No.:</td><td><input id="delivery[lot]" name="delivery[lot]" type="text" class="text-field" required /></td>
+                      <td></td><td></td>
+                   </tr>
                    <tr><td height="5" colspan="99"></td></tr>
                 </table>
              </div>

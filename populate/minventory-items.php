@@ -10,20 +10,20 @@ $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
   $startpoint = $limit * ($page - 1);
-	$search = 'forecast_weeks.forecast_cal_id='.$_GET['fwid'].' AND forecast_weeks.month_id='.$_GET['mo'].' AND forecast_weeks.week_id='.$_GET['wk'];
-	
-	$query = $DB->Fetch('forecast_week_days', array(
-							'columns'	=> 'forecast_week_days.*',
-					    //'joins'		=> 'INNER JOIN forecast_weeks ON forecast_weeks.id = forecast_week_days.forecast_week_id',
-					    'joins'		=> 'INNER JOIN forecast_weeks ON forecast_weeks.id = forecast_week_days.forecast_week_id
-					    							INNER JOIN forecast_calendar ON forecast_calendar.id = forecast_weeks.forecast_cal_id',
+	$search = 'warehouse_inventories.item_type = "MAT" AND warehouse_inventories.item_id ='.$_GET['id'];
+
+	$query = $DB->Fetch('warehouse_inventories', array(
+							'columns'	=> 'warehouse_inventories.id, warehouse_inventories.item_id, warehouse_inventories.invoice_no, warehouse_inventories.lot_no,
+			  										warehouse_inventories.qty, warehouse_inventories.remarks, lookups.description AS unit',
+					    'joins'		=> 'INNER JOIN item_costs ON item_costs.item_id = warehouse_inventories.item_id AND item_costs.item_type = "MAT"
+														INNER JOIN lookups ON lookups.id = item_costs.unit',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,
              )
            );
-	return array("forecast_week_days" => $query, "total" => $DB->totalRows());
+	return array("minventory_items" => $query, "total" => $DB->totalRows());
 }
 echo json_encode(populate_records($keyword, $page, $limit, $order, $sort));
 //$JSON->build_pretty_json(populate_records($keyword, $page, $limit, $order, $sort));
-?>
+?>   

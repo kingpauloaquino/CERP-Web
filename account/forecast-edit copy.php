@@ -28,12 +28,6 @@
 
     <div id="content">
       <form id="form-name" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
-      	<input type="hidden" name="action" value="edit_forecast_days" />
-      	<input type="hidden" id="forecast_cal_id" name="forecast_cal_id" />
-      	<input type="hidden" id="current_year" name="current_year" />
-      	<input type="hidden" id="current_month" name="current_month" />
-      	<input type="hidden" id="current_month_id" name="current_month_id" />
-      	<input type="hidden" id="month_total" />
       	<div>
 					<table>
 						<tr>
@@ -71,7 +65,7 @@
 	        </span>
 				</div>
 				<div id="grid-calendar" class="grid jq-grid" style="min-height:60px;">
-	        <table id="tbl-calendar" cellspacing="0" cellpadding="0">
+	        <table cellspacing="0" cellpadding="0">
 	          <thead>
 	            <tr>
 	              <td class="border-right text-center"><a>Year</a></td>
@@ -90,55 +84,55 @@
 	              <td width="60" class="border-right text-center"><a>Total</a></td>
 	            </tr>
 	          </thead>
-	          <tbody></tbody>
+	          <tbody>
+	          	<?php
+	          		$total = 0; 
+	          		foreach($calendar as $cal) { 
+	          			$total = $cal['jan'] + $cal['feb'] + $cal['mar'] + $cal['apr'] + $cal['may'] + $cal['jun'] +
+	          								$cal['jul'] + $cal['aug'] + $cal['sep'] + $cal['oct'] + $cal['nov'] + $cal['dece'];
+          		?>
+	          	<tr>
+	          		<td class="border-right text-center"><?php echo $cal['forecast_year'] ?></td>
+	          		<td id="1" month="January" class="border-right text-right numbers month"><?php echo $cal['jan'] ?></td>
+	          		<td id="2" month="February" class="border-right text-right numbers month"><?php echo $cal['feb'] ?></td>
+	          		<td id="3" month="March" class="border-right text-right numbers month"><?php echo $cal['mar'] ?></td>
+	          		<td id="4" month="April" class="border-right text-right numbers month"><?php echo $cal['apr'] ?></td>
+	          		<td id="5" month="May" class="border-right text-right numbers month"><?php echo $cal['may'] ?></td>
+	          		<td id="6" month="June" class="border-right text-right numbers month"><?php echo $cal['jun'] ?></td>
+	          		<td id="7" month="July" class="border-right text-right numbers month"><?php echo $cal['jul'] ?></td>
+	          		<td id="8" month="August" class="border-right text-right numbers month"><?php echo $cal['aug'] ?></td>
+	          		<td id="9" month="September" class="border-right text-right numbers month"><?php echo $cal['sep'] ?></td>
+	          		<td id="10" month="October" class="border-right text-right numbers month"><?php echo $cal['oct'] ?></td>
+	          		<td id="11" month="November" class="border-right text-right numbers month"><?php echo $cal['nov'] ?></td>
+	          		<td id="12" month="December" class="border-right text-right numbers month"><?php echo $cal['dece'] ?></td>
+	          		<td class="border-right text-right numbers"><?php echo $total ?></td>
+	          	</tr>
+	          	<?php } ?>
+	          </tbody>
 	        </table>
 	      </div>
 	      
 	      <br/>
-				<h3 class="form-title" id="forecast-map">Details</h3>
-
-	      <div id="tabs-left">
-				  <ul class="ui-tabs-nav">
-				    <li><a href="#tabs-left-1" id="1" class="week-link">Week 1</a></li>
-				    <li><a href="#tabs-left-2" id="2" class="week-link">Week 2</a></li>
-				    <li><a href="#tabs-left-3" id="3" class="week-link">Week 3</a></li>
-				    <li><a href="#tabs-left-4" id="4" class="week-link">Week 4</a></li>
-				  </ul>
-				  
-				  <?php
-				  	for($i=1; $i<=4; $i++) {
-		  		?>
-		  		<div id="tabs-left-<?php echo $i?>">
-		  			<div class="week-header">
-		  				<div class="week-num"><b>Week <?php echo $i ?></b></div>
-		  				<div class="month-total">&nbsp;</div>
-		  			</div>
-		  			
-				    <div id="grid-week-<?php echo $i?>" class="grid jq-grid" style="min-height:140px;">
-			        <table id="tbl-week-<?php echo $i?>" cellspacing="0" cellpadding="0">
-			          <thead>
-			            <tr>
-			              <td class="border-right text-center"><a>Line</a></td>
-			              <td width="105" class="border-right text-center"><a>Day 1</a></td>
-			              <td width="105" class="border-right text-center"><a>Day 2</a></td>
-			              <td width="105" class="border-right text-center"><a>Day 3</a></td>
-			              <td width="105" class="border-right text-center"><a>Day 4</a></td>
-			              <td width="105" class="border-right text-center"><a>Day 5</a></td>
-			              <td width="105" class="border-right text-center"><a>Week Total</a></td>
-			            </tr>
-			          </thead>
-			          <tbody id="week-<?php echo $i?>" class="week-rows"></tbody>
-			        </table>
-			      </div>
-				  </div>
-		  		<?php
-				  	}
-				  ?>
-				</div>
+				<h3 class="form-title">Month &raquo; <span class="red" id="current_month">January</span></h3>
+      	<a id="btn-daily-forecast" href="#mdl-daily-forecast" rel="modal:open"></a>
+	      <div id="grid-weeks" class="grid jq-grid" style="min-height:140px;">
+	        <table id="tbl-week" cellspacing="0" cellpadding="0">
+	          <thead>
+	            <tr>
+	              <td width="100" class="border-right text-center"><a>Week</a></td>
+	              <td class="border-right text-center"><a>Remarks</a></td>
+	              <td width="100" class="border-right text-center"><a>Prod Date</a></td>
+	              <td width="100" class="border-right text-center"><a>Ship Date</a></td>
+	              <td width="60" class="border-right text-center"><a>Qty</a></td>
+	            </tr>
+	          </thead>
+	          <tbody></tbody>
+	        </table>
+	      </div>
 				<br/>
 				<div class="field-command">
 					<div class="text-post-status">
-						<strong>Save As:</strong>&nbsp;&nbsp;<select name="forecast[status]" ><?php echo build_select_post_status_by_level(getConditionByLevel($_SESSION['user']['level'])); ?></select>
+						<strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]" ><?php echo build_select_post_status_by_level(getConditionByLevel($_SESSION['user']['level'])); ?></select>
 					</div>
 					<input type="submit" value="Save" class="btn"/>
 					<input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('forecast-show.php?pid='.$_GET['pid']); ?>"/>
@@ -147,62 +141,67 @@
 		</div>
 	</div>
 	
-	
+	<div id="mdl-daily-forecast" class="modal">
+		<div class="modal-title"><h3>Daily Qty</h3></div>
+		<div class="modal-content">
+			<form id="frm-daily-forecast" method="POST">
+				<span class="notice"></span>     
+				<input type="hidden" name="action" value="edit_daily_forecast"/>
+				<input type="hidden" id="week_id" name="week_id"/>
+					
+				<div class="field">
+					<label>Day 1:</label>
+					<input type="text" id="daily-day1" name="daily[day1]" class="text-field" default="0" />
+				</div>
+				 
+				<div class="field">
+					<label>Day 2:</label>
+					<input type="text" id="daily-day2" name="daily[day2]" class="text-field" default="0" />
+				</div>
+				 
+				<div class="field">
+					<label>Day 3:</label>
+					<input type="text" id="daily-day3" name="daily[day3]" class="text-field" default="0" />
+				</div>
+				 
+				<div class="field">
+					<label>Day 4:</label>
+					<input type="text" id="daily-day4" name="daily[day4]" class="text-field" default="0" />
+				</div>
+				 
+				<div class="field">
+					<label>Day 5:</label>
+					<input type="text" id="daily-day5" name="daily[day5]" class="text-field" default="0" />
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a id="closeModal" rel="modal:close" class="close btn" style="width:50px;">Cancel</a>
+			<a id="submit-daily-forecast" rel="modal:close" href="#frm-daily-forecast" class="btn" style="width:50px;">Save</a>
+		</div>
+	</div>
 	<script>
 		$(function() {
-			$( "#tabs-left" ).tabs({
-	    });
-	    
-	    var data = { 
-	    	"url":"/populate/forecast-months.php?pid=<?php echo $_GET['pid']; ?>",
-	      "limit":"10",
-				"data_key":"forecast_months",
-				"row_template":"row_template_forecast_months",
-			}	
-			$('#grid-calendar').grid(data);	
+			//loadWeeks($('#current_month').html($(this).attr('id')););
+			function getWeeks(mid) {
+				var data = { 
+		    	"url":"/populate/forecast-weeks.php?pid=<?php echo $_GET['pid']; ?>&mid="+mid,
+		      "limit":"50",
+					"data_key":"forecast_weeks",
+					"row_template":"row_template_forecast_weeks",
+		      "pagination":"#receiving-items-pagination"
+				}	
+				$('#grid-weeks').grid(data);	
+			}
 			
-			// Set initial
-			//getWeekdays($('#forecast_cal_id').val(), $('#current_month_id').val(), $(this).attr('id'));
+			getWeeks(1); // preload month 1 = january
 			
-			// Month Select
-			$('#tbl-calendar').on('click', '.month', function () {
-				resetTables();
-				var forecast_cal_id = $(this).closest('tr').attr('forecast_cal_id');
-				var current_year = $(this).attr('year');
-				var current_month = $(this).attr('month');
-				var month_id = $(this).attr('id');
-				
-				$('#forecast_cal_id').val(forecast_cal_id);
-				$('#current_year').val(current_year);
-				$('#current_month').val(current_month);
-				$('#current_month_id').val(month_id);
-				$('#month_total').val($(this).html());
-				$('.month-total').html('Month Total: '+$(this).html());
-				
-		    $('#forecast-map').html(current_year+' &raquo; '+current_month+' &raquo; <span class="red">Week 1</span>');
-		    getWeekdays(forecast_cal_id, month_id, 1);
+			$('#grid-calendar').find('.month').click(function() {
+				$('#current_month').html($(this).attr('month'));
+				getWeeks($(this).attr('id'));
 			});
 			
-	    // Week Select
-	    $('.ui-tabs-nav').find('.week-link').click(function(){
-				$('#forecast-map').html($('#current_year').val()+' &raquo; '+$('#current_month').val()+' &raquo; <span class="red">Week '+$(this).attr('id')+'</span>');
-				getWeekdays($('#forecast_cal_id').val(), $('#current_month_id').val(), $(this).attr('id'));
-			})
-			
-			function getWeekdays(forecast_week_id, mo, wk) {
-				var data = { 
-		    	"url":"/populate/forecast-week-days.php?fwid="+forecast_week_id+"&mo="+mo+"&wk="+wk,
-		      "limit":"10",
-					"data_key":"forecast_week_days",
-					"row_template":"row_template_forecast_week_days",
-				}	
-				$('#grid-week-'+wk).grid(data);	
-			}
-			
-			function resetTables() {
-				$('.week-rows').empty();	
-				$('#tabs-left').tabs({ active: 0}); 
-			}
+			$('#tbl-week').find('tbody tr .week').show_daily_modal();
 			
 			setTimeout(function(){
 				$("#notice-fade").fadeOut("slow", function () {

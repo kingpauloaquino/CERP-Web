@@ -4,7 +4,7 @@ require('../include/general.class.php');
 $keyword	= $_GET['params'];
 $page			= ($_GET['page'] != "" ? $_GET['page'] : 1);
 $limit		= ($_GET['limit'] != "" ? $_GET['limit'] : 15);
-$order		= ($_GET['order'] != "" ? $_GET['order'] : "id");
+$order		= ($_GET['order'] != "" ? $_GET['order'] : "material_code");
 $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 
 function populate_records($keyword='', $page, $limit, $order, $sort) {

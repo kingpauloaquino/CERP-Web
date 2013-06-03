@@ -155,7 +155,7 @@ $.fn.grid = function(args) {
   });
   
   if(args['searchable'] == true) {
-		$('.search').keypress(function(e) { 
+		$('.search').keyup(function(e) { 
 	    //if(e.which == 13) { // enter key
 	    	args['page'] = 1;
 		    //args['params'] = $('.keyword').val();
@@ -284,11 +284,42 @@ function row_template_materials_inventory(data) {
     "<td class=\"border-right text-center\">"+ data['classification'] +"</td>" +
     "<td class=\"border-right\">"+ data['description'] +"</td>" +
     "<td class=\"border-right text-center \">"+ data['uom'] +"</td>" +
-    "<td class=\"border-right text-right numbers \">"+ data['qty'] +"</td>" +
+    "<td class=\"border-right text-right numbers \">"+ parseFloat((data['qty'] || 0)) +"</td>" +
     "</tr>");
 
   row.find('.numbers').digits();
   return row;
+}
+
+function row_template_minventory_items_read_only(data) { 
+  var id		= data['id'];
+  var row		= $('<tr id="'+ data['id'] +'" qty="'+parseFloat(data['qty'])+'"></tr>');
+  
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center item-invoice">'+ data['invoice_no'] +'</td>');
+  row.append('<td class="border-right text-center item-lot">'+ data['lot_no'] +'</td>');
+  row.append('<td class="border-right item-remarks">'+ data['remarks'] +'</td>');
+  row.append('<td class="border-right text-center item-unit">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right item-qty numbers">'+ parseFloat(data['qty']) +'</td>');
+ 
+  row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_minventory_items(data) { 
+  var id		= data['id'];
+  var row		= $('<tr qty="'+parseFloat(data['qty'])+'"></tr>');
+  
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center item-invoice">'+ data['invoice_no'] +'</td>');
+  row.append('<td class="border-right text-center item-lot">'+ data['lot_no'] +'</td>');
+  row.append('<td class="border-right item-remarks">'+ data['remarks'] +'</td>');
+  row.append('<td class="border-right text-center item-unit">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right item-qty numbers">'+ parseFloat(data['qty']) +'</td>');
+  row.append('<td class="border-right text-center"><a id="'+ data['id'] +'" class="chk-item" href="#">edit</a></td>');
+ 
+  row.find('.numbers').digits();
+  return row;   
 }
 
 function row_template_products(data) {
@@ -436,7 +467,7 @@ function row_template_material_plan_model(data) {
 function row_template_notifications(data) {
   var forward	= host + "/account/"+ data['url'];
   var row		= $("<tr forward=\""+ forward +"\">" +
-    "<td class=\"border-right text-center\">"+ data['created_at'] +"</td>" +
+    "<td class=\"border-right text-center text-date\">"+ data['created_at'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['type'] +"</td>" +
   	"<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['title'] +"</a></td>" +
     "<td class=\"border-right text-center\">"+ data['value'] +"</td>" +
@@ -805,7 +836,7 @@ function row_template_receiving(data) {
   //var code = "<a href=\"#\">"+ data['code'] +"</a>";
   var code = data['code'];
   
-  row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-item\" name='items["+data['id']+"][id]' value='"+data['id']+"'/><input type='hidden' name='items["+data['id']+"][delivered]' class='delivered' value='"+data['delivered']+"' /><input type='hidden' name='items["+data['id']+"][received]' class='received' value='' /><input type='hidden' name='items["+data['id']+"][status]' class='status' value='' /></td>");
+  row.append("<td class=\"border-right text-center\"><input type=\"checkbox\" class=\"chk-item\" name='items["+data['id']+"][id]' value='"+data['id']+"'/><input type='hidden' name='items["+data['id']+"][item_id]' class='delivered' value='"+data['item_id']+"' /><input type='hidden' name='items["+data['id']+"][delivered]' class='delivered' value='"+data['delivered']+"' /><input type='hidden' name='items["+data['id']+"][received]' class='received' value='' /><input type='hidden' name='items["+data['id']+"][status]' class='status' value='' /></td>");
   row.append("<td class=\"border-right\">"+ code +"</td>");
   row.append("<td class=\"border-right\">"+ data['description'] +"</td>");
   row.append("<td class=\"border-right text-right numbers\">"+ data['quantity'] +"</td>");
@@ -1125,18 +1156,45 @@ function row_template_forecast_h2_read_only(data) {
   return row; 
 }
 
-function row_template_forecast_weeks(data) {
+function row_template_forecast_months(data) {
+  var year_total = parseFloat((data['jan'] || 0)) + parseFloat((data['feb'] || 0)) + parseFloat((data['mar'] || 0)) + parseFloat((data['apr'] || 0)) +
+  									parseFloat((data['may'] || 0)) + parseFloat((data['jun'] || 0)) + parseFloat((data['jul'] || 0)) + parseFloat((data['aug'] || 0)) +
+  									parseFloat((data['sep'] || 0)) + parseFloat((data['oct'] || 0)) + parseFloat((data['nov'] || 0)) + parseFloat((data['dece'] || 0));
+  var row		= $('<tr forecast_cal_id="'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right text-center">'+ data['forecast_year'] +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="1" month="January">'+ (data['jan'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="2" month="February">'+ (data['feb'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="3" month="March">'+ (data['mar'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="4" month="April">'+ (data['apr'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="5" month="May">'+ (data['may'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="6" month="June">'+ (data['jun'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="7" month="July">'+ (data['jul'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="8" month="August">'+ (data['aug'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="9" month="September">'+ (data['sep'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="10" month="October">'+ (data['oct'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="11" month="November">'+ (data['nov'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="12" month="December">'+ (data['dece'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers" year="'+ data['forecast_year'] +'">'+ (year_total || 0) +'</td>');
+  
+  row.find('.numbers').digits();
+  return row; 
+}
+
+function row_template_forecast_week_days(data) {
 	var forward	= "#";
   var id		= data['id'];
-  var row		= $('<tr id="wk-'+ data['id'] +'"></tr>');
+  var row		= $('<tr forecast_week_id="'+ data['id'] +'"></tr>');
+  var week_total = (parseFloat(data['day_1']) || 0) + (parseFloat(data['day_2']) || 0) + (parseFloat(data['day_3']) || 0) +
+  									(parseFloat(data['day_4']) || 0) + (parseFloat(data['day_5']) || 0);
 
-  row.append('<td class="border-right text-center"><a id="'+ id +'" class="week" href="'+ forward +'">Week'+ id +'</a><input type="hidden" name="items['+id+'][week_id]" value="'+ (id || '') +'" /></td>');
-  row.append('<td class="border-right">'+ data['remarks'] +'</td>');
-  row.append('<td class="border-right text-center date-pick">'+ data['prod_date'] +'</td>');
-  row.append('<td class="border-right text-center date-pick">'+ data['ship_date'] +'</td>');
-  row.append('<td class="border-right text-right numbers">'+ (data['qty'] || 0) +'</td>');
-           	
-	row.find('.date-pick').date_pick();
+  row.append('<td class="border-right text-center"><a class="line" href="'+ forward +'">Line'+ data['line_id'] +'</a><input type="hidden" name="item['+id+'][id]" value="'+ data['id'] +'" /><input type="hidden" name="item['+id+'][line_id]" value="'+ data['line_id'] +'" /></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="item['+id+'][day_1]" value="'+ (parseFloat(data['day_1']) || 0) +'" class="text-field-medium text-right day-1" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="item['+id+'][day_2]" value="'+ (parseFloat(data['day_2']) || 0) +'" class="text-field-medium text-right day-2" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="item['+id+'][day_3]" value="'+ (parseFloat(data['day_3']) || 0) +'" class="text-field-medium text-right day-3" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="item['+id+'][day_4]" value="'+ (parseFloat(data['day_4']) || 0) +'" class="text-field-medium text-right day-4" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="item['+id+'][day_5]" value="'+ (parseFloat(data['day_5']) || 0) +'" class="text-field-medium text-right day-5" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" value="'+ (week_total || 0) +'" class="text-field-medium text-right week-total" readonly/></td>');         	
   row.find('.numbers').digits();
   return row; 
 }

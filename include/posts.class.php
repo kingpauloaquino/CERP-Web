@@ -221,17 +221,17 @@ class Posts {
 	function AddInventory($params) {
     $inventory = array(
 		  'item_id'					=> $params['item_id'],	
-		  'item_type'				=> $params['item_type'],	 
-		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))), 
-		  'current_qty'			=> $params['current_qty'],		  
-		  'reorder_level'		=> $params['reorder_level'],		  
-		  'reorder_qty'			=> $params['reorder_qty'],	
+		  'item_type'				=> $params['item_type'],	
+		  'invoice_no'				=> $params['invoice'],	
+		  'lot_no'				=> $params['lot'],	
+		  'qty'				=> $params['qty'],	 
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);
-    return $this->DB->InsertRecord('item_inventories', $inventory);
+    return $this->DB->InsertRecord('warehouse_inventories', $inventory);
   }
 	
 	function EditInventory($params) {
-    return $this->DB->UpdateRecord('item_inventories', $params);
+    return $this->DB->UpdateRecord('warehouse_inventories', $params);
   }
 	
 	function AddInventoryLocations($params) {
@@ -1123,7 +1123,8 @@ class Posts {
 	function EditForecastCalendar($params) {
 		foreach($params['items'] as $id => $attr) {
 			if($params['type'] == 'h1') {
-				if(!($attr['jan'] == 0 && $attr['feb'] == 0 && $attr['mar'] == 0 && $attr['apr'] == 0 && $attr['may'] == 0 && $attr['jun'] == 0)) {
+				// do not allow zero
+				//if(!($attr['jan'] == 0 && $attr['feb'] == 0 && $attr['mar'] == 0 && $attr['apr'] == 0 && $attr['may'] == 0 && $attr['jun'] == 0)) {
 					$forecast = array();
 					$item = $this->DB->Find('forecast_calendar', array('columns' => 'id', 'conditions' => 'product_id = '.$attr['product_id'].' AND forecast_year='.$params['forecast_year']));
 					
@@ -1140,10 +1141,11 @@ class Posts {
 						$this->DB->InsertRecord('forecast_calendar', $forecast); 
 					}
 					unset($forecast);	
-				} 	
+				//} 	
 			}
 			if($params['type'] == 'h2') {
-				if(!($attr['jul'] == 0 && $attr['aug'] == 0 && $attr['sep'] == 0 && $attr['oct'] == 0 && $attr['nov'] == 0 && $attr['dece'] == 0)) {
+				// do not allow zero
+				//if(!($attr['jul'] == 0 && $attr['aug'] == 0 && $attr['sep'] == 0 && $attr['oct'] == 0 && $attr['nov'] == 0 && $attr['dece'] == 0)) {
 					$forecast = array();
 					$item = $this->DB->Find('forecast_calendar', array('columns' => 'id', 'conditions' => 'product_id = '.$attr['product_id'].' AND forecast_year='.$params['forecast_year']));
 					
@@ -1160,7 +1162,7 @@ class Posts {
 						$this->DB->InsertRecord('forecast_calendar', $forecast); 
 					}
 					unset($forecast);	
-				} 	
+				//} 	
 			}
 		}
 		

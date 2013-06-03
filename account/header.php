@@ -181,6 +181,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			
 			//TODO: add to inventory
 			// lot no??
+			$Posts->AddInventory(array('item_id' => $item['item_id'], 'item_type' => 'MAT', 'invoice' => $_POST['delivery']['invoice'], 
+																'lot' => $_POST['delivery']['lot'], 'qty' => $item['received'], 'remarks' => $item['remarks']));
 		}
 		
 		$purchase_completion_status = 0;
@@ -525,8 +527,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$forecast['type'] = 'h1';
 		$forecast['forecast_year'] = $_POST['forecast_year'];
 		$forecast['items'] = $items;
-		
-		$Posts->EditForecastCalendar($forecast);
+
+		$Posts->EditForecastCalendar($forecast); 
 		redirect_to($Capabilities->All['show_forecast_calendar_h1']['url']);
 		break;
 		
@@ -551,7 +553,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		
 		break;
 	
-	
+	case 'edit_minventory_items':
+		$items = array('qty' => $_POST['inventory']['qty'], 'remarks' => $_POST['inventory']['remarks']);
+		$args = array('variables' => $items, 'conditions' => 'id='.$_POST['inventory']['id']); 
+		$num_of_records = $Posts->EditInventory($args);
+		break;
+		
+	case 'edit_forecast_days':
+		var_dump($_POST); 
+		die();
 	
 	
   } // close switch
@@ -706,5 +716,5 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
           </ul>
 			</div>
 			
-    <div id="header_fade" class="fade_up"></div>
+    	<div id="header_fade" class="fade_up"></div>
     </div>

@@ -52,3 +52,39 @@
 .ui-timepicker-rtl dl { text-align: right; }
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
 
+#tabs-left { 
+  position: relative; 
+  padding-left: 8.5em; 
+    height: auto; 
+} 
+#tabs-left .ui-tabs-nav { 
+    position: absolute; 
+    left: 0.25em; 
+    top: 0.25em; 
+    bottom: 0.25em; 
+    width: 8em; 
+    padding: 0.2em 0 0.2em 0.2em; 
+} 
+#tabs-left .ui-tabs-nav li { 
+    right: 1px; 
+    width: 100%; 
+    border-right: none; 
+    border-bottom-width: 1px !important; 
+    -moz-border-radius: 4px 0px 0px 4px; 
+    -webkit-border-radius: 4px 0px 0px 4px; 
+    border-radius: 4px 0px 0px 4px; 
+    overflow: hidden; 
+/*	    margin: 0.1em*/
+} 
+#tabs-left .ui-tabs-nav li.ui-tabs-selected, 
+#tabs-left .ui-tabs-nav li.ui-state-active { 
+    border-right: 1px solid transparent; 
+} 
+#tabs-left .ui-tabs-nav li a { 
+    float: right; 
+    width: 100%; 
+    text-align: center; 
+} 
+#tabs-left > div { 
+    height: 15em; 
+}

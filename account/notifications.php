@@ -30,7 +30,7 @@
           <thead>
             <tr>
               <td class="border-right text-center" width="120"><a class="sort default active up" column="created_at">Date</a></td>
-              <td class="border-right text-center" width="110"><a class="sort" column="type">Type</a></td>
+              <td class="border-right text-center" width="130"><a class="sort" column="type">Type</a></td>
               <td class="border-right text-center" width="130"><a class="sort" column="title">Title</a></td>
               <td class="border-right text-center" width="120"><a class="sort" column="value">Parameter</a></td>
               <td class="border-right text-center"><a class="sort" column="remarks">Remarks</a></td>

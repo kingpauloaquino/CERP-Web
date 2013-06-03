@@ -11,19 +11,7 @@
 	}else{
 		
 	  if(isset($_GET['id'])) {
-	  	$materials = $DB->Find('materials', array(
-						  			'columns' 		=> 'materials.id AS mid, materials.material_code, materials.description, brand_models.brand_model, lookups1.description AS unit,
-																	  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
-																	  	lookups3.description AS material_type, lookups4.description AS status', 
-						  	    'conditions' 	=> 'materials.id = '.$_GET['id'], 
-						  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
-																			LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
-																			LEFT OUTER JOIN users ON materials.person_in_charge = users.id
-																			LEFT OUTER JOIN item_costs ON materials.id = item_costs.item_id
-																			LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
-																			LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
-																			LEFT OUTER JOIN lookups AS lookups4 ON materials.status = lookups4.id'
-		  ));
+	  	$materials = $Query->material_by_id($_GET['id']);
 	  }	
 ?>
 
@@ -32,9 +20,8 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
-				  //echo '<a href="'.$Capabilities->All['edit_minventory']['url'].'?id='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_minventory']['name'].'</a>';
-				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 
-			  	// echo '<a href="'.$Capabilities->All['material_inventory_history']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['id'].'" class="nav" target="_blank">'.$Capabilities->All['material_inventory_history']['name'].'</a>';
+				  echo '<a href="'.$Capabilities->All['material_inventory']['url'].'" class="nav">'.$Capabilities->All['material_inventory']['name'].'</a>';
+				  echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?id='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>
@@ -69,57 +56,34 @@
            </tr>
            <tr><td height="5" colspan="99"></td></tr>
         </table>
-        
-        
       	<br/>
-      	
-      	<?php
-	        				$warehouse = $DB->Get('warehouse_inventories', array(
-							  			'columns' => 'warehouse_inventories.item_id, warehouse_inventories.invoice_no, warehouse_inventories.lot_no,
-							  										warehouse_inventories.qty, warehouse_inventories.remarks', 
-							  	    'conditions' => 'warehouse_inventories.item_type = "MAT" AND warehouse_inventories.item_id = '.$_GET['id']
-							  	    ));
-									//echo '<tr><td class="border-right text-right" colspan="5">'.$warehouse[0]['terminal_name'].'</td></tr>';
-									$total_qty = 0.0;
-									$ctr = 1;
-									$tbody = '';
-									foreach ($warehouse as $invt) {
-	        					$tbody .= '<tr>';
-										$tbody .= '<td class="border-right text-right">'.$ctr.'</td>';
-										$tbody .= '<td class="border-right text-center"><a href="#">'.$invt['invoice_no'].'</a></td>';
-										$tbody .= '<td class="border-right text-center"><a href="#">'.$invt['lot_no'].'</a></td>';
-										$tbody .= '<td class="border-right">'.$invt['remarks'].'</td>';
-										$tbody .= '<td class="border-right text-center">'.$materials['unit'].'</td>';
-										$tbody .= '<td class="border-right text-right">'.trim_decimal($invt['qty']).'</td>';
-	        					$tbody .= '</tr>';
-										$ctr+=1;
-										$total_qty += (double)$invt['qty'];
-									}
 
-	        		?>
-
-        <h3 class="form-title">Warehouse <?php echo ($total_qty==0) ? '<span class="magenta">(Out-of-stock)</span>' : ''; ?></h3>
-	      <div class="grid jq-grid">
-	        <table cellspacing="0" cellpadding="0">
-	          <thead>
-	            <tr>
-	              <td width="5%" class="border-right text-center"><a></a></td>
-	              <td width="10%" class="border-right text-center"><a>Invoice</a></td>
-	              <td width="10%" class="border-right text-center"><a>Mat. Lot No</a></td>
-	              <td class="border-right text-center"><a>Remarks</a></td>
-	              <td width="10%" class="border-right text-center"><a>UOM</a></td>
-	              <td width="10%" class="border-right text-center"><a>Qty</a></td>
-	            </tr>
-	          </thead>
-	          <tbody>
-	        		<?php echo $tbody ?>
-	          	<tr>
-	          		<td class="border-right text-right" colspan="5"><b>Total:</b></td>
-	          		<td class="border-right text-right"><b><?php echo $total_qty ?></b></td>
-	          	</tr>
-	          </tbody>
-	        </table>
-	      </div>	
+        <h3 class="form-title">Warehouse Stock <span id="out-of-stock" class="magenta">(Out-of-stock)</span></h3>
+	      <div id="grid-materials" class="grid jq-grid" style="min-height:60px;">
+           <table cellspacing="0" cellpadding="0">
+             <thead>
+               <tr>
+                 <td width="30" class="border-right text-center">No.</td>
+                 <td width="100" class="border-right text-center">Invoice</td>
+                 <td width="100" class="border-right text-center">Lot</td>
+                 <td class="border-right">Remarks</td>
+                 <td width="70" class="border-right text-center">Unit</td>
+                 <td width="70" class="border-right text-center">Stock</td>
+               </tr>
+             </thead>
+             <tbody id="materials"></tbody>
+           </table>
+         </div>
+         <div>
+	       	<table width="100%">
+	             <tr><td height="5" colspan="99"></td></tr>
+	             <tr>
+	                <td></td>
+	                <td align="right"><strong>Total:</strong>&nbsp;&nbsp;<input id="total_qty" type="text" class="text-right numbers" style="width:85px;" disabled/></td>
+	             </tr>
+	          </table>
+	       </div>	
+	      	
 	      <br/>
 	      <h3 class="form-title">Production Request</h3>
 	      <div class="grid jq-grid">
@@ -186,6 +150,29 @@
     	<br/>
 		</div>
 	</div>
-
+	
+	<script>
+		$(function() {
+	  	var data = { 
+	    	"url":"/populate/minventory-items.php?id=<?php echo $_GET['id'] ?>",
+	      "limit":"15",
+				"data_key":"minventory_items",
+				"row_template":"row_template_minventory_items_read_only",
+			}
+		
+			$('#grid-materials').grid(data);
+			
+			$(window).load(function(){
+				var total = 0;
+				$('#materials tr').each(function(){
+    			total += parseFloat($(this).attr('qty'));
+    		});
+    		$('#total_qty').val(total).digits();
+    		if(total>0) {
+    			$('#out-of-stock').hide();
+    		}
+			})
+	  }) 
+ </script>
 <?php }
 require('footer.php'); ?>

@@ -1,6 +1,5 @@
 <?php
 
-
 // if ($handle = opendir('/')) {
     // echo "Directory handle: $handle\n";
     // echo "Entries:\n";
@@ -34,6 +33,13 @@
 // mysql_close($con);
 $capability_key = 'key';
   require('header.php');
+	
+	$products = $DB->Get('products', array('columns' => 'id'));
+	foreach ($products as $p) {
+		$args = array();
+		$args = array('forecast_year'=>2013, 'product_id'=>$p['id']);
+		$Posts->InitForecast($args);
+	}
 ?>
 <script>
 $(function() {

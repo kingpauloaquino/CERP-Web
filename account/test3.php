@@ -1,8 +1,9 @@
+
 <html>
 <head>
     <link rel="stylesheet" href="estilo.css"/>
     <meta charset="UTF-8"/>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+<!--     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> -->
     <script type="text/javascript">
     	// $(function(){
 			    // $(".tile").mousedown(function(){      

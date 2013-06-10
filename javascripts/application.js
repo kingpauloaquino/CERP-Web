@@ -11,10 +11,12 @@ $(function() {
   $('.text-currency').currency_format();
   $('.text-date').date_format();
   $('.date-pick').date_pick();
+  $('.date-string').format_date_string();
   $('.redirect-to').redirect_to();
   $('.btn-download').download(); 
   
-  $(".numbers").digits();
+  $('.numbers').digits();
+  $('.numeric').numeric_only();
   
   // $(".dot-loader").Loadingdotdotdot({
     // "speed": 500,
@@ -103,10 +105,27 @@ $.fn.date_format = function(format) {
   $(this).attr('placeholder', format);
 }
 
-$.fn.date_pick = function() {
+$.fn.date_pick = function(format) {
+	format = format || 'MM dd, yy';
   $(this).datepicker({
-		inline: true, dateFormat: 'MM d, yy'
+		inline: true, dateFormat: format
 	});
+}
+
+$.fn.format_date_string = function(ctrl, format) {
+	format = format || 'MM dd, yy';
+	//var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "August", "Sep", "Oct", "Nov", "Dec" ];
+	//var date = new Date($(this).val());
+	//$(this).val(monthNames[date.getMonth()] + );
+	if(ctrl) {
+		if($(this).val() != '') {
+			$(this).val($.datepicker.formatDate(format, new Date($(this).val()))); 
+		} 
+	} else {
+		if($(this).html() != '') {
+			$(this).html($.datepicker.formatDate(format, new Date($(this).html()))); 
+		} 
+	}
 }
 
 $.fn.digits = function(){ 
@@ -114,6 +133,26 @@ $.fn.digits = function(){
         $(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
         $(this).val( $(this).val().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
     })
+}
+
+$.fn.numeric_only = function(){
+	$(this).keydown(function(event) {
+      // Allow: backspace, delete, tab, escape, and enter
+      if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
+           // Allow: Ctrl+A
+          (event.keyCode == 65 && event.ctrlKey === true) || 
+           // Allow: home, end, left, right
+          (event.keyCode >= 35 && event.keyCode <= 39)) {
+               // let it happen, don't do anything
+               return;
+      }
+      else {
+          // Ensure that it is a number and stop the keypress
+          if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+              event.preventDefault(); 
+          }   
+      }
+  });
 }
 
 
@@ -328,7 +367,7 @@ function row_template_products(data) {
     "<td class=\"border-right text-center\">"+ data['brand'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['pack'] +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
-    "<td class=\"border-right\">"+ data['description'] +"</td>" +
+    "<td class=\"border-right\">"+ (data['description'] || '') +"</td>" +
     "</tr>");
 
   return row;
@@ -1064,10 +1103,8 @@ function row_template_forecast_read_only(data) {
 	var forward	= host + "/account/forecast-show.php?pid="+ data['product_id'] + "";
   var id		= data['product_id'];
   var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
-  var total = (parseInt(data['jan']) || 0) + (parseInt(data['feb']) || 0) + (parseInt(data['mar']) || 0) + (parseInt(data['apr']) || 0) + (parseInt(data['may']) || 0) + (parseInt(data['jun']) || 0) +
-  						(parseInt(data['jul']) || 0) + (parseInt(data['aug']) || 0) + (parseInt(data['sep']) || 0) + (parseInt(data['oct']) || 0) + (parseInt(data['nov']) || 0) + (parseInt(data['dece']) || 0);
 
-  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right"><a class="click-month" href="#" pid="'+ id +'" pcode="'+ data['code'] +'">'+ data['code'] +'</a></td>');
   row.append('<td class="border-right text-right numbers">'+ (data['jan'] || 0) +'</td>');
   row.append('<td class="border-right text-right numbers">'+ (data['feb'] || 0) +'</td>');
   row.append('<td class="border-right text-right numbers">'+ (data['mar'] || 0) +'</td>');
@@ -1080,10 +1117,76 @@ function row_template_forecast_read_only(data) {
   row.append('<td class="border-right text-right numbers">'+ (data['oct'] || 0) +'</td>');
   row.append('<td class="border-right text-right numbers">'+ (data['nov'] || 0) +'</td>');
   row.append('<td class="border-right text-right numbers">'+ (data['dece'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers">'+ (total || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['total_qty'] || 0) +'</td>');
            	
   row.find('.numbers').digits();
   return row; 
+}
+
+function row_template_forecast_months_read_only(data) {
+	var id		= data['id'];
+  var row		= $('<tr id="prd-'+ data['product_id'] +'"></tr>');
+  var month = '';
+  switch(data['forecast_month']) {
+  	case '1': month = 'Jan'; break;
+  	case '2': month = 'Feb'; break;
+  	case '3': month = 'Mar'; break;
+  	case '4': month = 'Apr'; break;
+  	case '5': month = 'May'; break;
+  	case '6': month = 'Jun'; break;
+  	case '7': month = 'Jul'; break;
+  	case '8': month = 'Aug'; break;
+  	case '9': month = 'Sep'; break;
+  	case '10': month = 'Oct'; break;
+  	case '11': month = 'Nov'; break;
+  	case '12': month = 'Dec'; break;
+  }
+
+  row.append('<td class="border-right text-center">'+ month +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['ctrl_no'] || '') +'</td>');
+  row.append('<td class="border-right text-center date-string">'+ (data['delivery_date'] || '') +'</td>');
+  row.append('<td class="border-right text-center date-string">'+ (data['ship_date'] || '') +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['status'] || '') +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['qty'] || 0) +'</td>');
+  row.append('<td class="border-right">'+ (data['remarks'] || '') +'</td>');
+           	
+  row.find('.numbers').digits();
+	row.find('.date-string').format_date_string(false, 'M dd, yy');
+  return row;
+}
+
+function row_template_forecast_months(data) {
+	var id		= data['id'];
+  var row		= $('<tr id="'+ data['id'] +'" product_id="'+ data['product_id'] +'"></tr>');
+  var month = '';
+  switch(data['forecast_month']) {
+  	case '1': month = 'Jan'; break;
+  	case '2': month = 'Feb'; break;
+  	case '3': month = 'Mar'; break;
+  	case '4': month = 'Apr'; break;
+  	case '5': month = 'May'; break;
+  	case '6': month = 'Jun'; break;
+  	case '7': month = 'Jul'; break;
+  	case '8': month = 'Aug'; break;
+  	case '9': month = 'Sep'; break;
+  	case '10': month = 'Oct'; break;
+  	case '11': month = 'Nov'; break;
+  	case '12': month = 'Dec'; break;
+  }
+
+  row.append('<td class="border-right text-center"><input type="hidden" name="forecast['+id+'][id]"  value="'+id+'" />'+ month +'</td>');
+  row.append('<td class="border-right text-center"><input type="text" name="forecast['+id+'][ctrl_no]" class="text-center text-field-smallest" value="'+ (data['ctrl_no'] || '') +'"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="forecast['+id+'][delivery_date]" class="text-center text-field-medium date-string date-pick" value="'+ (data['delivery_date'] || '') +'"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="forecast['+id+'][ship_date]" class="text-center text-field-medium date-string date-pick" value="'+ (data['ship_date'] || '') +'"/></td>');
+  row.append('<td class="border-right text-center">'+ (data['status'] || '') +'</td>');
+  row.append('<td class="border-right text-right"><input type="text" name="forecast['+id+'][qty]" class="text-center text-field-number numeric" value="'+ (data['qty'] || 0) +'"/></td>');
+  row.append('<td class="border-right"><input type="text" name="forecast['+id+'][remarks]" class="text-field-max" value="'+ (data['remarks'] || '') +'"/></td>');
+           	
+  row.find('.numbers').digits();
+  row.find('.numeric').numeric_only();
+	row.find('.date-string').format_date_string(true, 'M dd, yy');
+	row.find('.date-pick').date_pick('M dd, yy');
+  return row;
 }
 
 function row_template_forecast_h1(data) {
@@ -1156,30 +1259,30 @@ function row_template_forecast_h2_read_only(data) {
   return row; 
 }
 
-function row_template_forecast_months(data) {
-  var year_total = parseFloat((data['jan'] || 0)) + parseFloat((data['feb'] || 0)) + parseFloat((data['mar'] || 0)) + parseFloat((data['apr'] || 0)) +
-  									parseFloat((data['may'] || 0)) + parseFloat((data['jun'] || 0)) + parseFloat((data['jul'] || 0)) + parseFloat((data['aug'] || 0)) +
-  									parseFloat((data['sep'] || 0)) + parseFloat((data['oct'] || 0)) + parseFloat((data['nov'] || 0)) + parseFloat((data['dece'] || 0));
-  var row		= $('<tr forecast_cal_id="'+ data['id'] +'"></tr>');
-
-  row.append('<td class="border-right text-center">'+ data['forecast_year'] +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="1" month="January">'+ (data['jan'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="2" month="February">'+ (data['feb'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="3" month="March">'+ (data['mar'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="4" month="April">'+ (data['apr'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="5" month="May">'+ (data['may'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="6" month="June">'+ (data['jun'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="7" month="July">'+ (data['jul'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="8" month="August">'+ (data['aug'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="9" month="September">'+ (data['sep'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="10" month="October">'+ (data['oct'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="11" month="November">'+ (data['nov'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="12" month="December">'+ (data['dece'] || 0) +'</td>');
-  row.append('<td class="border-right text-right numbers" year="'+ data['forecast_year'] +'">'+ (year_total || 0) +'</td>');
-  
-  row.find('.numbers').digits();
-  return row; 
-}
+// function row_template_forecast_months(data) {
+  // var year_total = parseFloat((data['jan'] || 0)) + parseFloat((data['feb'] || 0)) + parseFloat((data['mar'] || 0)) + parseFloat((data['apr'] || 0)) +
+  									// parseFloat((data['may'] || 0)) + parseFloat((data['jun'] || 0)) + parseFloat((data['jul'] || 0)) + parseFloat((data['aug'] || 0)) +
+  									// parseFloat((data['sep'] || 0)) + parseFloat((data['oct'] || 0)) + parseFloat((data['nov'] || 0)) + parseFloat((data['dece'] || 0));
+  // var row		= $('<tr forecast_cal_id="'+ data['id'] +'"></tr>');
+// 
+  // row.append('<td class="border-right text-center">'+ data['forecast_year'] +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="1" month="January">'+ (data['jan'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="2" month="February">'+ (data['feb'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="3" month="March">'+ (data['mar'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="4" month="April">'+ (data['apr'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="5" month="May">'+ (data['may'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="6" month="June">'+ (data['jun'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="7" month="July">'+ (data['jul'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="8" month="August">'+ (data['aug'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="9" month="September">'+ (data['sep'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="10" month="October">'+ (data['oct'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="11" month="November">'+ (data['nov'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers month" year="'+ data['forecast_year'] +'" id="12" month="December">'+ (data['dece'] || 0) +'</td>');
+  // row.append('<td class="border-right text-right numbers" year="'+ data['forecast_year'] +'">'+ (year_total || 0) +'</td>');
+//   
+  // row.find('.numbers').digits();
+  // return row; 
+// }
 
 function row_template_forecast_week_days(data) {
 	var forward	= "#";

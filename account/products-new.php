@@ -25,6 +25,7 @@
 		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'order' => 'code'));
 	  $currencies = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'order' => 'code'));
 	  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
+
 ?>
 
 	<div id="page">
@@ -61,7 +62,7 @@
            </tr>         
            <tr>
               <td>Production CP:</td><td><input type="text" id="product[prod_cp]" name="product[prod_cp]" class="text-field text-right"/></td>
-              <td></td>
+              <td>Priority:</td><td><?php select_tag(array(0 => 'Low', 1 => 'High'), '', 'product[priority]', 'product[priority]', '', 'width:192px;') ?></td>
            </tr>       
            <tr>
               <td>Description:</td>

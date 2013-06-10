@@ -172,17 +172,21 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			$item['receipt'] = $_POST['delivery']['receipt'];
 			$item['receive_date'] = date('Y-m-d');
 			$item['received'] = $item['received'];
-			unset($item['delivered']);
-			$args = array('variables' => $item, 'conditions' => 'id='.$item['id']); 
+			 
+			//add to inventory
+			$Posts->AddInventory(array('item_id' => $item['item_id'], 'item_type' => 'MAT', 'invoice' => $_POST['delivery']['invoice'], 
+																'lot' => $_POST['delivery']['lot'], 'qty' => $item['received'], 'remarks' => $item['remarks'])); 
+			 
+			//update receiving status
+			unset($item['delivered']); 
+			unset($item['item_id']); 
+			$args = array('variables' => $item, 'conditions' => 'id='.$item['id']);
 			$num_of_records = $Posts->EditReceivingItems($args);
 			
 			$ctr += 1;
 			if($item['status'] == 21) $complete_flag += 1;
 			
-			//TODO: add to inventory
-			// lot no??
-			$Posts->AddInventory(array('item_id' => $item['item_id'], 'item_type' => 'MAT', 'invoice' => $_POST['delivery']['invoice'], 
-																'lot' => $_POST['delivery']['lot'], 'qty' => $item['received'], 'remarks' => $item['remarks']));
+			
 		}
 		
 		$purchase_completion_status = 0;
@@ -550,6 +554,27 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		break;
 		
 	case 'add_forecast':
+		$args = array('forecast_year'=>$_POST['forecast_year'], 'product_id'=>$_POST['product_id']);
+		$Posts->InitForecast($args);
+		break;
+		
+	case 'edit_forecast':
+		foreach ($_POST['forecast'] as $forecast) {
+			
+			if($forecast['delivery_date'] == NULL) {
+				unset($forecast['delivery_date']); 
+			} else {
+				$forecast['delivery_date'] = date('Y-m-d', strtotime($forecast['delivery_date']));
+			}
+			if($forecast['ship_date'] == NULL) {
+				unset($forecast['ship_date']); 
+			} else {
+				$forecast['ship_date'] = date('Y-m-d', strtotime($forecast['ship_date']));
+			}
+			
+			$args = array('variables' => $forecast, 'conditions' => 'id='. $forecast['id']); 
+			$num_of_records = $Posts->EditForecast($args);
+		}
 		
 		break;
 	
@@ -625,7 +650,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	<div id="menu-plan" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
         	  <ul>
-        	    <li><a href="forecast-calendar.php">Forecasts</a></li>
+        	  	<li><a href="plan-overview-show.php">Overview</a></li>
+        	    <li><a href="forecasts-show.php">Forecast</a></li>
         	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
         	    <li><a href="work-orders.php">Work Orders</a></li>
         	    <li><a href="production-plan.php">Production Plan</a></li>

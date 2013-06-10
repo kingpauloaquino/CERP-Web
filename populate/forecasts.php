@@ -4,24 +4,22 @@ require('../include/general.class.php');
 $keyword	= $_GET['params'];
 $page			= ($_GET['page'] != "" ? $_GET['page'] : 1);
 $limit		= ($_GET['limit'] != "" ? $_GET['limit'] : 15);
-$order		= ($_GET['order'] != "" ? $_GET['order'] : "product_id");
+$order		= ($_GET['order'] != "" ? $_GET['order'] : "forecast_month");
 $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 
 function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
   $startpoint = $limit * ($page - 1);
-	$search = 
-						'(code LIKE "%'. $keyword .'%" OR '.
-						'description LIKE "%'. $keyword .'%") AND forecast_year='.$_GET['yr'];
+	$search = 'product_id='.$_GET['pid'].' AND forecast_year='.$_GET['yr'];
 	
-	$query = $DB->Fetch('forecasts_view', array(
+	$query = $DB->Fetch('forecasts', array(
 							'columns'	=> '*',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,
              )
            );
-	return array("forecast_calendar" => $query, "total" => $DB->totalRows());
+	return array("forecasts" => $query, "total" => $DB->totalRows());
 }
 echo json_encode(populate_records($keyword, $page, $limit, $order, $sort));
 //$JSON->build_pretty_json(populate_records($keyword, $page, $limit, $order, $sort));

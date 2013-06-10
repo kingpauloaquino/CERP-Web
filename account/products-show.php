@@ -13,7 +13,7 @@
 	  if(isset($_GET['pid'])) {
 	  	$products = $DB->Find('products', array(
 					  			'columns' 		=> 'products.product_code, products.description, brand_models.brand_model AS brand, lookups3.description AS status, 
-					  												item_classifications.classification, products.bar_code, products.color, products.prod_cp,  
+					  												item_classifications.classification, products.bar_code, products.color, products.prod_cp, products.priority, 
 					  												suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.description AS currency, item_costs.cost', 
 					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id
@@ -68,7 +68,7 @@
            </tr>    
            <tr>
               <td>Production CP:</td><td><input type="text" value="<?php echo $products['prod_cp'] ?>" class="text-field text-right numbers" disabled/></td>
-              <td></td>
+              <td>Priority:</td><td><input type="text" value="<?php echo ($products['priority']==1) ? 'High' : 'Low' ?>" class="text-field" disabled/></td>
            </tr>            
            <tr>
               <td>Description:</td>

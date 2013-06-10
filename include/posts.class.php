@@ -209,7 +209,8 @@ class Posts {
 		  'color'										=> $params['color'], 
 		  'bar_code'								=> $params['bar_code'],
 		  'status'									=> $params['status'],
-		  'prod_cp'									=> $params['prod_cp']
+		  'prod_cp'									=> $params['prod_cp'],
+		  'priority'									=> $params['priority']
 		);
     return $this->DB->InsertRecord('products', $product);
   }
@@ -1168,5 +1169,20 @@ class Posts {
 		
 		//$args = array('variables' => $item, 'conditions' => 'product_id='.$attr['product_id'].' AND forecast_year='.$_POST['forecast_year']); 
 		//$num_of_records = $Posts->AddForecastCalendar($args);	
+	}
+
+	function InitForecast($params) {
+		$forecast = $this->DB->Find('forecasts', array('columns' => 'id', 'conditions' => 'forecast_year='. $params['forecast_year'] .' AND product_id='. $params['product_id']));
+		if(!isset($forecast)) {
+			for($i=1; $i<=12; $i++) {
+				$this->DB->InsertRecord('forecasts', array('forecast_year'	=> $params['forecast_year'], 
+																										'forecast_month'	=> $i,
+																										'product_id'	=> $params['product_id'],));
+			}	
+		}
+	}
+
+	function EditForecast($params) {
+		$this->DB->UpdateRecord('forecasts', $params); 
 	}
 }

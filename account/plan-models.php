@@ -1,8 +1,8 @@
 <?php
   /*
-   * Module: Suppliers 
+   * Module: Plan Models 
   */
-  $capability_key = 'products';  
+  $capability_key = 'plan_models';  
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -14,9 +14,7 @@
 		<div id="page-title">
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
-        <?php
-				  echo '<a href="'.$Capabilities->All['add_product']['url'].'" class="nav">'.$Capabilities->All['add_product']['name'].'</a>';
-				?>
+      	
 				<div class="clear"></div>
       </h2>
 		</div>
@@ -54,7 +52,7 @@
     	"url":"/populate/products.php",
       "limit":"15",
 			"data_key":"products",
-			"row_template":"row_template_products",
+			"row_template":"row_template_plan_products",
       "pagination":"#products-pagination",
       "searchable":true
 		}

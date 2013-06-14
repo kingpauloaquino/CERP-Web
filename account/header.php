@@ -584,6 +584,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$num_of_records = $Posts->EditInventory($args);
 		break;
 		
+	case 'add_shipment_plan':
+		$plan = $_POST['plan'];
+		$Posts->AddShipmentPlan(array('po_id' => $plan['po_id'], 'item_id' => $plan['item_id'], 'item_type' => $plan['item_type'],
+															'ship_date' => $plan['ship_date'], 'qty' => $plan['qty'], 'remarks' => $plan['remarks'])); 
+		break;
+		
+	case 'remove_shipment_plan':
+		foreach ($_POST['ids'] as $key => $value) {
+			$DB->DeleteRecord('shipment_plans', array('conditions' => 'id='.$value));
+		}
+		
+		break;
+		
 	case 'edit_forecast_days':
 		var_dump($_POST); 
 		die();
@@ -651,9 +664,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
             <div class="glyphicons-halflings"></div>
         	  <ul>
         	  	<li><a href="plan-overview-show.php">Overview</a></li>
-        	    <li><a href="forecasts-show.php">Forecast</a></li>
         	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
         	    <li><a href="work-orders.php">Work Orders</a></li>
+        	    <li><a href="forecasts-show.php">Forecast</a></li>
+        	    <li><a href="plan-pos.php">Plan P/O's</a></li>
+        	    <li><a href="plan-models.php">Plan Models</a></li>
+        	    <li><a href="plan-weeks.php">Plan Weeks</a></li>
         	    <li><a href="production-plan.php">Production Plan</a></li>
         	    <li><a href="material-plan.php">Material Plan</a></li>
         	  </ul>

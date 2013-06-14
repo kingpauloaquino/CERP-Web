@@ -18,6 +18,9 @@ $(function() {
   $('.numbers').digits();
   $('.numeric').numeric_only();
   
+  //$('.to-numeric').to_numeric();
+  
+  
   // $(".dot-loader").Loadingdotdotdot({
     // "speed": 500,
     // "maxDots": 4,
@@ -134,6 +137,10 @@ $.fn.digits = function(){
         $(this).val( $(this).val().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
     })
 }
+
+// $.fn.to_numeric = function(){ 
+    // return parseInt($(this).replace(/,/g, ''), 10);
+// }
 
 $.fn.numeric_only = function(){
 	$(this).keydown(function(event) {
@@ -365,6 +372,7 @@ function row_template_products(data) {
   var forward	= host + "/account/products-show.php?pid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ data['brand'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['series'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['pack'] +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
     "<td class=\"border-right\">"+ (data['description'] || '') +"</td>" +
@@ -541,6 +549,95 @@ function row_template_purchase_orders(data) {
     "</tr>");
 
   return row;
+}
+
+function row_template_plan_po(data) {
+  var forward	= host + "/account/plan-po-model-show.php?pid="+ data['id'] +"";
+  var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['po_number'] || '--') +"</a></td>" +
+    "<td class=\"border-right text-center\">"+ data['po_date'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['ship_date'] +"</td>" +
+    "<td class=\"border-right\">"+ data['remarks'] +"</td>" +
+    "</tr>");
+
+  return row;
+}
+
+function row_template_plan_po_models_read_only(data) {
+  var forward	= host + '/account/plan-po-model-ship.php?poid='+ data['purchase_order_id'] +'&pid='+ data['item_id'];
+  var row		= $('<tr id="mat-'+ data['item_id'] +'"></tr>');
+
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right">'+ data['remarks'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ data['quantity'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+           	
+  row.find('.currency').formatCurrency({region:"en-PH"});
+  row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_plan_po_model_shipments_read_only(data) {
+  var forward	= host + '/account/';
+  var row		= $('<tr id="'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right">'+ data['ship_date'] +'</td>');
+  row.append('<td class="border-right">'+ data['remarks'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['completion'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers qty">'+ data['qty'] +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_plan_products(data) {
+  var forward	= host + "/account/plan-model-po-show.php?pid="+ data['id'] +"";
+  var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
+    "<td class=\"border-right text-center\">"+ data['brand'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['series'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['pack'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
+    "<td class=\"border-right\">"+ (data['description'] || '') +"</td>" +
+    "</tr>");
+
+  return row;
+}
+
+function row_template_plan_product_pos_read_only(data) {
+  var forward	= host + '/account/plan-po-model-ship.php?poid='+ data['id'] +'&pid='+ data['pid'];
+  var row		= $('<tr id="'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center"><a target="_blank" href="'+ forward +'">'+ data['po_number'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['po_date'] +'</td>');
+  row.append('<td class="border-right">'+ data['remarks'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['ship_date'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ data['quantity'] +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_ship_plan_week(data) {
+  var forward1	= host + '/account/plan-po-model-ship.php?poid='+ data['po_id'] +'&pid='+ data['pid'];
+  var forward2	= host + '/account/plan-model-po-show.php?pid='+ data['pid'];
+  var row		= $('<tr id="'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right text-center"><a target="_blank" href="'+ forward2 +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right text-center"><a target="_blank" href="'+ forward1 +'">'+ data['po_number'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['series'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['pack'] +'</td>');
+  row.append('<td class="border-right">'+ data['remarks'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ data['qty'] +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row;  
 }
 
 function row_template_work_orders(data) {

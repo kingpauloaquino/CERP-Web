@@ -141,7 +141,7 @@
     	e.preventDefault();
 
       var form		= $(this).attr('href');
-      console.log($(form).serialize());
+      //console.log($(form).serialize());
       
       $.post("forecasts-edit.php", $(form).serialize(), function(data) {
       	

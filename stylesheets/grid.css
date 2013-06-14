@@ -31,7 +31,7 @@
 }
 
 .grid table thead tr td.border-right { border-color:#444444; }
-.grid table thead tr td a { color:#ffffff; }
+.grid table thead tr td a { color:#ffffff;  }
 .grid table thead tr td a.sort {
   padding:0 0 0 0;
   /* background:url('../images/icons/icon-sort-down.png')  no-repeat right 3px; */
@@ -77,8 +77,16 @@
   font-size:1.6em;
   text-align:center;
 }
+.grid table tbody tr td a {
+	display:block;
+	margin:0;
+	padding:0;
+}
 
 /* SEARCH BOX */
+.search-title {
+	float: left; font-size: 16px; font-weight: bold;
+}
 .search { 
   margin:0 0 10px;
   text-align:right; 

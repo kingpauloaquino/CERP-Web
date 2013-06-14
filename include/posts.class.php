@@ -210,7 +210,8 @@ class Posts {
 		  'bar_code'								=> $params['bar_code'],
 		  'status'									=> $params['status'],
 		  'prod_cp'									=> $params['prod_cp'],
-		  'priority'									=> $params['priority']
+		  'priority'								=> $params['priority'],
+		  'series'									=> $params['series']
 		);
     return $this->DB->InsertRecord('products', $product);
   }
@@ -293,7 +294,7 @@ class Posts {
   	  'po_date'			=> date('Y-m-d', strtotime($params['po_date'])),
   	  'payment_terms'	=> $params['payment_terms'],
   	  'terms'			=> $params['terms'],
-  	  'ship_date'	=> date('Y-m-d', strtotime($params['delivery_date'])),
+  	  'ship_date'	=> date('Y-m-d', strtotime($params['ship_date'])),
   	  'status'			=> $params['status'],
   	  'completion_status'			=> $params['completion_status'],
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
@@ -1184,5 +1185,18 @@ class Posts {
 
 	function EditForecast($params) {
 		$this->DB->UpdateRecord('forecasts', $params); 
+	}
+	
+	function AddShipmentPlan($params) {
+		$plan = array(
+  	  'po_id'	=> $params['po_id'],
+  	  'item_id'		=> $params['item_id'],
+  	  'item_type'=> $params['item_type'],
+  	  'ship_date'	=> date('Y-m-d', strtotime($params['ship_date'])),
+  	  'qty'	=> $params['qty'],
+  	  'status'	=> 19, // PENDING status
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
+		);	
+		return $this->DB->InsertRecord('shipment_plans', $plan);
 	}
 }

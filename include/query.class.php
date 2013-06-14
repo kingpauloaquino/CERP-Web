@@ -110,6 +110,20 @@ class Query {
 	return null;
   }
 
+function purchase_order_item_by_id($poid, $pid) {
+		$query = $this->DB->Fetch('purchase_orders', array(
+			  			'columns' => 'purchase_orders.id, purchase_orders.po_number, purchase_orders.po_date, purchase_orders.ship_date, suppliers.name AS client,
+														products.product_code, purchase_order_items.quantity', 
+			  	  	'joins' => 'INNER JOIN suppliers ON suppliers.id = purchase_orders.client_id
+													INNER JOIN purchase_order_items ON purchase_order_items.purchase_order_id = purchase_orders.id
+													INNER JOIN products ON products.id = purchase_order_items.item_id',
+			  	  	'conditions' => 'purchase_orders.id = '. $poid .' AND purchase_order_items.item_id = '.$pid)
+						);	 
+						 
+	if(!empty($query)) return $query[0];
+	return null;
+  }
+
   function delivery_by_id($id) {
   	$query = $this->DB->Fetch('deliveries', array(
                'columns'  => 'deliveries.id, purchases.id AS pid, purchases.po_number, suppliers.id AS supplier_id, suppliers.name AS supplier_name, 
@@ -188,12 +202,18 @@ class Query {
 	
 	function product_by_id($id) {
 		$query = $this->DB->Fetch('products', array(
-					  			'columns' 		=> 'products.product_code, products.description, brand_models.brand_model AS brand, lookups.description AS status, item_classifications.classification,
-					  												products.bar_code, products.color, products.prod_cp', 
+					  			'columns' 		=> 'products.product_code, products.description, brand_models.brand_model AS brand, lookups.description AS status, product_series.series,
+					  												item_classifications.classification, products.bar_code, products.color, products.prod_cp, products.priority, 
+					  												suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.description AS currency, item_costs.cost', 
 					  	    'conditions' 	=> 'products.id = '.$id, 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id
 																		LEFT OUTER JOIN lookups ON products.status = lookups.id
-																		LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification'
+																		LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification
+																		INNER JOIN product_series ON product_series.id = products.series
+																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id AND item_costs.item_type = "PRD"
+																		LEFT OUTER JOIN suppliers ON item_costs.supplier = suppliers.id
+																		LEFT OUTER JOIN lookups AS lookups1 ON item_costs.unit = lookups1.id
+																		LEFT OUTER JOIN lookups AS lookups2 ON item_costs.currency = lookups2.id'
 	  	  ));
 				
 		if(!empty($query)) return $query[0];

@@ -33,13 +33,15 @@
 // mysql_close($con);
 $capability_key = 'key';
   require('header.php');
+	echo '<br/><br/><br/>';
+	echo date('n', strtotime(' Thursday +5 week', strtotime(date('Y').'-01-01')))
 	
-	$products = $DB->Get('products', array('columns' => 'id'));
-	foreach ($products as $p) {
-		$args = array();
-		$args = array('forecast_year'=>2013, 'product_id'=>$p['id']);
-		$Posts->InitForecast($args);
-	}
+	// $products = $DB->Get('products', array('columns' => 'id'));
+	// foreach ($products as $p) {
+		// $args = array();
+		// $args = array('forecast_year'=>2013, 'product_id'=>$p['id']);
+		// $Posts->InitForecast($args);
+	// }
 ?>
 <script>
 $(function() {

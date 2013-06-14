@@ -21,7 +21,7 @@
 	  if(isset($_GET['pid'])) {
 	  	$products = $DB->Find('products', array(
 					  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, item_classifications.classification, 
-					  												products.bar_code, products.color, products.prod_cp', 
+					  												products.bar_code, products.color, products.prod_cp, products.series', 
 					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
 					  	    'joins' 			=> 'INNER JOIN brand_models ON products.brand_model = brand_models.id
 					  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification'
@@ -39,6 +39,7 @@
 	  $currencies = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'order' => 'code'));
 	  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
 		$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 'conditions' => 'item_type="PRD" AND item_id = '.$_GET['pid']));	
+		$series = $DB->Get('product_series', array('columns' => 'id, series', 'order' => 'series'));
 ?>
 
 	<div id="page">
@@ -73,16 +74,20 @@
               <td>Barcode:</td><td><input type="text" id="product[bar_code]" name="product[bar_code]" value="<?php echo $products['bar_code'] ?>" class="text-field" />
               	<span id="bar_codestatus" class="warning"></span>
               </td>
-              <td>Color:</td><td><input type="text" id="product[color]" name="product[color]" value="<?php echo $products['color'] ?>" class="text-field" /></td>
+              <td>Series:</td><td><?php select_query_tag($series, 'id', 'series', $products['series'], 'product[series]', 'product[series]', '', 'width:192px;'); ?></td>
            </tr>    
            <tr>
               <td>Pack:</td><td><?php select_query_tag($packs, 'id', 'classification', $products['product_classification'], 'product[product_classification]', 'product[product_classification]', '', 'width:192px;'); ?></td>
-              <td>Status:</td><td><?php select_query_tag($statuses, 'id', 'description', $products['status'], 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
+              <td>Color:</td><td><input type="text" id="product[color]" name="product[color]" value="<?php echo $products['color'] ?>" class="text-field" /></td>
            </tr>        
            <tr>
               <td>Production CP:</td><td><input type="text" id="product[prod_cp]" name="product[prod_cp]" value="<?php echo $products['prod_cp'] ?>" class="text-field text-right"/></td>
               <td>Priority:</td><td><?php select_tag(array(0 => 'Low', 1 => 'High'), $products['priority'], 'product[priority]', 'product[priority]', '', 'width:192px;') ?></td>
-           </tr>           
+           </tr>     
+           <tr>
+              <td>Status:</td><td><?php select_query_tag($statuses, 'id', 'description', $products['status'], 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
+              <td></td><td></td>
+           </tr>            
            <tr>
               <td>Description:</td>
               <td colspan="99">

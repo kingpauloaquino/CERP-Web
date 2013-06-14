@@ -11,20 +11,7 @@
 	}else{
   
 	  if(isset($_GET['pid'])) {
-	  	$products = $DB->Find('products', array(
-					  			'columns' 		=> 'products.product_code, products.description, brand_models.brand_model AS brand, lookups3.description AS status, 
-					  												item_classifications.classification, products.bar_code, products.color, products.prod_cp, products.priority, 
-					  												suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.description AS currency, item_costs.cost', 
-					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
-					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id
-																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id AND item_costs.item_type = "PRD"
-																		LEFT OUTER JOIN suppliers ON item_costs.supplier = suppliers.id
-																		LEFT OUTER JOIN lookups AS lookups1 ON item_costs.unit = lookups1.id
-																		LEFT OUTER JOIN lookups AS lookups2 ON item_costs.currency = lookups2.id
-																		LEFT OUTER JOIN lookups AS lookups3 ON products.status = lookups3.id
-																		LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification'
-	  	  )
-			);
+	  	$products = $Query->product_by_id($_GET['pid']);
 			$item_images = $DB->Get('item_images', array('columns' => 'item_images.*',
 			 																			'conditions' => 'item_id='.$_GET['pid']));	
 			$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 
@@ -60,15 +47,19 @@
            </tr>
            <tr>
               <td>Barcode:</td><td><input type="text" value="<?php echo $products['bar_code'] ?>" class="text-field" disabled/></td>
-              <td>Color:</td><td><input type="text" value="<?php echo $products['color'] ?>" class="text-field" disabled/></td>
-           </tr>    
+              <td>Series:</td><td><input type="text" value="<?php echo $products['series'] ?>" class="text-field" disabled/></td>
+           </tr>  
            <tr>
               <td>Pack:</td><td><input type="text" value="<?php echo $products['classification'] ?>" class="text-field" disabled/></td>
-              <td>Status:</td><td><input type="text" value="<?php echo $products['status'] ?>" class="text-field" disabled/></td>
+              <td>Color:</td><td><input type="text" value="<?php echo $products['color'] ?>" class="text-field" disabled/></td>
            </tr>    
            <tr>
               <td>Production CP:</td><td><input type="text" value="<?php echo $products['prod_cp'] ?>" class="text-field text-right numbers" disabled/></td>
               <td>Priority:</td><td><input type="text" value="<?php echo ($products['priority']==1) ? 'High' : 'Low' ?>" class="text-field" disabled/></td>
+           </tr>     
+           <tr>
+              <td>Status:</td><td><input type="text" value="<?php echo $products['status'] ?>" class="text-field" disabled/></td>
+              <td></td><td></td>
            </tr>            
            <tr>
               <td>Description:</td>

@@ -25,7 +25,7 @@
 		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'order' => 'code'));
 	  $currencies = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'order' => 'code'));
 	  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
-
+		$series = $DB->Get('product_series', array('columns' => 'id, series', 'order' => 'series'));
 ?>
 
 	<div id="page">
@@ -54,16 +54,20 @@
               <td>Barcode:</td><td><input type="text" id="product[bar_code]" name="product[bar_code]" class="text-field" />
               	<span id="bar_codestatus" class="warning"></span>
               </td>
-              <td>Color:</td><td><input type="text" id="product[color]" name="product[color]" value="<?php echo $products['color'] ?>" class="text-field" /></td>
+              <td>Series:</td><td><?php select_query_tag($series, 'id', 'series', '', 'product[series]', 'product[series]', '', 'width:192px;'); ?></td>
            </tr>    
            <tr>
               <td>Pack:</td><td><?php select_query_tag($packs, 'id', 'classification', '', 'product[product_classification]', 'product[product_classification]', '', 'width:192px;'); ?></td>
-              <td>Status:</td><td><?php select_query_tag($statuses, 'id', 'description', '', 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
+              <td>Color:</td><td><input type="text" id="product[color]" name="product[color]" value="<?php echo $products['color'] ?>" class="text-field" /></td>
            </tr>         
            <tr>
               <td>Production CP:</td><td><input type="text" id="product[prod_cp]" name="product[prod_cp]" class="text-field text-right"/></td>
               <td>Priority:</td><td><?php select_tag(array(0 => 'Low', 1 => 'High'), '', 'product[priority]', 'product[priority]', '', 'width:192px;') ?></td>
-           </tr>       
+           </tr>     
+           <tr>
+           		<td>Status:</td><td><?php select_query_tag($statuses, 'id', 'description', '', 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
+           		<td></td><td></td>
+           </tr>      
            <tr>
               <td>Description:</td>
               <td colspan="99">

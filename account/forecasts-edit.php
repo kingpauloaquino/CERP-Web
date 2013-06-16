@@ -35,19 +35,20 @@
 	          <thead>
 	            <tr>
 	              <td class="border-right text-center"><a class="sort default active up" column="code">Code</a></td>
-	              <td width="60" class="border-right text-center"><a>Jan</a></td>
-	              <td width="60" class="border-right text-center"><a>Feb</a></td>
-	              <td width="60" class="border-right text-center"><a>Mar</a></td>
-	              <td width="60" class="border-right text-center"><a>Apr</a></td>
-	              <td width="60" class="border-right text-center"><a>May</a></td>
-	              <td width="60" class="border-right text-center"><a>Jun</a></td>
-	              <td width="60" class="border-right text-center"><a>Jul</a></td>
-	              <td width="60" class="border-right text-center"><a>Aug</a></td>
-	              <td width="60" class="border-right text-center"><a>Sep</a></td>
-	              <td width="60" class="border-right text-center"><a>Oct</a></td>
-	              <td width="60" class="border-right text-center"><a>Nov</a></td>
-	              <td width="60" class="border-right text-center"><a>Dec</a></td>
-	              <td width="60" class="border-right text-center"><a>Total</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="jan">Jan</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="feb">Feb</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="mar">Mar</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="apr">Apr</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="may">May</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="jun">Jun</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="jul">Jul</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="aug">Aug</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="sep">Sep</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="oct">Oct</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="nov">Nov</a></td>
+	              <td width="55" class="border-right text-center"><a class="sort" column="dece">Dec</a></td>
+	              <td width="80" class="border-right text-center"><a class="sort" column="total_qty">Total</a></td>
+	              <td width="90" class="border-right text-center"><a class="sort" column="single_total_qty">Singles Total</a></td>
 	            </tr>
 	          </thead>
 	          <tbody></tbody>
@@ -69,13 +70,15 @@
 					<table id="tbl-calendar-months" cellspacing="0" cellpadding="0">
 						<thead>
 							<tr> 
-								<td class="border-right text-center" width="60"><a>Month</a></td>
-								<td class="border-right text-center" width="70"><a>Ctrl #</a></td> 
-								<td class="border-right text-center" width="110"><a>Delivery</a></td> 
-								<td class="border-right text-center" width="110"><a>Shipment</a></td>
-								<td class="border-right text-center" width="90"><a>Status</a></td>
-								<td class="border-right text-center" width="70"><a>Qty</a></td> 
-								<td class="border-right text-center"><a>Remarks</a></td> 
+							<td class="border-right text-center" width="50"><a>Month</a></td>
+							<td class="border-right text-center" width="50"><a>Ctrl #</a></td> 
+							<td class="border-right text-center" width="80"><a>Delivery</a></td> 
+							<td class="border-right text-center" width="80"><a>Shipment</a></td>
+							<td class="border-right text-center" width="80"><a>Production</a></td>
+							<td class="border-right text-center" width="90"><a>Status</a></td>
+							<td class="border-right text-center"><a>Remarks</a></td> 
+							<td class="border-right text-center" width="70"><a>Qty</a></td> 
+<!-- 								<td class="border-right text-center" width="70"><a>Singles Qty</a></td>  -->
 							</tr>
 						</thead>
 						<tbody id="calendar-months"></tbody>
@@ -106,6 +109,7 @@
 		
 		$('#tbl-calendar').find('tbody tr .click-month').show_calendar_modal();
 		$('#submit-forecast').save_forecast();
+		
   }) 
   
   $.fn.show_calendar_modal = function() {
@@ -159,6 +163,8 @@
       });
     })
   }
+  
+  
  </script>
 <?php }
 require('footer.php'); ?>

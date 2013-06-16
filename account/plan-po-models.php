@@ -1,6 +1,6 @@
 <?php
-  /* Module: Plan Purchase Orders - Show  */
-  $capability_key = 'show_plan_po_models';
+  /* Module: Plan Purchase Orders   */
+  $capability_key = 'plan_po_models';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	

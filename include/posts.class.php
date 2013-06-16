@@ -202,8 +202,7 @@ class Posts {
 	
 	function AddProduct($params) {
     $product = array(
-		  'product_code'						=> $params['product_code'],		  
-		  'product_classification'	=> $params['product_classification'],		  
+		  'product_code'						=> $params['product_code'],	
 		  'brand_model'							=> $params['brand_model'],	
 		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		  'color'										=> $params['color'], 
@@ -211,7 +210,8 @@ class Posts {
 		  'status'									=> $params['status'],
 		  'prod_cp'									=> $params['prod_cp'],
 		  'priority'								=> $params['priority'],
-		  'series'									=> $params['series']
+		  'series'									=> $params['series'],	  
+		  'pack_qty'				=> $params['pack_qty'],		  
 		);
     return $this->DB->InsertRecord('products', $product);
   }
@@ -1193,10 +1193,15 @@ class Posts {
   	  'item_id'		=> $params['item_id'],
   	  'item_type'=> $params['item_type'],
   	  'ship_date'	=> date('Y-m-d', strtotime($params['ship_date'])),
+  	  'prod_date'	=> date('Y-m-d', strtotime($params['prod_date'])),
   	  'qty'	=> $params['qty'],
   	  'status'	=> 19, // PENDING status
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);	
 		return $this->DB->InsertRecord('shipment_plans', $plan);
+	}
+	
+	function EditShipmentPlan($params) { 
+		$this->DB->UpdateRecord('shipment_plans', $params); 
 	}
 }

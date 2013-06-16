@@ -1,6 +1,6 @@
 <?php
-  /* Module: Plan Purchase Orders  Model Shipments - Show  */
-  $capability_key = 'show_plan_po_model_ship';
+  /* Module: Plan Purchase Orders  Model Shipments - Edit  */
+  $capability_key = 'edit_plan_po_model_shipment';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -21,7 +21,10 @@
 		</div>
 
     <div id="content">
-      <form id="purchase-order-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+      <form id="shipment-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+				<input type="hidden" name="action" value="edit_shipment_plan"/>  
+				<input type="hidden" name="poid" value="<?php echo $_GET['poid'] ?>"/>  
+				<input type="hidden" name="pid" value="<?php echo $_GET['pid'] ?>"/>  
          <div>
          	<table>
                <tr>
@@ -47,7 +50,8 @@
                <tr>
                  <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
                  <td width="30" class="border-right text-center">No.</td>
-                 <td width="140" class="border-right">Shipment Plan</td>
+                 <td width="110" class="border-right text-center">Shipment Plan</td>
+                 <td width="110" class="border-right text-center">Production Plan</td>
                  <td class="border-right text-center">Remarks</td>
                  <td width="100" class="border-right text-center">Status</td>
                  <td width="60" class="border-right text-center">Unit</td>
@@ -75,9 +79,9 @@
            	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $purchase_order['status']; ?>
                </div> -->
                <?php if($purchase_order['status'] != "Publish") { ?>
-               <input id="btn-save-plan" type="button" value="Save" class="btn" />
+       	   			<input type="submit" value="Save" class="btn"/>
            	   <?php } ?>
-               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('plan-pos.php'); ?>"/>
+               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('plan-po-model-shipment-show.php?poid='.$_GET['poid'].'&pid='.$_GET['pid']); ?>"/>
              </div>
       </form>
    </div>
@@ -104,8 +108,13 @@
 				 </div>
 				 
 				 <div class="field">
-				    <label>Ship Plan:</label>
-				    <input type="text" id="ship-plan-date" name="plan[ship_date]" class="text-field date-pick" required/>
+				    <label>Shipment Plan:</label>
+				    <input type="text" id="ship-plan-date" name="plan[ship_date]" class="text-field date-pick-thursday" readonly required/>
+				 </div>
+				 
+				 <div class="field">
+				    <label>Production Plan:</label>
+				    <input type="text" id="prod-plan-date" name="plan[prod_date]" class="text-field date-pick-friday" readonly required/>
 				 </div>
 				 
 				 <div class="field">
@@ -130,7 +139,6 @@
 					loadData();
 			  	$('#submit-ship-plan').add_plan();
 					  $('#remove-plan-item').remove_item();
-					//$('#order_amount').currency_format(<?php echo $purchase_order['total_amount']; ?>);
 			  })
 			  
 			  function loadData() {
@@ -138,7 +146,7 @@
 			    	"url":"/populate/shipment-plans.php?poid=<?php echo $_GET['poid'] ?>&pid=<?php echo $_GET['pid'] ?>",
 			      "limit":"50",
 						"data_key":"shipment_plans",
-						"row_template":"row_template_plan_po_model_shipments_read_only",
+						"row_template":"row_template_plan_po_model_shipments",
 					}
 					$('#grid-ship-plan-items').grid(data);
 					
@@ -153,6 +161,7 @@
 			  	var form = $('#frm-ship-plan');
 			  	//reset
 			  	$(form).find('#ship-plan-date').val('');
+			  	$(form).find('#prod-plan-date').val('');
 			  	$(form).find('#ship-plan-qty').val('0');
 			  	$(form).find('#ship-plan-remarks').val('');
 			  	
@@ -163,7 +172,7 @@
 			  function get_total_qty() {
 			  	var total = 0;
 					$('#plan-items tr').find('.qty').each(function(){
-      			total += parseFloat(parseInt($(this).text().replace(/,/g, ''), 10)); 
+      			total += parseFloat(parseInt($(this).val().replace(/,/g, ''), 10)); 
       		});
       		$('#total_qty').val(total);	
 			  }
@@ -183,7 +192,7 @@
 			  	})
 			  }
 			  
-			  var remove_items = [];
+			  //var remove_items = [];
 			  
 			  $.fn.remove_item = function() {
            this.click(function(e) {
@@ -191,10 +200,9 @@
              
              var grid = $($(this).attr('grid'));
              
-             grid.find('.chk-item:checked').closest('tr').each(function() {
-             	remove_items.push($(this).attr('id'));
-             });
-             
+             // grid.find('.chk-item:checked').closest('tr').each(function() {
+             	// remove_items.push($(this).attr('id'));
+             // });
              
              grid.find('.chk-item:checked').closest('tr').remove();
            	 populate_index(grid);
@@ -202,12 +210,12 @@
            })
          }
          
-         $('#btn-save-plan').live('click', function(){
-					$.post(document.URL, { 'action' : 'remove_shipment_plan', 'ids[]' : remove_items })
-						.done(function(data){
-				      	loadData();
-				      });	
-         })
+         // $('#btn-save-plan').live('click', function(){
+					// $.post(document.URL, { 'action' : 'remove_shipment_plan', 'ids[]' : remove_items })
+						// .done(function(data){
+				      	// loadData();
+				      // });	
+         // })
        </script>
 
 <?php }

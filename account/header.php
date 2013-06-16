@@ -571,6 +571,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			} else {
 				$forecast['ship_date'] = date('Y-m-d', strtotime($forecast['ship_date']));
 			}
+			if($forecast['prod_date'] == NULL) {
+				unset($forecast['prod_date']); 
+			} else {
+				$forecast['prod_date'] = date('Y-m-d', strtotime($forecast['prod_date']));
+			}
 			
 			$args = array('variables' => $forecast, 'conditions' => 'id='. $forecast['id']); 
 			$num_of_records = $Posts->EditForecast($args);
@@ -587,14 +592,32 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 	case 'add_shipment_plan':
 		$plan = $_POST['plan'];
 		$Posts->AddShipmentPlan(array('po_id' => $plan['po_id'], 'item_id' => $plan['item_id'], 'item_type' => $plan['item_type'],
-															'ship_date' => $plan['ship_date'], 'qty' => $plan['qty'], 'remarks' => $plan['remarks'])); 
+															'ship_date' => $plan['ship_date'], 'prod_date' => $plan['prod_date'],'qty' => $plan['qty'], 'remarks' => $plan['remarks'])); 
 		break;
 		
-	case 'remove_shipment_plan':
-		foreach ($_POST['ids'] as $key => $value) {
-			$DB->DeleteRecord('shipment_plans', array('conditions' => 'id='.$value));
-		}
+	case 'edit_shipment_plan':
+		$DB->DeleteRecord('shipment_plans', array('conditions' => 'po_id='.$_POST['poid'].' AND item_id='.$_POST['pid']));
 		
+		$plan = $_POST['plan'];
+		foreach($plan as $item) {
+			$items = array();
+			$items['po_id'] = $_POST['poid'];
+			$items['item_id'] = $_POST['pid'];
+			$items['item_type'] = 'PRD';
+			$items['ship_date'] = $item['ship_date'];
+			$items['prod_date'] = $item['prod_date'];
+			$items['qty'] = $item['qty'];
+			$items['remarks'] = $item['remarks'];
+			if($item['prod_date']=='') unset($items['prod_date']);  
+			$Posts->AddShipmentPlan($items);
+		}
+		// $plan = $_POST['plan']; 
+		// foreach ($plan as $item) {
+			// if($item['prod_date']=='') unset($item['prod_date']);  
+			// $args = array('variables' => $item, 'conditions' => 'id='. $item['id']); 
+			// $num_of_records = $Posts->EditShipmentPlan($args);
+		// } 
+		redirect_to($Capabilities->All['show_plan_po_model_shipment']['url'].'?poid='.$_POST['poid'].'&pid='.$_POST['pid']);
 		break;
 		
 	case 'edit_forecast_days':
@@ -664,12 +687,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
             <div class="glyphicons-halflings"></div>
         	  <ul>
         	  	<li><a href="plan-overview-show.php">Overview</a></li>
-        	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
-        	    <li><a href="work-orders.php">Work Orders</a></li>
         	    <li><a href="forecasts-show.php">Forecast</a></li>
-        	    <li><a href="plan-pos.php">Plan P/O's</a></li>
-        	    <li><a href="plan-models.php">Plan Models</a></li>
-        	    <li><a href="plan-weeks.php">Plan Weeks</a></li>
+        	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
+        	    <li><a href="plan-pos.php">P/O Plans</a></li>
+        	    <li><a href="plan-models.php">P/O Model Plans</a></li>
+        	    <li><a href="plan-po-calendar.php">P/O Calendar</a></li>
+        	    <li><a href="plan-production-calendar.php">Production Calendar</a></li>
+        	    <li><a href="work-orders.php">Work Orders</a></li>
         	    <li><a href="production-plan.php">Production Plan</a></li>
         	    <li><a href="material-plan.php">Material Plan</a></li>
         	  </ul>

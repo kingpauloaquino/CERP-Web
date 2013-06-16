@@ -34,7 +34,7 @@
 $capability_key = 'key';
   require('header.php');
 	echo '<br/><br/><br/>';
-	echo date('n', strtotime(' Thursday +5 week', strtotime(date('Y').'-01-01')))
+	//echo date('n', strtotime(' Thursday +5 week', strtotime(date('Y').'-01-01')))
 	
 	// $products = $DB->Get('products', array('columns' => 'id'));
 	// foreach ($products as $p) {
@@ -44,6 +44,16 @@
 	// }
 ?>
 <script>
+$(function() {
+	$("#shipdate").datepicker({
+		    beforeShowDay: function(date) {
+		        var day = date.getDay();
+		        return [(day != 1 && day != 2)];
+		    }
+		})​​​​​;​
+})
+
+		
 $(function() {
     $( "#tabs-left" ).tabs({
       collapsible: false});
@@ -108,6 +118,7 @@ $(function() {
 
   <div id="content">
     <form id="form-name" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+      
     	<div id="tabs-left">
 			  <ul class="ui-tabs-nav">
 			    <li><a href="#tabs-left-1" class="week-link">Week 1</a></li>

@@ -14,17 +14,15 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						? 
 						'products.product_code LIKE "%'. $keyword .'%" OR '.
 						'products.description LIKE "%'. $keyword .'%" OR '.
-						'brand_models.brand_model LIKE "%'. $keyword .'%" OR '.
-						'item_classifications.classification LIKE "%'. $keyword .'%" ' 
+						'brand_models.brand_model LIKE "%'. $keyword .'%"' 
 						: '';
 	
 	$query = $DB->Fetch('warehouse2_inventories', array(
 							'columns'	=> 'warehouse2_inventories.id AS id, warehouse2_inventories.item_id AS pid, warehouse2_inventories.production_purchase_order_id, 
 														warehouse2_inventories.tracking_no,warehouse2_inventories.prod_lot_no, products.product_code AS code, 
 														SUM(warehouse2_inventories.qty) AS qty, products.color AS color, products.description AS description,
-														item_classifications.classification AS pack, brand_models.brand_model AS brand',
+														products.pack_qty, brand_models.brand_model AS brand',
 					    'joins'		=> 'INNER JOIN products ON warehouse2_inventories.item_id = products.id
-					    							INNER JOIN item_classifications ON item_classifications.id = products.product_classification
 					    							INNER JOIN brand_models ON brand_models.id = products.brand_model',
               'order' 	=> $order .' '.$sort,
 							'limit'		=> $startpoint .', '.$limit,

@@ -50,7 +50,7 @@
               <td>Series:</td><td><input type="text" value="<?php echo $products['series'] ?>" class="text-field" disabled/></td>
            </tr>  
            <tr>
-              <td>Pack:</td><td><input type="text" value="<?php echo $products['classification'] ?>" class="text-field" disabled/></td>
+              <td>Pack Qty:</td><td><input type="text" value="<?php echo $products['pack_qty'] ?>" class="text-field text-right" disabled/></td>
               <td>Color:</td><td><input type="text" value="<?php echo $products['color'] ?>" class="text-field" disabled/></td>
            </tr>    
            <tr>

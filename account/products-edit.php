@@ -20,7 +20,7 @@
 		
 	  if(isset($_GET['pid'])) {
 	  	$products = $DB->Find('products', array(
-					  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, item_classifications.classification, 
+					  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, pack_qty, 
 					  												products.bar_code, products.color, products.prod_cp, products.series', 
 					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
 					  	    'joins' 			=> 'INNER JOIN brand_models ON products.brand_model = brand_models.id
@@ -33,11 +33,11 @@
 			 																			'conditions' => 'item_id='.$_GET['pid']));	
 	  }
 	  $brands = $DB->Get('brand_models', array('columns' => 'id, brand_model', 'order' => 'brand_model', 'conditions' => 'parent IS NULL'));
-	  $packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'order' => 'classification', 'conditions' => 'item_type = "PRD"'));
+	  //$packs = $DB->Get('item_classifications', array('columns' => 'id, classification', 'order' => 'classification', 'conditions' => 'item_type = "PRD"'));
 		$suppliers = $DB->Get('suppliers', array('columns' => 'id, name', 'order' => 'name'));
 		$units = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('unit_of_measure').'"', 'order' => 'code'));
 	  $currencies = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('currency').'"', 'order' => 'code'));
-	  $statuses = $DB->Get('lookups', array('columns' => 'id, description', 'conditions'  => 'parent = "'.get_lookup_code('item_status').'"'));
+	  $statuses = $DB->Get('lookup_status', array('columns' => 'id, description', 'conditions'  => 'parent = "ITEM"'));
 		$has_inventory = $DB->Find('item_inventories', array('columns' => 'id, item_id', 'conditions' => 'item_type="PRD" AND item_id = '.$_GET['pid']));	
 		$series = $DB->Get('product_series', array('columns' => 'id, series', 'order' => 'series'));
 ?>
@@ -48,8 +48,7 @@
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
 					echo '<a href="'.$Capabilities->All['show_product']['url'].'?pid='.$_GET['pid'].'" class="nav">'.$Capabilities->All['show_product']['name'].'</a>';
-					echo (count($has_inventory)>0) ? '<a href="pinventory-show.php?iid='.$has_inventory['id'].'&pid='.$has_inventory['item_id'].'" class="nav">View Inventory Details</a>' 
-																					: '<a href="pinventory-new.php?pid='.$_GET['pid'].'" class="nav">Add Inventory Entry</a>';
+					
 				?>
 				<div class="clear"></div>
       </h2>
@@ -77,7 +76,7 @@
               <td>Series:</td><td><?php select_query_tag($series, 'id', 'series', $products['series'], 'product[series]', 'product[series]', '', 'width:192px;'); ?></td>
            </tr>    
            <tr>
-              <td>Pack:</td><td><?php select_query_tag($packs, 'id', 'classification', $products['product_classification'], 'product[product_classification]', 'product[product_classification]', '', 'width:192px;'); ?></td>
+              <td>Pack Qty:</td><td><input type="text" id="product[pack_qty]" name="product[pack_qty]" value="<?php echo $products['pack_qty'] ?>" class="text-field text-right" /></td>
               <td>Color:</td><td><input type="text" id="product[color]" name="product[color]" value="<?php echo $products['color'] ?>" class="text-field" /></td>
            </tr>        
            <tr>

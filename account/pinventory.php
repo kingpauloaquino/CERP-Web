@@ -34,7 +34,7 @@
             <tr>
               <td width="150" class="border-right text-center"><a class="sort default active up" column="code">Code</a></td>
               <td width="100" class="border-right text-center"><a class="sort" column="brand">Brand</a></td>
-              <td width="90" class="border-right text-center"><a class="sort" column="pack">Pack</a></td>
+              <td width="70" class="border-right text-center"><a class="sort" column="pack_qty">Pack</a></td>
               <td width="90" class="border-right text-center"><a class="sort" column="color">Color</a></td>
               <td class="border-right"><a class="sort" column="description">Description</a></td>
               <td width="100" class="border-right text-center" ><a class="sort" column="qty">Current Qty</a></td>

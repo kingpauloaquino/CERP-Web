@@ -23,6 +23,12 @@ if(!$allowed) {
 			<div class="search">
         <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
+      <form>
+      <input type="text" id="datepicker1" />
+      	
+      </form>
+       
+      
 			<a href="#" class="newbutton">Button Text</a>	
 			
 			
@@ -205,6 +211,16 @@ if(!$allowed) {
 		  	$("#noticeFade").remove();
 	    });
 		}, 2000);
+		
+
+		
+  	​$("#datepicker1").datepicker({
+				inline: true,
+		    beforeShowDay: function(date) {
+		        var day = date.getDay();
+		        return [(day != 1 && day != 2)];
+		    }
+		})​​​​​;​
 	});
 
 </script>

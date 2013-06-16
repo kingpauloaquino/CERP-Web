@@ -11,6 +11,8 @@ $(function() {
   $('.text-currency').currency_format();
   $('.text-date').date_format();
   $('.date-pick').date_pick();
+  $('.date-pick-thursday').date_pick_restrict(null, 'thursday');
+  $('.date-pick-friday').date_pick_restrict(null, 'friday');
   $('.date-string').format_date_string();
   $('.redirect-to').redirect_to();
   $('.btn-download').download(); 
@@ -33,6 +35,19 @@ $.fn.core_position = function() {
   $(this).css('top', (($(document).height() - $(this).height()) - 100) / 2);
   $(this).css('left', ($(document).width() - $(this).width()) / 2);
 }
+
+// $.fn.show_submenu = function() {
+//   
+  // $(this).hover(function() {
+		// hide_menus();
+  	// $(".main-sub-menu").hide();
+  	// var menu = $(this).attr('alt');
+		// $(menu).toggle('fast');
+		// return false;
+	// }, function(){
+// 		
+	// });
+// }
 
 $.fn.show_submenu = function() {
   
@@ -115,11 +130,30 @@ $.fn.date_pick = function(format) {
 	});
 }
 
+$.fn.date_pick_restrict = function(format, restrict) {
+	format = format || 'MM dd, yy';
+  $(this).datepicker({
+		inline: true, dateFormat: format,
+		beforeShowDay: function(date) {
+        var day = date.getDay();
+        switch(restrict){
+        	case 'thursday':
+    				return [(day != 1 && day != 2 && day != 3 && day != 5 && day != 6 && day != 0 )];
+        	case 'friday':
+    				return [(day != 1 && day != 2 && day != 3 && day != 4 && day != 6 && day != 0 )];
+        	
+        }
+        
+    }
+	});
+}
+
 $.fn.format_date_string = function(ctrl, format) {
 	format = format || 'MM dd, yy';
 	//var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "August", "Sep", "Oct", "Nov", "Dec" ];
 	//var date = new Date($(this).val());
 	//$(this).val(monthNames[date.getMonth()] + );
+	console.log($(this).text());
 	if(ctrl) {
 		if($(this).val() != '') {
 			$(this).val($.datepicker.formatDate(format, new Date($(this).val()))); 
@@ -373,7 +407,7 @@ function row_template_products(data) {
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ data['brand'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['series'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['pack'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['pack_qty'] +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
     "<td class=\"border-right\">"+ (data['description'] || '') +"</td>" +
     "</tr>");
@@ -385,10 +419,10 @@ function row_template_products_inventory(data) {
   var forward	= host + "/account/pinventory-show.php?id="+ data['pid'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ (data['brand'] || '') +"</td>" +
-    "<td class=\"border-right text-center\">"+ (data['pack'] || '') +"</td>" +
+    "<td class=\"border-right text-center\">"+ (data['pack_qty'] || '') +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
     "<td class=\"border-right\">"+ data['description'] +"</td>" +
-    "<td class=\"border-right text-right numbers \">"+ data['qty'] +"</td>" +
+    "<td class=\"border-right text-right numbers \">"+ parseFloat(data['qty']) +"</td>" +
     "</tr>");
 
   row.find('.numbers').digits();
@@ -552,7 +586,7 @@ function row_template_purchase_orders(data) {
 }
 
 function row_template_plan_po(data) {
-  var forward	= host + "/account/plan-po-model-show.php?pid="+ data['id'] +"";
+  var forward	= host + "/account/plan-po-models.php?pid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['po_number'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ data['po_date'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['ship_date'] +"</td>" +
@@ -563,7 +597,7 @@ function row_template_plan_po(data) {
 }
 
 function row_template_plan_po_models_read_only(data) {
-  var forward	= host + '/account/plan-po-model-ship.php?poid='+ data['purchase_order_id'] +'&pid='+ data['item_id'];
+  var forward	= host + '/account/plan-po-model-shipment-show.php?poid='+ data['purchase_order_id'] +'&pid='+ data['item_id'];
   var row		= $('<tr id="mat-'+ data['item_id'] +'"></tr>');
 
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
@@ -582,14 +616,38 @@ function row_template_plan_po_model_shipments_read_only(data) {
   var forward	= host + '/account/';
   var row		= $('<tr id="'+ data['id'] +'"></tr>');
 
-  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /></td>');
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append('<td class="border-right">'+ data['ship_date'] +'</td>');
+  row.append('<td class="border-right text-center date-string">'+ data['ship_date'] +'</td>');
+  row.append('<td class="border-right text-center date-string">'+ (data['prod_date'] || '') +'</td>');
   row.append('<td class="border-right">'+ data['remarks'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['completion'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right numbers qty">'+ data['qty'] +'</td>');
            	
+	//row.find('.date-string').format_date_string(false, 'M dd, yy');
+  row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_plan_po_model_shipments(data) {
+  var forward	= host + '/account/';
+  var id = data['id'];
+  var row		= $('<tr id="'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /><input type="hidden" name="plan['+ id +'][id]" value="'+id+'" /></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center"><input name="plan['+ id +'][ship_date]" type="text" value="'+ data['ship_date'] +'" class="date-pick-thursday text-field-medium text-center" readonly/></td>');
+  row.append('<td class="border-right text-center"><input name="plan['+ id +'][prod_date]" type="text" value="'+ (data['prod_date'] || '') +'" class="date-pick-friday text-field-medium text-center" readonly/></td>');
+  row.append('<td class="border-right"><input name="plan['+ id +'][remarks]" type="text" value="'+ data['remarks'] +'" class="text-field-max"/></td>');
+  row.append('<td class="border-right text-center">'+ data['completion'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right"><input name="plan['+ id +'][qty]" type="text" value="'+ data['qty'] +'" class="text-field-smallest text-right qty"/></td>');
+           	
+	row.find('.date-string').format_date_string(true, 'M dd, yy');
+	row.find('.date-pick').date_pick('M dd, yy');
+	row.find('.date-pick-thursday').date_pick_restrict('yy-mm-dd', 'thursday');
+	row.find('.date-pick-friday').date_pick_restrict('yy-mm-dd', 'friday');
   row.find('.numbers').digits();
   return row;   
 }
@@ -608,7 +666,7 @@ function row_template_plan_products(data) {
 }
 
 function row_template_plan_product_pos_read_only(data) {
-  var forward	= host + '/account/plan-po-model-ship.php?poid='+ data['id'] +'&pid='+ data['pid'];
+  var forward	= host + '/account/plan-po-model-shipment-show.php?poid='+ data['id'] +'&pid='+ data['pid'];
   var row		= $('<tr id="'+ data['id'] +'"></tr>');
 
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
@@ -624,7 +682,7 @@ function row_template_plan_product_pos_read_only(data) {
 }
 
 function row_template_ship_plan_week(data) {
-  var forward1	= host + '/account/plan-po-model-ship.php?poid='+ data['po_id'] +'&pid='+ data['pid'];
+  var forward1	= host + '/account/plan-po-model-shipment-show.php?poid='+ data['po_id'] +'&pid='+ data['pid'];
   var forward2	= host + '/account/plan-model-po-show.php?pid='+ data['pid'];
   var row		= $('<tr id="'+ data['id'] +'"></tr>');
 
@@ -635,6 +693,55 @@ function row_template_ship_plan_week(data) {
   row.append('<td class="border-right">'+ data['remarks'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right numbers">'+ data['qty'] +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row;  
+}
+
+function row_template_ship_plan_month(data) {
+  var forward1	= host + '/account/plan-po-model-shipment-show.php?poid='+ data['po_id'] +'&pid='+ data['pid'];
+  var forward2	= host + '/account/plan-model-po-show.php?pid='+ data['pid'];
+  var row		= $('<tr id="'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right text-center">'+ data['ship_date'] +'</td>');
+  row.append('<td class="border-right text-center"><a target="_blank" href="'+ forward2 +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right text-center"><a target="_blank" href="'+ forward1 +'">'+ data['po_number'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['series'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['pack'] +'</td>');
+  row.append('<td class="border-right">'+ data['remarks'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ data['qty'] +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row;  
+}
+
+function row_template_prod_plan_week(data) {
+  var forward	= host + '/account/plan-po-model-production-show.php?poid='+ data['pid'] +'&pid='+ data['pid'];
+  var row		= $('<tr id="'+ data['pid'] +'"></tr>');
+
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['series'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['pack_qty'] +'</td>');
+  row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ data['total_qty'] +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row;  
+}
+
+function row_template_prod_plan_month(data) {
+  var forward	= host + '/account/plan-po-model-production-show.php?poid='+ data['pid'] +'&pid='+ data['pid'];
+  var row		= $('<tr id="'+ data['pid'] +'"></tr>');
+
+  row.append('<td class="border-right text-center">'+ data['prod_date'] +'</td>');
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['series'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['pack_qty'] +'</td>');
+  row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ data['total_qty'] +'</td>');
            	
   row.find('.numbers').digits();
   return row;  
@@ -1200,6 +1307,7 @@ function row_template_forecast_read_only(data) {
 	var forward	= host + "/account/forecast-show.php?pid="+ data['product_id'] + "";
   var id		= data['product_id'];
   var row		= $('<tr id="prd-'+ data['id'] +'"></tr>');
+  var ttls
 
   row.append('<td class="border-right"><a class="click-month" href="#" pid="'+ id +'" pcode="'+ data['code'] +'">'+ data['code'] +'</a></td>');
   row.append('<td class="border-right text-right numbers">'+ (data['jan'] || 0) +'</td>');
@@ -1215,6 +1323,7 @@ function row_template_forecast_read_only(data) {
   row.append('<td class="border-right text-right numbers">'+ (data['nov'] || 0) +'</td>');
   row.append('<td class="border-right text-right numbers">'+ (data['dece'] || 0) +'</td>');
   row.append('<td class="border-right text-right numbers">'+ (data['total_qty'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['single_total_qty'] || 0) +'</td>');
            	
   row.find('.numbers').digits();
   return row; 
@@ -1241,11 +1350,13 @@ function row_template_forecast_months_read_only(data) {
 
   row.append('<td class="border-right text-center">'+ month +'</td>');
   row.append('<td class="border-right text-center">'+ (data['ctrl_no'] || '') +'</td>');
-  row.append('<td class="border-right text-center date-string">'+ (data['delivery_date'] || '') +'</td>');
-  row.append('<td class="border-right text-center date-string">'+ (data['ship_date'] || '') +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['delivery_date'] || '-') +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['ship_date'] || '-') +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['prod_date'] || '-') +'</td>');
   row.append('<td class="border-right text-center">'+ (data['status'] || '') +'</td>');
-  row.append('<td class="border-right text-right numbers">'+ (data['qty'] || 0) +'</td>');
   row.append('<td class="border-right">'+ (data['remarks'] || '') +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['qty'] || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (data['single_total_qty'] || 0) +'</td>');
            	
   row.find('.numbers').digits();
 	row.find('.date-string').format_date_string(false, 'M dd, yy');
@@ -1273,16 +1384,20 @@ function row_template_forecast_months(data) {
 
   row.append('<td class="border-right text-center"><input type="hidden" name="forecast['+id+'][id]"  value="'+id+'" />'+ month +'</td>');
   row.append('<td class="border-right text-center"><input type="text" name="forecast['+id+'][ctrl_no]" class="text-center text-field-smallest" value="'+ (data['ctrl_no'] || '') +'"/></td>');
-  row.append('<td class="border-right text-center"><input type="text" name="forecast['+id+'][delivery_date]" class="text-center text-field-medium date-string date-pick" value="'+ (data['delivery_date'] || '') +'"/></td>');
-  row.append('<td class="border-right text-center"><input type="text" name="forecast['+id+'][ship_date]" class="text-center text-field-medium date-string date-pick" value="'+ (data['ship_date'] || '') +'"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="forecast['+id+'][delivery_date]" class="text-center text-field-medium date-pick-thursday" value="'+ (data['delivery_date'] || '') +'" readonly/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="forecast['+id+'][ship_date]" class="text-center text-field-medium date-pick-thursday" value="'+ (data['ship_date'] || '') +'" readonly/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="forecast['+id+'][prod_date]" class="text-center text-field-medium date-pick-friday" value="'+ (data['prod_date'] || '') +'" readonly/></td>');
   row.append('<td class="border-right text-center">'+ (data['status'] || '') +'</td>');
-  row.append('<td class="border-right text-right"><input type="text" name="forecast['+id+'][qty]" class="text-center text-field-number numeric" value="'+ (data['qty'] || 0) +'"/></td>');
   row.append('<td class="border-right"><input type="text" name="forecast['+id+'][remarks]" class="text-field-max" value="'+ (data['remarks'] || '') +'"/></td>');
+  row.append('<td class="border-right text-right"><input type="text" name="forecast['+id+'][qty]" class="text-center text-field-number numeric ttl" value="'+ (data['qty'] || 0) +'"/></td>');
+  //row.append('<td class="border-right text-right"><input type="text" class="text-center text-field-number numeric ttls" value="'+ (data['qty'] || 0) +'" readonly/></td>');
            	
   row.find('.numbers').digits();
   row.find('.numeric').numeric_only();
 	row.find('.date-string').format_date_string(true, 'M dd, yy');
 	row.find('.date-pick').date_pick('M dd, yy');
+	row.find('.date-pick-thursday').date_pick_restrict('yy-mm-dd', 'thursday');
+	row.find('.date-pick-friday').date_pick_restrict('yy-mm-dd', 'friday');
   return row;
 }
 

@@ -202,13 +202,12 @@ function purchase_order_item_by_id($poid, $pid) {
 	
 	function product_by_id($id) {
 		$query = $this->DB->Fetch('products', array(
-					  			'columns' 		=> 'products.product_code, products.description, brand_models.brand_model AS brand, lookups.description AS status, product_series.series,
-					  												item_classifications.classification, products.bar_code, products.color, products.prod_cp, products.priority, 
+					  			'columns' 		=> 'products.product_code, products.description, brand_models.brand_model AS brand, lookup_status.description AS status, product_series.series,
+					  												pack_qty, products.bar_code, products.color, products.prod_cp, products.priority, 
 					  												suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.description AS currency, item_costs.cost', 
 					  	    'conditions' 	=> 'products.id = '.$id, 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id
-																		LEFT OUTER JOIN lookups ON products.status = lookups.id
-																		LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification
+																		LEFT OUTER JOIN lookup_status ON lookup_status.id = products.status
 																		INNER JOIN product_series ON product_series.id = products.series
 																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id AND item_costs.item_type = "PRD"
 																		LEFT OUTER JOIN suppliers ON item_costs.supplier = suppliers.id

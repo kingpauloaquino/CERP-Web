@@ -13,7 +13,8 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	$search = 'product_id='.$_GET['pid'].' AND forecast_year='.$_GET['yr'];
 	
 	$query = $DB->Fetch('forecasts', array(
-							'columns'	=> '*',
+							'columns'	=> 'forecasts.*, (products.pack_qty * qty) AS single_total_qty',
+							'joins' => 'INNER JOIN products ON products.id = forecasts.product_id',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,

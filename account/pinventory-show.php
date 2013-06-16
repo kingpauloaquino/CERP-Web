@@ -13,15 +13,14 @@
   if(isset($_GET['id'])) {
   	$products = $DB->Find('products', array(
 					  			'columns' 		=> 'products.id AS pid, products.product_code, products.description, brand_models.brand_model, lookups1.description AS unit,
-																  	products.color, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, lookups4.description AS status,
-																  	item_classifications.classification, products.bar_code', 
+																  	products.color, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, lookup_status.description AS status,
+																  	pack_qty, products.bar_code', 
 					  	    'conditions' 	=> 'products.id = '.$_GET['id'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id 
 																		LEFT OUTER JOIN users ON products.person_in_charge = users.id
 																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id
 																		LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
-																		LEFT OUTER JOIN lookups AS lookups4 ON products.status = lookups4.id
-																		LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification'
+																		LEFT OUTER JOIN lookup_status ON lookup_status.id = products.status'
 	  ));
   }
 	
@@ -53,7 +52,7 @@
               </td>
            </tr>
            <tr>
-              <td>Pack:</td><td><input type="text" value="<?php echo $products['classification'] ?>" class="text-field" disabled/></td>
+              <td>Pack Qty:</td><td><input type="text" value="<?php echo $products['pack_qty'] ?>" class="text-field text-right" disabled/></td>
               <td>Color:</td><td><input type="text" value="<?php echo $products['color'] ?>" class="text-field" disabled/></td>
            </tr>    
            <tr>
@@ -103,7 +102,7 @@
 										echo '<td class="border-right text-center"><a href="#">'.$invt['tracking_no'].'</a></td>';
 										echo '<td class="border-right">'.$invt['remarks'].'</td>';
 										echo '<td class="border-right text-center">'.$products['unit'].'</td>';
-										echo '<td class="border-right text-right">'.trim_decimal($invt['qty']).'</td>';
+										echo '<td class="border-right text-right numbers">'.trim_decimal($invt['qty']).'</td>';
 										$ctr+=1;
 										$total_qty += (double)$invt['qty'];
 	        					echo '</tr>';
@@ -111,7 +110,7 @@
 	        		?>
 	          	<tr>
 	          		<td class="border-right text-right" colspan="6"><b>Total:</b></td>
-	          		<td class="border-right text-right"><b><?php echo $total_qty ?></b></td>
+	          		<td class="border-right text-right numbers"><b><?php echo $total_qty ?></b></td>
 	          	</tr>
 	          </tbody>
 	        </table>

@@ -14,9 +14,6 @@
 		<div id="page-title">
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
-        <?php
-				  //echo '<a href="'.$Capabilities->All['add_product_inventory']['url'].'" class="nav">'.$Capabilities->All['add_product_inventory']['name'].'</a>';
-				?>
 				<div class="clear"></div>
       </h2>
 		</div>
@@ -34,7 +31,8 @@
             <tr>
               <td width="150" class="border-right text-center"><a class="sort default active up" column="code">Code</a></td>
               <td width="100" class="border-right text-center"><a class="sort" column="brand">Brand</a></td>
-              <td width="70" class="border-right text-center"><a class="sort" column="pack_qty">Pack</a></td>
+              <td width="70" class="border-right text-center"><a class="sort" column="series">Series</a></td>
+              <td width="70" class="border-right text-center"><a class="sort" column="pack_qty">Pack Qty</a></td>
               <td width="90" class="border-right text-center"><a class="sort" column="color">Color</a></td>
               <td class="border-right"><a class="sort" column="description">Description</a></td>
               <td width="100" class="border-right text-center" ><a class="sort" column="qty">Current Qty</a></td>

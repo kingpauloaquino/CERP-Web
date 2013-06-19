@@ -92,6 +92,12 @@
 	
 	<script>
 	$(function() {
+		// Initiate forecast if empty
+  	$.post("forecast.php", { action: "init_forecast", forecast_year: <?php echo $active_year ?> })
+			.done(function(data) {
+			//return
+		});
+		
   	var data = { 
     	"url":"/populate/forecast-calendar.php?yr=<?php echo $active_year ?>",
       "limit":"15",
@@ -112,16 +118,6 @@
     	e.preventDefault();
     	
     	$('#modal-calendar').find('.modal-title').html('<h3>Forecast &raquo; <span class="red">'+ $(this).attr('pcode') +'</span></h3>');
-    	
-    	// Initiate forecast if empty
-    	$.post("forecast.php", { action: "add_forecast", forecast_year: <?php echo $active_year ?>, product_id: $(this).attr('pid') })
-				.done(function(data) {
-					//return
-				});
-    	
-    	// setTimeout(function() {
-//     		
-    	// }, 1000);
     	
     	var data = { 
 	    	"url":"/populate/forecasts.php?pid="+$(this).attr('pid')+"&yr=<?php echo $active_year ?>",

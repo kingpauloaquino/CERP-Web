@@ -219,6 +219,18 @@ class Posts {
 	function EditProduct($params) {
     return $this->DB->UpdateRecord('products', $params);
   }
+	
+	function AddProductInventory($params) {
+    $inventory = array(
+		  'item_id'						=> $params['item_id'],
+  		'prod_lot_no'				=> $params['prod_lot_no'],	
+		  'stamp'							=> $params['stamp'],	
+			'endorse_date'			=> date('Y-m-d', strtotime($params['endorse_date'])),
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),  
+		  'qty'			=> $params['qty'],		  
+		);
+    return $this->DB->InsertRecord('warehouse2_inventories', $inventory);
+  }
 
 	function AddInventory($params) {
     $inventory = array(
@@ -1173,6 +1185,20 @@ class Posts {
 	}
 
 	function InitForecast($params) {
+		$forecast = $this->DB->Find('forecasts', array('columns' => 'id', 'conditions' => 'forecast_year='. $params['forecast_year']));
+		if(!isset($forecast)) {
+			$products = $this->DB->Get('products', array('columns' => 'id'));
+			foreach ($products as $product) {
+				for($i=1; $i<=12; $i++) {
+					$this->DB->InsertRecord('forecasts', array('forecast_year'	=> $params['forecast_year'], 
+																											'forecast_month'	=> $i,
+																											'product_id'	=> $product['id'],));
+				}		
+			}
+		}
+	}
+
+	function AddForecast($params) {
 		$forecast = $this->DB->Find('forecasts', array('columns' => 'id', 'conditions' => 'forecast_year='. $params['forecast_year'] .' AND product_id='. $params['product_id']));
 		if(!isset($forecast)) {
 			for($i=1; $i<=12; $i++) {

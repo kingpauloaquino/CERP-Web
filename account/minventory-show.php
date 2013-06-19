@@ -58,7 +58,7 @@
         </table>
       	<br/>
 
-        <h3 class="form-title">Warehouse Stock <span id="out-of-stock" class="magenta">(Out-of-stock)</span></h3>
+        <h3 class="form-title">Warehouse Stock <span id="out-of-stock" class="magenta" style="display: none">(Out-of-stock)</span></h3>
 	      <div id="grid-materials" class="grid jq-grid" style="min-height:60px;">
            <table cellspacing="0" cellpadding="0">
              <thead>
@@ -167,10 +167,10 @@
 				$('#materials tr').each(function(){
     			total += parseFloat($(this).attr('qty'));
     		});
+	  		if(total == 0) {
+	  			$('#out-of-stock').show();
+	  		}
     		$('#total_qty').val(total).digits();
-    		if(total>0) {
-    			$('#out-of-stock').hide();
-    		}
 			})
 	  }) 
  </script>

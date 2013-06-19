@@ -553,6 +553,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		redirect_to($Capabilities->All['show_forecast_calendar_h2']['url']);
 		break;
 		
+	case 'init_forecast':
+		$args = array('forecast_year'=>$_POST['forecast_year']);
+		$Posts->InitForecast($args);
+		break;
+		
 	case 'add_forecast':
 		$args = array('forecast_year'=>$_POST['forecast_year'], 'product_id'=>$_POST['product_id']);
 		$Posts->InitForecast($args);
@@ -623,7 +628,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 	case 'edit_forecast_days':
 		var_dump($_POST); 
 		die();
-	
+		break;
+		
+	case 'add_product_inventory':
+		$Posts->AddProductInventory($_POST['inventory']);
+		break;
 	
   } // close switch
 
@@ -691,8 +700,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
         	    <li><a href="plan-pos.php">P/O Plans</a></li>
         	    <li><a href="plan-models.php">P/O Model Plans</a></li>
-        	    <li><a href="plan-po-calendar.php">P/O Calendar</a></li>
-        	    <li><a href="plan-production-calendar.php">Production Calendar</a></li>
+        	    <li><a href="plan-shipment-calendar.php">Shipment Plan Calendar</a></li>
+        	    <li><a href="plan-production-calendar.php">Production Plan Calendar</a></li>
         	    <li><a href="work-orders.php">Work Orders</a></li>
         	    <li><a href="production-plan.php">Production Plan</a></li>
         	    <li><a href="material-plan.php">Material Plan</a></li>

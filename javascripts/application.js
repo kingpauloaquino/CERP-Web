@@ -419,10 +419,11 @@ function row_template_products_inventory(data) {
   var forward	= host + "/account/pinventory-show.php?id="+ data['pid'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ (data['brand'] || '') +"</td>" +
+    "<td class=\"border-right text-center\">"+ (data['series'] || '') +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['pack_qty'] || '') +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
-    "<td class=\"border-right\">"+ data['description'] +"</td>" +
-    "<td class=\"border-right text-right numbers \">"+ parseFloat(data['qty']) +"</td>" +
+    "<td class=\"border-right\">"+ (data['description'] || '') +"</td>" +
+    "<td class=\"border-right text-right numbers \">"+ parseFloat(data['qty'] || 0) +"</td>" +
     "</tr>");
 
   row.find('.numbers').digits();
@@ -657,7 +658,7 @@ function row_template_plan_products(data) {
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ data['brand'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['series'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['pack'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['pack_qty'] +"</td>" +
     "<td class=\"border-right text-center\">"+ (data['color'] || '') +"</td>" +
     "<td class=\"border-right\">"+ (data['description'] || '') +"</td>" +
     "</tr>");
@@ -742,6 +743,21 @@ function row_template_prod_plan_month(data) {
   row.append('<td class="border-right">'+ data['description'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right numbers">'+ data['total_qty'] +'</td>');
+           	
+  row.find('.numbers').digits();
+  return row;  
+}
+
+function row_template_product_inventory_items(data) {
+	var forward	= host + '/account/plan-po-model-production-show.php?poid=';
+  var row		= $('<tr id="'+ data['id'] +'"></tr>');
+
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center">'+ data['prod_lot_no'] +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['stamp'] || '') +'</td>');
+  row.append('<td class="border-right">'+ (data['remarks'] || '') +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers qty">'+ parseFloat(data['qty'] || 0) +'</td>');
            	
   row.find('.numbers').digits();
   return row;  

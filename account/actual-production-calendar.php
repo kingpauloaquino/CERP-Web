@@ -14,6 +14,9 @@
 		<div id="page-title">
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
+        <?php
+				  echo '<a href="'.$Capabilities->All['plan_production_calendar']['url'].'" class="nav">Plan Production</a>';
+				?>      		
 				<div class="clear"></div>
       </h2>
 		</div>

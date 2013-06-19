@@ -30,12 +30,10 @@
 		<div id="page-title">
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
-        <?php
-				  // echo '<a href="'.$Capabilities->All['add_material_inventory']['url'].'" class="nav">'.$Capabilities->All['add_material_inventory']['name'].'</a>';
-				  // echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['mid'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>'; 
-			  	// echo '<a href="'.$Capabilities->All['material_inventory_history']['url'].'?iid='.$_GET['iid'].'&mid='.$_GET['mid'].'" class="nav" target="_blank">'.$Capabilities->All['material_inventory_history']['name'].'</a>';
-
-				?>
+	        <?php
+	        	echo '<a href="'.$Capabilities->All['product_inventory']['url'].'" class="nav">'.$Capabilities->All['product_inventory']['name'].'</a>';
+					?>
+        	<a id="btn-add-inventory" href="#mdl-inventory" rel="modal:open" class="nav">Add Inventory</a>
 				<div class="clear"></div>
       </h2>
 		</div>
@@ -68,57 +66,129 @@
            <tr><td height="5" colspan="99"></td></tr>
         </table>
 
-      	<br/>
 
-        <h3 class="form-title">Warehouse</h3>
-	      <div class="grid jq-grid">
+				<h3 class="form-title">Warehouse <span id="out-of-stock" style="display: none" class="magenta">(Out-of-stock)</span></h3>
+	      <div id="grid-inventory-items" class="grid jq-grid" style="min-height: 140px;">
 	        <table cellspacing="0" cellpadding="0">
 	          <thead>
 	            <tr>
 	              <td width="5%" class="border-right text-center"><a></a></td>
-	              <td width="10%" class="border-right text-center"><a>Prod. Plan ID</a></td>
 	              <td width="10%" class="border-right text-center"><a>Prod. Lot No</a></td>
-	              <td width="10%" class="border-right text-center"><a>Tracking No</a></td>
+	              <td width="10%" class="border-right text-center"><a>Stamp</a></td>
 	              <td class="border-right text-center"><a>Remarks</a></td>
 	              <td width="10%" class="border-right text-center"><a>UOM</a></td>
 	              <td width="10%" class="border-right text-center"><a>Qty</a></td>
 	            </tr>
 	          </thead>
-	          <tbody>
-	        		<?php
-	        				$warehouse = $DB->Get('warehouse2_inventories', array(
-							  			'columns' => 'warehouse2_inventories.item_id, warehouse2_inventories.production_purchase_order_id, warehouse2_inventories.tracking_no,
-							  										warehouse2_inventories.prod_lot_no, warehouse2_inventories.qty, warehouse2_inventories.remarks', 
-							  	    'conditions' => 'warehouse2_inventories.item_id = '.$_GET['id']
-							  	    ));
-									//echo '<tr><td class="border-right text-right" colspan="5">'.$warehouse[0]['terminal_name'].'</td></tr>';
-									$total_qty = 0.0;
-									$ctr = 1;
-	        				foreach ($warehouse as $invt) {
-	        					echo '<tr>';
-										echo '<td class="border-right text-right">'.$ctr.'</td>';
-										echo '<td class="border-right text-center"><a href="#">CPP-'.$invt['production_purchase_order_id'].'</a></td>';
-										echo '<td class="border-right text-center"><a href="#">'.$invt['prod_lot_no'].'</a></td>';
-										echo '<td class="border-right text-center"><a href="#">'.$invt['tracking_no'].'</a></td>';
-										echo '<td class="border-right">'.$invt['remarks'].'</td>';
-										echo '<td class="border-right text-center">'.$products['unit'].'</td>';
-										echo '<td class="border-right text-right numbers">'.trim_decimal($invt['qty']).'</td>';
-										$ctr+=1;
-										$total_qty += (double)$invt['qty'];
-	        					echo '</tr>';
-									}
-	        		?>
-	          	<tr>
-	          		<td class="border-right text-right" colspan="6"><b>Total:</b></td>
-	          		<td class="border-right text-right numbers"><b><?php echo $total_qty ?></b></td>
-	          	</tr>
-	          </tbody>
+	          <tbody id="inventory-items"></tbody>
 	        </table>
-	      </div>	
+	      </div>
+         <div>
+         	<table width="100%">
+               <tr><td height="5" colspan="99"></td></tr>
+               <tr>
+                  <td>
+                     
+                  </td>
+                  <td align="right"><strong>Total Qty:</strong>&nbsp;&nbsp;<input id="total_qty" type="text" class="text-right numbers" style="width:95px;" disabled/></td>
+               </tr>
+<!--                    <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $invoice['remarks']; ?></textarea></td></tr> -->
+            </table>
+         </div>
+      	<br/>	
       </form>
     	<br/>
 		</div>
 	</div>
+	
+	<div id="mdl-inventory" class="modal">
+		<div class="modal-title"><h3>Add Inventory</h3></div>
+		<div class="modal-content">
+			<form id="frm-inventory" method="POST">
+				<span class="notice"></span>     
+				<input type="hidden" name="action" value="add_product_inventory"/>  
+				<input type="hidden" name="inventory[item_id]" value="<?php echo $_GET['id'] ?>"/>  
+						 
+				 <div class="field">
+				    <label>Production Lot #:</label>
+				    <input type="text" id="inventory-prod-lot-no" name="inventory[prod_lot_no]" class="text-field" required/>
+				 </div>
+				 
+				 <div class="field">
+				    <label>Stamp:</label>
+				    <input type="text" id="inventory-stamp" name="inventory[stamp]" class="text-field" required/>
+				 </div>
+				 
+				 <div class="field">
+				    <label>Endorsement Date:</label>
+				    <input type="text" id="inventory-endorse-date" name="inventory[endorse_date]" class="text-field date-pick" required/>
+				 </div>
+				 
+				 <div class="field">
+				    <label>Quantity:</label>
+				    <input type="text" id="inventory-qty" name="inventory[qty]" class="text-field numeric" required/>
+				 </div>
+				 
+				 <div class="field">
+				    <label>Remarks:</label>
+				    <textarea rows="2" id="inventory-remarks" name="inventory[remarks]" class="text-field" style="width:220px;"></textarea>
+				 </div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a id="closeModal" rel="modal:close" class="close btn" style="width:50px;">Cancel</a>
+			<a id="submit-inventory" rel="modal:close" href="#frm-inventory" class="btn" style="width:50px;">Add</a>
+		</div>
+	</div>
+	
+	<script>
+		$(function() {
+			loadData();
+	  	$('#submit-inventory').add_plan();
+	  })
+			  
+	  function loadData() {
+			var data = { 
+	    	"url":"/populate/pinventory-items.php?pid=<?php echo $_GET['id'] ?>",
+	      "limit":"50",
+				"data_key":"product_inventory_items",
+				"row_template":"row_template_product_inventory_items",
+			}
+			$('#grid-inventory-items').grid(data);
+			
+			//$(window).load(function(){
+				setTimeout(function(){
+					get_total_qty();
+				}, 500);
+			//});	
+		}
+		
+		function get_total_qty() {
+	  	var total = 0;
+			$('#inventory-items tr').find('.qty').each(function(){
+  			total += parseFloat(parseInt($(this).text().replace(/,/g, ''), 10)); 
+  		});
+  		if(total == 0) {
+  			$('#out-of-stock').show();
+  		}
+  		$('#total_qty').val(total).digits();
+	  } 
+		
+		$.fn.add_plan = function() {
+	  	this.click(function(e) {
+	  		e.preventDefault();
+	  		
+				var form = $(this).attr('href');
+				
+				if($(form).find('#inventory-prod-lot-no').val() != '' && $(form).find('#inventory-stamp').val() != '' && $(form).find('#inventory-qty').val() != '') {
+					$.post(document.URL, $(form).serialize(), function(data) {
+		      }).done(function(data){
+		      	loadData();
+		      });	
+				}
+	  	})
+	  }
+	</script>
 
 <?php }
 require('footer.php'); ?>

@@ -21,7 +21,7 @@
     <div id="content">
       <form id="form-name" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
       	<input type="hidden" id="active_year" value="<?php echo $active_year?>"/>
-	    	<div style="min-width:400px; width:1200px; height:300px; margin:5px; padding:4px; border:solid 1px #eee">
+	    	<div style="min-width:400px; width:auto; height:300px; margin:5px; padding:4px; border:solid 1px #eee">
 					<div id="chart" style="min-width: 400px; height: 300px; margin: 0 auto"></div>
 				</div>
       	<br/>

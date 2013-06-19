@@ -1,6 +1,6 @@
 <?php
   /* Module: Name  */
-  $capability_key = 'plan_production_calendar';
+  $capability_key = 'plan_shipment_calendar';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);		
@@ -15,7 +15,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['actual_production_calendar']['url'].'" class="nav">Actual Production</a>';
+				  echo '<a href="'.$Capabilities->All['actual_shipment_calendar']['url'].'" class="nav">Actual Shipment</a>';
 				?>      		
 				<div class="clear"></div>
       </h2>
@@ -27,7 +27,7 @@
       	<input type="hidden" id="current_month" value=""/>
       <?php
       	function getDay($m, $index) {
-					return date($m, strtotime(' Friday +'.$index.' week', strtotime(date('Y').'-01-01')));	
+					return date($m, strtotime(' Thursday +'.$index.' week', strtotime(date('Y').'-01-01')));	
 				}
 				
 				function createMonth($month_index, $month, $wk_ctr) {
@@ -71,7 +71,7 @@
       <div id="plan-weeks" style="display: none;">
 	      <!-- BOF Search -->
 	      <div class="search-title">
-	      	Production Plan Week
+	      	P/O Model Week
 	      </div>
 	      <div class="search">
 	        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
@@ -82,12 +82,13 @@
 	        <table cellspacing="0" cellpadding="0" >
 	          <thead>
 	            <tr>
-	              <td class="border-right text-center" width="130"><a class="sort default active up" column="code">Code</a></td>
-	              <td class="border-right text-center" width="70"><a class="sort" column="series">Series</a></td>
-	              <td class="border-right text-center" width="70"><a class="sort" column="pack_qty">Pack Qty</a></td>
-	              <td class="border-right text-center"><a class="sort" column="description">Description</a></td>
+	              <td class="border-right text-center" width="120"><a class="sort default active up" column="code">Code</a></td>
+	              <td class="border-right text-center" width="120"><a class="sort" column="po_number">P/O No.</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="series">Series</a></td>
+	              <td class="border-right text-center" width="70"><a class="sort" column="pack">Pack</a></td>
+	              <td class="border-right text-center"><a class="sort" column="remarks">Remarks</a></td>
 	              <td class="border-right text-center" width="70"><a class="sort" column="unit">Unit</a></td>
-	              <td class="border-right text-center" width="90"><a class="sort" column="total_qty">Qty</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="qty">Qty</a></td>
 	            </tr>
 	          </thead>
 	          <tbody></tbody>
@@ -111,13 +112,14 @@
 	        <table cellspacing="0" cellpadding="0" >
 	          <thead>
 	            <tr>
-	              <td class="border-right text-center" width="120"><a class="sort default active up" column="prod_date">Prod Date</a></td>
-	              <td class="border-right text-center" width="130"><a class="sort" column="code">Code</a></td>
-	              <td class="border-right text-center" width="70"><a class="sort" column="series">Series</a></td>
-	              <td class="border-right text-center" width="70"><a class="sort" column="pack_qty">Pack Qty</a></td>
-	              <td class="border-right text-center"><a class="sort" column="description">Description</a></td>
+	              <td class="border-right text-center" width="120"><a class="sort default active up" column="code">Ship Date</a></td>
+	              <td class="border-right text-center" width="120"><a class="sort" column="code">Code</a></td>
+	              <td class="border-right text-center" width="120"><a class="sort" column="po_number">P/O No.</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="series">Series</a></td>
+	              <td class="border-right text-center" width="70"><a class="sort" column="pack">Pack</a></td>
+	              <td class="border-right text-center"><a class="sort" column="remarks">Remarks</a></td>
 	              <td class="border-right text-center" width="70"><a class="sort" column="unit">Unit</a></td>
-	              <td class="border-right text-center" width="90"><a class="sort" column="total_qty">Qty</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="qty">Qty</a></td>
 	            </tr>
 	          </thead>
 	          <tbody></tbody>
@@ -137,7 +139,7 @@
 			$('.item-month').live('click', function(){
 				var current_month = $(this).attr('rel'); 
 				$('#current_month').val(current_month);
-				$('.search-title').html('Production Plan Month &raquo; <span class="red">'+ $(this).attr('title') +'</span>');
+				$('.search-title').html('P/O Model Month &raquo; <span class="red">'+ $(this).attr('title') +'</span>');
 				loadMonth(current_month);
 				$('#plan-weeks').fadeOut('fast', function(){
 					$('#plan-month').fadeIn('fast', function(){})
@@ -146,7 +148,7 @@
 			$('.item-week').live('click', function(){
 				var current_week = $(this).attr('rel');
 				$('#current_week').val(current_week);
-				$('.search-title').html('Production Plan Week &raquo; <span class="red">'+ current_week +'</span>');
+				$('.search-title').html('P/O Model Week &raquo; <span class="red">'+ current_week +'</span>');
 				loadWeek(current_week);
 				$('#plan-month').fadeOut('fast', function(){
 					$('#plan-weeks').fadeIn('fast', function(){})
@@ -157,10 +159,10 @@
 		
 		function loadWeek(param) {
 			var data = { 
-	    	"url":"/populate/production-plan-week.php?pdate="+param,
+	    	"url":"/populate/shipment-plan-week.php?sdate="+param,
 	      "limit":"15",
-				"data_key":"production_plans",
-				"row_template":"row_template_prod_plan_week",
+				"data_key":"shipment_plans",
+				"row_template":"row_template_ship_plan_week",
 	      "pagination":"#products-pagination-week",
 	      "searchable":true
 			}
@@ -169,10 +171,10 @@
 		}
 		function loadMonth(param) {
 			var data = { 
-	    	"url":"/populate/production-plan-month.php?pmonth="+param,
+	    	"url":"/populate/shipment-plan-month.php?smonth="+param,
 	      "limit":"15",
-				"data_key":"production_plans",
-				"row_template":"row_template_prod_plan_month",
+				"data_key":"shipment_plans",
+				"row_template":"row_template_ship_plan_month",
 	      "pagination":"#products-pagination-month",
 	      "searchable":true
 			}

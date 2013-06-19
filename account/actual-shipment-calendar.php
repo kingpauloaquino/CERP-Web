@@ -1,6 +1,6 @@
 <?php
   /* Module: Name  */
-  $capability_key = 'plan_po_calendar';
+  $capability_key = 'actual_shipment_calendar';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);		
@@ -14,6 +14,9 @@
 		<div id="page-title">
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
+        <?php
+				  echo '<a href="'.$Capabilities->All['plan_shipment_calendar']['url'].'" class="nav">Plan Shipment</a>';
+				?>      		
 				<div class="clear"></div>
       </h2>
 		</div>
@@ -155,28 +158,28 @@
 		})
 		
 		function loadWeek(param) {
-			var data = { 
-	    	"url":"/populate/shipment-plan-week.php?sdate="+param,
-	      "limit":"15",
-				"data_key":"shipment_plans",
-				"row_template":"row_template_ship_plan_week",
-	      "pagination":"#products-pagination-week",
-	      "searchable":true
-			}
-		
-			$('#grid-products-week').grid(data);
+			// var data = { 
+	    	// "url":"/populate/shipment-plan-week.php?sdate="+param,
+	      // "limit":"15",
+				// "data_key":"shipment_plans",
+				// "row_template":"row_template_ship_plan_week",
+	      // "pagination":"#products-pagination-week",
+	      // "searchable":true
+			// }
+// 		
+			// $('#grid-products-week').grid(data);
 		}
 		function loadMonth(param) {
-			var data = { 
-	    	"url":"/populate/shipment-plan-month.php?smonth="+param,
-	      "limit":"15",
-				"data_key":"shipment_plans",
-				"row_template":"row_template_ship_plan_month",
-	      "pagination":"#products-pagination-month",
-	      "searchable":true
-			}
-		
-			$('#grid-products-month').grid(data);
+			// var data = { 
+	    	// "url":"/populate/shipment-plan-month.php?smonth="+param,
+	      // "limit":"15",
+				// "data_key":"shipment_plans",
+				// "row_template":"row_template_ship_plan_month",
+	      // "pagination":"#products-pagination-month",
+	      // "searchable":true
+			// }
+// 		
+			// $('#grid-products-month').grid(data);
 		}
 	</script>
 <?php }

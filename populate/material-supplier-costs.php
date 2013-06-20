@@ -22,7 +22,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('materials', array(
 							'columns'	=> 'materials.id AS id, materials.material_code AS code, materials.description AS description, 
-														item_costs.cost AS price, suppliers.name AS supplier, lookups.code AS unit, item_costs.currency,
+														item_costs.cost AS price, item_costs.moq, suppliers.name AS supplier, lookups.code AS unit, item_costs.currency,
 														SUM(warehouse_inventories.qty) AS stock',
 					    'joins'		=> 'LEFT OUTER JOIN warehouse_inventories ON warehouse_inventories.item_id = materials.id AND warehouse_inventories.item_type = "MAT"
 												    INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"

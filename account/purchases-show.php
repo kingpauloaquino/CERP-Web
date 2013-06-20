@@ -16,6 +16,7 @@
           <h2>
             <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
 		        <?php
+		        	echo '<a href="'.$Capabilities->All['purchases']['url'].'?pid='.$_GET['id'].'" class="nav">'.$Capabilities->All['purchases']['name'].'</a>';
 		        	echo '<a href="'.$Capabilities->All['deliveries_po']['url'].'?pid='.$_GET['id'].'" class="nav">'.$Capabilities->All['deliveries_po']['name'].'</a>';
 						?>
             <div class="clear"></div>
@@ -67,7 +68,8 @@
                      <td width="30" class="border-right text-center">No.</td>
                      <td width="140" class="border-right">Item Code</td>
                      <td class="border-right">Description</td>
-                     <td width="55" class="border-right text-center">P/O Qty</td>
+                 			<td width="55" class="border-right text-center">MOQ</td>
+                     <td width="55" class="border-right text-center">Qty</td>
                      <td width="60" class="border-right text-center">Unit</td>
                      <td width="100" class="border-right text-center">Unit Price</td>
                      <td width="100" class="text-center">Amount Price</td>

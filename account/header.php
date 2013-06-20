@@ -698,8 +698,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	  	<li><a href="plan-overview-show.php">Overview</a></li>
         	    <li><a href="forecasts-show.php">Forecast</a></li>
         	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
-        	    <li><a href="plan-pos.php">P/O Plans</a></li>
-        	    <li><a href="plan-models.php">P/O Model Plans</a></li>
+        	    <li><a href="plan-pos.php">Purchase Order Plan</a></li>
         	    <li><a href="plan-shipment-calendar.php">Shipment Plan Calendar</a></li>
         	    <li><a href="plan-production-calendar.php">Production Plan Calendar</a></li>
         	    <li><a href="work-orders.php">Work Orders</a></li>

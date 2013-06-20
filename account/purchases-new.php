@@ -14,6 +14,9 @@
 		<div id="page-title">
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
+		        <?php
+		        	echo '<a href="'.$Capabilities->All['purchases']['url'].'?pid='.$_GET['id'].'" class="nav">'.$Capabilities->All['purchases']['name'].'</a>';
+						?>
 				<div class="clear"></div>
       </h2>
 		</div>
@@ -25,8 +28,8 @@
          <div>
          	<table>
                <tr>
-                  <td width="120">P/O Number:</td><td width="340"><input type="text" name="purchase[purchase_number]" value="<?php echo generate_new_code('purchase_number') ?>" class="text-field magenta" autofocus/></td>
-                  <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick"/></td>
+                  <td width="120">P/O Number:</td><td width="340"><input type="text" name="purchase[purchase_number]" value="<?php echo generate_new_code('purchase_number') ?>" class="text-field magenta" readonly/></td>
+                  <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" required readonly/></td>
                </tr>
                <tr>
                   <td>Supplier:</td>
@@ -36,7 +39,7 @@
                </tr>
                <tr>
                   <td>Delivery Via:</td><td><input type="text" name="purchase[delivery_via]" value="" class="text-field"/></td>
-                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="" class="text-field date-pick"/></td>
+                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="" class="text-field date-pick-week" required readonly/></td>
                </tr>
                <tr>
                   <td>Trade Terms:</td><td><input type="text" name="purchase[terms]" value="" class="text-field"/></td>
@@ -51,10 +54,11 @@
            <table cellspacing="0" cellpadding="0">
              <thead>
                <tr>
-                 <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
+								 <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td> 
                  <td width="30" class="border-right text-center">No.</td>
                  <td width="140" class="border-right">Item Code</td>
                  <td class="border-right">Description</td>
+                 <td width="55" class="border-right text-center">MOQ</td>
                  <td width="55" class="border-right text-center">Qty</td>
                  <td width="60" class="border-right text-center">Unit</td>
                  <td width="100" class="border-right text-center">Unit Price</td>
@@ -99,7 +103,7 @@
         <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
       </div>
         <!-- BOF GRIDVIEW -->
-        <div id="grid-materials" class="grid jq-grid">
+        <div id="grid-materials" class="grid jq-grid grid-item">
            <table cellspacing="0" cellpadding="0">
              <thead>
                <tr>
@@ -171,6 +175,7 @@
 					    $('#modal-product-materials').hide();
 					});	
 					
+					$('#grid-purchase-materials').grid({});
 					$('#add-item').click(function(){
 						$('#keyword').val('');
 						populate($('#suppliers').val());
@@ -193,7 +198,7 @@
 					  $('.get-amount').compute_amount();	
 			  	}
 					
-			  }); 
+			  })
 			  
 				
        
@@ -202,7 +207,7 @@
            var cell		= $("<tr id=\""+ row_id +"\"></tr>");
            
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
-           cell.append("<td class=\"mat-code border-right\"><input type='hidden' class='mat-currency' value='"+ row['currency'] +"' /><a class=\"mat\" alt=\"" + row['id'] + "\" rel=\"modal:open\" href=\"#modal-material-requests\">"+ row['code'] +"</a></td>");
+           cell.append("<td class=\"mat-code border-right\"><input type='hidden' class='mat-currency' value='"+ row['currency'] +"' /><input type='hidden' class='mat-moq' value='"+ row['moq'] +"' /><a class=\"mat\" alt=\"" + row['id'] + "\" rel=\"modal:open\" href=\"#modal-material-requests\">"+ row['code'] +"</a></td>");
            cell.append("<td class=\"mat-stock border-right text-right numbers\">"+ (parseFloat(row['stock']) || '0') +"</td>");
            cell.append("<td class=\"mat-description border-right \">"+ row['description'] +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
@@ -272,7 +277,7 @@
                   
          $.fn.append_item = function() {
            this.click(function(e) {
-             var table = $('#grid-materials').find('table');
+             var table = $('.grid-item').find('table');
              var grid = $('#purchase-materials');
              
            	 table.find('.chk-item:checked').each(function() {
@@ -292,6 +297,7 @@
            	       'quantity':1,
            	       'item_price':item.find('.mat-price').html(),
            	       'currency':item.find('.mat-currency').val(),
+           	       'moq':item.find('.mat-moq').val(),
            	     }
            	     
            	     var row = row_template_purchase_material(data);
@@ -300,31 +306,6 @@
            	     grid.append(row);
            	     compute_total_amount();
            	   }
-           	   /*
-           	   if(grid.find('#'+ row_id).length == 0) {
-           	     var item = $('#mat-'+ $(this).val());
-           	     var row = $('<tr id="'+ row_id +'"></tr>');
-           	     
-           	     var unit		= 'Liter';
-           	     var quantity	= 1;
-           	     var price		= 0.00;
-           	     var amount		= parseFloat(quantity * clean_currency(price));
-           	     
-           	     row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item"/></td>');
-           	     row.append('<td class="border-right text-center" replace="#{index}"></td>');
-           	     row.append('<td class="border-right">'+ item.find('.mat-code').html() +'</td>');
-           	     row.append('<td class="border-right">'+ item.find('.mat-description').html() +'</td>');
-           	     row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ quantity +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
-           	     row.append('<td class="border-right text-center">'+ unit +'</td>');
-           	     row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][price]" value="'+ price +'" class="currency text-field-price text-right get-amount item-price"/></td>');
-           	     row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
-           	   
-           	     row.find('.currency').formatCurrency();
-           	     // build_options_unit(row.find("select"));
-           	     grid.append(row);
-           	     compute_total_amount();
-           	   }
-           	   */
            	 });
            	 populate_index(grid);
            })

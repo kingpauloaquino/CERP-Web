@@ -288,12 +288,9 @@
            this.click(function(e) {
              var table = $('.grid-item').find('table');
              var grid = $('#purchase-order-materials');
-             
              var item_type = $(this).attr('id');
-             
            	 table.find('.chk-item:checked').each(function() {
            	   var id		= $(this).val()
-           	  
            	   var row_id	= "mat-"+ id;
            	   
            	   $(this).prop('checked', false);

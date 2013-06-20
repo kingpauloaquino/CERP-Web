@@ -14,7 +14,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	
 	$query = $DB->Fetch('purchase_items', array(
                'columns' => 'purchase_items.id, purchase_items.item_id, material_code AS code, materials.description, quantity,
-														lookups.description AS unit, item_price, item_costs.currency',
+														lookups.description AS unit, item_price, item_costs.currency, item_costs.moq',
                'joins' => 'INNER JOIN purchases ON purchases.id = purchase_items.purchase_id
 														INNER JOIN materials ON materials.id = purchase_items.item_id
 														INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type="MAT" AND item_costs.supplier = purchases.supplier_id

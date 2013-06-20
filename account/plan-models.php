@@ -14,7 +14,9 @@
 		<div id="page-title">
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
-      	
+	        <?php
+	        	echo '<a href="'.$Capabilities->All['plan_pos']['url'].'" class="nav">Browse by P/O</a>';
+					?>
 				<div class="clear"></div>
       </h2>
 		</div>

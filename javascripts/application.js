@@ -11,6 +11,7 @@ $(function() {
   $('.text-currency').currency_format();
   $('.text-date').date_format();
   $('.date-pick').date_pick();
+  $('.date-pick-week').date_pick_restrict(null, '');
   $('.date-pick-thursday').date_pick_restrict(null, 'thursday');
   $('.date-pick-friday').date_pick_restrict(null, 'friday');
   $('.date-string').format_date_string();
@@ -141,7 +142,8 @@ $.fn.date_pick_restrict = function(format, restrict) {
     				return [(day != 1 && day != 2 && day != 3 && day != 5 && day != 6 && day != 0 )];
         	case 'friday':
     				return [(day != 1 && day != 2 && day != 3 && day != 4 && day != 6 && day != 0 )];
-        	
+        	case '':
+        		return [(day != 6 && day != 0 )];
         }
         
     }
@@ -954,33 +956,16 @@ function row_template_purchases(data) {
   return row;
 }
 
-// function row_template_purchase_material(data) {
-  // var id		= data['id'];
-  // var row		= $('<tr id="mat-'+ data['item_id'] +'"></tr>');
-  // var amount	= parseFloat(data['quantity'] * clean_currency(data['item_price']));
-// 
-  // row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item"/></td>');
-  // row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  // row.append('<td class="border-right">'+ data['code'] +'</td>');
-  // row.append('<td class="border-right">'+ data['description'] +'</td>');
-  // row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
-  // row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
-  // row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price"/></td>');
-  // row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
-//            	
-  // row.find('.currency').formatCurrency({region:"en-PH"});
-  // return row;   
-// }
-
 function row_template_purchase_material(data) {
   var id		= data['id'];
   var row		= $('<tr id="mat-'+ data['item_id'] +'"></tr>');
   var amount	= parseFloat(data['quantity'] * clean_currency(data['item_price']));
   
-  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /><input type="hidden" name="items['+id+'][item_id]" value="'+ data['item_id'] +'" /></td>');
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item"/></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append('<td class="border-right"><input type="hidden" name="items['+id+'][currency]" value="'+ data['currency'] +'" />'+ data['code'] +'</td>');
+  row.append('<td class="border-right"><input type="hidden" name="items['+id+'][item_id]" value="'+ data['item_id'] +'" /><input type="hidden" name="items['+id+'][currency]" value="'+ data['currency'] +'" />'+ data['code'] +'</td>');
   row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-right">'+ parseFloat(data['moq']) +'</td>');
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][item_price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price"/></td>');
@@ -999,6 +984,7 @@ function row_template_purchase_material_read_only(data) {
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
   row.append('<td class="border-right">'+ data['code'] +'</td>');
   row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-right">'+ parseFloat(data['moq']) +'</td>');
   row.append('<td class="border-right text-right numbers">'+ data['quantity'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right currency">'+ data['item_price'] +'</td>');

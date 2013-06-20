@@ -49,11 +49,11 @@
                       <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
                    </tr>
                    <tr>
-                      <td>Invoice:</td><td><input id="delivery[invoice]" name="delivery[invoice]" type="text" class="text-field" required /></td>
-                      <td>Receipt:</td><td><input id="delivery[receipt]" name="delivery[receipt]" type="text" class="text-field" /></td>
+                      <td>Invoice:</td><td><input id="delivery[invoice]" name="delivery[invoice]" type="text" class="text-field" required autocomplete="off"/></td>
+                      <td>Receipt:</td><td><input id="delivery[receipt]" name="delivery[receipt]" type="text" class="text-field" autocomplete="off"/></td>
                    </tr>
                    <tr>
-                      <td>Lot No.:</td><td><input id="delivery[lot]" name="delivery[lot]" type="text" class="text-field" required /></td>
+                      <td>Lot No.:</td><td><input id="delivery[lot]" name="delivery[lot]" type="text" class="text-field" required autocomplete="off" /></td>
                       <td></td><td></td>
                    </tr>
                    <tr><td height="5" colspan="99"></td></tr>

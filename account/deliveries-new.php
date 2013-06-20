@@ -37,7 +37,7 @@
                       		}
                       		?>
                       </td>
-                      <td width="120">P/O Date:</td><td width="340"><input id="po_date" type="text" class="text-field" disabled/>
+                      <td width="120">P/O Date:</td><td width="340"><input id="po_date" type="text" class="text-field ctrl-date-string" disabled/>
                    </tr>
                    <tr>
                       <td>Supplier:</td>
@@ -47,7 +47,7 @@
                    </tr>
                    <tr>
                       <td>Delivery Via:</td><td><input id="delivery_via" name="delivery[delivery_via]" type="text" class="text-field" /></td>
-                      <td>Delivery Date:</td><td><input id="delivery_date" name="delivery[delivery_date]" type="text" class="text-field date-pick" /></td>
+                      <td>Delivery Date:</td><td><input id="delivery_date" name="delivery[delivery_date]" type="text" class="text-field ctrl-date-string date-pick-week" /></td>
                    </tr>
                    <tr>
                       <td>Trade Terms:</td><td><input id="trade_terms" type="text" class="text-field" disabled/></td>
@@ -99,7 +99,7 @@
            	   <div class="text-post-status">
            	     
                </div>
-       	   			<input type="submit" value="Create" class="btn"/>
+       	   			<input id="btn-submit" type="submit" value="Create" class="btn" disabled/>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>
              </div>
           </form>
@@ -113,9 +113,10 @@
        		$('#purchase').on('change', function() {
 					  loadDetails(this.value);
 					});	
-					
-			  	
-					
+					if(purchase_id) {
+						$('#btn-submit').removeAttr('disabled');
+					}
+
 					function loadDetails(id){
 						$.ajax({
 							type: "POST",
@@ -130,13 +131,15 @@
 							dataType : "json",
 							success: function(data) {
 								$('#supplier_name').val(data.supplier_name);
-								$('#po_date').val(data.po_date);
+								$('#po_date').val(data.po_date).format_ctrl_date_string();
 								$('#trade_terms').val(data.terms);
 								$('#payment_terms').val(data.payment_terms);
 								$('#delivery_via').val(data.delivery_via);
-								$('#delivery_date').val(data.delivery_date);
+								$('#delivery_date').val(data.delivery_date).format_ctrl_date_string();
 								$('#completion_status').val(data.completion_status);
 								$('#purchase_id').val(id);
+								
+								
 								return false;
 							}
 						});

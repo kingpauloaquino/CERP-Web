@@ -311,9 +311,11 @@ class Posts {
   	  'completion_status'			=> $params['completion_status'],
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
   	  'total_amount'	=> $params['total_amount'],
-  	  'created_by'		=> $Signed['id'],
+		  'created_by' => $_SESSION['user']['id'],
+		  'checked_by' => $_SESSION['user']['id'],
+		  'checked_at' => date('Y-m-d')
 		);	
-		$purchase_order_id = $this->DB->InsertRecord('purchase_orders', $purchase_order);
+		$purchase_order_id = $this->DB->InsertRecord('purchase_orders', setApproval($purchase_order, $params['status']));
 	
 		if(!empty($params['items'])) {
 		  // Add Each Order Item
@@ -338,12 +340,15 @@ class Posts {
   	  		'status'		=> $params['status'],
   	  		'completion_status'			=> $params['completion_status'],
 		  		'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
-		  	  'total_amount'	=> $params['total_amount']
+		  	  'total_amount'	=> $params['total_amount'],
+		  	  'created_by' => $_SESSION['user']['id'],
+				  'checked_by' => $_SESSION['user']['id'],
+				  'checked_at' => date('Y-m-d')
 	  ),
 	  'conditions' => 'id = '.$params['id']
     );
 		
-		$row = $this->DB->UpdateRecord('purchase_orders', $purchase_order);
+		$row = $this->DB->UpdateRecord('purchase_orders', setApproval($purchase_order, $params['status'], FALSE));
 	if($row > 0) {
 		$purchase_order_item_ids = $this->DB->Get('purchase_order_items', array('columns' => 'id', 'conditions' => 'purchase_order_id ='. $params['id']));
 		foreach($purchase_order_item_ids as $prod) {
@@ -472,9 +477,7 @@ class Posts {
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		  'created_by' => $_SESSION['user']['id'],
 		  'checked_by' => $_SESSION['user']['id'],
-		  'checked_at' => date('Y-m-d'),
-		  'approved_by' => $_SESSION['user']['id'],
-		  'approved_at' => date('Y-m-d')
+		  'checked_at' => date('Y-m-d')
     );
 		
 		$purchase_id = $this->DB->InsertRecord('purchases', setApproval($purchase, $params['status']));
@@ -528,9 +531,7 @@ class Posts {
 		  	'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 			  'created_by' => $_SESSION['user']['id'],
 			  'checked_by' => $_SESSION['user']['id'],
-			  'checked_at' => date('Y-m-d'),
-			  'approved_by' => $_SESSION['user']['id'],
-			  'approved_at' => date('Y-m-d')
+			  'checked_at' => date('Y-m-d')
 	  ),
 	  'conditions' => 'id = '.$params['id']
     );
@@ -1230,4 +1231,12 @@ class Posts {
 	function EditShipmentPlan($params) { 
 		$this->DB->UpdateRecord('shipment_plans', $params); 
 	}
+	
+	function ApprovePurchase($params) {
+    return $this->DB->UpdateRecord('purchases', $params);
+  }
+	
+	function ApprovePurchaseOrder($params) {
+    return $this->DB->UpdateRecord('purchase_orders', $params);
+  }
 }

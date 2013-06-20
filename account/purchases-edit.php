@@ -30,7 +30,7 @@
          	<table>
                <tr>
                   <td width="120">P/O Number:</td><td width="340"><input type="text" value="<?php echo $purchase['po_number']; ?>" class="text-field magenta" disabled/></td>
-                  <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y", strtotime($purchase['po_date'])) ?>" class="text-field date-pick-week" required readonly/></td>
+                  <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y", strtotime($purchase['po_date'])) ?>" class="text-field date-pick-week" required /></td>
                </tr>
                <tr>
                   <td>Supplier:</td>
@@ -41,7 +41,7 @@
                </tr>
                <tr>
                   <td>Delivery Via:</td><td><input type="text" name="purchase[delivery_via]" value="<?php echo $purchase['delivery_via']; ?>" class="text-field" /></td>
-                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="<?php echo date("F d, Y", strtotime($purchase['delivery_date'])) ?>" class="text-field date-pick-week" required readonly/></td>
+                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="<?php echo date("F d, Y", strtotime($purchase['delivery_date'])) ?>" class="text-field date-pick-week" required /></td>
                </tr>
                <tr>
                   <td>Trade Terms:</td><td><input type="text" name="purchase[terms]" value="<?php echo $purchase['terms']; ?>" class="text-field"/></td>
@@ -92,7 +92,7 @@
          </div>
          <div class="field-command">
        	   <div class="text-post-status">
-       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]"><?php echo build_select_post_status_by_level(getConditionByLevel($_SESSION['user']['level']), $purchase['status_id']); ?></select>
+       	     <strong>Save As:</strong>&nbsp;&nbsp;<select id="purchase-status" name="purchase[status]"><?php echo build_select_post_status_by_level(getConditionByLevel($_SESSION['user']['level']), $purchase['status_id']); ?></select>
            </div>
        	   <input type="submit" value="Save" class="btn"/>
            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchases-show.php?id='.$_GET['id']); ?>"/>

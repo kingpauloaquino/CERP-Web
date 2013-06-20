@@ -29,7 +29,7 @@
          	<table>
                <tr>
                   <td width="120">P/O Number:</td><td width="340"><input type="text" name="purchase[purchase_number]" value="<?php echo generate_new_code('purchase_number') ?>" class="text-field magenta" readonly/></td>
-                  <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" required readonly/></td>
+                  <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" autocomplete="off" required/></td>
                </tr>
                <tr>
                   <td>Supplier:</td>
@@ -39,7 +39,7 @@
                </tr>
                <tr>
                   <td>Delivery Via:</td><td><input type="text" name="purchase[delivery_via]" value="" class="text-field"/></td>
-                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="" class="text-field date-pick-week" required readonly/></td>
+                  <td>Delivery Date:</td><td><input type="text" name="purchase[delivery_date]" value="" class="text-field date-pick-week" autocomplete="off" required/></td>
                </tr>
                <tr>
                   <td>Trade Terms:</td><td><input type="text" name="purchase[terms]" value="" class="text-field"/></td>

@@ -15,6 +15,7 @@ $(function() {
   $('.date-pick-thursday').date_pick_restrict(null, 'thursday');
   $('.date-pick-friday').date_pick_restrict(null, 'friday');
   $('.date-string').format_date_string();
+  $('.ctrl-date-string').format_ctrl_date_string();
   $('.redirect-to').redirect_to();
   $('.btn-download').download(); 
   
@@ -124,7 +125,7 @@ $.fn.date_format = function(format) {
   $(this).attr('placeholder', format);
 }
 
-$.fn.date_pick = function(format) {
+$.fn.date_pick = function(format) { 
 	format = format || 'MM dd, yy';
   $(this).datepicker({
 		inline: true, dateFormat: format
@@ -148,6 +149,13 @@ $.fn.date_pick_restrict = function(format, restrict) {
         
     }
 	});
+}
+
+$.fn.format_ctrl_date_string = function(format) {
+	format = format || 'MM dd, yy';
+	if($(this).val() != '') {
+		$(this).val($.datepicker.formatDate(format, new Date($(this).val()))); 
+	} 
 }
 
 $.fn.format_date_string = function(ctrl, format) {
@@ -966,11 +974,12 @@ function row_template_purchase_material(data) {
   row.append('<td class="border-right"><input type="hidden" name="items['+id+'][item_id]" value="'+ data['item_id'] +'" /><input type="hidden" name="items['+id+'][currency]" value="'+ data['currency'] +'" />'+ data['code'] +'</td>');
   row.append('<td class="border-right">'+ data['description'] +'</td>');
   row.append('<td class="border-right text-right">'+ parseFloat(data['moq']) +'</td>');
-  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity numeric" autocomplete="off"/></td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
-  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][item_price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][item_price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price" readonly/></td>');
   row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
  
+  row.find('.numeric').numeric_only();
   row.find('.currency').formatCurrency({region:"en-PH"});
   return row;   
 }

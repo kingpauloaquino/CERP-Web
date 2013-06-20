@@ -114,7 +114,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$Posts->EditPurchase($purchase);
 		
 		redirect_to(host('purchases-show.php?id='.$purchase['id']));
-    break;	
+    break;
+		
+	case 'approve_purchase':
+		$item = array('variables' => array('approved_by' => $_POST['approved_by'], 'approved_at' => date('Y-m-d H:i:s')), 'conditions' => 'id='.$_POST['id']);
+		$Posts->ApprovePurchase($item);
+		break;	
 		
 	// ===============================================================
   // Post::Update Delivery
@@ -316,6 +321,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		
 		redirect_to(host('purchase-orders-show.php?pid='.$purchase_order['id'])); 
     break;
+		
+	case 'approve_purchase_order':
+		$item = array('variables' => array('approved_by' => $_POST['approved_by'], 'approved_at' => date('Y-m-d H:i:s')), 'conditions' => 'id='.$_POST['id']);
+		$Posts->ApprovePurchaseOrder($item);
+		break;
 		
 	// ===============================================================
   // Post::Add Order

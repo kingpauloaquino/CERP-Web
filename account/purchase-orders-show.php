@@ -21,6 +21,9 @@
 
     <div id="content">
       <form id="purchase-order-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+          	<input type="hidden" id="purchase-status" value="<?php echo $purchase_order['status']?>"/>
+          	<input type="hidden" id="purchase-aprroved-by" value="<?php echo $purchase_order['approved_by']?>"/>
+          	<input type="hidden" id="user-level" value="<?php echo $_SESSION['user']['level']?>"/>
          <div>
          	<table>
                <tr>
@@ -80,19 +83,45 @@
             </table>
          </div>
          <div class="field-command">
-           	   <div class="text-post-status">
-           	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $purchase_order['status']; ?>
-               </div>
-               <?php if($purchase_order['status'] != "Publish") { ?>
-               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('purchase-orders-edit.php?pid='. $purchase_order['id']); ?>"/>
-           	   <?php } ?>
-               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('purchase-orders.php'); ?>"/>
-             </div>
+       	   <div class="text-post-status">
+       	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $purchase_order['status']; ?>
+           </div>
+           <?php if($purchase_order['status'] != "Publish") { ?>
+           <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('purchase-orders-edit.php?pid='. $purchase_order['id']); ?>"/>
+       	   <?php } ?>
+           <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('purchase-orders.php'); ?>"/>
+         </div>
+         <?php 
+								$approval_item_id = $_GET['pid'];
+								$approval_table = 'purchase_orders';
+								require_once 'approval.php';
+							?>
       </form>
    </div>
-       
-     
 	</div>
+	
+	<!-- BOF MODAL -->
+		<div id="modal-approval" class="modal" style="display:none;width:420px;">
+      <div class="modal-title"><h3>Approval</h3></div>
+      <div class="modal-content">
+      	<form id="frm-approval" method="POST">
+					<input type="hidden" name="action" value="approve_purchase_order"/>  
+					<input type="hidden" name="id" value="<?php echo $purchase_order['id'] ?>"/>  
+				<?php 
+	 	     	$approvers = $DB->Get('users', array('columns' => 'users.id, CONCAT(users.first_name, " ", users.last_name) AS full_name', 
+																						'joins' => 'INNER JOIN user_roles ON user_roles.user_id = users.id
+																												INNER JOIN roles ON roles.id = user_roles.role_id',
+																						'conditions'  => 'roles.id=3'));
+	 	     
+	 	     	select_query_tag($approvers, 'id', 'full_name', '', 'approver-id', 'approved_by', '', 'width:192px;'); ?>
+      	</form>
+			</div>
+    	<div class="modal-footer">
+      	<a class="btn parent-modal" rel="modal:close">Close</a>
+      	<a id="approve-purchase" href="#frm-approval" class="btn" rel="modal:close">Approve</a>
+    		<div class="clear"></div>
+			</div>
+		</div>
       
        <script>
 				$(function() {
@@ -105,8 +134,26 @@
 				
 					$('#grid-purchase-order-items').grid(data);
 					$('#order_amount').currency_format(<?php echo $purchase_order['total_amount']; ?>);
+					
+					if($('#purchase-status').val() == "Publish" && $('#purchase-aprroved-by').val() == '' && $('#user-level').val() == 3) {
+						$('#btn-approval').show(); 
+					} else {
+						$('#btn-approval').hide();
+					}
+					$('#approve-purchase').approve();
 			  }) 
-			  
+			  $.fn.approve = function() {
+			  	this.click(function(e) {
+			  		e.preventDefault();
+						var form = $(this).attr('href');
+						
+						$.post(document.URL, $(form).serialize(), function(data) {
+			      }).done(function(data){
+			      	$('#btn-approval').hide(); 
+			      	window.location = document.URL;
+			      });	
+			  	})
+			  }
        </script>
 
 <?php }

@@ -37,7 +37,7 @@
 		<tr>
 			<td width="25%">Prepared By:</td>
 			<td width="25%">Checked By:</td>
-			<td width="25%">Approved By:</td>
+			<td width="25%">Approved By: <a id="btn-approval" href="#modal-approval" rel="modal:open">[ APPROVE ]</a>	</td>
 			<td></td>
 		</tr>
 		<tr>

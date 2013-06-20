@@ -324,7 +324,7 @@ function pad_number($number,$n) {
 function generate_new_code($type) {
 	switch($type) {
 		case "purchase_order_number":	
-			$prefix = "STJ-";	
+			$prefix = "STJ-C";	
 			$flag = '-';			
 			$table = 'purchase_orders';
 			$column = 'po_number';
@@ -390,10 +390,11 @@ function setApproval($arr, $stat, $isNew = TRUE) {
 	if($isNew) {
 		switch($stat) {
 			case 9: // Draft
-				unset($arr['checked_by']); unset($arr['checked_at']); unset($arr['approved_by']); unset($arr['approved_at']);
+				unset($arr['checked_by']); unset($arr['checked_at']); 
+				//unset($arr['approved_by']); unset($arr['approved_at']);
 				break;
 			case 10: // Pending / Check
-				unset($arr['approved_by']); unset($arr['approved_at']);
+				//unset($arr['approved_by']); unset($arr['approved_at']);
 				break;
 			case 11: // Publish / Approve
 				
@@ -402,13 +403,19 @@ function setApproval($arr, $stat, $isNew = TRUE) {
 	} else {
 		switch($stat) {
 			case 9: // Draft
-				unset($arr['variables']['checked_by']); unset($arr['variables']['checked_at']); unset($arr['variables']['approved_by']); unset($arr['variables']['approved_at']);
+				unset($arr['variables']['checked_by']); unset($arr['variables']['checked_at']); 
+				//unset($arr['variables']['approved_by']); 
+				//unset($arr['variables']['approved_at']);
 				break;
 			case 10: // Pending / Check
-				unset($arr['variables']['created_by']); unset($arr['variables']['approved_by']); unset($arr['variables']['approved_at']);
+				unset($arr['variables']['created_by']); 
+				//unset($arr['variables']['approved_by']); 
+				//unset($arr['variables']['approved_at']);
 				break;
 			case 11: // Publish / Approve
-				unset($arr['variables']['created_by']); unset($arr['variables']['checked_by']); unset($arr['variables']['checked_at']);;
+				unset($arr['variables']['created_by']); 
+				// unset($arr['variables']['checked_by']); 
+				// unset($arr['variables']['checked_at']);;
 				break;
 		}
 	}

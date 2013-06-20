@@ -98,7 +98,8 @@ class Query {
 			  			'columns' => 'purchase_orders.id, purchase_orders.po_number, purchase_orders.po_date, purchase_orders.terms, purchase_orders.ship_date, 
 			  										purchase_orders.payment_terms AS payment_terms_id, purchase_orders.completion_status AS completion_status_id, lookup_status2.description AS completion_status,
 			  										purchase_orders.status AS status_id, lookup_status.description AS status, purchase_orders.total_amount, purchase_orders.remarks, 
-			  										suppliers.name AS client, lookups.description AS payment_terms', 
+			  										suppliers.name AS client, lookups.description AS payment_terms, purchase_orders.created_by, purchase_orders.created_at, 
+			  										purchase_orders.checked_by, purchase_orders.checked_at, purchase_orders.approved_by, purchase_orders.approved_at', 
 			  	  	'joins' => 'INNER JOIN suppliers ON suppliers.id = purchase_orders.client_id
 			  	  							INNER JOIN lookups ON lookups.id = purchase_orders.payment_terms
 			  	  							INNER JOIN lookup_status ON lookup_status.id = purchase_orders.status

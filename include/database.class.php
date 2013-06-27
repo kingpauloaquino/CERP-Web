@@ -84,8 +84,8 @@ class MySQL {
   	if (isset($args)) {
   	  $args['columns'] = (isset($args['columns']) ? $args['columns'] : '*');
   	  $args['joins'] = (isset($args['joins']) ? $args['joins'] : '');
-			
-			$args['conditions'] = (isset($args['conditions']) ? ' WHERE '.$args['conditions'] : '');
+
+			$args['conditions'] = (isset($args['conditions']) && $args['conditions'] != '') ? ' WHERE '.$args['conditions'] : '';
 			$args['order'] = (isset($args['order']) ? ' ORDER BY '.$args['order'] : '');
 			$args['limit'] = (isset($args['limit']) ? ' LIMIT '.$args['limit'] : '');
 			$args['group'] = (isset($args['group']) ? ' GROUP BY '.$args['group'] : '');
@@ -100,8 +100,8 @@ class MySQL {
     $sql .= $args['group'];
     $sql .= $args['order'];
 	
-	//echo '<br/><br/>';
-	//var_dump($sql); die();
+	// echo '<br/><br/>';
+	// var_dump($sql); die();
 	$this->statement = $sql;
     $sql .= $args['limit'];
 	
@@ -109,7 +109,7 @@ class MySQL {
 	$result = $this->IsEmpty($this->Query($sql));
 	
 	if(!empty($result)) {
-      while ($row = mysql_fetch_array($result)) {
+      while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
         $data[] = $row;
       }
 	}
@@ -165,8 +165,8 @@ class MySQL {
   	if(!is_array($arguments)) return 'Error::InvalidArguments';	
 	
     $sql = "DELETE FROM ".$table." WHERE ".$arguments['conditions']; 
-//echo '<br/><br/>';
-//var_dump($sql); die();
+// echo '<br/><br/>';
+// var_dump($sql); die();
 		$this->Query($sql);
 		return mysql_affected_rows();
   }

@@ -249,5 +249,169 @@ function purchase_order_item_by_id($poid, $pid) {
 		if(!empty($query)) return $query;
 		return null;
 	}
+
+	function minventory_end_by_month_year($month_year) {
+  	$query = $this->DB->Fetch('materials AS m', array(
+               'columns' => 'm.id, m.material_code AS code, item_classifications.classification AS classification, 
+														m.description AS description, lookups.description AS uom, 
+														COALESCE(wh1.qty,0) AS qty, COALESCE(wh2.qty,0) AS physical_qty',
+               'joins' => 'LEFT OUTER JOIN 
+															(
+															SELECT warehouse_inventories.item_id,sum(warehouse_inventories.qty) as qty
+															FROM warehouse_inventories
+															WHERE EXTRACT(YEAR_MONTH FROM warehouse_inventories.created_at) <= EXTRACT(YEAR_MONTH FROM "'.$month_year.'")
+															GROUP BY warehouse_inventories.item_id
+															) AS wh1 ON wh1.item_id = m.id
+														LEFT OUTER JOIN
+															(
+															SELECT warehouse_inventory_actual.item_id, sum(warehouse_inventory_actual.qty) as qty
+															FROM warehouse_inventory_actual
+															WHERE EXTRACT(YEAR_MONTH FROM warehouse_inventory_actual.entry_date) = EXTRACT(YEAR_MONTH FROM "'.$month_year.'")
+															GROUP BY warehouse_inventory_actual.item_id
+															) AS wh2 ON wh2.item_id = m.id
+														INNER JOIN item_classifications ON m.material_classification = item_classifications.id
+														INNER JOIN item_costs ON item_costs.item_id = m.id AND item_costs.item_type = "MAT"
+														INNER JOIN lookups ON lookups.id = item_costs.unit',
+               'group' => 'm.id',
+							 'conditions' => 'm.material_type = 70 
+							 							',
+ 								'order' => 'code'
+							 )
+             );
+	
+	if(!empty($query)) return $query;
+	return null;
+  }
+
+	function pinventory_end_by_month_year($month_year) {
+  	$query = $this->DB->Fetch('products as p', array(
+               'columns' => 'p.id, p.product_code AS code, brand_models.brand_model AS brand, product_series.series, p.pack_qty,
+														p.description AS description, lookups.description AS uom, 
+														COALESCE(wh1.qty,0) AS qty, COALESCE(wh2.qty,0) AS physical_qty',
+               'joins' => 'LEFT OUTER JOIN 
+															(
+															SELECT warehouse2_inventories.item_id,sum(warehouse2_inventories.qty) as qty
+															FROM warehouse2_inventories
+															WHERE EXTRACT(YEAR_MONTH FROM warehouse2_inventories.endorse_date) <= EXTRACT(YEAR_MONTH FROM "'.$month_year.'")
+															GROUP BY warehouse2_inventories.item_id
+															) AS wh1 ON wh1.item_id = p.id
+														LEFT OUTER JOIN
+															(
+															SELECT warehouse2_inventory_actual.item_id, sum(warehouse2_inventory_actual.qty) as qty
+															FROM warehouse2_inventory_actual
+															WHERE EXTRACT(YEAR_MONTH FROM warehouse2_inventory_actual.entry_date) = EXTRACT(YEAR_MONTH FROM "'.$month_year.'")
+															GROUP BY warehouse2_inventory_actual.item_id
+															) AS wh2 ON wh2.item_id = p.id
+														INNER JOIN brand_models ON brand_models.id = p.brand_model
+														INNER JOIN product_series ON product_series.id = p.series
+														INNER JOIN item_costs ON item_costs.item_id = p.id AND item_costs.item_type = "PRD"
+														INNER JOIN lookups ON lookups.id = item_costs.unit',
+               'group' => 'p.id',
+ 								'order' => 'code'
+							 )
+             );
+	
+	if(!empty($query)) return $query;
+	return null;
+  }
+
+	function inventory_status_by_current_date($type, $count_date) {
+		$query = $this->DB->Fetch('inventory_status', array(
+						  			'columns' 		=> 'current_month, count_month, is_updated, is_locked, status', 
+						  	    'conditions' 	=> 'type="'.$type.'" AND EXTRACT(YEAR_MONTH FROM current_month) = EXTRACT(YEAR_MONTH FROM "'.$count_date.'")'));
+				
+		if(!empty($query)) return $query[0];
+		return null;
+	}
+
+	function latest_inventory_count($type) {
+		$query = $this->DB->Fetch('inventory_status', array(
+						  			'columns' 		=> 'MAX(count_month) AS count_month', 
+						  	    'conditions' 	=> 'type="'.$type.'"'));
+				
+		if(!empty($query)) return $query[0];
+		return null;
+	}
+
+	function received_by_date_by_month_year($month_year) {
+  	$query = $this->DB->Fetch('delivery_items', array(
+               'columns' => 'delivery_items.id, delivery_items.delivery_id, delivery_items.invoice, delivery_items.receipt, 
+														delivery_items.receive_date, suppliers.id AS supplier_id, suppliers.name AS supplier_name',
+               'joins' => 'INNER JOIN deliveries ON deliveries.id = delivery_items.delivery_id
+														INNER JOIN purchases ON purchases.id = deliveries.purchase_id
+														INNER JOIN suppliers ON suppliers.id = purchases.supplier_id',
+               'group' => 'delivery_items.delivery_id',
+							 'conditions' => 'EXTRACT(YEAR_MONTH FROM delivery_items.receive_date) = EXTRACT(YEAR_MONTH FROM "'.$month_year.'") 
+							 							'
+							 )
+             );
+	
+	if(!empty($query)) return $query;
+	return null;
+  }
+
+	function received_by_supplier_by_month_year($month_year, $sid) {
+  	$query = $this->DB->Fetch('delivery_items', array(
+               'columns' => 'delivery_items.id, delivery_items.delivery_id, delivery_items.invoice, delivery_items.receipt, 
+														delivery_items.receive_date',
+               'joins' => 'INNER JOIN deliveries ON deliveries.id = delivery_items.delivery_id
+														INNER JOIN purchases ON purchases.id = deliveries.purchase_id',
+               'group' => 'delivery_items.delivery_id',
+							 'conditions' => 'EXTRACT(YEAR_MONTH FROM delivery_items.receive_date) = EXTRACT(YEAR_MONTH FROM "'.$month_year.'") 
+							 							AND purchases.supplier_id='.$sid
+							 )
+             );
+	
+	if(!empty($query)) return $query;
+	return null;
+  }
+
+	function received_by_all_supplier_by_month_year($month_year) {
+		
+  	$query = $this->DB->Fetch('delivery_items', array(
+               'columns' => 'suppliers.id AS supplier_id, suppliers.name AS supplier_name',
+               'joins' => 'INNER JOIN deliveries ON deliveries.id = delivery_items.delivery_id
+														INNER JOIN purchases ON purchases.id = deliveries.purchase_id
+														INNER JOIN suppliers ON suppliers.id = purchases.supplier_id',
+               'group' => 'suppliers.id',
+							 'conditions' => 'EXTRACT(YEAR_MONTH FROM delivery_items.receive_date) = EXTRACT(YEAR_MONTH FROM "'.date('Y-m-d', strtotime($month_year)).'")',
+							 'order' => 'suppliers.name'
+							 )
+             );
+	
+	if(!empty($query)) return $query;
+	return null;
+  }
+
+
+	// ID-VALUE-PAIR LOOKUP QUERIES
+
+	function get_lookups($type) {
+		switch($type) {
+			case 'suppliers':
+				$query = $this->DB->Fetch('suppliers', array(
+           'columns'  => 'id, name AS supplier_name',
+           'order' => 'name')
+         ); break;
+		}
+  	
+	
+		if(!empty($query)) return $query;
+		return null;
+  }
+
+	function get_lookups_value($type, $id) {
+		switch($type) {
+			case 'suppliers':
+				$query = $this->DB->Fetch('suppliers', array(
+           'columns'  => 'name AS supplier_name',
+           'conditions' => 'id='.$id)
+         ); break;
+		}
+  	
+	
+		if(!empty($query)) return $query[0];
+		return null;
+  }
 	
 }

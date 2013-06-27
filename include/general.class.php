@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Manila');
 session_start();
 
 require('database.class.php');
@@ -36,10 +37,9 @@ $Signed			= $_SESSION['user'];
 $Role		= new Role($DB, $Signed['id']);
 
 //$Capabilities->GetCapabilities();
-$Title			= $Capabilities->GetName();
+//$Title			= $Capabilities->GetName();
 
 $default_page_limit = 15; 
-date_default_timezone_set('Asia/Manila');
   
 require('functions.php');
 ?>

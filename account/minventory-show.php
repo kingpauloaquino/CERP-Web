@@ -22,6 +22,7 @@
         <?php
 				  echo '<a href="'.$Capabilities->All['material_inventory']['url'].'" class="nav">'.$Capabilities->All['material_inventory']['name'].'</a>';
 				  echo '<a href="'.$Capabilities->All['edit_material_inventory']['url'].'?id='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_material_inventory']['name'].'</a>';
+				  echo '<a href="'.$Capabilities->All['edit_actual_material_inventory']['url'].'?id='.$_GET['id'].'" class="nav">'.$Capabilities->All['edit_actual_material_inventory']['name'].'</a>';
 				?>
 				<div class="clear"></div>
       </h2>

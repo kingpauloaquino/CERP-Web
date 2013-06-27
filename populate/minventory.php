@@ -21,7 +21,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	$query = $DB->Fetch('warehouse_inventories', array(
 							'columns'	=> 'materials.id, materials.material_code AS code, SUM(warehouse_inventories.qty) AS qty,
 														item_classifications.classification AS classification, materials.description AS description, 
-														brand_models.brand_model AS model, lookups.description AS uom',
+														brand_models.brand_model AS model, lookups.description AS uom, msq',
 					    'joins'		=> 'RIGHT OUTER JOIN materials ON warehouse_inventories.item_id = materials.id
 														INNER JOIN item_classifications ON materials.material_classification = item_classifications.id
 														INNER JOIN brand_models ON brand_models.id = materials.brand_model

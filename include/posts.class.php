@@ -146,7 +146,8 @@ class Posts {
 		  'status'									=> $params['status'],
 		  'defect_rate'							=> $params['defect_rate'],
 		  'sorting_percentage'			=> $params['sorting_percentage'],
-		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] 
+		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] ,
+		  'msq' => $params['msq'] 
 		);
     return $this->DB->InsertRecord('materials', $material);
   }
@@ -247,6 +248,44 @@ class Posts {
 	function EditInventory($params) {
     return $this->DB->UpdateRecord('warehouse_inventories', $params);
   }
+	
+	function AddActualInventory($params) {
+    $inventory = array(
+		  'item_id'					=> $params['item_id'],	
+		  'item_type'				=> $params['item_type'],	
+		  'invoice_no'				=> $params['invoice'],	
+		  'lot_no'				=> $params['lot'],	
+		  'qty'				=> $params['qty'],	 
+		  'entry_date'				=> date('Y-m-d', strtotime($params['entry_date'])),
+		  'device_id'				=> 1, // Web UI	 
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
+  		'inventory_id'	=> $params['inventory_id'],
+		);
+    return $this->DB->InsertRecord('warehouse_inventory_actual', $inventory);
+  }
+
+	//update inventory with physical count
+	function UpdateInventoryCount($params) { 
+		// update qtys in system inventory
+		$query = array(
+			'query_1' => 'UPDATE warehouse_inventories AS wh
+										INNER JOIN
+											(
+										    SELECT inventory_id,qty, remarks
+										    FROM warehouse_inventory_actual
+										    WHERE is_updated = 0 AND EXTRACT(YEAR_MONTH FROM entry_date) = EXTRACT(YEAR_MONTH FROM "'.date('Y-m-d', strtotime($params['mydate'])).'")
+											) AS ct ON ct.inventory_id = wh.id
+										SET wh.qty=ct.qty, wh.remarks=ct.remarks, wh.updated_at="'.date('Y-m-d H:i:s').'"'
+		);		
+		$this->DB->ExecuteQuery($query);
+		// update actual update flags
+		$args = array('variables' => array('is_updated' => 1), 'conditions' => 'is_updated=0 AND EXTRACT(YEAR_MONTH FROM entry_date) = EXTRACT(YEAR_MONTH FROM "'.date('Y-m-d', strtotime($params['mydate'])).'")'); 
+		$this->DB->UpdateRecord('warehouse_inventory_actual', $args);
+	}
+
+	function UpdateInventoryStatus($params) {
+		return $this->DB->UpdateRecord('inventory_status', $params);
+	}
 	
 	function AddInventoryLocations($params) {
     $inventory = array(

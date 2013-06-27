@@ -12,7 +12,7 @@ if(!$allowed) {
 }else{
   if(isset($_GET['mid'])) {
   	$materials = $DB->Find('materials', array(
-					  			'columns' 		=> 'materials.id AS mid, materials.base, materials.parent, materials.material_code, materials.description, brand_models.brand_model, materials.bar_code,
+					  			'columns' 		=> 'materials.id AS mid, materials.base, materials.parent, materials.material_code, materials.description, brand_models.brand_model, materials.bar_code, msq,
 																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, materials.defect_rate, materials.sorting_percentage,
 																  	lookups3.description AS material_type, lookup_status.description AS status, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
 					  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
@@ -98,6 +98,10 @@ if(!$allowed) {
               <td colspan="99">
                 <input type="text" value="<?php echo $materials['description'] ?>" class="text-field" style="width:645px" disabled/>
               </td>
+           </tr>       
+           <tr>
+              <td>Min. Stock Qty.:</td><td><input type="text" value="<?php echo $materials['msq'] ?>" class="text-field text-right number" disabled/></td>
+              <td></td>
            </tr>  
           	<?php
           		if($revisions!=NULL) {

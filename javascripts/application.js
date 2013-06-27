@@ -11,6 +11,7 @@ $(function() {
   $('.text-currency').currency_format();
   $('.text-date').date_format();
   $('.date-pick').date_pick();
+  $('.month_year_pick').month_year_pick();
   $('.date-pick-week').date_pick_restrict(null, '');
   $('.date-pick-thursday').date_pick_restrict(null, 'thursday');
   $('.date-pick-friday').date_pick_restrict(null, 'friday');
@@ -21,6 +22,7 @@ $(function() {
   
   $('.numbers').digits();
   $('.numeric').numeric_only();
+  $('.tooltip').tooltip();
   
   //$('.to-numeric').to_numeric();
   
@@ -86,13 +88,17 @@ $.fn.show_account_submenu = function() {
 		return false;
 	});
 	
-	
-	
   // $(this).click(function(e) {
     // e.preventDefault();
 //   	
   	// $('.profile-sub-menu').toggleClass('block');
   // });
+}
+
+$.fn.tooltip = function() {
+  $(this).live('click', function(e) {
+    e.preventDefault();
+  });
 }
 
 $.fn.redirect_to = function() {
@@ -105,7 +111,7 @@ $.fn.redirect_to = function() {
 $.fn.download = function() {
   $(this).live('click', function(e) {
     e.preventDefault();
-    window.open($(this).attr('rel'), '_blank');
+    window.open($(this).attr('rel'));
   });
 }
 
@@ -149,6 +155,31 @@ $.fn.date_pick_restrict = function(format, restrict) {
         
     }
 	});
+}
+
+$.fn.month_year_pick = function(format) { 
+	format = format || 'MM dd, yy';
+	$(this).datepicker({
+      dateFormat: 'MM yy',
+      changeMonth: true,
+      changeYear: true,
+      showButtonPanel: true,
+
+      onClose: function(dateText, inst) {
+          var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+          var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+          $(this).val($.datepicker.formatDate('MM yy', new Date(year, month, 1))); 
+      }
+  });
+
+  $(this).focus(function () {
+      $(".ui-datepicker-calendar").hide();
+      $("#ui-datepicker-div").position({
+          my: "center top",
+          at: "center bottom",
+          of: $(this)
+      });
+  });
 }
 
 $.fn.format_ctrl_date_string = function(format) {
@@ -368,17 +399,48 @@ function row_template_indirect_materials(data) {
 }
 
 function row_template_materials_inventory(data) {
-  var forward	= host + "/account/minventory-show.php?id="+ data['id'] +"";
-  var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
-    "<td class=\"border-right text-center\">"+ data['model'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['classification'] +"</td>" +
-    "<td class=\"border-right\">"+ data['description'] +"</td>" +
-    "<td class=\"border-right text-center \">"+ data['uom'] +"</td>" +
-    "<td class=\"border-right text-right numbers \">"+ parseFloat((data['qty'] || 0)) +"</td>" +
-    "</tr>");
-
+  var id		= data['id'];
+  var forward	= host + '/account/minventory-show.php?id='+ id;
+  var row		= $('<tr id="'+ data['id'] +'"></tr>');
+  var highlight = '';
+  // if(Number(data['qty']) > 0 && Number(data['qty']) <= Number(data['msq'])) {
+  	// highlight = 'highlight-orange';
+  // }
+  // if(Number(data['qty']) == 0) {
+  	// highlight = 'highlight-red';
+  // }
+  
+  row.append('<td class="border-right '+ highlight +'"><a href="'+ forward +'">'+ (data['code'] || '--') +'</a></td>');
+  row.append('<td class="border-right '+ highlight +' text-center">'+ data['classification'] +'</td>');
+  row.append('<td class="border-right '+ highlight +'">'+ data['description'] +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-center">'+ data['uom'] +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-right numbers">'+ parseFloat((data['qty'] || 0)) +'</td>');
+ 
   row.find('.numbers').digits();
-  return row;
+  return row;   
+}
+
+function row_template_materials_inventory_report(data) {
+  var id		= data['id'];
+  var forward	= host + '/account/materials-show.php?mid='+ id;
+  var row		= $('<tr id="'+ data['id'] +'"></tr>');
+  var highlight = '';
+  // if(Number(data['qty']) > 0 && Number(data['qty']) <= Number(data['msq'])) {
+  	// highlight = 'highlight-orange';
+  // }
+  // if(Number(data['qty']) == 0) {
+  	// highlight = 'highlight-red';
+  // }
+  
+  row.append('<td class="border-right '+ highlight +'"><a href="'+ forward +'">'+ (data['code'] || '--') +'</a></td>');
+  row.append('<td class="border-right '+ highlight +' text-center">'+ data['classification'] +'</td>');
+  row.append('<td class="border-right '+ highlight +'">'+ data['description'] +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-center">'+ data['uom'] +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-right numbers">'+ parseFloat((data['qty'] || 0)) +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-right numbers">'+ parseFloat((data['physical_qty'] || 0)) +'</td>');
+ 
+  row.find('.numbers').digits();
+  return row;   
 }
 
 function row_template_minventory_items_read_only(data) { 
@@ -412,6 +474,27 @@ function row_template_minventory_items(data) {
   return row;   
 }
 
+function row_template_actual_minventory_items(data) { 
+  var id		= data['id'];
+  var row		= $('<tr id="'+id+'">' +
+  							'<input type="hidden" name="actual['+id+'][id]" value="'+id+'"/>' +
+  							'<input type="hidden" name="actual['+id+'][invoice_no]" value="'+data['invoice_no']+'"/>' +
+  							'<input type="hidden" name="actual['+id+'][lot_no]" value="'+data['lot_no']+'"/>' +
+  						'</tr>');
+  
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center item-invoice">'+ data['invoice_no'] +'</td>');
+  row.append('<td class="border-right text-center item-lot">'+ data['lot_no'] +'</td>');
+  row.append('<td class="border-right text-center"><input type="text" name="actual['+id+'][remarks]" class="text-field-max" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center item-unit">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right item-qty numbers">'+ parseFloat(data['qty']) +'</td>');
+  row.append('<td class="border-right text-center"><input type="text" name="actual['+id+'][qty]" class="text-field-smallest text-right actual-qty numeric" value="0" autocomplete="off"/></td>');
+ 
+  row.find('.numeric').numeric_only();
+  row.find('.numbers').digits();
+  return row;   
+}
+
 function row_template_products(data) {
   var forward	= host + "/account/products-show.php?pid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
@@ -438,6 +521,31 @@ function row_template_products_inventory(data) {
 
   row.find('.numbers').digits();
   return row;
+}
+
+function row_template_products_inventory_report(data) {
+  var id		= data['id'];
+  var forward	= host + '/account/products-show.php?pid='+ id;
+  var row		= $('<tr id="'+ data['id'] +'"></tr>');
+  var highlight = '';
+  // if(Number(data['qty']) > 0 && Number(data['qty']) <= Number(data['msq'])) {
+  	// highlight = 'highlight-orange';
+  // }
+  // if(Number(data['qty']) == 0) {
+  	// highlight = 'highlight-red';
+  // }
+  
+  row.append('<td class="border-right '+ highlight +'"><a href="'+ forward +'">'+ (data['code'] || '--') +'</a></td>');
+  row.append('<td class="border-right '+ highlight +' text-center">'+ data['brand'] +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-center">'+ data['series'] +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-center">'+ data['pack_qty'] +'</td>');
+  row.append('<td class="border-right '+ highlight +'">'+ (data['description'] || '') +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-center">'+ data['uom'] +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-right numbers">'+ parseFloat((data['qty'] || 0)) +'</td>');
+  row.append('<td class="border-right '+ highlight +' text-right numbers">'+ parseFloat((data['physical_qty'] || 0)) +'</td>');
+ 
+  row.find('.numbers').digits();
+  return row;   
 }
 
 function row_template_suppliers(data) {
@@ -1119,6 +1227,32 @@ function row_template_receiving_read_only(data) {
                   
   row.find('.text-currency').formatCurrency({region:"en-PH"});
   row.find('.numbers').digits();
+  return row;
+}
+
+function row_template_receive_date_report(data) {
+  var forward1	= host + '/account/invoice-show.php?inv='+ data['invoice'];
+  var forward2	= host + '/account/suppliers-show.php?sid='+ data['supplier_id'];
+  var row		= $('<tr></tr>');
+  
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center ">'+ (data['receive_date'] || '-') +'</td>');
+  row.append('<td class="border-right "><a target="_blank"  href="'+ forward2 +'">'+ (data['supplier_name'] || '-') +'</a></td>');
+  row.append('<td class="border-right text-center "><a target="_blank"  href="'+ forward1 +'">'+ (data['invoice'] || '-') +'</a></td>');
+  row.append('<td class="border-right text-center">'+ (data['receipt'] || '-') +'</td>');
+  
+  return row;
+}
+
+function row_template_receive_supplier_report(data) {
+  var forward1	= host + '/account/invoice-show.php?inv='+ data['invoice'];
+  var row		= $('<tr></tr>');
+  
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center ">'+ (data['receive_date'] || '-') +'</td>');
+  row.append('<td class="border-right text-center "><a target="_blank"  href="'+ forward1 +'">'+ (data['invoice'] || '-') +'</a></td>');
+  row.append('<td class="border-right text-center">'+ (data['receipt'] || '-') +'</td>');
+  
   return row;
 }
 

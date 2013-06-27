@@ -87,6 +87,11 @@
 .search-title {
 	float: left; font-size: 16px; font-weight: bold;
 }
+.search-title input, select {
+	font-size: 14px;
+}
+ 
+
 .search { 
   margin:0 0 10px;
   text-align:right; 
@@ -150,4 +155,11 @@
 .pagination .next { padding:4px 4px 3px;min-width:40px; }
 .pagination .current { border-color:#dddddd;background-color:#f9f9f9;color:#999999; }
 .pagination a:hover { border-color:#888888;color:#cc0033;text-decoration:none; }
+
+.grid table tbody tr td.highlight-red {
+	background-color: #fa8072;
+}
+.grid table tbody tr td.highlight-orange {
+	background-color: #FFB56B;
+}
 

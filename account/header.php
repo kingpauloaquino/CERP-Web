@@ -597,11 +597,51 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		}
 		
 		break;
+		
+	case 'add_minventory_items':
+		$item = $_POST['inventory'];
+		$Posts->AddInventory(array('item_id' => $item['item_id'], 'item_type' => 'MAT', 'invoice' => $item['invoice_no'],  
+																'lot' => $item['lot_no'], 'qty' => $item['qty'], 'remarks' => $item['remarks'])); 
+		break;
 	
 	case 'edit_minventory_items':
 		$items = array('qty' => $_POST['inventory']['qty'], 'remarks' => $_POST['inventory']['remarks']);
 		$args = array('variables' => $items, 'conditions' => 'id='.$_POST['inventory']['id']); 
 		$num_of_records = $Posts->EditInventory($args);
+		break;
+		
+	case 'add_actual_minventory_items':
+		$items = $_POST['actual'];
+		
+		//clear same date counting
+		$DB->DeleteRecord('warehouse_inventory_actual', array('conditions' => 'EXTRACT(YEAR_MONTH FROM entry_date) = EXTRACT(YEAR_MONTH FROM "'.date('Y-m-d', strtotime($_POST['entry_date'])).'")'.' AND item_id='.$_POST['mid']));
+		
+		foreach($items as $item) {
+			$Posts->AddActualInventory(array('inventory_id' => $item['id'], 'item_id' => $_POST['mid'], 'item_type' => 'MAT', 'invoice' => $item['invoice_no'],  
+																'lot' => $item['lot_no'], 'qty' => $item['qty'], 'remarks' => $item['remarks'], 'entry_date' => $_POST['entry_date']));
+		}
+		redirect_to($Capabilities->All['show_material_inventory']['url'].'?id='.$_POST['mid']);
+		break;
+		
+	case 'update_inventory_count':
+		// update inventory with physical counts
+		$Posts->UpdateInventoryCount(array('mydate' => $_POST['mydate']));
+		// update status flag
+		$args = array('variables' => array('is_updated' => 1, 'status' => 'CLOSE'), 
+									'conditions' => 'type="'.$_POST['type'].'" AND EXTRACT(YEAR_MONTH FROM current_month) = EXTRACT(YEAR_MONTH FROM "'.$_POST['mydate'].'")'); 
+		$Posts->UpdateInventoryStatus($args); 
+		break;
+		
+	case 'update_inventory_count_date_and_lock':
+		$args = array('variables' => array('count_month' => $_POST['mydate'], 'is_locked' => 1), 
+									'conditions' => 'type="'.$_POST['type'].'" AND EXTRACT(YEAR_MONTH FROM current_month) = EXTRACT(YEAR_MONTH FROM "'.$_POST['mydate'].'")');  
+		$Posts->UpdateInventoryStatus($args);
+		break;
+	
+	case 'update_inventory_and_unlock':
+		$args = array('variables' => array('is_locked' => 0), 
+									'conditions' => 'type="'.$_POST['type'].'" AND EXTRACT(YEAR_MONTH FROM current_month) = EXTRACT(YEAR_MONTH FROM "'.$_POST['mydate'].'")');  
+		$Posts->UpdateInventoryStatus($args);
 		break;
 		
 	case 'add_shipment_plan':
@@ -696,7 +736,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="minventory.php">Materials Inventory</a></li>
         	    <li><a href="products.php">Products</a></li>
         	    <li><a href="pinventory.php">Products Inventory</a></li>
-        	    <li><a href="report-inventory.php">Reports</a></li>
+        	    <li><a href="manage-warehouse.php">Manage</a></li>
         	  </ul>
         	</div>
         </div>
@@ -726,7 +766,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="deliveries.php">Deliveries</a></li>
         	    <li><a href="invoices.php">Invoices</a></li>
         	    <li><a href="suppliers.php">Suppliers</a></li>
-        	    <li><a href="report-purchases.php">Reports</a></li>
+        	    <li><a href="manage-purchasing.php">Manage</a></li>
         	  </ul>
         	</div>
         </div>
@@ -742,7 +782,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="#">Sampling Logs</a></li>
         	    <li><a href="#">Monitoring</a></li>
         	    <li><a href="#">Defects</a></li>
-        	    <li><a href="report-production.php">Reports</a></li>
+        	    <li><a href="manage-production.php">Manage</a></li>
         	  </ul>
         	</div>
         </div>

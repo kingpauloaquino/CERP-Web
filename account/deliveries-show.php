@@ -9,6 +9,7 @@
 	}else{
   
   	$delivery = $Query->delivery_by_id($_GET['id']);
+		$mat_inventory_status = $Query->inventory_status_by_current_date('MAT', date('Y-m-d'));
 ?>
       <!-- BOF PAGE -->
       <div id="page">
@@ -24,6 +25,9 @@
 
         <div id="content">
           <form id="delivery-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+					<input type="hidden" id="mat-locked" value="<?php echo $mat_inventory_status['is_locked']?>" />
+					<input type="hidden" id="mat-updated" value="<?php echo $mat_inventory_status['is_updated']?>" />
+					<a id="btn-notice" href="#mdl-notice" rel="modal:open" class="nav" style="display:none">modal</a>
              <!-- BOF TEXTFIELDS -->
              <div>
              	<table>
@@ -93,14 +97,28 @@
            	   <div class="text-post-status">
            	     <strong>Status:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
                </div>
+               
                <?php if($delivery['status'] != "Close") { ?>
-           	   <input type="button" value="Receive" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='.$_GET['id']); ?>"/>
+               
+           	   <input id="btn-receive" type="button" value="RECEIVE" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='.$_GET['id']); ?>"/>
            	   <?php } ?>
-               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>
+               <input type="button" value="CANCEL" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>
+               
+               
              </div>
           </form>
        </div>
      </div>
+     
+     <div id="mdl-notice" class="modal">
+			<div class="modal-title"><h3>NOTICE</h3></div>
+			<div class="modal-content" style="min-height: 60px;">
+          Inventory is currently <span class="red">LOCKED</span>. Receiving is temporarily on-hold.
+			</div>     
+			<div class="modal-footer">
+				<a rel="modal:close" class="close btn" style="width:50px;">OK</a>
+			</div>
+		</div>
        
        <script>
        	$(function() {
@@ -113,6 +131,14 @@
 				
 					$('#grid-delivery-materials').grid(data);
 					$('#purchase_amount').currency_format(<?php echo $delivery['total_amount']; ?>);
+					
+					// if inventory is locked
+					if($('#mat-locked').val() == 0) {
+						$('#btn-receive').attr('disabled', false)
+					} else {
+						$('#btn-notice').click();
+						$('#btn-receive').attr('disabled', true)
+					}
 			  }) 
       </script>
 

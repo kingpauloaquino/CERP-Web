@@ -20,8 +20,9 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
-				  echo '<a href="'.$Capabilities->All['show_material_inventory']['url'].'?id='.$_GET['id'].'" class="nav">'.$Capabilities->All['show_material_inventory']['name'].'</a>';
+				  echo '<a href="'.$Capabilities->All['show_material_inventory']['url'].'?id='.$_GET['id'].'" class="nav">Details</a>';
 				?>
+     			<a id="btn-add-entry" href="#mdl-inventory-new" rel="modal:open" class="nav">New Entry</a>
 				<div class="clear"></div>
       </h2>
 		</div>
@@ -194,12 +195,12 @@
 						 
 						 <div class="field">
 						    <label>Qty:</label>
-						    <input type="text" id="inventory-qty" class="text-field" value="0" />
+						    <input type="text" id="inventory-qty" class="text-field numeric" value="0" />
 						 </div>
 						 
 						 <div class="field">
 						    <label>New Qty:</label>
-						    <input type="text" id="inventory-new-qty" name="inventory[qty]" class="text-field" readonly />
+						    <input type="text" id="inventory-new-qty" name="inventory[qty]" class="text-field" readonly/>
 						 </div>
 						 
 						 <div class="field">
@@ -209,8 +210,48 @@
 			</form>
 		</div>
 		<div class="modal-footer">
-			<a id="closeModal" rel="modal:close" class="close btn" style="width:50px;">Cancel</a>
-			<a id="submit-inventory" rel="modal:close" href="#frm-inventory" class="btn" style="width:50px;">Receive</a>
+			<a id="closeModal" rel="modal:close" class="close btn" style="width:50px;">CANCEL</a>
+			<a id="submit-inventory" rel="modal:close" href="#frm-inventory" class="btn" style="width:50px;">ADJUST</a>
+		</div>
+	</div>
+	
+	<div id="mdl-inventory-new" class="modal">
+		<div class="modal-title"><h3>New Entry</h3></div>
+		<div class="modal-content">
+			<form id="frm-inventory-new" method="POST">
+				<span class="notice"></span>     
+					<input type="hidden" name="action" value="add_minventory_items"/>
+					<input type="hidden" id="inventory-item_id" name="inventory[item_id]" value="<?php echo $_GET['id']?>"/>
+					
+						 <div class="field">
+						    <label>Invoice No.:</label>
+						    <input type="text" id="inventory-invoice" name="inventory[invoice_no]" class="text-field" />
+						 </div>
+						 
+						 <div class="field">
+						    <label>Lot No.:</label>
+						    <input type="text" id="inventory-lot" name="inventory[lot_no]" class="text-field" />
+						 </div>
+						 
+						 <div class="field">
+						    <label>Unit:</label>
+						    <input type="text" id="inventory-unit" class="text-field disabled" disabled="disabled" value="<?php echo $materials['unit']?>"/>
+						 </div>
+						 
+						 <div class="field">
+						    <label>Qty:</label>
+						    <input type="text" id="inventory-qty" name="inventory[qty]" class="text-field numeric" />
+						 </div>
+						 
+						 <div class="field">
+						    <label>Remarks:</label>
+						    <textarea rows="2" id="inventory-remarks" name="inventory[remarks]" class="text-field" style="width:220px;"></textarea>
+						 </div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a id="closeModal" rel="modal:close" class="close btn" style="width:50px;">CANCEL</a>
+			<a id="submit-inventory-new" rel="modal:close" href="#frm-inventory-new" class="btn" style="width:50px;">ADD</a>
 		</div>
 	</div>
 	
@@ -227,6 +268,7 @@
 			
 			$('#tbl-materials').find('tbody tr .chk-item').show_inventory_modal();
 			$('#submit-inventory').adjustment();
+			$('#submit-inventory-new').add_entry();
 			
 			
 			
@@ -300,6 +342,32 @@
       var id = $(form).find('#inventory-id');
       var remarks = $(form).find('#inventory-remarks');
       var qty = $(form).find('#inventory-new_qty');
+    	
+    	$.post(document.URL, $(form).serialize(), function(data) {
+    	   $('#materials').empty();
+    	   
+    	   var data = { 
+			    	"url":"/populate/minventory-items.php?id=<?php echo $_GET['id'] ?>",
+			      "limit":"15",
+						"data_key":"minventory_items",
+						"row_template":"row_template_minventory_items",
+					}
+				
+					$('#grid-materials').grid(data);
+	    	
+	    	})
+	    	
+	    	setTimeout(function() {
+		    compute_total();
+			}, 200);
+	    })
+	  }
+	  
+	  $.fn.add_entry = function() {
+    this.click(function(e) {
+    	e.preventDefault();
+
+      var form		= $(this).attr('href');
     	
     	$.post(document.URL, $(form).serialize(), function(data) {
     	   $('#materials').empty();

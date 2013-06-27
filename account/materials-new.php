@@ -80,7 +80,11 @@
               <td colspan="99">
                 <input type="text" id="material[description]" name="material[description]" class="text-field" style="width:645px" />
               </td>
-           </tr>           
+           </tr>    
+           <tr>
+              <td>Min. Stock Qty.:</td><td><input id="material[msq]" name="material[msq]" type="text" class="text-field text-right numeric"/></td>
+              <td></td>
+           </tr>          
            <tr>
               <td>Keywords:</td>
               <td colspan="99">

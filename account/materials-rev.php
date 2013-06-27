@@ -94,6 +94,10 @@
               <td colspan="99">
                 <input type="text" id="material[description]" name="material[description]" value="<?php echo $material['description'] ?>" class="text-field" style="width:645px" />
               </td>
+           </tr>   
+           <tr>
+              <td>Min. Stock Qty.:</td><td><input type="text" value="<?php echo $materials['msq'] ?>" class="text-field text-right number" disabled/></td>
+              <td></td>
            </tr>  
            <tr><td height="5" colspan="99"></td></tr>
         </table>

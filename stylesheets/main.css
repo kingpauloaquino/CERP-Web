@@ -343,17 +343,20 @@ img {
 #page-title h2 .nav { 
   float:left;
   display:block;
-  margin:3px 0 0 5px;
-  padding:4px 7px;
+  margin:0 0 0 4px;
+  padding:6px 8px;
   background-color:#999999;
   color:#ffffff;
   font-weight:normal;
   font-size:11px;
   line-height:11px;
   cursor:pointer; 
-  -webkit-border-radius:12px;
-  -moz-border-radius:12px;
-  border-radius:12px;
+  -webkit-border-radius:1px;
+  -moz-border-radius:1px;
+  border-radius:1px;
+  text-transform:uppercase;
+  min-width:40px;
+  text-align: center;
 }
 
 #page-title h2 .nav:hover { 
@@ -431,17 +434,23 @@ img {
     background: -webkit-linear-gradient(bottom, rgba(255,255,255,0), #fff);
 }
 
+a.tooltip {
+	font-size: 11px;
+}
+
 .tooltip{
     display: inline;
     position: relative;
 }
 
 .tooltip:hover:after{
-    background: #E04E50;
-    background: rgba(224, 78, 80,.9);
+    background: #fefefe;
+/*    background: rgba(224, 78, 80,.9);*/
+  	border:solid 1px #bbbbbb;
     border-radius: 5px;
     bottom: 26px;
-    color: #fff;
+		font-size: 13px;
+    color: #777;
     content: attr(title);
     left: 20%;
     padding: 5px 15px;
@@ -452,7 +461,7 @@ img {
 
 .tooltip:hover:before{
     border: solid;
-    border-color: #E04E50 transparent;
+    border-color: #bbbbbb transparent;
     border-width: 6px 6px 0 6px;
     bottom: 20px;
     content: "";
@@ -460,4 +469,3 @@ img {
     position: absolute;
     z-index: 99;
 }
-

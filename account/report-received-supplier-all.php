@@ -24,6 +24,7 @@
 
     <div id="content">
       <form id="form-suppliers" action="<?php host($Capabilities->GetUrl()) ?>" method="POST">
+				<input type="hidden" id="mydate" value="<?php echo date('Y-m-d')?>" />
 				
 	      <div class="search-title">
 	      	Current Month: <input type="text" id="month" class="text-field-auto month_year_pick" value="<?php echo date('F Y', strtotime($mydate)) ?>" readonly/>
@@ -88,6 +89,8 @@
 		})
 		
 		$('#btn-view').click(function(){
+			cur_date = $.datepicker.formatDate('yy-mm-dd', new Date($('#month').val()));
+			$('#btn-export').attr('rel', '<?php echo export_file("?type=xls&cat=receive_all_supplier_report&mydate="); ?>' + cur_date);
 			window.location ='report-received-supplier-all.php?mydate='+cur_date;
 		})
 		

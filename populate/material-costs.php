@@ -12,14 +12,14 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
   $startpoint = $limit * ($page - 1);
 	$search = (isset($keyword) || $keyword != '') 
 						? 
-						'materials.material_code LIKE "%'. $keyword .'%" OR '.
+						'(materials.material_code LIKE "%'. $keyword .'%" OR '.
 						'materials.description LIKE "%'. $keyword .'%" OR '.
 						'brand_models.brand_model LIKE "%'. $keyword .'%" OR '.
 						'item_classifications.classification LIKE "%'. $keyword .'%" OR '.
 						'suppliers.name LIKE "%'. $keyword .'%" OR '.
 						'lookups.code LIKE "%'. $keyword .'%" OR '.
-						'materials.tags LIKE "%'. $keyword .'%" '
-						: '';
+						'materials.tags LIKE "%'. $keyword .'%") AND materials.status = 16'
+						: 'materials.status = 16';
 	
 	$query = $DB->Fetch('materials', array(
 							'columns'	=> 'materials.id AS id, materials.material_code AS code, materials.description AS description, 
@@ -29,8 +29,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 														INNER JOIN item_classifications ON materials.material_classification = item_classifications.id
 														INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
 														INNER JOIN suppliers ON suppliers.id = item_costs.supplier
-														INNER JOIN lookups ON lookups.id = item_costs.unit
-														AND materials.status = 16',
+														INNER JOIN lookups ON lookups.id = item_costs.unit',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

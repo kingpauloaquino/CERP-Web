@@ -12,10 +12,10 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
   $startpoint = $limit * ($page - 1);
 	$search = (isset($keyword) || $keyword != '') 
 						? 
-						'products.product_code LIKE "%'. $keyword .'%" OR '.
+						'(products.product_code LIKE "%'. $keyword .'%" OR '.
 						'products.description LIKE "%'. $keyword .'%" OR '.
-						'brand_models.brand_model LIKE "%'. $keyword .'%"' 
-						: '';
+						'brand_models.brand_model LIKE "%'. $keyword .'%") AND products.status=16' 
+						: 'products.status=16';
 	
 	$query = $DB->Fetch('warehouse2_inventories', array(
 							'columns'	=> 'warehouse2_inventories.id AS id, products.id AS pid, warehouse2_inventories.production_purchase_order_id, 

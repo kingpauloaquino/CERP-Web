@@ -18,48 +18,49 @@
 		</div>
 
     <div id="content">
-      <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
-      	 <input type="hidden" name="action" value="edit_parts_tree"/>
-				 <input type="hidden" name="pid" value="<?php echo $_GET['pid'] ?>">
+      <form id="purchase-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST">
+				<input type="hidden" name="action" value="edit_parts_tree"/>
+				<input type="hidden" name="pid" value="<?php echo $_GET['pid'] ?>">
 				<input type="hidden" name="code" value="<?php echo $_GET['code'] ?>">		
-         
-         <!-- BOF GRIDVIEW -->
-         <div id="grid-parts-materials" class="grid jq-grid" style="min-height:350px;">
-           <table cellspacing="0" cellpadding="0">
-             <thead>
-               <tr>
-               	 <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
-                 <td width="20" class="border-right text-center">No.</td>
-                 <td width="160" class="border-right">Item Code</td>
-                 <td width="65" class="border-right text-center">Qty</td>
-                 <td width="50" class="border-right text-center">Unit</td>
-                 <td width="100" class="border-right text-center">Unit Price</td>
-                 <td width="100" class="border-right text-center">Amount</td>
-                 <td class="text-center">Remarks</td>
-               </tr>
-             </thead>
-             <tbody id="parts-materials"></tbody>
-           </table>
-         </div>
-         
-         <!-- BOF REMARKS -->
-         <div>
-         	<table width="100%">
-               <tr><td height="5" colspan="99"></td></tr>
-               <tr>
-                  <td>
-                     <strong><a href="#modal-product-materials" class="" rel="modal:open">Add Item</a></strong>
-                     &nbsp;|&nbsp;
-                     <strong><a id="remove-parts-materials" href="#" class="" grid="#parts-materials">Remove Item</a></strong>
-                  </td>
-                  <td align="right"><strong>Total Amount:</strong>&nbsp;&nbsp;<input id="purchase_amount" type="text" value="" class="text-right text-currency" style="width:95px;" disabled/></td>
-               </tr>
-            </table>
-         </div>
-         <div class="field-command">
-       	   <input type="submit" value="Save" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('parts-tree-show.php?pid='.$_GET['pid'].'&code='.$_GET['code']); ?>"/>
-         </div>
+				
+				<div class="form-container">
+					<!-- BOF GRIDVIEW -->
+					<div id="grid-parts-materials" class="grid jq-grid" style="min-height:350px;">
+						<table cellspacing="0" cellpadding="0">
+							<thead>
+								<tr>
+									<td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
+									<td width="20" class="border-right text-center">No.</td>
+									<td width="160" class="border-right">Item Code</td>
+									<td width="65" class="border-right text-center">Qty</td>
+									<td width="50" class="border-right text-center">Unit</td>
+									<td width="100" class="border-right text-center">Unit Price</td>
+									<td width="100" class="border-right text-center">Amount</td>
+									<td class="text-center">Remarks</td>
+								</tr>
+							</thead>
+							<tbody id="parts-materials"></tbody>
+						</table>
+					</div>		
+					<div>
+						<table width="100%">
+							<tr><td height="5" colspan="99"></td></tr>
+							<tr>
+								<td>
+									<strong><a href="#modal-product-materials" class="" rel="modal:open">Add Item</a></strong>
+									&nbsp;|&nbsp;
+									<strong><a id="remove-parts-materials" href="#" class="" grid="#parts-materials">Remove Item</a></strong>
+								</td>
+								<td align="right"><strong>Total Amount:</strong>&nbsp;&nbsp;<input id="purchase_amount" type="text" value="" class="text-right text-currency" style="width:95px;" disabled/></td>
+							</tr>
+						</table>
+					</div>			
+				</div>
+				
+				<div class="field-command">
+					<input type="submit" value="Save" class="btn"/>
+					<input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('parts-tree-show.php?pid='.$_GET['pid'].'&code='.$_GET['code']); ?>"/>
+				</div>
       </form>
    </div>
        
@@ -122,7 +123,7 @@
 					$('#grid-parts-materials').grid(data2);
 					$('#add-item').append_item();
 				  $('#remove-parts-materials').remove_item();
-				  $('#purchase_amount').formatCurrency();
+				  $('#purchase_amount').formatCurrency({region:"en-PH"});
 				  $('.get-amount').compute_amount();
 			  }) 
         
@@ -137,7 +138,7 @@
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            
-           cell.find('.currency').formatCurrency();
+           cell.find('.currency').formatCurrency({region:"en-PH"});
            return cell;
          }
          
@@ -149,7 +150,7 @@
              var price		= row.find('.item-price').val();
              var amount		= parseFloat(quantity * clean_currency(price));
              
-             row.find('.item-amount').val(amount).formatCurrency();
+             row.find('.item-amount').val(amount).formatCurrency({region:"en-PH"});
              compute_total_amount();
            })
          }
@@ -163,7 +164,7 @@
              var amount_price = clean_currency($(this).val());
              total_amount.val(parseFloat(total_amount.val()) + amount_price);
            })
-           total_amount.formatCurrency();
+           total_amount.formatCurrency({region:"en-PH"});
          }
                   
          $.fn.append_item = function() {

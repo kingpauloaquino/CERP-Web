@@ -86,8 +86,8 @@
                   <td>
                      <strong><a id="aPRD" href="#modal-products" class="" rel="modal:open">Add Products</a></strong>
                      &nbsp;|&nbsp;
-                     <strong><a id="aMAT" href="#modal-materials" class="" rel="modal:open">Add Materials</a></strong>
-                     &nbsp;|&nbsp;
+                     <!-- <strong><a id="aMAT" href="#modal-materials" class="" rel="modal:open">Add Materials</a></strong>
+                     &nbsp;|&nbsp; -->
                      <strong><a id="remove-purchase-order-materials" href="#" class="" grid="#purchase-order-materials">Remove Item</a></strong>
                   </td>
                   <td align="right"><strong>Total Amount:</strong>&nbsp;&nbsp;<input id="order_amount"  type="text" value="" class="text-right text-currency" style="width:95px;" disabled/></td>

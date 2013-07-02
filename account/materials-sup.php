@@ -10,12 +10,6 @@
 	if(!$allowed) {
 		require('inaccessible.php');	
 	}else{
-  
-		if($_POST['action'] == 'add_item_cost') {					
-			$Posts->AddItemCost($_POST['item_cost']);			
-			
-			redirect_to((($_POST['typ'] == 'ind') ? 'indirect-' : '').'materials-show.php?mid='.$_POST['item_cost']['item_id']); 
-		} 
 		
 		if(isset($_GET['mid'])) {
 			
@@ -50,119 +44,126 @@
 		</div>
 				
 		<div id="content">
-			<form class="form-container" method="POST">        
+			<form method="POST">        
 				<input type="hidden" name="action" value="add_item_cost">
 				<input type="hidden" id="item_cost[item_id]" name="item_cost[item_id]" value="<?php echo $_GET['mid']?>">
 				<input type="hidden" id="item_cost[item_type]" name="item_cost[item_type]" value="MAT">
 				<input type="hidden" id="typ" name="typ" value="<?php echo $_GET['typ'] ?>">
 				
-				<h3 class="form-title">Details</h3>						
-        <table>
-           <tr>
-              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field magenta" disabled/></td>
-              <td width="150">Base Material Code:</td><td><input type="text" value="<?php echo $parent_material['material_code'] ?>" class="text-field" disabled/>
-              	<?php //echo $linkto = (isset($parent_material['material_code'])) ? link_to('materials-show.php?mid='.$parent_material['base_id'].'&base=1') : '' ?>
-              </td>
-           </tr>
-           <tr>
-              <td>Barcode:</td><td><input type="text" value="<?php echo $materials['bar_code'] ?>" class="text-field" disabled/></td>
-              <td>Model:</td><td><input type="text" value="<?php echo $materials['brand_model'] ?>" class="text-field" disabled/></td>
-           </tr>
-           <tr>
-              <td>Classification:</td><td><input type="text" value="<?php echo $materials['classification'] ?>" class="text-field" disabled/></td>
-              <td>Status:</td><td><input type="text" value="<?php echo $materials['status'] ?>" class="text-field" disabled/></td>
-           </tr>    
-           <tr>
-              <td>Person-in-charge:</td><td><input type="text" value="<?php echo $materials['pic'] ?>" class="text-field" disabled/>
-              	<?php echo $linkto = ($materials['pic']!='') ? link_to('users-show.php?uid='.$materials['user_id']) : '' ?>
-              </td>
-              <td>WIP Line Entry:</td><td><input type="text" value="<?php echo $materials['terminal'] ?>" class="text-field" disabled/>
-              	<?php echo $linkto = ($materials['terminal_code']!='') ? link_to('terminals-show.php?tid='.$materials['tid']) : '' ?>
-              </td>
-           </tr>      
-           <tr>
-              <td>Address:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
-              	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
-              </td>
-              <td>Defect Rate %:</td><td><input value="<?php echo ($materials['defect_rate'] * 100) ?>" id="material[defect_rate]" name="material[defect_rate]" type="text"  class="text-field text-right" />
-           </tr>             
-           <tr>
-              <td>Description:</td>
-              <td colspan="99">
-                <input type="text" value="<?php echo $materials['description'] ?>" class="text-field" style="width:645px" disabled/>
-              </td>
-           </tr> 
-           <tr>
-              <td>Min. Stock Qty.:</td><td><input type="text" value="<?php echo $materials['msq'] ?>" class="text-field text-right number" disabled/></td>
-              <td></td>
-           </tr>  
-           <tr><td height="5" colspan="99"></td></tr>
-        </table>
-        <br/>
-        <h3 class="form-title">Purchase Information</h3>
-        <table>
-        	<?php
-        		$costs = $DB->Get('materials', array('columns' => 'suppliers.id AS sid, suppliers.name AS supplier, item_costs.id AS cost_id, item_costs.cost, item_costs.moq,
-																															item_costs.transportation_rate, lookups1.description AS unit, lookups2.description AS currency', 
-		 																				'joins' => 'INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
-																												INNER JOIN suppliers ON suppliers.id = item_costs.supplier
-																												INNER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
-																												INNER JOIN lookups AS lookups2 ON lookups2.id = item_costs.currency',
-			 																			'conditions' => 'materials.id = '.$_GET['mid']));
-						foreach($costs as $cost) {
-						?>
-							<tr>
-	              <td width="150">Supplier:</td>
-	              <td colspan="99">
-	              	<input type="text" value="<?php echo $cost['supplier'] ?>" class="text-field" style="width:645px" disabled/>
-	              	<?php echo $linkto = ($cost['supplier']!='') ? link_to('suppliers-show.php?sid='.$cost['sid']) : '' ?>
+				<div class="form-container">
+					<h3 class="form-title">Details</h3>						
+	        <table>
+	           <tr>
+	              <td width="150">Material Code:</td><td width="310"><input type="text" value="<?php echo $materials['material_code'] ?>" class="text-field magenta" disabled/></td>
+	              <td width="150">Base Material Code:</td><td><input type="text" value="<?php echo $parent_material['material_code'] ?>" class="text-field" disabled/>
+	              	<?php //echo $linkto = (isset($parent_material['material_code'])) ? link_to('materials-show.php?mid='.$parent_material['base_id'].'&base=1') : '' ?>
 	              </td>
 	           </tr>
 	           <tr>
-	              <td width="150">Currency:</td><td width="310"><input type="text" value="<?php echo $cost['currency'] ?>" class="text-field" disabled/></td>
-	              <td width="150">Cost:</td><td><input type="text" value="<?php echo $cost['cost'] ?>" class="text-field  text-right" disabled/></td>
+	              <td>Barcode:</td><td><input type="text" value="<?php echo $materials['bar_code'] ?>" class="text-field" disabled/></td>
+	              <td>Model:</td><td><input type="text" value="<?php echo $materials['brand_model'] ?>" class="text-field" disabled/></td>
 	           </tr>
 	           <tr>
-	              <td width="150">Unit:</td><td width="310"><input type="text" value="<?php echo $cost['unit'] ?>" class="text-field" disabled/></td>
-	              <td>MOQ:</td><td><input type="text" value="<?php echo $cost['moq'] ?>" class="text-field text-right" disabled/></td>
-	           </tr>   
+	              <td>Classification:</td><td><input type="text" value="<?php echo $materials['classification'] ?>" class="text-field" disabled/></td>
+	              <td>Status:</td><td><input type="text" value="<?php echo $materials['status'] ?>" class="text-field" disabled/></td>
+	           </tr>    
 	           <tr>
-	              <td width="150">Transportation Rate:</td><td width="310"><input type="text" value="<?php echo $cost['Transportation Rate'] ?>" class="text-field text-right" disabled/></td>
+	              <td>Person-in-charge:</td><td><input type="text" value="<?php echo $materials['pic'] ?>" class="text-field" disabled/>
+	              	<?php echo $linkto = ($materials['pic']!='') ? link_to('users-show.php?uid='.$materials['user_id']) : '' ?>
+	              </td>
+	              <td>WIP Line Entry:</td><td><input type="text" value="<?php echo $materials['terminal'] ?>" class="text-field" disabled/>
+	              	<?php echo $linkto = ($materials['terminal_code']!='') ? link_to('terminals-show.php?tid='.$materials['tid']) : '' ?>
+	              </td>
+	           </tr>      
+	           <tr>
+	              <td>Address:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
+	              	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
+	              </td>
+	              <td>Defect Rate %:</td><td><input value="<?php echo ($materials['defect_rate'] * 100) ?>" id="material[defect_rate]" name="material[defect_rate]" type="text"  class="text-field text-right" />
+	           </tr>             
+	           <tr>
+	              <td>Description:</td>
+	              <td colspan="99">
+	                <input type="text" value="<?php echo $materials['description'] ?>" class="text-field" style="width:645px" disabled/>
+	              </td>
+	           </tr> 
+	           <tr>
+	              <td>Min. Stock Qty.:</td><td><input type="text" value="<?php echo $materials['msq'] ?>" class="text-field text-right number" disabled/></td>
+	              <td></td>
+	           </tr>  
+	           <tr><td height="5" colspan="99"></td></tr>
+	        </table>	
+				</div>
+        <br/>
+        <div class="form-container">
+					<h3 class="form-title">Purchase Information</h3>
+	        <table>
+	        	<?php
+	        		$costs = $DB->Get('materials', array('columns' => 'suppliers.id AS sid, suppliers.name AS supplier, item_costs.id AS cost_id, item_costs.cost, item_costs.moq,
+																																item_costs.transportation_rate, lookups1.description AS unit, lookups2.description AS currency', 
+			 																				'joins' => 'INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
+																													INNER JOIN suppliers ON suppliers.id = item_costs.supplier
+																													INNER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
+																													INNER JOIN lookups AS lookups2 ON lookups2.id = item_costs.currency',
+				 																			'conditions' => 'materials.id = '.$_GET['mid']));
+							foreach($costs as $cost) {
+							?>
+								<tr>
+		              <td width="150">Supplier:</td>
+		              <td colspan="99">
+		              	<input type="text" value="<?php echo $cost['supplier'] ?>" class="text-field" style="width:645px" disabled/>
+		              	<?php echo $linkto = ($cost['supplier']!='') ? link_to('suppliers-show.php?sid='.$cost['sid']) : '' ?>
+		              </td>
+		           </tr>
+		           <tr>
+		              <td width="150">Currency:</td><td width="310"><input type="text" value="<?php echo $cost['currency'] ?>" class="text-field" disabled/></td>
+		              <td width="150">Cost:</td><td><input type="text" value="<?php echo $cost['cost'] ?>" class="text-field  text-right" disabled/></td>
+		           </tr>
+		           <tr>
+		              <td width="150">Unit:</td><td width="310"><input type="text" value="<?php echo $cost['unit'] ?>" class="text-field" disabled/></td>
+		              <td>MOQ:</td><td><input type="text" value="<?php echo $cost['moq'] ?>" class="text-field text-right" disabled/></td>
+		           </tr>   
+		           <tr>
+		              <td width="150">Transportation Rate:</td><td width="310"><input type="text" value="<?php echo ($cost['transportation_rate'] * 100) ?>" class="text-field text-right" disabled/></td>
+		              <td></td><td></td>
+		           </tr>    
+		           <tr><td height="5" colspan="99"></td></tr>
+							<?php
+							}
+	        	?>           
+	        </table>	
+				</div>
+        <br/>
+        <div class="form-container">
+					<h3 class="form-title">New Supplier</h3>
+					<table>            
+	           <tr>
+	              <td width="150">New Supplier:</td>
+	              <td colspan="99">
+	                <?php select_query_tag($suppliers, 'id', 'name', '', 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;'); ?>
+	              </td>
+	           </tr>
+	           <tr>
+	           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'description', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+	           		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" class="text-field text-right decimal" required/></td>
+	           </tr>
+	           <tr>
+	              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
+	              <td>MOQ:</td><td><input type="text" id="item_cost[moq]" name="item_cost[moq]" class="text-field text-right numeric" required/></td>
+	           </tr>  
+	           <tr>
+	              <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right decimal" /></td>
 	              <td></td><td></td>
 	           </tr>    
 	           <tr><td height="5" colspan="99"></td></tr>
-						<?php
-						}
-        	?>           
-        </table>
-        <table>            
-           <tr>
-              <td width="150">New Supplier:</td>
-              <td colspan="99">
-                <?php select_query_tag($suppliers, 'id', 'name', '', 'item_cost[supplier]', 'item_cost[supplier]', '', 'width:655px;'); ?>
-              </td>
-           </tr>
-           <tr>
-           		<td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'description', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
-           		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" class="text-field text-right" /></td>
-           </tr>
-           <tr>
-              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
-              <td>MOQ:</td><td><input type="text" id="item_cost[moq]" name="item_cost[moq]" class="text-field text-right" /></td>
-           </tr>  
-           <tr>
-              <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right" /></td>
-              <td></td><td></td>
-           </tr>    
-           <tr><td height="5" colspan="99"></td></tr>
-        </table>   
-            
-         <div class="field-command">
-       	   <div class="text-post-status"></div>
-       	   <input type="submit" value="Create" class="btn"/>
-           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host((($_GET['typ'] == 'ind') ? 'indirect-' : '').'materials-show.php?mid='.$_GET['mid']); ?>"/>
-         </div>
-        
+	        </table>	
+				</div>
+				
+				<div class="field-command">
+					<div class="text-post-status"></div>
+					<input type="submit" value="Create" class="btn"/>
+					<input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host((($_GET['typ'] == 'ind') ? 'indirect-' : '').'materials-show.php?mid='.$_GET['mid']); ?>"/>
+				</div>
 				</form>
 			</div>
 		</div>

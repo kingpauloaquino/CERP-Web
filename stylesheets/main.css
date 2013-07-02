@@ -333,6 +333,7 @@ img {
 #page-title h2 .title { 
   float:left;
   padding-right:5px;
+  text-transform:uppercase;
 }
 
 #page-title h2 .title .red {

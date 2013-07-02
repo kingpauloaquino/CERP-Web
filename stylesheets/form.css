@@ -29,6 +29,7 @@ form .field .input textarea,
 form .field .input select { 
   float:left;
   margin:0 0 5px; 
+  font-size:97%;
 }
 
 form .field .note { 
@@ -49,7 +50,7 @@ form .field.respond {
 
 form .field-command {
   padding:10px 0 0;
-  border-top:solid 1px #dddddd;
+/*  border-top:solid 1px #dddddd;*/
   text-align: right;
 }
 

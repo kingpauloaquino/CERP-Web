@@ -70,7 +70,104 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   // ===============================================================
   case 'edit_user':
     break;
+		
+	case 'add_material':
+		$_POST['material']['base'] = TRUE;
+		$_POST['material']['parent'] = NULL;
+		if(isset($_POST['material']['defect_rate'])) {
+			$_POST['material']['defect_rate'] = $_POST['material']['defect_rate'] / 100;
+		}
+		if(isset($_POST['material']['sorting_percentage'])) {
+			$_POST['material']['sorting_percentage'] = $_POST['material']['sorting_percentage'] / 100;
+		}
+		$base_id = $Posts->AddMaterial($_POST['material']);
+				
+		
+		if(isset($_POST['item_cost']['transportation_rate'])) {
+			$_POST['item_cost']['transportation_rate'] = $_POST['item_cost']['transportation_rate'] / 100;
+		}
+		$_POST['item_cost']['item_id'] = $base_id;
+		$Posts->AddItemCost($_POST['item_cost']);
+		if(isset($base_id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$base_id); }
+		break;
+		
+	case 'edit_material':
+		if(isset($_POST['material']['defect_rate'])) {
+			$_POST['material']['defect_rate'] = $_POST['material']['defect_rate'] / 100;
+		}
+		if(isset($_POST['material']['sorting_percentage'])) {
+			$_POST['material']['sorting_percentage'] = $_POST['material']['sorting_percentage'] / 100;
+		}
+		$num_of_records1 = $Posts->EditMaterial(array('variables' => $_POST['material'], 'conditions' => 'id='.$_POST['mid']));
+		
+		foreach($_POST['item_cost'] as $cost) {
+			if(isset($cost['transportation_rate'])) {
+				$cost['transportation_rate'] = $cost['transportation_rate'] / 100;
+			}
+			$Posts->EditItemCost(array('variables' => $cost, 'conditions' => 'item_type= "MAT" AND id='.$cost['id']));
+		}
+		redirect_to($Capabilities->All['show_material']['url'].'?mid='.$_POST['mid']);		
+		break;
+		
+	case 'add_material_rev':
+		if(isset($_POST['material']['defect_rate'])) {
+			$_POST['material']['defect_rate'] = $_POST['material']['defect_rate'] / 100;
+		}
+		if(isset($_POST['material']['sorting_percentage'])) {
+			$_POST['material']['sorting_percentage'] = $_POST['material']['sorting_percentage'] / 100;
+		}
+		$_POST['material']['base'] = FALSE;
+		$id = $Posts->AddMaterial($_POST['material']);
+				
+		if(isset($_POST['item_cost']['transportation_rate'])) {
+			$_POST['item_cost']['transportation_rate'] = $_POST['item_cost']['transportation_rate'] / 100;
+		}
+		$_POST['item_cost']['item_id'] = $id;
+		$Posts->AddItemCost($_POST['item_cost']);
+				
+		$_POST['rev']['material_id'] = $id;
+		$_POST['rev']['base_material_id'] = $_POST['material']['parent'];
+		$Posts->AddMaterialRev($_POST['rev']);
+		if(isset($id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$id); }
+		break;
 	
+	case 'add_item_cost':
+		if(isset($_POST['item_cost']['transportation_rate'])) {
+			$_POST['item_cost']['transportation_rate'] = $_POST['item_cost']['transportation_rate'] / 100;
+		}
+		$Posts->AddItemCost($_POST['item_cost']);			
+			
+		redirect_to((($_POST['typ'] == 'ind') ? 'indirect-' : '').'materials-show.php?mid='.$_POST['item_cost']['item_id']); 
+		break;
+		
+	case 'add_indirect_material':
+		$id = $Posts->AddIndirectMaterial($_POST['material']);
+					
+		if(isset($_POST['item_cost']['transportation_rate'])) {
+			$_POST['item_cost']['transportation_rate'] = $_POST['item_cost']['transportation_rate'] / 100;
+		}
+		$_POST['item_cost']['item_id'] = $id;
+		$Posts->AddItemCost($_POST['item_cost']);
+		if(isset($id)){ redirect_to($Capabilities->All['show_indirect_material']['url'].'?mid='.$id); }
+		break;
+		
+	case 'add_product':
+		$id = $Posts->AddProduct($_POST['product']);
+		$_POST['item_cost']['supplier'] = 1; // CRESC
+		$_POST['item_cost']['item_id'] = $id;
+		$Posts->AddItemCost($_POST['item_cost']);
+		if(isset($id)){ redirect_to($Capabilities->All['show_product']['url'].'?pid='.$id); }
+		//TODO: add forecast entry
+		break;
+		
+	case 'edit_product':
+		$args = array('variables' => $_POST['product'], 'conditions' => 'id='.$_POST['pid']); 
+		$num_of_records = $Posts->EditProduct($args);
+		
+		$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'id='.$_POST['item_cost_id']));
+		redirect_to($Capabilities->All['show_product']['url'].'?pid='.$_POST['pid']);		
+		break;	
+		
   // ===============================================================
   // Post::Add Purchase
   // ===============================================================

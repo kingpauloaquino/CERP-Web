@@ -393,6 +393,69 @@ function purchase_order_item_by_id($poid, $pid) {
            'columns'  => 'id, name AS supplier_name',
            'order' => 'name')
          ); break;
+			case 'mat_classifications':
+				$query = $this->DB->Fetch('item_classifications', array(
+           'columns'  => 'id, classification',
+           'conditions' => 'item_type="MAT"',
+           'order' => 'classification')
+         ); break;
+			case 'prd_classifications':
+				$query = $this->DB->Fetch('item_classifications', array(
+           'columns'  => 'id, classification',
+           'conditions' => 'item_type="PRD"',
+           'order' => 'classification')
+         ); break;
+			case 'brands':
+				$query = $this->DB->Fetch('brand_models', array(
+           'columns'  => 'id, brand_model',
+           'conditions' => 'parent IS NULL',
+           'order' => 'brand_model')
+         ); break;
+			case 'models':
+				$query = $this->DB->Fetch('brand_models', array(
+           'columns'  => 'id, brand_model',
+           'order' => 'brand_model')
+         ); break;
+			case 'series':
+				$query = $this->DB->Fetch('product_series', array(
+           'columns'  => 'id, series',
+           'order' => 'series')
+         ); break;
+			case 'users':
+				$query = $this->DB->Fetch('users', array(
+           'columns'  => 'id, CONCAT(users.first_name, " ", users.last_name) AS pic',
+           'order' => 'first_name')
+         ); break;
+			case 'terminals':
+				$query = $this->DB->Fetch('terminals', array(
+           'columns'  => 'id, CONCAT(terminal_code," - ", terminal_name) AS terminal',
+           'conditions' => 'location_id=4 AND type="IN"',
+           'order' => 'terminal_name')
+         ); break;
+			case 'uoms':
+				$query = $this->DB->Fetch('lookups', array(
+           'columns'  => 'id, description',
+           'conditions' => 'parent="UNITS"',
+           'order' => 'code')
+         ); break;
+			case 'material_types':
+				$query = $this->DB->Fetch('lookups', array(
+           'columns'  => 'id, description',
+           'conditions' => 'parent="MATTYP"',
+           'order' => 'code')
+         ); break;
+			case 'currencies':
+				$query = $this->DB->Fetch('lookups', array(
+           'columns'  => 'id, description',
+           'conditions' => 'parent="CURNCY"',
+           'order' => 'code')
+         ); break;
+			case 'item_status':
+				$query = $this->DB->Fetch('lookup_status', array(
+           'columns'  => 'id, description',
+           'conditions' => 'parent="ITEM"',
+           'order' => 'description')
+         ); break;
 		}
   	
 	

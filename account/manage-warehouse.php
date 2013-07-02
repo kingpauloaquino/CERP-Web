@@ -23,68 +23,73 @@
 		</div>
 
     <div id="content">
-      <form id="form-name" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+      <form id="form-name" action="<?php host($Capabilities->GetUrl()) ?>" method="POST">
 				<input type="hidden" id="mat-locked" value="<?php echo $mat_inventory_status['is_locked']?>" />
 				<input type="hidden" id="mat-updated" value="<?php echo $mat_inventory_status['is_updated']?>" />
 				<input type="hidden" id="mydate" value="<?php echo date('Y-m-d')?>" />
 				
-				<h3 class="form-title">Raw Materials</h3>
-        <table> 
-           <tr>
-              <td width="300">Latest Physical Inventory:</td><td><strong><?php echo strtoupper(date("F Y", strtotime($mat_latest_count['count_month']))) ?></strong></td>
-           </tr>  
-           <tr>
-              <td>Lock Inventory Transactions:</td><td width="310"><input id="mat-lock" type="button" class="btn strd" value="LOCK" />&nbsp;
-									<a href="#" title="Prevents changes on W/H raw-material inventory and marks start of physical count for the current month." class="tooltip"><span title="More">What's this?</span></a>
-							</td>
-           </tr>  
-           <tr>
-              <td>Update System Inventory:</td><td><input id="mat-update" type="button" class="btn strd" value="UPDATE" />&nbsp;
-									<a href="#" title="Updates the system quantity of raw-materials with the current month's physical count." class="tooltip"><span title="More">What's this?</span></a>
-							</td>
-           </tr>  
-           <tr>
-              <td>Month-End Inventory:</td><td><input id="mat-report" type="button" value="VIEW" class="btn strd redirect-to" rel="<?php echo host('report-material-inventory.php'); ?>" /></td>
-           </tr>  
-           <tr><td height="5" colspan="99"></td></tr>
-        </table>
-        <div class="field-command"></div><br/>
-        
-				<h3 class="form-title">Finished Goods</h3>
-        <table> 
-           <tr>
-              <td width="300">Latest Physical Inventory:</td><td><strong><?php echo strtoupper(date("F Y", strtotime($prd_latest_count['count_month']))) ?></strong></td>
-           </tr>  
-           <tr>
-              <td>Lock Inventory Transactions:</td><td width="310"><input type="button" class="btn strd" value="LOCK" />&nbsp;
-									<a href="#" title="Prevents changes on W/H finished-goods inventory and marks start of physical count for the current month." class="tooltip"><span title="More">What's this?</span></a>
-							</td>
-           </tr>  
-           <tr>
-              <td>Update System Inventory:</td><td><input type="button" class="btn strd" value="UPDATE" />&nbsp;
-									<a href="#" title="Updates the system quantity of finished-goods with the current month's physical count." class="tooltip"><span title="More">What's this?</span></a>
-							</td>
-           </tr>  
-           <tr>
-              <td>Month-End Inventory:</td><td><input id="prd-report" type="button" value="VIEW" class="btn strd redirect-to" rel="<?php echo host('report-product-inventory.php'); ?>" /></td>
-           </tr>  
-           <tr><td height="5" colspan="99"></td></tr>
-        </table>
-        <div class="field-command"></div><br/>
-        
-				<h3 class="form-title">WIP</h3>
-        <table> 
-           <tr><td height="5" colspan="99"></td></tr>
-        </table>
-        <div class="field-command"></div><br/>
-        
-				<h3 class="form-title">Shipping</h3>
-        <table>  
-           <tr>
-              <td width="300">Quantity & Price:</td><td><input type="button" class="btn strd" value="VIEW" />&nbsp;<a href="#"></a></td>
-           </tr>  
-           <tr><td height="5" colspan="99"></td></tr>
-        </table>
+				<div class="form-container">
+					<h3 class="form-title">Raw Materials</h3>
+	        <table> 
+	           <tr>
+	              <td width="300">Latest Physical Inventory:</td><td><strong><?php echo strtoupper(date("F Y", strtotime($mat_latest_count['count_month']))) ?></strong></td>
+	           </tr>  
+	           <tr>
+	              <td>Lock Inventory Transactions:</td><td width="310"><input id="mat-lock" type="button" class="btn strd" value="LOCK" />&nbsp;
+										<a href="#" title="Prevents changes on W/H raw-material inventory and marks start of physical count for the current month." class="tooltip"><span title="More">What's this?</span></a>
+								</td>
+	           </tr>  
+	           <tr>
+	              <td>Update System Inventory:</td><td><input id="mat-update" type="button" class="btn strd" value="UPDATE" />&nbsp;
+										<a href="#" title="Updates the system quantity of raw-materials with the current month's physical count." class="tooltip"><span title="More">What's this?</span></a>
+								</td>
+	           </tr>  
+	           <tr>
+	              <td>Month-End Inventory:</td><td><input id="mat-report" type="button" value="VIEW" class="btn strd redirect-to" rel="<?php echo host('report-material-inventory.php'); ?>" /></td>
+	           </tr>  
+	           <tr><td height="5" colspan="99"></td></tr>
+	        </table>	
+				</div>
+				<br/>
+        <div class="form-container">
+					<h3 class="form-title">Finished Goods</h3>
+	        <table> 
+	           <tr>
+	              <td width="300">Latest Physical Inventory:</td><td><strong><?php echo strtoupper(date("F Y", strtotime($prd_latest_count['count_month']))) ?></strong></td>
+	           </tr>  
+	           <tr>
+	              <td>Lock Inventory Transactions:</td><td width="310"><input type="button" class="btn strd" value="LOCK" />&nbsp;
+										<a href="#" title="Prevents changes on W/H finished-goods inventory and marks start of physical count for the current month." class="tooltip"><span title="More">What's this?</span></a>
+								</td>
+	           </tr>  
+	           <tr>
+	              <td>Update System Inventory:</td><td><input type="button" class="btn strd" value="UPDATE" />&nbsp;
+										<a href="#" title="Updates the system quantity of finished-goods with the current month's physical count." class="tooltip"><span title="More">What's this?</span></a>
+								</td>
+	           </tr>  
+	           <tr>
+	              <td>Month-End Inventory:</td><td><input id="prd-report" type="button" value="VIEW" class="btn strd redirect-to" rel="<?php echo host('report-product-inventory.php'); ?>" /></td>
+	           </tr>  
+	           <tr><td height="5" colspan="99"></td></tr>
+	        </table>	
+				</div>
+				<br/>
+        <div class="form-container">
+					<h3 class="form-title">WIP</h3>
+	        <table> 
+	           <tr><td height="5" colspan="99"></td></tr>
+	        </table>	
+				</div>
+				<br/>
+        <div class="form-container">
+					<h3 class="form-title">Shipping</h3>
+	        <table>  
+	           <tr>
+	              <td width="300">Quantity & Price:</td><td><input type="button" class="btn strd" value="VIEW" />&nbsp;<a href="#"></a></td>
+	           </tr>  
+	           <tr><td height="5" colspan="99"></td></tr>
+	        </table>	
+				</div>
       </form>
 		</div>
 	</div>

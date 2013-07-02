@@ -12,16 +12,15 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
   $startpoint = $limit * ($page - 1);
 	$search = (isset($keyword) || $keyword != '') 
 						? 
-						'materials.material_code LIKE "%'. $keyword .'%" OR '.
+						'(materials.material_code LIKE "%'. $keyword .'%" OR '.
 						'materials.description LIKE "%'. $keyword .'%" OR '.
-						'item_classifications.classification LIKE "%'. $keyword .'%" ' 
-						: '';
+						'item_classifications.classification LIKE "%'. $keyword .'%") AND material_type=71 AND materials.status = 16 ' 
+						: 'material_type=71 AND materials.status = 16';
 	
 	$query = $DB->Fetch('materials', array(
 							'columns'	=> 'materials.id AS id, materials.material_code AS code, materials.description AS description, 
                     				item_classifications.classification AS classification',
-					    'joins'		=> 'INNER JOIN item_classifications ON materials.material_classification = item_classifications.id 
-					                  AND material_type=71',
+					    'joins'		=> 'INNER JOIN item_classifications ON materials.material_classification = item_classifications.id',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search

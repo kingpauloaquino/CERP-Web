@@ -87,7 +87,7 @@ function select_query_tag2($rows=array(), $key='', $value='', $selected='', $id=
 }
 
 function select_query_tag($rows=array(), $key='', $value='', $selected='', $id='', $name='', $option='', $style='', $readonly = FALSE) {
-  $tag = '<select id="'.$id.'" name="'.$name.'" style="'.$style.'" '. ($ro=($readonly) ? 'disabled' : '') .'>';
+  $tag = '<select id="'.$id.'" name="'.$name.'" style="font-size:97%;'.$style.'" '. ($ro=($readonly) ? 'disabled' : '') .'>';
   $tag .= ($option == '' ? '' : '<option value="">'.$option.'</option>');
   if (!empty($rows)) {
     foreach($rows as $row) {

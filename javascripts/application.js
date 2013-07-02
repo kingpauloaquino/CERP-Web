@@ -22,7 +22,9 @@ $(function() {
   
   $('.numbers').digits();
   $('.numeric').numeric_only();
+  $('.decimal').decimal_only();
   $('.tooltip').tooltip();
+  
   
   //$('.to-numeric').to_numeric();
   
@@ -217,18 +219,44 @@ $.fn.digits = function(){
     // return parseInt($(this).replace(/,/g, ''), 10);
 // }
 
-$.fn.numeric_only = function(){
+$.fn.numeric_only = function() {
 	$(this).keydown(function(event) {
+     // Allow: backspace, delete, tab, escape, and enter
+     if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
+          // Allow: Ctrl+A
+         (event.keyCode == 65 && event.ctrlKey === true) || 
+          // Allow: home, end, left, right
+         (event.keyCode >= 35 && event.keyCode <= 39)
+        ) {
+              // let it happen, don't do anything
+              return;
+     } else {
+         // Ensure that it is a number and stop the keypress
+           if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+               event.preventDefault(); 
+           }   
+       }
+   });
+ }
+
+$.fn.decimal_only = function() {
+   $(this).keydown(function(event) {
       // Allow: backspace, delete, tab, escape, and enter
       if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
            // Allow: Ctrl+A
           (event.keyCode == 65 && event.ctrlKey === true) || 
            // Allow: home, end, left, right
-          (event.keyCode >= 35 && event.keyCode <= 39)) {
+          (event.keyCode >= 35 && event.keyCode <= 39)
+         ) {
                // let it happen, don't do anything
                return;
-      }
-      else {
+      } else 
+      if (event.keyCode == 190) {  // period
+          if ($(this).val().indexOf('.') !== -1) // period already exists
+              event.preventDefault();
+          else
+              return;
+      } else {
           // Ensure that it is a number and stop the keypress
           if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
               event.preventDefault(); 
@@ -237,6 +265,38 @@ $.fn.numeric_only = function(){
   });
 }
 
+$.fn.is_existing = function(ptable, pcol, pjoin, pcond) {
+	$(this).val($(this).val().toUpperCase());
+	var stat = $(this).attr('notice');
+	if(check_unique(ptable, pcol, pjoin, pcond).trim() === 'true') {
+		$('#'+stat).html('*');
+		return true;
+	} else {
+		$('#'+stat).html(''); 
+		return false;
+	}
+}
+
+function check_unique(ptable, pcol, pjoin, pcond){
+	var result; 
+	$.ajax({
+			type: "POST",
+			url: "../include/is-existing.php",
+			data: {  
+							table: 			ptable,
+							columns: 		pcol,
+							joins: 			pjoin,
+							conditions: pcond
+						},
+			cache: false,
+			dataType : "text",
+      async:false,
+			success: function(data) {
+				result = data;
+			}
+		});
+		return result;
+}
 
 
 // $.fn.search = function() {  
@@ -1369,12 +1429,13 @@ function row_template_parts_tree(data) {
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item"/></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
   row.append('<td class="border-right"><a href="'+ forward +'">'+ data['code'] +'</a><input type="hidden" name="items['+id+'][material_id]" value="'+ (data['material_id'] || '') +'" /></td>');
-  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity" autocomplete="off"/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right decimal get-amount item-quantity" autocomplete="off"/></td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price" disabled /></td>');
   row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][remarks]" value="'+ (data['remarks'] || '') +'" class="text-field-max" autocomplete="off"/></td>');
            	
+ 	row.find('.decimal').decimal_only();
   row.find('.currency').formatCurrency({region:"en-PH"});
   return row;   
 }

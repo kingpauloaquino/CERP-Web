@@ -147,12 +147,14 @@ class Posts {
 		  'defect_rate'							=> $params['defect_rate'],
 		  'sorting_percentage'			=> $params['sorting_percentage'],
 		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] ,
-		  'msq' => $params['msq'] 
+		  'msq' => $params['msq'], 
+		  'created_by' => $_SESSION['user']['id'], 
 		);
     return $this->DB->InsertRecord('materials', $material);
   }
 	
 	function EditMaterial($params) {
+		$params['variables']['updated_by'] = $_SESSION['user']['id'];
     return $this->DB->UpdateRecord('materials', $params);
   }
 
@@ -165,7 +167,8 @@ class Posts {
 		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
 		  'person_in_charge'				=> $params['person_in_charge'],
 		  'status'									=> $params['status'],
-		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] 
+		  'production_entry_terminal_id' => $params['production_entry_terminal_id'],
+		  'created_by' => $_SESSION['user']['id'], 
 		);
     return $this->DB->InsertRecord('materials', $material);
   }
@@ -174,12 +177,14 @@ class Posts {
     $material = array(
 		  'revision'					=> $params['revision'],
 		  'material_id'				=> $params['material_id'],
-		  'base_material_id'	=> $params['base_material_id']
+		  'base_material_id'	=> $params['base_material_id'],
+		  'created_by' => $_SESSION['user']['id'], 
 		);
     return $this->DB->InsertRecord('material_revisions', $material);
   }
 	
 	function EditMaterialRev($params) {
+		$params['variables']['updated_by'] = $_SESSION['user']['id'];
     return $this->DB->UpdateRecord('material_revisions', $params);
   }
 	
@@ -192,12 +197,14 @@ class Posts {
 		  'currency'	=> $params['currency'],
 		  'cost'			=> $params['cost'],
 		  'moq'				=> $params['moq'],
-		  'transportation_rate'	=> $params['transportation_rate']
+		  'transportation_rate'	=> $params['transportation_rate'],
+		  'created_by' => $_SESSION['user']['id'], 
 		);
     return $this->DB->InsertRecord('item_costs', $item_cost);
   }
 	
 	function EditItemCost($params) {
+		$params['variables']['updated_by'] = $_SESSION['user']['id'];
     return $this->DB->UpdateRecord('item_costs', $params);
   }
 	
@@ -212,12 +219,14 @@ class Posts {
 		  'prod_cp'									=> $params['prod_cp'],
 		  'priority'								=> $params['priority'],
 		  'series'									=> $params['series'],	  
-		  'pack_qty'				=> $params['pack_qty'],		  
+		  'pack_qty'				=> $params['pack_qty'],
+		  'created_by' => $_SESSION['user']['id'], 
 		);
     return $this->DB->InsertRecord('products', $product);
   }
 	
 	function EditProduct($params) {
+		$params['variables']['updated_by'] = $_SESSION['user']['id'];
     return $this->DB->UpdateRecord('products', $params);
   }
 	

@@ -39,65 +39,65 @@
 		</div>
 				
 		<div id="content">
-			<form class="form-container">
-				<h3 class="form-title">Details</h3>
-        <table>
-           <tr>
-              <td width="150">Product Code:</td><td width="310"><input type="text" value="<?php echo $products['product_code'] ?>" class="text-field" disabled/>
-              	<?php echo $linkto = ($products['product_code']!='') ? link_to('products-show.php?pid='.$_GET['id']) : '' ?>
-              </td>
-              <td width="150">Brand:</td><td><input type="text" value="<?php echo $products['brand_model'] ?>" class="text-field" disabled/>
-              </td>
-           </tr>
-           <tr>
-              <td>Pack Qty:</td><td><input type="text" value="<?php echo $products['pack_qty'] ?>" class="text-field text-right" disabled/></td>
-              <td>Color:</td><td><input type="text" value="<?php echo $products['color'] ?>" class="text-field" disabled/></td>
-           </tr>    
-           <tr>
-              <td>Barcode:</td><td><input type="text" value="<?php echo $products['bar_code'] ?>" class="text-field" disabled/></td>
-              <td>Status:</td><td><input type="text" value="<?php echo $products['status'] ?>" class="text-field" disabled/></td>
-           </tr>             
-           <tr>
-              <td>Description:</td>
-              <td colspan="99">
-                <input type="text" value="<?php echo $products['description'] ?>" class="text-field" style="width:645px" disabled/>
-              </td>
-           </tr>
-           <tr><td height="5" colspan="99"></td></tr>
-        </table>
-
-
-				<h3 class="form-title">Warehouse <span id="out-of-stock" style="display: none" class="magenta">(Out-of-stock)</span></h3>
-	      <div id="grid-inventory-items" class="grid jq-grid" style="min-height: 140px;">
-	        <table cellspacing="0" cellpadding="0">
-	          <thead>
-	            <tr>
-	              <td width="5%" class="border-right text-center"><a></a></td>
-	              <td width="10%" class="border-right text-center"><a>Prod. Lot No</a></td>
-	              <td width="10%" class="border-right text-center"><a>Stamp</a></td>
-	              <td class="border-right text-center"><a>Remarks</a></td>
-	              <td width="10%" class="border-right text-center"><a>UOM</a></td>
-	              <td width="10%" class="border-right text-center"><a>Qty</a></td>
-	            </tr>
-	          </thead>
-	          <tbody id="inventory-items"></tbody>
-	        </table>
-	      </div>
-         <div>
-         	<table width="100%">
-               <tr><td height="5" colspan="99"></td></tr>
-               <tr>
-                  <td>
-                     
-                  </td>
-                  <td align="right"><strong>Total Qty:</strong>&nbsp;&nbsp;<input id="total_qty" type="text" class="text-right numbers" style="width:95px;" disabled/></td>
-               </tr>
-<!--                    <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $invoice['remarks']; ?></textarea></td></tr> -->
-            </table>
-         </div>
+			<form>
+				<div class="form-container">
+					<h3 class="form-title">Details</h3>
+	        <table>
+	           <tr>
+	              <td width="150">Product Code:</td><td width="310"><input type="text" value="<?php echo $products['product_code'] ?>" class="text-field" disabled/>
+	              	<?php echo $linkto = ($products['product_code']!='') ? link_to('products-show.php?pid='.$_GET['id']) : '' ?>
+	              </td>
+	              <td width="150">Brand:</td><td><input type="text" value="<?php echo $products['brand_model'] ?>" class="text-field" disabled/>
+	              </td>
+	           </tr>
+	           <tr>
+	              <td>Pack Qty:</td><td><input type="text" value="<?php echo $products['pack_qty'] ?>" class="text-field text-right" disabled/></td>
+	              <td>Color:</td><td><input type="text" value="<?php echo $products['color'] ?>" class="text-field" disabled/></td>
+	           </tr>    
+	           <tr>
+	              <td>Barcode:</td><td><input type="text" value="<?php echo $products['bar_code'] ?>" class="text-field" disabled/></td>
+	              <td>Status:</td><td><input type="text" value="<?php echo $products['status'] ?>" class="text-field" disabled/></td>
+	           </tr>             
+	           <tr>
+	              <td>Description:</td>
+	              <td colspan="99">
+	                <input type="text" value="<?php echo $products['description'] ?>" class="text-field" style="width:645px" disabled/>
+	              </td>
+	           </tr>
+	           <tr><td height="5" colspan="99"></td></tr>
+	        </table>	
+				</div>
+				<br/>
+				<div class="form-container">
+					<h3 class="form-title">Warehouse <span id="out-of-stock" style="display: none" class="magenta">(Out-of-stock)</span></h3>
+		      <div id="grid-inventory-items" class="grid jq-grid" style="min-height: 140px;">
+		        <table cellspacing="0" cellpadding="0">
+		          <thead>
+		            <tr>
+		              <td width="5%" class="border-right text-center"><a></a></td>
+		              <td width="10%" class="border-right text-center"><a>Prod. Lot No</a></td>
+		              <td width="10%" class="border-right text-center"><a>Stamp</a></td>
+		              <td class="border-right text-center"><a>Remarks</a></td>
+		              <td width="10%" class="border-right text-center"><a>UOM</a></td>
+		              <td width="10%" class="border-right text-center"><a>Qty</a></td>
+		            </tr>
+		          </thead>
+		          <tbody id="inventory-items"></tbody>
+		        </table>
+		      </div>
+					<div>
+						<table width="100%">
+							<tr><td height="5" colspan="99"></td></tr>
+							<tr>
+								<td></td>
+								<td align="right"><strong>Total Qty:</strong>&nbsp;&nbsp;<input id="total_qty" type="text" class="text-right numbers" style="width:95px;" disabled/></td>
+							</tr>
+							<!--                    <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $invoice['remarks']; ?></textarea></td></tr> -->
+						</table>
+					</div>	
+				</div>
       	<br/>	
       </form>
-    	<br/>
 		</div>
 	</div>
 	

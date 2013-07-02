@@ -14,7 +14,8 @@ if($_POST)
 			        				'conditions' 	=> $conditions,
 		  							 ));	
 	if(isset($query_result['id'])) {
-		echo TRUE;
+		echo 'true';
 	}  
 }
+
 ?> 

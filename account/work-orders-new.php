@@ -28,7 +28,7 @@
     <div id="content">
       <form id="order-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
       	 <input type="hidden" name="action" value="add_work_order"/>
-					<input type="hidden" id="order[client_id]" name="order[client_id]" value="<?php echo $client['id'] ?>"/>
+					<input type="hidden" id="order[client_id]" name="work_order[client_id]" value="<?php echo $client['id'] ?>"/>
          <!-- BOF TEXTFIELDS -->
          <div>
          	<table>
@@ -38,11 +38,11 @@
                </tr>
                <tr>
                   <td>W/O Number:</td><td><input type="text" name="work_order[wo_number]" class="text-field magenta" value="<?php echo generate_new_code('work_order_number') ?>" readonly/></td>
-                  <td>W/O Date:</td><td><input type="text" name="work_order[wo_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick"/></td>
+                  <td>W/O Date:</td><td><input type="text" name="work_order[wo_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" required/></td>
                </tr>
                <tr>
                   <td>Completion:</td><td><?php select_query_tag($completion, 'id', 'description', 19, 'work_order[completion_status]', 'work_order[completion_status]', '', 'width:192px;', TRUE); ?></td>
-                  <td>Ship Date:</td><td><input type="text" name="work_order[ship_date]"  class="text-field date-pick"/></td>
+                  <td>Ship Date:</td><td><input type="text" name="work_order[ship_date]"  class="text-field date-pick-thursday" required/></td>
                </tr> 
                <tr><td height="5" colspan="99"></td></tr>
             </table>
@@ -143,6 +143,7 @@
 			      "searchable": true
 					}
 					$('#grid-products').grid(products);
+					$('#grid-work-order-items').grid({});
 					
 					$('.add-item').append_item();
 				  $('#remove-work-order-products').remove_item();
@@ -157,7 +158,7 @@
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
            cell.append("<td class=\"prd-code border-right\">"+ row['code'] +"</td>");
            cell.append("<td class=\"prd-brand border-right\">"+ row['brand'] +"</td>");
-           cell.append("<td class=\"prd-description border-right\">"+ row['description'] +"</td>");
+           cell.append("<td class=\"prd-description border-right\">"+ (row['description'] || '') +"</td>");
            cell.append("<td class=\"prd-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"prd-price text-right currency\">"+ row['price'] +"</td>");
            
@@ -194,12 +195,10 @@
            this.click(function(e) {
              var table = $('.grid-item').find('table');
              var grid = $('#work-order-products');
-             
              var item_type = $(this).attr('id');
              
            	 table.find('.chk-item:checked').each(function() {
            	   var id		= $(this).val()
-           	  
            	   var row_id	= "prd-"+ id;
            	   
            	   $(this).prop('checked', false);

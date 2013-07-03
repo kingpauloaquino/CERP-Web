@@ -14,8 +14,8 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						? 
 						'(m.material_code LIKE "%'. $keyword .'%" OR '.
 						'm.description LIKE "%'. $keyword .'%" OR '.
-						'item_classifications.classification LIKE "%'. $keyword .'%") AND m.material_type=70 ' 
-						: 'm.material_type=70';
+						'item_classifications.classification LIKE "%'. $keyword .'%") AND m.material_type=70 AND m.status = 16' 
+						: 'm.material_type=70 AND m.status = 16';
 
 	$query = $DB->Fetch('materials AS m', array(
 							'columns'	=> 'm.id, m.material_code AS code, item_classifications.classification AS classification, 

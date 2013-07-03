@@ -22,6 +22,8 @@
 		</div>
 
     <div id="content">
+    	<a id="btn-months" href="#modal-product-months-all" rel="modal:open"></a>
+    	<a id="btn-weeks" href="#modal-product-weeks-all" rel="modal:open"></a>
       <form id="form-name" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container" style="min-width: 1140px;">
       	<input type="hidden" id="current_week" value=""/>
       	<input type="hidden" id="current_month" value=""/>
@@ -79,16 +81,15 @@
 	        
 	      <!-- BOF GridView -->
 	      <div id="grid-products-week" class="grid jq-grid" style="min-height:140px;">
-	        <table cellspacing="0" cellpadding="0" >
+	        <table id="tbl-products-week" cellspacing="0" cellpadding="0" >
 	          <thead>
 	            <tr>
-	              <td class="border-right text-center" width="120"><a class="sort default active up" column="code">Code</a></td>
-	              <td class="border-right text-center" width="120"><a class="sort" column="po_number">P/O No.</a></td>
+	              <td class="border-right"><a class="sort default active up" column="code">Model</a></td>
 	              <td class="border-right text-center" width="90"><a class="sort" column="series">Series</a></td>
-	              <td class="border-right text-center" width="70"><a class="sort" column="pack">Pack</a></td>
-	              <td class="border-right text-center"><a class="sort" column="remarks">Remarks</a></td>
+	              <td class="border-right text-center" width="70"><a class="sort" column="pack_qty">Pack</a></td>
 	              <td class="border-right text-center" width="70"><a class="sort" column="unit">Unit</a></td>
-	              <td class="border-right text-center" width="90"><a class="sort" column="qty">Qty</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="ttl">Total</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="ttls">Singles Total</a></td>
 	            </tr>
 	          </thead>
 	          <tbody></tbody>
@@ -109,17 +110,16 @@
 	        
 	      <!-- BOF GridView -->
 	      <div id="grid-products-month" class="grid jq-grid" style="min-height:140px;">
-	        <table cellspacing="0" cellpadding="0" >
+	        <table id="tbl-products-month" cellspacing="0" cellpadding="0" >
 	          <thead>
 	            <tr>
-	              <td class="border-right text-center" width="120"><a class="sort default active up" column="code">Ship Date</a></td>
-	              <td class="border-right text-center" width="120"><a class="sort" column="code">Code</a></td>
-	              <td class="border-right text-center" width="120"><a class="sort" column="po_number">P/O No.</a></td>
+	              <td class="border-right text-center" width="120"><a class="sort default active up" column="ship_date">Ship Date</a></td>
+	              <td class="border-right" ><a class="sort" column="code">Model</a></td>
 	              <td class="border-right text-center" width="90"><a class="sort" column="series">Series</a></td>
-	              <td class="border-right text-center" width="70"><a class="sort" column="pack">Pack</a></td>
-	              <td class="border-right text-center"><a class="sort" column="remarks">Remarks</a></td>
+	              <td class="border-right text-center" width="70"><a class="sort" column="pack_qty">Pack</a></td>
 	              <td class="border-right text-center" width="70"><a class="sort" column="unit">Unit</a></td>
-	              <td class="border-right text-center" width="90"><a class="sort" column="qty">Qty</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="ttl">Total</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="ttls">Singles Total</a></td>
 	            </tr>
 	          </thead>
 	          <tbody></tbody>
@@ -133,13 +133,75 @@
       </form>
 		</div>
 	</div>
+	
+	<!-- BOF MODAL -->
+	<div id="modal-product-weeks-all" class="modal" style="display:none;width:920px;">
+		<div class="modal-title"><h3>Week Shipment</h3></div>
+		<div class="modal-content">
+			<form id="frm-product-weeks-all" method="POST">
+				<!-- BOF GRIDVIEW -->
+				<div id="grid-product-weeks-all" class="grid jq-grid">
+					<table id="tbl-product-weeks-all" cellspacing="0" cellpadding="0">
+						<thead>
+							<tr> 
+	              <td class="border-right text-center" width="100"><a class="sort" column="ctrl_no">Ctrl No.</a></td>
+	              <td class="border-right text-center" width="50"><a class="sort" column="type">Type</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="series">Series</a></td>
+	              <td class="border-right text-center" width="50"><a class="sort" column="pack_qty">Pack</a></td>
+	              <td class="border-right text-center"><a class="sort" column="remarks">Remarks</a></td>
+	              <td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="ttl">Total</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="ttls">Singles Total</a></td>
+							</tr>
+						</thead>
+						<tbody id="product-weeks-all"></tbody>
+					</table>
+				</div>	
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a class="btn parent-modal" rel="modal:close">Close</a>
+			<div class="clear"></div>
+		</div>
+	</div>
+	
+	<!-- BOF MODAL -->
+	<div id="modal-product-months-all" class="modal" style="display:none;width:920px;">
+		<div class="modal-title"><h3>Month Shipment</h3></div>
+		<div class="modal-content">
+			<form id="frm-product-months-all" method="POST">
+				<!-- BOF GRIDVIEW -->
+				<div id="grid-product-months-all" class="grid jq-grid">
+					<table id="tbl-product-months-all" cellspacing="0" cellpadding="0">
+						<thead>
+							<tr> 
+	              <td class="border-right text-center" width="100"><a class="sort" column="ctrl_no">Ctrl No.</a></td>
+	              <td class="border-right text-center" width="50"><a class="sort" column="type">Type</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="series">Series</a></td>
+	              <td class="border-right text-center" width="50"><a class="sort" column="pack_qty">Pack</a></td>
+	              <td class="border-right text-center"><a class="sort" column="remarks">Remarks</a></td>
+	              <td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="ttl">Total</a></td>
+	              <td class="border-right text-center" width="90"><a class="sort" column="ttls">Singles Total</a></td>
+							</tr>
+						</thead>
+						<tbody id="product-months-all"></tbody>
+					</table>
+				</div>	
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a class="btn parent-modal" rel="modal:close">Close</a>
+			<div class="clear"></div>
+		</div>
+	</div>
 
 	<script>
 		$(function(){
 			$('.item-month').live('click', function(){
 				var current_month = $(this).attr('rel'); 
 				$('#current_month').val(current_month);
-				$('.search-title').html('P/O Model Month &raquo; <span class="red">'+ $(this).attr('title') +'</span>');
+				$('.search-title').html('Shipment Plan Month &raquo; <span class="red">'+ $(this).attr('title') +'</span>');
 				loadMonth(current_month);
 				$('#plan-weeks').fadeOut('fast', function(){
 					$('#plan-month').fadeIn('fast', function(){})
@@ -148,14 +210,62 @@
 			$('.item-week').live('click', function(){
 				var current_week = $(this).attr('rel');
 				$('#current_week').val(current_week);
-				$('.search-title').html('P/O Model Week &raquo; <span class="red">'+ current_week +'</span>');
+				$('.search-title').html('Shipment Plan Week &raquo; <span class="red">'+ current_week +'</span>');
 				loadWeek(current_week);
 				$('#plan-month').fadeOut('fast', function(){
 					$('#plan-weeks').fadeIn('fast', function(){})
 					
 				})
 			})
+			
+			$('#tbl-products-week').find('tbody tr .click-week').show_week_modal();
+			$('#tbl-products-month').find('tbody tr .click-month').show_month_modal();
 		})
+		
+		$.fn.show_week_modal = function() {
+	  	$()
+	    this.live('click', function(e) {
+	    	e.preventDefault();
+	    	$('#modal-product-weeks-all').find('.modal-title').html('<h3>'+ $(this).attr('model') +' &raquo; <span class="red">'+ $(this).attr('ship_date') +'</span></h3>');
+	    	
+	    	var ship_date = $(this).attr('ship_date');
+	    	
+	    	var data = { 
+		    	"url":"/populate/shipment-plan-week-all.php?sdate="+ship_date+"&pid="+$(this).attr('pid'),
+		      "limit":"15",
+					"data_key":"shipment_plan_all",
+					"row_template":"row_template_ship_plan_month_all",
+		      "searchable":false
+				}
+			
+				$('#grid-product-weeks-all').grid(data);
+				
+				$('#btn-weeks').click();	
+	    })
+	  }
+		
+		$.fn.show_month_modal = function() {
+	  	$()
+	    this.live('click', function(e) {
+	    	e.preventDefault();
+	    	$('#modal-product-months-all').find('.modal-title').html('<h3>'+ $(this).attr('model') +' &raquo; <span class="red">'+ $(this).attr('ship_date') +'</span></h3>');
+	    	
+	    	var ship_date = new Date($(this).attr('ship_date'));
+				var month = ship_date.getMonth()+1;
+	    	
+	    	var data = { 
+		    	"url":"/populate/shipment-plan-month-all.php?smonth="+month+"&pid="+$(this).attr('pid'),
+		      "limit":"15",
+					"data_key":"shipment_plan_all",
+					"row_template":"row_template_ship_plan_month_all",
+		      "searchable":false
+				}
+			
+				$('#grid-product-months-all').grid(data);
+				
+				$('#btn-months').click();	
+	    })
+	  }
 		
 		function loadWeek(param) {
 			var data = { 

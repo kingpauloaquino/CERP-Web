@@ -25,7 +25,7 @@ if(!$allowed) {
       </div>
       <form>
       <input type="text" id="datepicker1" />
-      	
+      upload: <input type="file" accept="image/jpg,image/avi" />	
       </form>
        
       

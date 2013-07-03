@@ -157,7 +157,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$_POST['item_cost']['item_id'] = $id;
 		$Posts->AddItemCost($_POST['item_cost']);
 		if(isset($id)){ redirect_to($Capabilities->All['show_product']['url'].'?pid='.$id); }
-		//TODO: add forecast entry
+		
+		//add forecast entry
+		$args = array('forecast_year'=>date('Y'), 'product_id'=>$id);
+		$Posts->AddForecast($args);
 		break;
 		
 	case 'edit_product':
@@ -667,30 +670,46 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		
 	case 'add_forecast':
 		$args = array('forecast_year'=>$_POST['forecast_year'], 'product_id'=>$_POST['product_id']);
-		$Posts->InitForecast($args);
+		$Posts->AddForecast($args);
 		break;
 		
 	case 'edit_forecast':
 		foreach ($_POST['forecast'] as $forecast) {
-			
-			if($forecast['delivery_date'] == NULL) {
-				unset($forecast['delivery_date']); 
-			} else {
-				$forecast['delivery_date'] = date('Y-m-d', strtotime($forecast['delivery_date']));
+			if(isset($forecast['qty']) && $forecast['qty'] != 0) {
+				if($forecast['delivery_date'] == NULL) {
+					unset($forecast['delivery_date']); 
+				} else {
+					$forecast['delivery_date'] = date('Y-m-d', strtotime($forecast['delivery_date']));
+				}
+				if($forecast['ship_date'] == NULL) {
+					unset($forecast['ship_date']); 
+				} else {
+					$forecast['ship_date'] = date('Y-m-d', strtotime($forecast['ship_date']));
+				}
+				if($forecast['prod_date'] == NULL) {
+					unset($forecast['prod_date']); 
+				} else {
+					$forecast['prod_date'] = date('Y-m-d', strtotime($forecast['prod_date']));
+				}
+				
+				$args = array('variables' => $forecast, 'conditions' => 'id='. $forecast['id']); 
+				$num_of_records = $Posts->EditForecast($args);	
+				
+				
+				
+				//add shipment plan
+				$shipment_plan = $DB->Find('shipment_plans', array(
+			  		'columns' => 'id', 
+		  	    'conditions' => 'type="FC" AND ctrl_id ='.$forecast['id']
+			  	  ));	
+				if(isset($shipment_plan)) {
+					$Posts->EditShipmentPlan(array('variables'=>array('ctrl_no' => $forecast['ctrl_no'], 'ship_date' => $forecast['ship_date'], 'prod_date' => $forecast['prod_date'],'qty' => $forecast['qty'], 'remarks' => $forecast['remarks']), 
+																					'conditions'=>'id='.$shipment_plan['id']));
+				} else {
+					$Posts->AddShipmentPlan(array('type' => 'FC', 'ctrl_no' => $forecast['ctrl_no'], 'ctrl_id' => $forecast['id'], 'item_id' => $forecast['product_id'], 'item_type' => 'PRD',
+															'ship_date' => $forecast['ship_date'], 'prod_date' => $forecast['prod_date'],'qty' => $forecast['qty'], 'remarks' => $forecast['remarks']));
+				}
 			}
-			if($forecast['ship_date'] == NULL) {
-				unset($forecast['ship_date']); 
-			} else {
-				$forecast['ship_date'] = date('Y-m-d', strtotime($forecast['ship_date']));
-			}
-			if($forecast['prod_date'] == NULL) {
-				unset($forecast['prod_date']); 
-			} else {
-				$forecast['prod_date'] = date('Y-m-d', strtotime($forecast['prod_date']));
-			}
-			
-			$args = array('variables' => $forecast, 'conditions' => 'id='. $forecast['id']); 
-			$num_of_records = $Posts->EditForecast($args);
 		}
 		
 		break;
@@ -743,17 +762,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		
 	case 'add_shipment_plan':
 		$plan = $_POST['plan'];
-		$Posts->AddShipmentPlan(array('po_id' => $plan['po_id'], 'item_id' => $plan['item_id'], 'item_type' => $plan['item_type'],
+		$Posts->AddShipmentPlan(array('type' => $plan['type'], 'ctrl_no' => $plan['ctrl_no'], 'ctrl_id' => $plan['ctrl_id'], 'item_id' => $plan['item_id'], 'item_type' => $plan['item_type'],
 															'ship_date' => $plan['ship_date'], 'prod_date' => $plan['prod_date'],'qty' => $plan['qty'], 'remarks' => $plan['remarks'])); 
 		break;
 		
 	case 'edit_shipment_plan':
-		$DB->DeleteRecord('shipment_plans', array('conditions' => 'po_id='.$_POST['poid'].' AND item_id='.$_POST['pid']));
+		$DB->DeleteRecord('shipment_plans', array('conditions' => 'ctrl_id='.$_POST['ctrl_id'].' AND item_id='.$_POST['pid']));
 		
 		$plan = $_POST['plan'];
 		foreach($plan as $item) {
 			$items = array();
-			$items['po_id'] = $_POST['poid'];
+			$items['type'] = $_POST['type'];
+			$items['ctrl_id'] = $_POST['ctrl_id'];
+			$items['ctrl_no'] = $_POST['ctrl_no'];
 			$items['item_id'] = $_POST['pid'];
 			$items['item_type'] = 'PRD';
 			$items['ship_date'] = $item['ship_date'];
@@ -769,7 +790,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			// $args = array('variables' => $item, 'conditions' => 'id='. $item['id']); 
 			// $num_of_records = $Posts->EditShipmentPlan($args);
 		// } 
-		redirect_to($Capabilities->All['show_plan_po_model_shipment']['url'].'?poid='.$_POST['poid'].'&pid='.$_POST['pid']);
+		redirect_to($Capabilities->All['show_plan_order_model_shipment']['url'].'?ctrl_id='.$_POST['ctrl_id'].'&pid='.$_POST['pid'].'&t='.$_POST['type']);
 		break;
 		
 	case 'edit_forecast_days':
@@ -845,11 +866,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	  	<li><a href="plan-overview-show.php">Overview</a></li>
         	    <li><a href="forecasts-show.php">Forecast</a></li>
         	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
-        	    <li><a href="plan-pos.php">Purchase Order Plan</a></li>
+        	    <li><a href="work-orders.php">Work Orders</a></li>
+        	    <li><a href="plan-orders.php">Plan Orders</a></li>
         	    <li><a href="plan-shipment-calendar.php">Shipment Plan Calendar</a></li>
         	    <li><a href="plan-production-calendar.php">Production Plan Calendar</a></li>
-        	    <li><a href="work-orders.php">Work Orders</a></li>
-        	    <li><a href="production-plan.php">Production Plan</a></li>
         	    <li><a href="material-plan.php">Material Plan</a></li>
         	  </ul>
         	</div>
@@ -871,7 +891,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
           <a href="#" alt="#menu-production" class="show-submenu">Production</a>
         	<div id="menu-production" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
-        	  <ul>
+        	  <!-- <ul>
         	    <li><a href="material-requests.php">Material Requests</a></li>
         	    <li><a href="terminal-production.php">Terminal Entry</a></li>
         	    <li><a href="#">Requests</a></li>
@@ -880,7 +900,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="#">Monitoring</a></li>
         	    <li><a href="#">Defects</a></li>
         	    <li><a href="manage-production.php">Manage</a></li>
-        	  </ul>
+        	  </ul> -->
         	</div>
         </div>
         <div class="menu">
@@ -898,14 +918,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
           <a href="#" alt="#menu-defects" class="show-submenu">Defects</a>
         	<div id="menu-defects" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
-        	  <ul>
+        	  <!-- <ul>
         	    <li><a href="defects.php">Defects</a></li>
         	    <li><a href="defects.php">Reworks</a></li>
         	    <li><a href="defects.php">Machines</a></li>
         	    <li><a href="defects.php">Tracking</a></li>
         	    <li><a href="defects.php">OEE</a></li>
         	    <li><a href="defect-reports.php">Reports</a></li>
-        	  </ul>
+        	  </ul> -->
         	</div>
         </div>
         <div class="menu">

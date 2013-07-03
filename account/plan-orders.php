@@ -1,8 +1,8 @@
 <?php
   /*
-   * Module: Plan Purchase Orders 
+   * Module: Plan Orders 
   */
-  $capability_key = 'plan_pos';  
+  $capability_key = 'plan_orders';  
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -28,12 +28,12 @@
       </div>
         
       <!-- BOF GridView -->
-      <div id="grid-purchase-orders" class="grid jq-grid" style="min-height:400px;">
+      <div id="grid-plan-orders" class="grid jq-grid" style="min-height:400px;">
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <td class="border-right text-center" width="140"><a class="sort default active up" column="po_number">P/O Number</a></td>
-              <td class="border-right text-center" width="120"><a class="sort" column="po_date">P/O Date</a></td>
+              <td class="border-right text-center" width="140"><a class="sort default active up" column="po_number">Order No.</a></td>
+              <td class="border-right text-center" width="120"><a class="sort" column="po_date">Order Date</a></td>
               <td class="border-right text-center" width="120"><a class="sort" column="ship_date">Ship Date</a></td>
               <td class="border-right text-center"><a class="sort" column="remarks">Remarks</a></td>
             </tr>
@@ -43,21 +43,21 @@
       </div>
       
       <!-- BOF Pagination -->
-      <div id="purchase-orders-pagination"></div>
+      <div id="plan-orders-pagination"></div>
 		</div>
 	</div>
 <script>
 	$(function() {
   	var data = { 
-    	"url":"/populate/purchase-orders.php",
+    	"url":"/populate/plan-orders.php",
       "limit":"15",
-			"data_key":"purchase_orders",
-			"row_template":"row_template_plan_po",
-      "pagination":"#purchase-orders-pagination",
+			"data_key":"plan_orders",
+			"row_template":"row_template_plan_orders",
+      "pagination":"#plan-orders-pagination",
       "searchable":true
 		}
 	
-		$('#grid-purchase-orders').grid(data);
+		$('#grid-plan-orders').grid(data);
   }) 
  </script>
 

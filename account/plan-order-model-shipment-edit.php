@@ -1,14 +1,17 @@
 <?php
-  /* Module: Plan Purchase Orders  Model Shipments - Edit  */
-  $capability_key = 'edit_plan_po_model_shipment';
+  /* Module: Plan Orders  Model Shipments - Edit  */
+  $capability_key = 'edit_plan_order_model_shipment';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
 	if(!$allowed) {
 		require('inaccessible.php');	
 	}else{
-	
-		$purchase_order = $Query->purchase_order_item_by_id($_GET['poid'], $_GET['pid']);
+		if($_GET['t'] == 'P/O') {
+			$order = $Query->purchase_order_item_by_id($_GET['ctrl_id'], $_GET['pid']);
+		} else {
+			$order = $Query->work_order_item_by_id($_GET['ctrl_id'], $_GET['pid']);
+		}
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -23,21 +26,23 @@
     <div id="content">
       <form id="shipment-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
 				<input type="hidden" name="action" value="edit_shipment_plan"/>  
-				<input type="hidden" name="poid" value="<?php echo $_GET['poid'] ?>"/>  
+				<input type="hidden" name="type" value="<?php echo $_GET['t'] ?>"/>  
+				<input type="hidden" name="ctrl_id" value="<?php echo $_GET['ctrl_id'] ?>"/>  
+				<input type="hidden" name="ctrl_no" value="<?php echo $order['order_no'] ?>"/> 
 				<input type="hidden" name="pid" value="<?php echo $_GET['pid'] ?>"/>  
          <div>
          	<table>
                <tr>
-                  <td width="120">P/O Number:</td><td width="340"><input id="po_no" type="text" value="<?php echo $purchase_order['po_number'] ?>" class="text-field magenta" disabled/></td>
-                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $purchase_order['client'] ?>" class="text-field" disabled/></td>
+                  <td width="120">Order Number:</td><td width="340"><input id="po_no" type="text" value="<?php echo $order['order_no'] ?>" class="text-field magenta" disabled/></td>
+                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $order['client'] ?>" class="text-field" disabled/></td>
                </tr>
                <tr>
-                  <td>P/O Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['po_date']))?>" class="text-field text-date" disabled/></td>
-                  <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['ship_date']))?>" class="text-field" disabled/></td>
+                  <td>Order Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($order['order_date']))?>" class="text-field text-date" disabled/></td>
+                  <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($order['ship_date']))?>" class="text-field" disabled/></td>
                </tr>
                <tr>
-                  <td>Model:</td><td><input type="text" id="model" value="<?php echo $purchase_order['product_code'] ?>" class="text-field magenta" disabled/></td>
-                  <td>P/O Qty:</td><td><input type="text" value="<?php echo $purchase_order['quantity'] ?>" class="text-field numbers text-right" disabled/></td>
+                  <td>Model:</td><td><input type="text" id="model" value="<?php echo $order['product_code'] ?>" class="text-field magenta" disabled/></td>
+                  <td>P/O Qty:</td><td><input type="text" value="<?php echo $order['quantity'] ?>" class="text-field numbers text-right" disabled/></td>
                </tr>
                <tr><td height="5" colspan="99"></td></tr>
             </table>
@@ -78,10 +83,10 @@
            	   <!-- <div class="text-post-status">
            	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $purchase_order['status']; ?>
                </div> -->
-               <?php if($purchase_order['status'] != "Publish") { ?>
+               <?php if($order['status'] != "Publish") { ?>
        	   			<input type="submit" value="Save" class="btn"/>
            	   <?php } ?>
-               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('plan-po-model-shipment-show.php?poid='.$_GET['poid'].'&pid='.$_GET['pid']); ?>"/>
+               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('plan-order-model-shipment-show.php?ctrl_id='.$_GET['ctrl_id'].'&pid='.$_GET['pid'].'&t='.$_GET['t']); ?>"/>
              </div>
       </form>
    </div>
@@ -93,7 +98,9 @@
 			<form id="frm-ship-plan" method="POST">
 				<span class="notice"></span>     
 				<input type="hidden" name="action" value="add_shipment_plan"/>  
-				<input type="hidden" name="plan[po_id]" value="<?php echo $_GET['poid'] ?>"/>  
+				<input type="hidden" name="plan[type]" value="<?php echo $_GET['t'] ?>"/>  
+				<input type="hidden" name="plan[ctrl_id]" value="<?php echo $_GET['ctrl_id'] ?>"/>  
+				<input type="hidden" name="plan[ctrl_no]" value="<?php echo $order['order_no'] ?>"/> 
 				<input type="hidden" name="plan[item_id]" value="<?php echo $_GET['pid'] ?>"/>  
 				<input type="hidden" name="plan[item_type]" value="PRD"/>
 						 
@@ -143,7 +150,7 @@
 			  
 			  function loadData() {
 					var data = { 
-			    	"url":"/populate/shipment-plans.php?poid=<?php echo $_GET['poid'] ?>&pid=<?php echo $_GET['pid'] ?>",
+			    	"url":"/populate/shipment-plans.php?ctrl_id=<?php echo $_GET['ctrl_id'] ?>&pid=<?php echo $_GET['pid'] ?>",
 			      "limit":"50",
 						"data_key":"shipment_plans",
 						"row_template":"row_template_plan_po_model_shipments",

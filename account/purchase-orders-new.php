@@ -38,11 +38,11 @@
                </tr>
                <tr>
                   <td>P/O Number:</td><td><input type="text" name="purchase_order[po_number]" value="<?php echo generate_new_code('purchase_order_number') ?>" class="text-field magenta"/></td>
-                  <td>P/O Date:</td><td><input type="text" name="purchase_order[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick"/></td>
+                  <td>P/O Date:</td><td><input type="text" name="purchase_order[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week"/></td>
                </tr>
                <tr>
                   <td>Terms:</td><td><input type="text" name="purchase_order[terms]" value="" class="text-field"/></td>
-                  <td>Ship Date:</td><td><input type="text" name="purchase_order[ship_date]" value="<?php echo date("F d, Y", strtotime('next Thursday', strtotime(date("F d, Y")))) ?>" class="text-field date-pick"/></td>
+                  <td>Ship Date:</td><td><input type="text" name="purchase_order[ship_date]" value="<?php echo date("F d, Y", strtotime('next Thursday', strtotime(date("F d, Y")))) ?>" class="text-field date-pick-thursday"/></td>
                </tr>
                <tr>
                   <td>Payment Terms:</td>
@@ -236,7 +236,7 @@
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
            cell.append("<td class=\"mat-code border-right\">"+ row['code'] +"</td>");
            cell.append("<td class=\"mat-brand border-right\">"+ row['brand'] +"</td>");
-           cell.append("<td class=\"mat-description border-right\">"+ row['description'] +"</td>");
+           cell.append("<td class=\"mat-description border-right\">"+ (row['description'] || '') +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            
@@ -289,6 +289,7 @@
              var table = $('.grid-item').find('table');
              var grid = $('#purchase-order-materials');
              var item_type = $(this).attr('id');
+             
            	 table.find('.chk-item:checked').each(function() {
            	   var id		= $(this).val()
            	   var row_id	= "mat-"+ id;

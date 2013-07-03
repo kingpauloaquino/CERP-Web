@@ -435,6 +435,7 @@ class Posts {
 
 	function AddWorkOrder($params) {		
     $work_order = array(
+  	  'client_id'		=> $params['client_id'],
   	  'wo_number'		=> $params['wo_number'],
   	  'wo_date'			=> date('Y-m-d', strtotime($params['wo_date'])),
   	  'ship_date'	=> date('Y-m-d', strtotime($params['ship_date'])),
@@ -1248,13 +1249,10 @@ class Posts {
 	}
 
 	function AddForecast($params) {
-		$forecast = $this->DB->Find('forecasts', array('columns' => 'id', 'conditions' => 'forecast_year='. $params['forecast_year'] .' AND product_id='. $params['product_id']));
-		if(!isset($forecast)) {
-			for($i=1; $i<=12; $i++) {
-				$this->DB->InsertRecord('forecasts', array('forecast_year'	=> $params['forecast_year'], 
-																										'forecast_month'	=> $i,
-																										'product_id'	=> $params['product_id'],));
-			}	
+		for($i=1; $i<=12; $i++) {
+			$this->DB->InsertRecord('forecasts', array('forecast_year'	=> $params['forecast_year'], 
+																									'forecast_month'	=> $i,
+																									'product_id'	=> $params['product_id'],));
 		}
 	}
 
@@ -1264,7 +1262,9 @@ class Posts {
 	
 	function AddShipmentPlan($params) {
 		$plan = array(
-  	  'po_id'	=> $params['po_id'],
+  	  'type'	=> $params['type'],
+  	  'ctrl_id'	=> $params['ctrl_id'],
+  	  'ctrl_no'	=> $params['ctrl_no'],
   	  'item_id'		=> $params['item_id'],
   	  'item_type'=> $params['item_type'],
   	  'ship_date'	=> date('Y-m-d', strtotime($params['ship_date'])),

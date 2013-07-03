@@ -95,7 +95,7 @@ class Query {
   // Get Purchase Order By ID
   function purchase_order_by_id($id) {
 		$query = $this->DB->Fetch('purchase_orders', array(
-			  			'columns' => 'purchase_orders.id, purchase_orders.po_number, purchase_orders.po_date, purchase_orders.terms, purchase_orders.ship_date, 
+			  			'columns' => 'purchase_orders.id, purchase_orders.po_number AS order_no, purchase_orders.po_date AS order_date, purchase_orders.terms, purchase_orders.ship_date, 
 			  										purchase_orders.payment_terms AS payment_terms_id, purchase_orders.completion_status AS completion_status_id, lookup_status2.description AS completion_status,
 			  										purchase_orders.status AS status_id, lookup_status.description AS status, purchase_orders.total_amount, purchase_orders.remarks, 
 			  										suppliers.name AS client, lookups.description AS payment_terms, purchase_orders.created_by, purchase_orders.created_at, 
@@ -111,14 +111,46 @@ class Query {
 	return null;
   }
 
-function purchase_order_item_by_id($poid, $pid) {
+	function purchase_order_item_by_id($poid, $pid) {
 		$query = $this->DB->Fetch('purchase_orders', array(
-			  			'columns' => 'purchase_orders.id, purchase_orders.po_number, purchase_orders.po_date, purchase_orders.ship_date, suppliers.name AS client,
+			  			'columns' => 'purchase_orders.id, purchase_orders.po_number AS order_no, purchase_orders.po_date AS order_date, 
+			  										purchase_orders.ship_date, suppliers.name AS client,
 														products.product_code, purchase_order_items.quantity', 
 			  	  	'joins' => 'INNER JOIN suppliers ON suppliers.id = purchase_orders.client_id
 													INNER JOIN purchase_order_items ON purchase_order_items.purchase_order_id = purchase_orders.id
 													INNER JOIN products ON products.id = purchase_order_items.item_id',
 			  	  	'conditions' => 'purchase_orders.id = '. $poid .' AND purchase_order_items.item_id = '.$pid)
+						);	 
+						 
+	if(!empty($query)) return $query[0];
+	return null;
+  }
+
+	function work_order_by_id($id) {
+		$query = $this->DB->Fetch('work_orders', array(
+			  			'columns' => 'work_orders.id, work_orders.wo_number AS order_no, work_orders.wo_date AS order_date, work_orders.ship_date, 
+			  										work_orders.completion_status AS completion_status_id, lookup_status2.description AS completion_status,
+			  										work_orders.status AS status_id, lookup_status.description AS status, work_orders.total_amount, work_orders.remarks, 
+			  										suppliers.name AS client, work_orders.created_by, work_orders.created_at, 
+			  										work_orders.checked_by, work_orders.checked_at, work_orders.approved_by, work_orders.approved_at', 
+			  	  	'joins' => 'INNER JOIN suppliers ON suppliers.id = work_orders.client_id
+			  	  							INNER JOIN lookup_status ON lookup_status.id = work_orders.status
+			  	  							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = work_orders.completion_status',
+			  	  	'conditions' => 'work_orders.id = '.$id)
+						);	 
+						 
+	if(!empty($query)) return $query[0];
+	return null;
+  }
+
+	function work_order_item_by_id($woid, $pid) {
+		$query = $this->DB->Fetch('work_orders', array(
+			  			'columns' => 'work_orders.id, work_orders.wo_number AS order_no, work_orders.wo_date AS order_date, work_orders.ship_date, 
+			  										suppliers.name AS client, products.product_code, work_order_items.quantity', 
+			  	  	'joins' => 'INNER JOIN suppliers ON suppliers.id = work_orders.client_id
+													INNER JOIN work_order_items ON work_order_items.work_order_id = work_orders.id
+													INNER JOIN products ON products.id = work_order_items.product_id',
+			  	  	'conditions' => 'work_orders.id = '. $woid .' AND work_order_items.product_id = '.$pid)
 						);	 
 						 
 	if(!empty($query)) return $query[0];
@@ -138,20 +170,6 @@ function purchase_order_item_by_id($poid, $pid) {
                'conditions' => 'deliveries.id = '. $id)
              );
 	
-		if(!empty($query)) return $query[0];
-		return null;
-  }
-	
-	
-	function work_order_by_id($id) {
-		$query = $this->DB->Fetch('work_orders', array(
-			  			'columns' => 'work_orders.id, work_orders.wo_number, work_orders.ship_date, work_orders.remarks, lookup_status.description AS status, work_orders.total_amount, 
-			  										lookup_status2.description AS completion_status, work_orders.wo_date, work_orders.completion_status AS completion_status_id, work_orders.status AS status_id', 
-			  	  	'joins' => 'INNER JOIN lookup_status ON lookup_status.id = work_orders.status
-			  	  							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = work_orders.completion_status',
-			  	  	'conditions' => 'work_orders.id = '.$id)
-						);	 
-						 
 		if(!empty($query)) return $query[0];
 		return null;
   }

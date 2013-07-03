@@ -1,14 +1,18 @@
 <?php
-  /* Module: Plan Purchase Orders  Model Shipments - Show  */
-  $capability_key = 'show_plan_po_model_shipment';
+  /* Module: Plan Order Model Shipments - Show  */
+  $capability_key = 'show_plan_order_model_shipment';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
 	if(!$allowed) {
 		require('inaccessible.php');	
 	}else{
-	
-		$purchase_order = $Query->purchase_order_item_by_id($_GET['poid'], $_GET['pid']);
+		if($_GET['t'] == 'P/O') {
+			$order = $Query->purchase_order_item_by_id($_GET['ctrl_id'], $_GET['pid']);
+		} else {
+			$order = $Query->work_order_item_by_id($_GET['ctrl_id'], $_GET['pid']);
+		}
+		
 ?>
       <!-- BOF PAGE -->
 	<div id="page">
@@ -24,16 +28,16 @@
          <div>
          	<table>
                <tr>
-                  <td width="120">P/O Number:</td><td width="340"><input id="po_no" type="text" value="<?php echo $purchase_order['po_number'] ?>" class="text-field magenta" disabled/></td>
-                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $purchase_order['client'] ?>" class="text-field" disabled/></td>
+                  <td width="120">Order Number:</td><td width="340"><input id="po_no" type="text" value="<?php echo $order['order_no'] ?>" class="text-field magenta" disabled/></td>
+                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $order['client'] ?>" class="text-field" disabled/></td>
                </tr>
                <tr>
-                  <td>P/O Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['po_date']))?>" class="text-field text-date" disabled/></td>
-                  <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['ship_date']))?>" class="text-field" disabled/></td>
+                  <td>Order Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($order['order_date']))?>" class="text-field text-date" disabled/></td>
+                  <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($order['ship_date']))?>" class="text-field" disabled/></td>
                </tr>
                <tr>
-                  <td>Model:</td><td><input type="text" id="model" value="<?php echo $purchase_order['product_code'] ?>" class="text-field magenta" disabled/></td>
-                  <td>P/O Qty:</td><td><input type="text" value="<?php echo $purchase_order['quantity'] ?>" class="text-field numbers text-right" disabled/></td>
+                  <td>Model:</td><td><input type="text" id="model" value="<?php echo $order['product_code'] ?>" class="text-field magenta" disabled/></td>
+                  <td>Order Qty:</td><td><input type="text" value="<?php echo $order['quantity'] ?>" class="text-field numbers text-right" disabled/></td>
                </tr>
                <tr><td height="5" colspan="99"></td></tr>
             </table>
@@ -74,9 +78,9 @@
            	     <strong>Save As:</strong>&nbsp;&nbsp;<?php echo $purchase_order['status']; ?>
                </div> -->
                
-               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('plan-po-model-shipment-edit.php?poid='.$_GET['poid'].'&pid='.$_GET['pid']); ?>"/>
+               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('plan-order-model-shipment-edit.php?ctrl_id='.$_GET['ctrl_id'].'&pid='.$_GET['pid'].'&t='.$_GET['t']); ?>"/>
            	   
-               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('plan-pos.php'); ?>"/>
+               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('plan-order-models.php?pid='.$_GET['ctrl_id'].'&t='.$_GET['t']); ?>"/>
              </div>
       </form>
    </div>
@@ -85,12 +89,12 @@
        <script>
 				$(function() {
 					loadData();
-					//$('#order_amount').currency_format(<?php echo $purchase_order['total_amount']; ?>);
+					//$('#order_amount').currency_format(<?php echo $order['total_amount']; ?>);
 			  })
 			  
 			  function loadData() {
 					var data = { 
-			    	"url":"/populate/shipment-plans.php?poid=<?php echo $_GET['poid'] ?>&pid=<?php echo $_GET['pid'] ?>",
+			    	"url":"/populate/shipment-plans.php?ctrl_id=<?php echo $_GET['ctrl_id'] ?>&pid=<?php echo $_GET['pid'] ?>",
 			      "limit":"50",
 						"data_key":"shipment_plans",
 						"row_template":"row_template_plan_po_model_shipments_read_only",

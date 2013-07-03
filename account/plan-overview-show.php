@@ -50,9 +50,9 @@
 						<tbody>
 							<tr>
 								<?php
-									$shipment_all_plan = $DB->Find('forecasts_all_plan_view', array('columns'=> '*', 'conditions'=> 'forecast_year='.$active_year));
-									$production_all_plan = $DB->Find('forecasts_all_plan_view', array('columns'=> '*', 'conditions'=> 'forecast_year='.$active_year));
-									$stock_all_plan = $DB->Find('forecasts_all_plan_view', array('columns'=> '*', 'conditions'=> 'forecast_year='.$active_year));
+									$shipment_all_plan = $DB->Find('shipment_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
+									$production_all_plan = $DB->Find('shipment_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
+									$stock_all_plan = $DB->Find('shipment_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
 								?>
 								<td rowspan="3" class="border-right text-center">Ship</td>
 								<td class="border-right text-center">Plan</td>

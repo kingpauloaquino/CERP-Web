@@ -385,7 +385,6 @@ class Query {
   }
 
 	function received_by_all_supplier_by_month_year($month_year) {
-		
   	$query = $this->DB->Fetch('delivery_items', array(
                'columns' => 'suppliers.id AS supplier_id, suppliers.name AS supplier_name',
                'joins' => 'INNER JOIN deliveries ON deliveries.id = delivery_items.delivery_id
@@ -401,6 +400,17 @@ class Query {
 	return null;
   }
 
+	function get_lookup_parents() {
+  	$query = $this->DB->Fetch('lookups', array(
+               'columns' => '*',
+							 'conditions' => 'parent="0"',
+							 'order' => 'description'
+							 )
+             );
+	
+		if(!empty($query)) return $query;
+		return null;
+  }
 
 	// ID-VALUE-PAIR LOOKUP QUERIES
 

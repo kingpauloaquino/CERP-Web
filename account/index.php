@@ -17,12 +17,12 @@
 ?>	
 
 <div id="page">
-	 <div id="page-title">
-      <h2>
-        <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
-        <div class="clear"></div>
-      </h2>
-    </div>
+	<div id="page-title">
+		<h2>
+			<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
+			<div class="clear"></div>
+		</h2>
+	</div>
 			
 	<div id="content">
 		
@@ -32,30 +32,67 @@
 			<div id="chart" style="min-width: 400px; height: 260px; margin: 0 auto"></div>
 		</div>
 		
-		<div style="width:386px; height:260px; margin:5px; padding:4px; float:left; border:solid 1px #eee">
-			NOTIFICATIONS
-			<ul>
-				<li>Stock Replenish</li>
-				<li>Production Requests</li>
-				<li>Machinery Issues</li>
-			</ul>
-		</div>
-				
-		<div style="width:386px; height:260px; margin:5px; padding:4px; float:left; border:solid 1px #eee">
-			CALENDAR
-			<ul>
-				<li>Public Holiday</li>
-				<li>General Meeting</li>
-				<li>Production Shutdown</li>
-			</ul>
+		<div style="width:600px; height:auto; margin:5px; padding:4px; float:left; border:solid 1px #eee">
+			<h3>CALENDAR</h3>
+			<div id='calendar' style="width: 540px; margin: 0 auto;"></div>
 		</div>
 		
-		<div style="width:386px; height:260px; margin:5px; padding:4px; float:left; border:solid 1px #eee">
-			<h3>OTHERS</h3>
+		<div style="width:500px; height:360px; margin:5px; padding:4px; float:left; border:solid 1px #eee">
+			<h3>NOTIFICATIONS</h3>
+			<div id="tabs" style="min-height: 315px">
+			  <ul>
+			    <li><a href="#tabs-1">General</a></li>
+			    <li><a href="#tabs-2">Warehouse</a></li>
+			    <li><a href="#tabs-3">Production</a></li>
+			  </ul>
+			  <div id="tabs-1">
+			    <ul>
+			    	<li>item 1</li>
+			    	<li>item 2</li>
+			    	<li>item 3</li>
+			    </ul>
+			  </div>
+			  <div id="tabs-2" style="overflow: auto; max-height: 250px">
+			    <ul>
+			    	<li>item 1</li>
+			    	<li>item 2</li>
+			    	<li>item 3</li>
+			    	<li>item 4</li>
+			    	<li>item 5</li>
+			    	<li>item 6</li>
+			    	<li>item 7</li>
+			    	<li>item 8</li>
+			    	<li>item 9</li>
+			    	<li>item 10</li>
+			    	<li>item 11</li>
+			    	<li>item 12</li>
+			    	<li>item 13</li>
+			    	<li>item 14</li>
+			    	<li>item 15</li>
+			    	<li>item 16</li>
+			    	<li>item 17</li>
+			    	<li>item 18</li>
+			    	<li>item 19</li>
+			    	<li>item 20</li>
+			    </ul>
+			  </div>
+			  <div id="tabs-3">
+			    <ul>
+			    	<li>item 1</li>
+			    	<li>item 2</li>
+			    </ul>
+			  </div>
+			</div>
 		</div>
 		
 	</div>
 </div>
+<script>
+  $(function() {
+    $( "#tabs" ).tabs();
+  });
+  </script>
+  
 <script type="text/javascript">
 	$(function () {
     var chart;
@@ -76,7 +113,7 @@
                 x: -20
             },
             xAxis: {
-                categories: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
             },
             yAxis: {
                 title: {
@@ -120,8 +157,43 @@
     
 });
 </script>
-<script src="../Highcharts/js/highcharts.js"></script>
-<script src="../Highcharts/js/modules/exporting.js"></script>
+<script src="../include/Highcharts/js/highcharts.js"></script>
+<script src="../include/Highcharts/js/modules/exporting.js"></script>
+
+<script>
+	$(document).ready(function() {
+	
+		var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+		
+		$('#calendar').fullCalendar({
+			editable: true,
+			events: [
+				{
+					title: 'Test Event',
+					start: new Date(y, m, d-5),
+					end: new Date(y, m, d-2)
+				},
+				{
+					title: 'CERP Dashboard',
+					start: new Date(y, m, 28),
+					end: new Date(y, m, 29),
+					url: 'http://119.92.50.166/cerp/'
+				}
+			]
+		});
+		
+	});
+
+</script>
+<!-- <script src='../jquery/jquery-1.9.1.min.js'></script>
+<script src='../jquery/jquery-ui-1.10.2.custom.min.js'></script> -->
+<script src='../include/fullcalendar/fullcalendar.min.js'></script>
+<link href='../include/fullcalendar/fullcalendar.css' rel='stylesheet' />
+<link href='../include/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
 
 <?php }
-require('footer.php'); ?>
+//require('footer.php'); 
+?>

@@ -1287,4 +1287,12 @@ class Posts {
 	function ApprovePurchaseOrder($params) {
     return $this->DB->UpdateRecord('purchase_orders', $params);
   }
+	
+	function EditLookup($params) {
+		return $this->DB->UpdateRecord('lookups', $params);
+	}
+	
+	function DeleteLookup($params) {
+    return $this->DB->DeleteRecord('lookups', $params);
+	}
 }

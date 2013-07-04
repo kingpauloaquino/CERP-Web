@@ -802,6 +802,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$Posts->AddProductInventory($_POST['inventory']);
 		break;
 	
+	case 'edit_lookup':
+		$Posts->EditLookup(array('variables'=>array('description' => $_POST['lookup-title']), 'conditions' => 'id='.$_POST['lookup-id']));
+		break;
+		
+	case 'remove_lookup':
+		$Posts->DeleteLookup(array('conditions' => 'id='.$_POST['lookup-id-remove']));		
+		break;
+	
   } // close switch
 
   
@@ -821,7 +829,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
     <link rel="stylesheet" href="../stylesheets/simplePagination.css">
 		<link rel="stylesheet" href="../stylesheets/jquery.modal.css" />
 <!-- 		<link rel="stylesheet" href="../stylesheets/smoothness/jquery-ui-1.9.2.custom.css" /> -->
-		<link rel="stylesheet" href="../stylesheets/smoothness/jquery-ui-1.10.1.custom.css" />
+<!-- 		<link rel="stylesheet" href="../stylesheets/custom/jquery-ui-1.10.1.custom.css" /> -->
+		<link rel="stylesheet" href="../stylesheets/custom/jquery-ui-1.10.3.custom.css" />
 		
     <script src="../javascripts/jquery-1.7.1.min.js"></script>
 <!-- 		<script src="../javascripts/jquery-ui-1.8.21.custom.min.js"></script> -->
@@ -870,6 +879,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="plan-orders.php">Plan Orders</a></li>
         	    <li><a href="plan-shipment-calendar.php">Shipment Plan Calendar</a></li>
         	    <li><a href="plan-production-calendar.php">Production Plan Calendar</a></li>
+        	    <li><a href="plan-stock-calendar.php">Stock Plan Calendar</a></li>
         	    <li><a href="material-plan.php">Material Plan</a></li>
         	  </ul>
         	</div>

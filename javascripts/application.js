@@ -986,11 +986,11 @@ function row_template_prod_plan_month_all(data) {
   var forward	= host + '/account/plan-order-model-shipment-show.php?ctrl_id='+ data['ctrl_id'] +'&pid='+ data['pid'] +'&t='+ data['type'];
   var row		= $('<tr id="'+ data['id'] +'"></tr>');
 
-  if(data['type'] == 'FC'){
-	  row.append('<td class="border-right">'+ data['ctrl_no'] +'</td>');
-  } else {
-	  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['ctrl_no'] +'</a></td>');
-  }
+  // if(data['type'] == 'FC'){
+	  // row.append('<td class="border-right">'+ data['ctrl_no'] +'</td>');
+  // } else {
+	  row.append('<td class="border-right"><a class="click-model" pid="'+ data['pid'] +'" model="'+ data['code'] +'" prod_cp="'+ data['prod_cp'] +'" prod_qty="'+ data['ttl'] +'">'+ data['ctrl_no'] +'</a></td>');
+  // }
   row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['series'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['pack_qty'] +'</td>');
@@ -1496,6 +1496,23 @@ function row_template_invoices_items_read_only(data) {
   row.find('.numbers').digits();
   row.find('.currency').formatCurrency({region:"en-PH"});
   return row;
+}
+
+function row_template_product_parts(data) {
+	var forward	= host + "/account/materials-show.php?mid="+ data['mid'] + "";
+  var row		= $('<tr id="mat-'+ data['mid'] +'"></tr>');
+
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ parseFloat(data['qty']) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ parseFloat(data['total']) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ (parseFloat(data['wh_stock']) || 0) +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ 0 +'</td>'); 	
+ 	
+  row.find('.numbers').digits();
+  return row;   
 }
 
 function row_template_parts_tree(data) {

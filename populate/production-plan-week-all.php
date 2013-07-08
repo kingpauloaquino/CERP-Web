@@ -24,7 +24,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	$query = $DB->Fetch('shipment_plans', array(
 							'columns'	=> 'shipment_plans.id, ctrl_id,shipment_plans.ctrl_no, shipment_plans.type, shipment_plans.item_id AS pid, shipment_plans.item_type, shipment_plans.prod_date, shipment_plans.remarks, 
 														lookups.code AS unit, lookup_status.description AS completion, qty AS ttl, (qty * products.pack_qty) AS ttls,
-														products.product_code AS code, product_series.series, products.pack_qty',
+														products.product_code AS code, product_series.series, products.pack_qty, products.prod_cp',
 							'joins' => 'INNER JOIN item_costs ON item_costs.item_id = shipment_plans.item_id AND item_costs.item_type = shipment_plans.item_type
 														INNER JOIN lookups ON lookups.id = item_costs.unit
 														INNER JOIN lookup_status ON lookup_status.id = shipment_plans.status

@@ -24,7 +24,7 @@
          <div>
          	<table>
                <tr>
-                  <td width="120">W/O Number:</td><td width="340"><input type="text" value="<?php echo $work_order['wo_number'] ?>" class="text-field magenta" disabled/></td>
+                  <td width="120">W/O Number:</td><td width="340"><input type="text" value="<?php echo $work_order['order_no'] ?>" class="text-field magenta" disabled/></td>
                   <td width="120">W/O Date:</td><td width="340"><input type="text" value="<?php echo date("F d, Y", strtotime($work_order['wo_date']))?>" class="text-field text-date" disabled/></td>
                </tr>
                <tr>

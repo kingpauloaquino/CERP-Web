@@ -31,7 +31,7 @@
                   <td width="120"></td><td width="340"></td>
                </tr>
                <tr>
-                  <td>P/O Number:</td><td><input type="text" value="<?php echo $purchase_order['po_number'] ?>" class="text-field magenta" disabled/></td>
+                  <td>P/O Number:</td><td><input type="text" value="<?php echo $purchase_order['order_no'] ?>" class="text-field magenta" disabled/></td>
                   <td>P/O Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['po_date']))?>" class="text-field text-date" disabled/></td>
                </tr>
                <tr>

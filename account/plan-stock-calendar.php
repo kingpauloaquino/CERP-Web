@@ -48,7 +48,11 @@
 					echo '<tr>';
 					$wk_ctr2 = $wk_ctr;
 					while (getDay('n',$wk_ctr2) == $month_index) {
-						echo '<td class="text-center border-right" style="padding:1px;" value="'.getDay('Y-m-d',$wk_ctr2).'"><a href="#" style="font-size:11px;display:block; padding-top:3px; height:26px; width:100%;" class="item-week" rel="'.getDay('Y-m-d',$wk_ctr2).'">'.getDay('n/j',$wk_ctr2).'</a></td>'; 
+						$current_week = '';
+						if(($wk_ctr2+1) == date('W')) {
+							$current_week = 'highlight-yellow';
+						}
+						echo '<td class="text-center border-right '.$current_week.'" style="padding:1px;" value="'.getDay('Y-m-d',$wk_ctr2).'"><a href="#" style="font-size:11px;display:block; padding-top:3px; height:26px; width:100%;" class="item-week" rel="'.getDay('Y-m-d',$wk_ctr2).'">'.getDay('n/j',$wk_ctr2).'</a></td>'; 
 						$wk_ctr2+=1;
 					}
 					echo '</tr></tbody></table>';

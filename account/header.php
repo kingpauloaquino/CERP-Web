@@ -901,16 +901,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
           <a href="#" alt="#menu-production" class="show-submenu">Production</a>
         	<div id="menu-production" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
-        	  <!-- <ul>
-        	    <li><a href="material-requests.php">Material Requests</a></li>
-        	    <li><a href="terminal-production.php">Terminal Entry</a></li>
+        	  <ul>
+        	    <li><a href="productions.php">Production</a></li>
+        	    <!-- <li><a href="terminal-production.php">Terminal Entry</a></li>
         	    <li><a href="#">Requests</a></li>
         	    <li><a href="#">Transfers</a></li>
         	    <li><a href="#">Sampling Logs</a></li>
         	    <li><a href="#">Monitoring</a></li>
         	    <li><a href="#">Defects</a></li>
-        	    <li><a href="manage-production.php">Manage</a></li>
-        	  </ul> -->
+        	    <li><a href="manage-production.php">Manage</a></li> -->
+        	  </ul>
         	</div>
         </div>
         <div class="menu">

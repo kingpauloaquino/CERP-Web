@@ -162,4 +162,14 @@
 .grid table tbody tr td.highlight-orange {
 	background-color: #FFB56B;
 }
+.grid table tbody tr td.highlight-blue {
+	background-color: #E2F5FF;
+}
+.grid table tbody tr td.highlight-yellow {
+	background-color: #FCFAE0;
+}
+.grid table tbody tr td.no-highlight {
+	background-color:#fff;
+}
+
 

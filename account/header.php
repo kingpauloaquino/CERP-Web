@@ -810,6 +810,24 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$Posts->DeleteLookup(array('conditions' => 'id='.$_POST['lookup-id-remove']));		
 		break;
 	
+	case 'add_material_request':
+		$rid = $Posts->AddMaterialRequest(array('request_type' => $_POST['request_type'], 
+																'batch_no' => NULL,
+																'requested_date' => date('Y-m-d'),
+																'requested_by' => $_SESSION['user']['id'],
+																'expected_date' => $_POST['expected_date'],
+																'received_date' => NULL,
+																'received_by' => NULL,
+																'remarks' => $_POST['remarks']
+																));
+		
+		$requests = $_POST['request'];
+		foreach($requests as $req) {
+			$item = array('request_id' => $rid, 'material_id' => $req['mid'], 'qty' => $req['total']);
+			$Posts->AddMaterialRequestItem($item);
+		}
+		break;
+	
   } // close switch
 
   
@@ -903,6 +921,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
             <div class="glyphicons-halflings"></div>
         	  <ul>
         	    <li><a href="productions.php">Production</a></li>
+        	    <li><a href="production-material-requests.php">Material Requests</a></li>
         	    <!-- <li><a href="terminal-production.php">Terminal Entry</a></li>
         	    <li><a href="#">Requests</a></li>
         	    <li><a href="#">Transfers</a></li>

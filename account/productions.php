@@ -22,10 +22,11 @@
 		</div>
 
     <div id="content">
-      <form id="form-name" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container" style="min-width: 1140px;">
       	<input type="hidden" id="current_week" value=""/>
+      	<input type="hidden" id="current_pid" value=""/>
+      	<input type="hidden" id="current_model" value=""/>
       	<a id="toggle-calendar" href="#">toggle calendar</a><br/>
-      	<div class="div-calendar">
+      	<div id="div-calendar" style="min-width: 1140px;">
       		
 	      <?php
 	      	function getDay($m, $index) {
@@ -76,15 +77,19 @@
       	</div>
       
       <br/>
-	      <div id="prod-weeks" style="display: none;">
+      
+      <div id="div-details" class="form-container" style="display: none">
 		      <!-- BOF Search -->
 		      <div class="search-title">
 		      	
 		      </div>
 		      <div class="search">
+		        &nbsp;
+		      </div>
+	      <div id="prod-weeks" style="display: none;">  
+		      <div class="search">
 		        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
 		      </div>
-		        
 		      <!-- BOF GridView -->
 		      <div id="grid-products-week" class="grid jq-grid" style="min-height:140px;">
 		        <table id="tbl-products-week" cellspacing="0" cellpadding="0" >
@@ -106,12 +111,6 @@
 	      </div>
       
 				<div id="model-all" style="display: none;">
-					<div class="search-title">
-		      	
-		      </div>
-		      <div class="search">
-		        &nbsp;
-		      </div>
       		<!-- BOF GRIDVIEW -->
 					<div id="grid-product-weeks-all" class="grid jq-grid">
 						<table id="tbl-product-weeks-all" cellspacing="0" cellpadding="0">
@@ -133,17 +132,11 @@
       	</div>
       	
       	<div id="model-materials" style="display: none;">
-					<div class="search-title">
-		      	Model Parts
-		      </div>
-		      <div class="search">
-		        &nbsp;
-		      </div>
 		      <table>
              <tr>
-                <td width="170">Daily Production Capacity:</td><td width="120"><input id="prd-prod-cp" type="text" class="text-field-number text-right numbers" disabled/></td>
-                <td width="130">Production Plan Qty:</td><td width="120"><input id="prd-plan-qty" type="text" class="text-field-number text-right numbers" disabled/></td>
-                <td width="170">Estimated Production Days:</td><td width="120"><input id="prd-est-days" type="text" class="text-field-number text-right numbers" disabled/></td>
+                <td width="170">Daily Production Capacity:</td><td width="120"><input type="text" class="text-field-number text-right numbers prd-prod-cp" disabled/></td>
+                <td width="130">Production Plan Qty:</td><td width="120"><input type="text" class="text-field-number text-right numbers prd-plan-qty" disabled/></td>
+                <td width="170">Estimated Production Days:</td><td width="120"><input type="text" class="text-field-number text-right numbers prd-est-days" disabled/></td>
                 <td><button id="btn-request" class="btn">SEND REQUEST</button></td>
              </tr>
              <tr><td height="5" colspan="99"></td></tr>
@@ -168,6 +161,47 @@
 					</div>	
       	</div>
       	
+      <form id="form-request" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" >
+      	<input type="hidden" name="action" value="add_material_request"/>
+      	<input type="hidden" name="request_type" value="171"/>
+      	<div id="model-materials-request" style="display: none;">
+		      <table>
+             <tr>
+                <td width="170">Daily Production Capacity:</td><td width="130"><input id="prod-cp" type="text" class="text-field-medium text-right numbers prd-prod-cp" disabled/></td>
+                <td width="130">Production Plan Qty:</td><td width="130"><input type="text" class="text-field-medium text-right numbers prd-plan-qty" disabled/></td>
+                <td width="170">Estimated Production Days:</td><td width="130"><input type="text" class="text-field-medium text-right numbers prd-est-days" disabled/></td>
+                
+             </tr>
+             <tr>
+                <td>Set total by days:</td><td><input id="prod-days" type="text" class="text-field-medium text-right numeric" /></td>
+                <td>Set total by qty:</td><td><input id="prod-qty" type="text" class="text-field-medium text-right numeric" /></td>
+                <td>Expected Date:</td><td><input id="expected-date" name="expected_date" type="text" class="text-field date-pick-week" required/></td>
+             </tr>
+             <tr><td height="5" colspan="99"></td></tr>
+          </table>
+      		<!-- BOF GRIDVIEW -->
+					<div id="grid-product-materials-request" class="grid jq-grid">
+						<table id="tbl-product-materials" cellspacing="0" cellpadding="0">
+							<thead>
+								<tr> 
+		              <td class="border-right text-center" width="30"><a></a></td>
+		              <td class="border-right text-center"><a class="sort" column="code">Material</a></td>
+		              <td class="border-right text-center" width="100"><a class="sort" column="type">Type</a></td>
+		              <td class="border-right text-center" width="70"><a class="sort" column="unit">Unit</a></td>
+		              <td class="border-right text-center" width="70"><a class="sort" column="qty">Qty</a></td>
+		              <td class="border-right text-center" width="70"><a class="sort" column="total">Total</a></td>
+								</tr>
+							</thead>
+							<tbody id="product-materials-request"></tbody>
+						</table>
+					</div>	
+	      	<div class="field-command">
+						<div class="text-post-status"></div>
+						<input id="submit-btn" href="#form-request" type="submit" value="REQUEST" class="btn" />
+					</div>
+      	</div>
+      	
+      	</div>
       </form>
 		</div>
 	</div>
@@ -178,7 +212,7 @@
 	<script>
 		$(function(){
 			$('#toggle-calendar').click(function(){
-				$('.div-calendar').toggle('slow');
+				$('#div-calendar').toggle('slow');
 			})
 			
 			$('.item-week').live('click', function(event){
@@ -186,21 +220,28 @@
 				
 				// highlight selected date
 				// $(this).closest('td').attr('class', 'text-center border-right highlight-blue');
+				$('#div-details').show();
 				
 				var current_week = $(this).attr('rel');
 				$('#current_week').val(current_week);
 				loadWeek(current_week);
-				$('#model-all').fadeOut('fast', function(){
+				
+				$('#model-materials-request').fadeOut('fast', function(){
 					$('.search-title').html('Production Week &raquo; <span class="red">'+ current_week +'</span>');
-					$('#model-materials').fadeOut('fast', function(){
-						$('#prod-weeks').fadeIn('fast', function(){})
+					$('#model-all').fadeOut('fast', function(){
+						$('#model-materials').fadeOut('fast', function(){
+							$('#prod-weeks').fadeIn('fast', function(){})
+						})
 					})
 				})
-				
 			})
 			
 			$('#tbl-products-week').find('tbody tr .click-week').show_all_models();
 			$('#tbl-product-weeks-all').find('tbody tr .click-model').show_product_materials();
+			$('#btn-request').show_material_requests();
+			$('#prod-days').set_prod_days();
+			$('#prod-qty').set_prod_qty();
+			$('#submit-btn').submit_request();
 		})
 		
 		$.fn.show_all_models = function() {
@@ -210,6 +251,8 @@
 	    	
 	    	var prod_date = $(this).attr('prod_date');
 	    	var model = $(this).attr('model');
+	    	$('#current_model').val(model);
+	    	$('#current_pid').val($(this).attr('pid'));
 	    	
 	    	var data = { 
 		    	"url":"/populate/production-plan-week-all.php?pdate="+prod_date+"&pid="+$(this).attr('pid'),
@@ -239,9 +282,11 @@
 	    	var prod_qty = parseFloat($(this).attr('prod_qty'));
 	    	var prod_cp = parseFloat($(this).attr('prod_cp')); 
 	    	var est_days = Math.round(parseFloat(prod_qty / prod_cp));
-	    	$('#prd-prod-cp').val(prod_cp).digits();
-	    	$('#prd-plan-qty').val(prod_qty).digits();
-	    	$('#prd-est-days').val(est_days).digits();
+	    	$('.prd-prod-cp').val(prod_cp).digits();
+	    	$('.prd-plan-qty').val(prod_qty).digits();
+	    	$('.prd-est-days').val(est_days).digits();
+	    	$('#current_model').val(model);
+	    	$('#current_pid').val($(this).attr('pid'));
 	    	
 	    	var data = { 
 		    	"url":"/populate/product_parts.php?pid="+$(this).attr('pid')+"&qty="+prod_qty,
@@ -259,14 +304,87 @@
 						$('#model-materials').fadeIn('fast', function(){})	
 					})
 				})
+	    })
+	  }
+	  
+	  $.fn.show_material_requests = function() {
+	  	$()
+	    this.live('click', function(event) {
+	    	event.preventDefault(); 
+	    	
+	    	var data = { 
+		    	"url":"/populate/product_parts.php?pid="+$('#current_pid').val()+"&qty="+parseInt($('.prd-plan-qty').val().replace(/,/g, ''), 10), 
+		      "limit":"15",
+					"data_key":"product_parts",
+					"row_template":"row_template_product_parts_request",
+		      "searchable":false
+				}
+			
+				$('#grid-product-materials-request').grid(data);
 				
-				
-				// $('#prod-weeks').fadeOut('fast', function(){
-					// $('.search-title').html('Production Week &raquo; '+ $('#current_week').val() +' &raquo; <span class="red">Models</span>');
-					// $('#model-all').fadeIn('fast', function(){
-// 						
-					// })
-				// })
+				$('#model-materials').fadeOut('fast', function(){
+					$('.search-title').html('Production Week &raquo; '+ $('#current_week').val() +' &raquo; '+$('#current_model').val()+' &raquo; <span class="red">Parts Request</span>');
+					$('#model-materials-request').fadeIn('fast', function(){})	
+				})
+	    })
+	  }
+	  
+	  $.fn.set_prod_days = function() {
+	  	$()
+	    this.keyup(function(){
+	    	var tb = $(this);
+	    	var prod_days = parseInt($(tb).val()); 
+	    	$('#product-materials-request').find('.request-quantity').each(function(){
+	    		if(prod_days > 0 && !isNaN(prod_days)) {
+	    			var total = prod_days * parseFloat($(this).val()) * parseInt($('#prod-cp').val().replace(/,/g, ''), 10);
+	    	  	$(this).closest('tr').find($('.request-total')).val(total);
+	    		} else {
+	    			prod_days = 0;
+	    			var total = prod_days * parseFloat($(this).val()) * parseInt($('#prod-cp').val().replace(/,/g, ''), 10);
+	    	  	$(this).closest('tr').find($('.request-total')).val(total);
+	    		}
+	    	})
+	    })
+	  }
+	  
+	  $.fn.set_prod_qty = function() {
+	  	$()
+	    this.keyup(function(){
+	    	var tb = $(this);
+	    	var prod_qty = parseInt($(tb).val()); 
+	    	$('#product-materials-request').find('.request-quantity').each(function(){
+	    		if(prod_qty <= parseInt($('#prod-cp').val().replace(/,/g, ''), 10)) {
+		    		if(prod_qty > 0 && !isNaN(prod_qty)) {
+		    			var total = prod_qty * parseFloat($(this).val());
+		    	  	$(this).closest('tr').find($('.request-total')).val(total);
+		    		}	
+	    		}
+	    	})
+	    })
+	  }
+	  
+	  $.fn.submit_request = function() {
+	  	$()
+	    this.live('click', function(event) {
+	    	event.preventDefault(); 
+	    	
+	    	var form = $(this).attr('href');
+	    	
+	    	if($('#expected-date').val() != '') {
+		    	$.post(document.URL, $(form).serialize(), function(data) {
+		      }).done(function(data){
+		      	
+						loadWeek($('#current_week').val());
+						$('#model-materials-request').fadeOut('fast', function(){
+							$('.search-title').html('Production Week &raquo; <span class="red">'+ $('#current_week').val() +'</span>');
+							$('#model-all').fadeOut('fast', function(){
+								$('#model-materials').fadeOut('fast', function(){
+									$('#prod-weeks').fadeIn('fast', function(){})
+								})
+							})
+						})
+		      });		
+	    	}
 	    })
 	  }
 	  

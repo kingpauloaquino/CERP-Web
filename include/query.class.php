@@ -399,6 +399,25 @@ class Query {
 	if(!empty($query)) return $query;
 	return null;
   }
+	
+	function material_request_by_id($id) {
+  	$query = $this->DB->Fetch('material_requests', array(
+               'columns' => 'material_requests.id, lookups.description AS type, batch_no, remarks, expected_date, 
+               							requested_date, received_date, lookup_status.description AS status, 
+               							CONCAT(users1.first_name, " ", users1.last_name) AS requested_by,
+               							CONCAT(users2.first_name, " ", users2.last_name) AS received_by',
+               'joins' => 'INNER JOIN lookups ON lookups.id = material_requests.request_type
+               						INNER JOIN lookup_status ON lookup_status.id = material_requests.status
+               						LEFT OUTER JOIN users AS users1 ON users1.id = material_requests.requested_by
+               						LEFT OUTER JOIN users AS users2 ON users2.id = material_requests.received_by',
+							 'conditions' => 'material_requests.id='.$id,
+							 'order' => 'expected_date'
+							 )
+             );
+	
+	if(!empty($query)) return $query[0];
+	return null;
+  }
 
 	function get_lookup_parents() {
   	$query = $this->DB->Fetch('lookups', array(
@@ -477,6 +496,12 @@ class Query {
            'columns'  => 'id, description',
            'conditions' => 'parent="CURNCY"',
            'order' => 'code')
+         ); break;
+			case 'request_type':
+				$query = $this->DB->Fetch('lookups', array(
+           'columns'  => 'id, description',
+           'conditions' => 'parent="REQTYP"',
+           'order' => 'description')
          ); break;
 			case 'item_status':
 				$query = $this->DB->Fetch('lookup_status', array(

@@ -437,6 +437,19 @@ $.fn.toggle_check_items = function(table) {
 // ROW TEMPLATES
 // ====================================
 
+function row_template(data) {
+  var id		= data['id'];
+  var row		= $('<tr id="'+id+'">' +
+  							'<input type="hidden" name="array['+id+'][id]" value="'+id+'"/>' +
+  						'</tr>');
+  
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+ 
+  row.find('.numeric').numeric_only();
+  row.find('.numbers').digits();
+  return row;   
+}
+
 function row_template_materials(data) {
   var forward	= host + "/account/materials-show.php?mid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
@@ -1152,15 +1165,33 @@ function row_template_parts_requests(data) {
 }
 
 function row_template_material_requests(data) {
-  var forward	= host + "/account/material-requests-show.php?mrid="+ data['id'] + "";
-  var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['po_number'] || '--') +"</a></td>" +
-    "<td class=\"border-right text-center\">"+ data['lot_no'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['brand'] +"</td>" +
-    "<td class=\"border-right \">"+ data['product_code'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['request_date'] +"</td>" +
-    "</tr>");
+  var id		= data['id'];
+  var forward	= host + "/account/production-material-requests-show.php?rid="+ id +"";
+  var row		= $('<tr id="'+id+'">' +
+  						'</tr>');
+  
+  row.append('<td class="border-right text-center"><a href="'+ forward +'">'+ data['request_type'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ (data['batch_no'] || '-') +'</td>');
+  row.append('<td class="border-right">'+ (data['remarks'] || '-') +'</td>');
+  row.append('<td class="border-right text-center">'+ data['requested_date'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['expected_date'] +'</td>');
 
-  return row;
+  return row;   
+}
+
+function row_template_material_request_items_read_only(data) {
+	var forward	= host + "/account/materials-show.php?mid="+ data['mid'] + "";
+  var row		= $('<tr id="mat-'+ data['mid'] +'"></tr>');
+
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ parseFloat(data['qty']) +'</td>');
+ 	
+  row.find('.numbers').digits();
+  return row;   
 }
 
 function row_template_locations(data) {
@@ -1512,6 +1543,24 @@ function row_template_product_parts(data) {
   row.append('<td class="border-right text-right numbers">'+ 0 +'</td>'); 	
  	
   row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_product_parts_request(data) {
+	var mid = data['mid'];
+	var forward	= host + "/account/materials-show.php?mid="+ mid + "";
+  var row		= $('<tr id="'+mid+'">' +
+  							'<input type="hidden" name="request['+mid+'][mid]" value="'+mid+'"/>' +
+  						'</tr>');
+
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-center"><input type="text" name="request['+mid+'][qty]" value="'+ parseFloat(data['qty']) +'" class="text-field-smallest text-right request-quantity numeric" readonly/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="request['+mid+'][total]" value="'+ parseFloat(data['total']) +'" class="text-field-smallest text-right request-total numeric" /></td>');
+ 	
+  row.find('.numeric').numeric_only();
   return row;   
 }
 

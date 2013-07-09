@@ -828,14 +828,19 @@ class Posts {
 	function AddMaterialRequest($params) {
   	$req = array(
   	  'request_type'	=> $params['request_type'],
-  	  'product_id'	=> $params['product_id'],
-  	  'lot_no'	=> $params['lot_no'],
-  	  'production_purchase_order_id'	=> $params['production_purchase_order_id'],
-  	  'request_qty'	=> $params['request_qty'],
-  	  'request_date'	=> $params['request_date'],
-  	  'requestor_id'	=> $params['requestor_id'],
+  	  'batch_no'	=> $params['batch_no'],
+      'requested_date' => date('Y-m-d'),
+		  'requested_by' => $params['requested_by'],
+      'expected_date' => date('Y-m-d', strtotime($params['expected_date'])),
+      'received_date' => date('Y-m-d', strtotime($params['received_date'])),
+		  'received_by' => $params['received_by'],
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
+		  'status'	=> 19
 		);	
+		
+		if(!isset($params['expected_date'])) unset($req['expected_date']);
+		if(!isset($params['received_date'])) unset($req['received_date']);
+		
 		return $this->DB->InsertRecord('material_requests', $req);
   }
 	
@@ -845,11 +850,9 @@ class Posts {
 	
 	function AddMaterialRequestItem($params) {
     $items = array(
-		  'material_request_id'	=> $params['material_request_id'],	  
+		  'request_id'	=> $params['request_id'],	  
 		  'material_id'		=> $params['material_id'],	  
-		  'request_qty'	=> $params['request_qty'],	  
-		  'issue_qty'	=> $params['issue_qty'],	
-		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
+		  'qty'	=> $params['qty'],	  
 		);
     return $this->DB->InsertRecord('material_request_items', $items);
   }

@@ -39,7 +39,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 														INNER JOIN brand_models ON brand_models.id = p.brand_model
 														INNER JOIN product_series ON product_series.id = p.series
 														INNER JOIN item_costs ON item_costs.item_id = p.id AND item_costs.item_type = "PRD"
-														INNER JOIN lookups ON lookups.id = item_costs.unit',
+														INNER JOIN lookups ON lookups.id = p.unit',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,

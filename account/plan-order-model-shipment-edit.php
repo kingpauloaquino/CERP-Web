@@ -150,7 +150,7 @@
 			  
 			  function loadData() {
 					var data = { 
-			    	"url":"/populate/shipment-plans.php?ctrl_id=<?php echo $_GET['ctrl_id'] ?>&pid=<?php echo $_GET['pid'] ?>",
+			    	"url":"/populate/shipment-plans.php?t=<?php echo $_GET['t'] ?>&ctrl_id=<?php echo $_GET['ctrl_id'] ?>&pid=<?php echo $_GET['pid'] ?>",
 			      "limit":"50",
 						"data_key":"shipment_plans",
 						"row_template":"row_template_plan_po_model_shipments",
@@ -193,7 +193,7 @@
 						if($(form).find('#ship-plan-date').val() != '' && $(form).find('#ship-plan-qty').val() != '') {
 							$.post(document.URL, $(form).serialize(), function(data) {
 				      }).done(function(data){
-				      	loadData();
+				      	window.location = 'plan-order-model-shipment-show.php?t=<?php echo $_GET['t'] ?>&ctrl_id=<?php echo $_GET['ctrl_id'] ?>&pid=<?php echo $_GET['pid'] ?>';
 				      });	
 						}
 			  	})

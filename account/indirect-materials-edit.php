@@ -25,7 +25,7 @@
 																		LEFT OUTER JOIN users ON materials.person_in_charge = users.id'
 	  	  )
 			);	
-			$item_costs = $DB->Find('item_costs', array('columns' => 'supplier, unit, currency, cost, transportation_rate', 
+			$item_costs = $DB->Find('item_costs', array('columns' => 'supplier, currency, cost, transportation_rate', 
 	  							'conditions' => 'item_id = '.$_GET['mid'].' AND item_type="MAT"'));  
 			
 				$address = $DB->Find('location_address_items', array(
@@ -90,7 +90,7 @@
 	              <td>Address:</td><td><input type="text"  value="<?php echo $address['address'] ?>" class="text-field" />
 	          			<?php echo $linkto = ($address['add_id']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$address['add_id'].'">change</a>' : '' ?>
 	              </td>
-	              <td></td><td></td>
+	              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $materials['unit'], 'material[unit]', 'material[unit]', '', 'width:192px;'); ?></td>
 	           </tr>              
 	           <tr>
 	              <td>Description:</td>
@@ -116,7 +116,7 @@
 	           		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" value="<?php echo $item_costs['cost'] ?>" class="text-field text-right decimal" required/></td>
 	           </tr>
 	           <tr>
-	              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $item_costs['unit'], 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
+	              
 	              <td>Transportation Rate:</td><td><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" value="<?php echo ($item_costs['transportation_rate'] * 100) ?>" class="text-field text-right decimal" /></td>
 	           </tr>    
 	           <tr><td height="5" colspan="99"></td></tr>

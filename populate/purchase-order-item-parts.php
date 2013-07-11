@@ -18,7 +18,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
                'joins' => 'LEFT OUTER JOIN purchase_order_items ON purchase_order_items.id = purchase_order_item_parts.purchase_order_item_id
                							INNER JOIN materials ON materials.id = purchase_order_item_parts.material_id
 														INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
-														INNER JOIN lookups ON lookups.id = item_costs.unit',
+														INNER JOIN lookups ON lookups.id = materials.unit',
                'conditions' => 'purchase_order_item_parts.purchase_order_item_id='.$_GET['poid'],
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,

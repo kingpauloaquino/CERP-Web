@@ -35,8 +35,8 @@ if(!$allowed) {
 			
 			<div id="divfade" >
 				<span class="notice">
-	          <p class="success"><strong>Notice!</strong> will fade</p>
-	        </span>
+          <p class="success"><strong>Notice!</strong> will fade</p>
+        </span>
 			</div>
 			
 		<div>

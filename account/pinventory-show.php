@@ -19,7 +19,7 @@
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON products.brand_model = brand_models.id 
 																		LEFT OUTER JOIN users ON products.person_in_charge = users.id
 																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id
-																		LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
+																		LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = products.unit
 																		LEFT OUTER JOIN lookup_status ON lookup_status.id = products.status'
 	  ));
   }

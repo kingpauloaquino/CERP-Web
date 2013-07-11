@@ -164,6 +164,8 @@
       <form id="form-request" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" >
       	<input type="hidden" name="action" value="add_material_request"/>
       	<input type="hidden" name="request_type" value="171"/>
+      	<input type="hidden" name="batch_no" value=""/>
+      	<input type="hidden" name="status" value="11"/>
       	<div id="model-materials-request" style="display: none;">
 		      <table>
              <tr>
@@ -279,6 +281,8 @@
 	    this.live('click', function(event) {
 	    	event.preventDefault(); 
 	    	var model = $(this).attr('model');
+	    	
+	    	var qty_buffer = 0.05;
 	    	var prod_qty = parseFloat($(this).attr('prod_qty'));
 	    	var prod_cp = parseFloat($(this).attr('prod_cp')); 
 	    	var est_days = Math.round(parseFloat(prod_qty / prod_cp));
@@ -288,6 +292,7 @@
 	    	$('#current_model').val(model);
 	    	$('#current_pid').val($(this).attr('pid'));
 	    	
+	    	prod_qty = (prod_qty * qty_buffer) + prod_qty;
 	    	var data = { 
 		    	"url":"/populate/product_parts.php?pid="+$(this).attr('pid')+"&qty="+prod_qty,
 		      "limit":"15",
@@ -312,8 +317,12 @@
 	    this.live('click', function(event) {
 	    	event.preventDefault(); 
 	    	
+	    	var qty_buffer = 0.05;
+	    	var prod_qty = parseFloat($('.prd-plan-qty').val().replace(/,/g, ''), 10);
+	    	prod_qty = (prod_qty * qty_buffer) + prod_qty;
+	    	
 	    	var data = { 
-		    	"url":"/populate/product_parts.php?pid="+$('#current_pid').val()+"&qty="+parseInt($('.prd-plan-qty').val().replace(/,/g, ''), 10), 
+		    	"url":"/populate/product_parts.php?pid="+$('#current_pid').val()+"&qty="+prod_qty, 
 		      "limit":"15",
 					"data_key":"product_parts",
 					"row_template":"row_template_product_parts_request",
@@ -332,16 +341,20 @@
 	  $.fn.set_prod_days = function() {
 	  	$()
 	    this.keyup(function(){
+				$('#prod-qty').val('');
 	    	var tb = $(this);
 	    	var prod_days = parseInt($(tb).val()); 
 	    	$('#product-materials-request').find('.request-quantity').each(function(){
+	    		
+	    		var qty_buffer = 0.05;
+	    		
 	    		if(prod_days > 0 && !isNaN(prod_days)) {
 	    			var total = prod_days * parseFloat($(this).val()) * parseInt($('#prod-cp').val().replace(/,/g, ''), 10);
-	    	  	$(this).closest('tr').find($('.request-total')).val(total);
+	    	  	$(this).closest('tr').find($('.request-total')).val((total*qty_buffer)+total);
 	    		} else {
 	    			prod_days = 0;
 	    			var total = prod_days * parseFloat($(this).val()) * parseInt($('#prod-cp').val().replace(/,/g, ''), 10);
-	    	  	$(this).closest('tr').find($('.request-total')).val(total);
+	    	  	$(this).closest('tr').find($('.request-total')).val((total*qty_buffer)+total);
 	    		}
 	    	})
 	    })
@@ -350,13 +363,16 @@
 	  $.fn.set_prod_qty = function() {
 	  	$()
 	    this.keyup(function(){
+	    	$('#prod-days').val('');
 	    	var tb = $(this);
 	    	var prod_qty = parseInt($(tb).val()); 
+	    	var qty_buffer = 0.05;
+
 	    	$('#product-materials-request').find('.request-quantity').each(function(){
 	    		if(prod_qty <= parseInt($('#prod-cp').val().replace(/,/g, ''), 10)) {
 		    		if(prod_qty > 0 && !isNaN(prod_qty)) {
 		    			var total = prod_qty * parseFloat($(this).val());
-		    	  	$(this).closest('tr').find($('.request-total')).val(total);
+		    	  	$(this).closest('tr').find($('.request-total')).val((total*qty_buffer)+total);
 		    		}	
 	    		}
 	    	})

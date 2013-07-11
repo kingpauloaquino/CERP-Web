@@ -18,7 +18,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	               								purchase_order_items.quantity AS quantity, purchase_order_items.remarks AS remarks, "P/O" AS order_type',
 	               'joins' => 'INNER JOIN products ON products.id=purchase_order_items.item_id
 															INNER JOIN item_costs ON item_costs.item_id = products.id
-															INNER JOIN lookups ON lookups.id = item_costs.unit',
+															INNER JOIN lookups ON lookups.id = products.unit',
 	               'conditions' => 'item_costs.item_type="PRD" AND purchase_order_items.item_type="PRD" AND purchase_order_items.purchase_order_id='.$_GET['pid'],
 						    'order' 	=> $order .' '.$sort,
 	    					'limit'		=> $startpoint .', '.$limit,
@@ -30,7 +30,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 																work_order_items.remarks AS remarks, "W/O" AS order_type',
 	               'joins' => 'INNER JOIN products ON products.id=work_order_items.product_id
 															INNER JOIN item_costs ON item_costs.item_id = products.id
-															INNER JOIN lookups ON lookups.id = item_costs.unit',
+															INNER JOIN lookups ON lookups.id = products.unit',
 	               'conditions' => 'item_costs.item_type="PRD" AND work_order_items.work_order_id='.$_GET['pid'],
 						    'order' 	=> $order .' '.$sort,
 	    					'limit'		=> $startpoint .', '.$limit,

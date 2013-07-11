@@ -59,7 +59,7 @@
 	           </tr>     
 	           <tr>
 	              <td>Status:</td><td><input type="text" value="<?php echo $products['status'] ?>" class="text-field" disabled/></td>
-	              <td></td><td></td>
+	              <td>Unit:</td><td><input type="text" value="<?php echo $products['unit'] ?>" class="text-field" disabled/></td>
 	           </tr>            
 	           <tr>
 	              <td>Description:</td>
@@ -83,13 +83,9 @@
 	              </td>
 	           </tr>
 	           <tr>
-	              <td width="150">Currency:</td><td><input type="text" value="<?php echo $products['currency'] ?>" class="text-field" disabled/></td>
+	              <td width="150">Currency:</td><td width="310"><input type="text" value="<?php echo $products['currency'] ?>" class="text-field" disabled/></td>
 	              <td width="150">Cost:</td><td><input type="text" value="<?php echo $products['cost'] ?>" class="text-field  text-right" disabled/></td>
-	           </tr>
-	           <tr>
-	              <td width="150">Unit:</td><td width="310"><input type="text" value="<?php echo $products['unit'] ?>" class="text-field" disabled/></td>
-	              <td></td>
-	           </tr>    
+	           </tr> 
 	           <tr><td height="5" colspan="99"></td></tr>
 	        </table>	
 				</div>

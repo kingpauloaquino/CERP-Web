@@ -17,7 +17,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
                							lookups.description AS unit, item_costs.cost AS item_price, work_order_items.work_order_id',
                'joins' => 'INNER JOIN products ON products.id = work_order_items.product_id
 														INNER JOIN item_costs ON item_costs.item_id = products.id AND item_costs.item_type = "PRD"
-														INNER JOIN lookups ON lookups.id = item_costs.unit',
+														INNER JOIN lookups ON lookups.id = products.unit',
                'conditions' => 'work_order_items.work_order_id='.$_GET['wid'],
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,

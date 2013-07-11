@@ -17,7 +17,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
                							order_items.item_type AS item_type, order_items.quantity AS quantity, order_items.remarks AS remarks',
                'joins' => 'INNER JOIN products ON products.id=order_items.item_id
 														INNER JOIN item_costs ON item_costs.item_id = products.id
-														INNER JOIN lookups ON lookups.id = item_costs.unit',
+														INNER JOIN lookups ON lookups.id = products.unit',
                'conditions' => 'item_costs.item_type="PRD" AND order_items.item_type="PRD" AND order_items.order_id='.$_GET['oid'].'
                							UNION SELECT
 			  	  								order_items.id, materials.id AS item_id, materials.material_code AS code, materials.description, item_costs.cost AS item_price, lookups.code AS unit, 
@@ -25,7 +25,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 			  	  								FROM order_items
 			  	  								INNER JOIN materials ON materials.id=order_items.item_id
 														INNER JOIN item_costs ON item_costs.item_id = materials.id
-														INNER JOIN lookups ON lookups.id = item_costs.unit
+														INNER JOIN lookups ON lookups.id = materials.unit
 														WHERE item_costs.item_type="MAT" AND order_items.item_type="MAT" AND order_items.order_id='.$_GET['oid'],
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,

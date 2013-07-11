@@ -43,7 +43,7 @@
 	              <td width="150">Material Code:</td><td width="310"><input type="text" id="mat-code" name="material[material_code]" class="text-field magenta" autocomplete="off" notice="material_codestatus" required />
 	              	<span id="material_codestatus" class="warning"></span>
 	              </td>
-	              <td width="150"></td>
+	              <td width="150"></td><td></td>
 	           </tr>
 	           <tr>
 	              <td>Barcode:</td><td><input type="text" id="mat-barcode" name="material[bar_code]" class="text-field" autocomplete="false" notice="barcodestatus" required />
@@ -62,17 +62,21 @@
 	           <tr>
 	              <td>Address:</td><td><input type="text"  class="text-field" />
 	              </td>
+	              <td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', '', 'material[unit]', 'material[unit]', '', 'width:192px;'); ?></td>
+	           </tr>   
+	           <tr>
 	              <td>Defect Rate %:</td><td><input id="material[defect_rate]" name="material[defect_rate]" type="text"  class="text-field text-right decimal"/>
-	           </tr>              
+	              <td>Sorting %:</td><td><input type="text" id="materials[sorting_percentage]" name="materials[sorting_percentage]" class="text-field text-right decimal" /></td>
+	           </tr>   
+	           <tr>
+	              <td>Min. Stock Qty.:</td><td><input id="msq" name="material[msq]" type="text" class="text-field text-right decimal" required/></td>
+	              <td></td><td></td>
+	           </tr>            
 	           <tr>
 	              <td>Description:</td>
 	              <td colspan="99">
 	                <input type="text" id="mat-description" name="material[description]" class="text-field" style="width:645px" />
 	              </td>
-	           </tr>    
-	           <tr>
-	              <td>Min. Stock Qty.:</td><td><input id="msq" name="material[msq]" type="text" class="text-field text-right decimal" required/></td>
-	              <td></td>
 	           </tr>          
 	           <!-- <tr>
 	              <td>Keywords:</td>
@@ -98,12 +102,8 @@
 	           		<td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" class="text-field text-right decimal" required/></td>
 	           </tr>
 	           <tr>
-	              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
-	              <td>MOQ:</td><td><input type="text" id="item_cost[moq]" name="item_cost[moq]" class="text-field text-right numeric" required/></td>
-	           </tr>    
-	           <tr>
 	              <td width="150">Transportation Rate %:</td><td width="310"><input type="text" id="item_cost[transportation_rate]" name="item_cost[transportation_rate]" class="text-field text-right decimal" /></td>
-	              <td>Sorting %:</td><td><input type="text" id="materials[sorting_percentage]" name="materials[sorting_percentage]" class="text-field text-right decimal" /></td>
+	              <td>MOQ:</td><td><input type="text" id="item_cost[moq]" name="item_cost[moq]" class="text-field text-right numeric" required/></td>
 	           </tr>    
 	           <tr><td height="5" colspan="99"></td></tr>
 	        </table>	

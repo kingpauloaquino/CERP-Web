@@ -1,6 +1,6 @@
 <?php
   /* Module: Material Requests  */
-  $capability_key = 'show_material_requests';
+  $capability_key = 'material_requests_issue';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -24,9 +24,9 @@
 
         <div id="content">
           <form id="request-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
-          	<input type="hidden" id="request-status" value="<?php echo $purchase['status']?>"/>
-          	<input type="hidden" id="purchase-aprroved-by" value="<?php echo $purchase['approved_by']?>"/>
-          	<input type="hidden" id="user-level" value="<?php echo $_SESSION['user']['level']?>"/>
+          	<input type="hidden" name="action" value="issue_materials" />
+          	<input type="hidden" name="rid" value="<?php echo $_GET['rid'] ?>" />
+          	<input type="hidden" name="completion_status" value="24" />
           	
              <!-- BOF TEXTFIELDS -->
              <div>
@@ -58,10 +58,12 @@
                    <tr>
                      <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all" disabled/></td>
                      <td width="30" class="border-right text-center">No.</td>
-                     <td class="border-right">Material</td>
-                 			<td width="130" class="border-right text-center">Type</td>
-                 			<td width="70" class="border-right text-center">Unit</td>
+                     <td width="120" class="border-right">Material</td>
+                     <td class="border-right">Description</td>
+                 			<td width="100" class="border-right text-center">Type</td>
+                 			<td width="50" class="border-right text-center">Unit</td>
                      <td width="70" class="border-right text-center">Qty</td>
+                     <td width="70" class="border-right text-center">W/H Stock</td>
                    </tr>
                  </thead>
                  <tbody id="request-items"></tbody>
@@ -81,17 +83,22 @@
                    <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $request['remarks']; ?></textarea></td></tr>
                 </table>
              </div>
-             
+            
+            <div id="div-notice" style="display: none">
+	            <span class="notice">
+			          <p class="info"><strong>Notice: </strong>Unable to issue until warehouse stock is replenished.</p>
+		        	</span>	
+            </div> 
+						
+	        	
              <div class="field-command">
            	   <div class="text-post-status">
            	     <strong></strong>
 									
                </div>
-               <?php if($request['status'] == "Publish" && $request['completion_status'] != "Issued") { ?>
-               <input type="button" value="Issue" class="btn redirect-to" rel="<?php echo host('production-material-requests-issue.php?rid='. $request['id']); ?>" />
-           	   <?php } elseif($request['status'] != "Publish") { ?>
-           	   	<input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('production-material-requests-edit.php?rid='. $request['id']); ?>" />
-           	   	<?php } ?>
+               <?php if($request['completion_status'] != "Issued") { ?>
+               <input id="btn-submit" type="submit" value="Issue" class="btn"/>
+           	   <?php } ?>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('production-material-requests.php'); ?>"/>
              </div>
           </form>
@@ -101,27 +108,33 @@
        <script>
        	$(function() {
 			  	var data = { 
-			    	"url":"/populate/material-request-items.php?rid=<?php echo $request['id']; ?>",
+			    	"url":"/populate/material-requests-issue.php?rid=<?php echo $request['id']; ?>",
 			      "limit":"50",
-						"data_key":"material_request_items",
-						"row_template":"row_template_material_request_items_read_only"
+						"data_key":"material_request_issue",
+						"row_template":"row_template_material_request_issuance"
 					}
 				
 					$('#grid-request-items').grid(data);
+					
+					$('#btn-submit').click(function(e){
+						e.preventDefault();
+						var ctr = 0;
+						$('#request-items > tr').each(function(){
+							if($(this).find('.wh-stock').hasClass('disable-issue')) {
+								ctr++;
+							}
+						});
+						if(ctr>0) {
+							$('#div-notice').show('slow');
+						} else {
+							$('#div-notice').hide('slow');
+							// submit
+							$.post(document.URL, $($('#request-form')).serialize(), function(data) {
+							  window.location = document.URL;
+							});
+						}
+					});
 			  }) 
-			  
-			  $.fn.approve = function() {
-			  	this.click(function(e) {
-			  		e.preventDefault();
-						var form = $(this).attr('href');
-						
-						$.post(document.URL, $(form).serialize(), function(data) {
-			      }).done(function(data){
-			      	$('#btn-approval').hide(); 
-			      	window.location = document.URL;
-			      });	
-			  	})
-			  }
       </script>
 
 <?php }

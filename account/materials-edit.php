@@ -16,7 +16,7 @@
 				  			'columns' 		=> 'materials.*', 
 				  	    'conditions' 	=> 'materials.id = '.$_GET['mid'] ));	
 								
-		$item_costs = $DB->Find('item_costs', array('columns' => 'supplier, unit, currency, cost, transportation_rate', 
+		$item_costs = $DB->Find('item_costs', array('columns' => 'supplier, currency, cost, transportation_rate', 
   							'conditions' => 'item_id = '.$_GET['mid'].' AND item_type="MAT"'));  
 		
 		$address = $DB->Find('location_address_items', array(
@@ -96,18 +96,22 @@
 	              <td>Address:</td><td><input type="text"  value="<?php echo $address['address'] ?>" class="text-field" />
 	          			<?php echo $linkto = ($address['add_id']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$address['add_id'].'">change</a>' : '' ?>
 	              </td>
-	              <td>Defect Rate %:</td><td><input id="material[defect_rate]" name="material[defect_rate]" type="text" value="<?php echo ($materials['defect_rate'] * 100) ?>" class="text-field text-right"/></td>
-	           </tr>             
+	              <td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', $materials['unit'], 'material[unit]', 'material[unit]', '', 'width:192px;'); ?></td>
+						 </tr>     
+	           <tr>
+	           	<td>Defect Rate %:</td><td><input id="material[defect_rate]" name="material[defect_rate]" type="text" value="<?php echo ($materials['defect_rate'] * 100) ?>" class="text-field text-right"/></td>
+	           	<td>Sorting %</td><td><input id="material[defect_rate]" name="material[sorting_percentage]" type="text" value="<?php echo ($materials['sorting_percentage'] * 100) ?>" class="text-field text-right"/></td>
+	           </tr> 
+	           <tr>
+	              <td>Min. Stock Qty.:</td><td><input id="material[msq]" name="material[msq]" type="text" value="<?php echo $materials['msq'] ?>" class="text-field text-right numeric"/></td>
+	              <td></td><td></td>
+	           </tr>          
 	           <tr>
 	              <td>Description:</td>
 	              <td colspan="99">
 	                <input type="text" id="material[description]" name="material[description]" value="<?php echo $materials['description'] ?>" class="text-field" style="width:645px" />
 	              </td>
-	           </tr>    
-	           <tr>
-	              <td>Min. Stock Qty.:</td><td><input id="material[msq]" name="material[msq]" type="text" value="<?php echo $materials['msq'] ?>" class="text-field text-right numeric"/></td>
-	              <td></td>
-	           </tr>  
+	           </tr>   
 	           <tr><td height="5" colspan="99"></td></tr>
 	        </table>	
 				</div>
@@ -119,7 +123,6 @@
 	        		$costs = $DB->Get('materials', array('columns' => 'item_costs.*', 
 			 																				'joins' => 'INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
 																													INNER JOIN suppliers ON suppliers.id = item_costs.supplier
-																													INNER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
 																													INNER JOIN lookups AS lookups2 ON lookups2.id = item_costs.currency',
 				 																			'conditions' => 'materials.id = '.$_GET['mid']));
 							foreach($costs as $cost) {
@@ -136,13 +139,10 @@
 		              <td width="150">Cost:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][cost]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][cost]' ?>" value="<?php echo $cost['cost'] ?>" class="text-field text-right" /></td>
 		           </tr>
 		           <tr>
-		              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $cost['unit'], 'item_cost['.$cost['id'].'][unit]', 'item_cost['.$cost['id'].'][unit]', '', 'width:192px;'); ?></td>
-		              <td>MOQ:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" value="<?php echo $cost['moq'] ?>" class="text-field text-right" /></td>
-		           </tr>    
-		           <tr>
 		              <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" value="<?php echo ($cost['transportation_rate'] * 100) ?>" class="text-field text-right" /></td>
-		              <td>Sorting %</td><td><input id="material[defect_rate]" name="material[sorting_percentage]" type="text" value="<?php echo ($materials['sorting_percentage'] * 100) ?>" class="text-field text-right"/></td>
-		           </tr>   
+		              <td>MOQ:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" value="<?php echo $cost['moq'] ?>" class="text-field text-right" /></td>
+		              <td></td><td></td>
+		           </tr>    
 		           <tr><td height="5" colspan="99"></td></tr>
 							<?php
 							}

@@ -91,7 +91,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		if(isset($base_id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$base_id); }
 		break;
 		
-	case 'edit_material':
+	case 'edit_material': 
 		if(isset($_POST['material']['defect_rate'])) {
 			$_POST['material']['defect_rate'] = $_POST['material']['defect_rate'] / 100;
 		}
@@ -810,14 +810,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$Posts->DeleteLookup(array('conditions' => 'id='.$_POST['lookup-id-remove']));		
 		break;
 	
-	case 'add_material_request':
-		$rid = $Posts->AddMaterialRequest(array('request_type' => $_POST['request_type'], 
-																'batch_no' => NULL,
+	case 'add_material_request': 
+		$rid = $Posts->AddMaterialRequest(array(
+																'request_type' => $_POST['request_type'], 
+																'batch_no' => $_POST['batch_no'],
 																'requested_date' => date('Y-m-d'),
 																'requested_by' => $_SESSION['user']['id'],
 																'expected_date' => $_POST['expected_date'],
 																'received_date' => NULL,
 																'received_by' => NULL,
+																'status' => $_POST['status'],
 																'remarks' => $_POST['remarks']
 																));
 		
@@ -826,9 +828,41 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			$item = array('request_id' => $rid, 'material_id' => $req['mid'], 'qty' => $req['total']);
 			$Posts->AddMaterialRequestItem($item);
 		}
+		
+		// Add to Notifications
+		$Posts->AddNotification(array(
+																'type' => 161, // Warehouse notification 
+																'title' => 'Material Request',
+																'remarks' => 'Material Request for production',
+																'url' => 'production-material-requests-show.php?rid='.$rid,
+																));
+		
+		
+		if(isset($_POST['redirect'])) redirect_to($_POST['redirect'].'?rid='.$rid);
 		break;
-	
-  } // close switch
+		
+	case 'edit_material_request':
+		$Posts->EditMaterialRequest(array('variables'=>array('batch_no' => $_POST['batch_no'], 
+																													'expected_date' => date('Y-m-d', strtotime($_POST['expected_date'])),
+																													'requested_date' => date('Y-m-d', strtotime($_POST['requested_date'])),
+																													'remarks' => $_POST['remarks'])
+																			, 'conditions' => 'id='.$_POST['rid']));
+																			
+		$DB->DeleteRecord('material_request_items', array('conditions' => 'request_id='.$_POST['rid']));
+		
+		$requests = $_POST['request'];
+		foreach($requests as $req) {
+			$item = array('request_id' => $_POST['rid'], 'material_id' => $req['mid'], 'qty' => $req['total']);
+			$Posts->AddMaterialRequestItem($item);
+		}
+		
+		redirect_to($Capabilities->All['show_material_requests']['url'].'?rid='.$_POST['rid']);
+		break;
+
+	case 'issue_materials':
+		$Posts->EditMaterialRequest(array('variables'=>array('completion_status' => $_POST['completion_status']), 'conditions' => 'id='.$_POST['rid']));
+	break;
+	} // close switch
 
   
 }
@@ -895,9 +929,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	    <li><a href="purchase-orders.php">Purchase Orders</a></li>
         	    <li><a href="work-orders.php">Work Orders</a></li>
         	    <li><a href="plan-orders.php">Plan Orders</a></li>
-        	    <li><a href="plan-shipment-calendar.php">Shipment Plan Calendar</a></li>
         	    <li><a href="plan-production-calendar.php">Production Plan Calendar</a></li>
         	    <li><a href="plan-stock-calendar.php">Stock Plan Calendar</a></li>
+        	    <li><a href="plan-shipment-calendar.php">Shipment Plan Calendar</a></li>
         	    <li><a href="material-plan.php">Material Plan</a></li>
         	  </ul>
         	</div>

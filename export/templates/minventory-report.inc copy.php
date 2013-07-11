@@ -70,7 +70,7 @@ require('../include/general.class.php');
 									) AS wh2 ON wh2.item_id = m.id
 								INNER JOIN item_classifications ON m.material_classification = item_classifications.id
 								INNER JOIN item_costs ON item_costs.item_id = m.id AND item_costs.item_type = "MAT"
-								INNER JOIN lookups ON lookups.id = item_costs.unit
+								INNER JOIN lookups ON lookups.id = m.unit
 								WHERE m.id < 10
 								GROUP BY m.id';
 			$result = $mysqli->query($query);

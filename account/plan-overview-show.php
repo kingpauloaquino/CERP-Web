@@ -19,98 +19,276 @@
 		</div>
 
     <div id="content">
-      <form id="form-name" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
+      <form id="form-name" action="<?php host($Capabilities->GetUrl()) ?>" method="POST">
       	<input type="hidden" id="active_year" value="<?php echo $active_year?>"/>
+      	
 	    	<div style="min-width:400px; width:auto; height:300px; margin:5px; padding:4px; border:solid 1px #eee">
 					<div id="chart" style="min-width: 400px; height: 300px; margin: 0 auto"></div>
 				</div>
       	<br/>
-				<div id="grid-overview" class="grid jq-grid" style="min-height:146px;">
-					<table cellspacing="0" cellpadding="0">
-						<thead>
-							<tr>
-								<td colspan="2" class="border-right text-center">CRESC</td>
-								<td width="70" class="border-right text-center">Prev</td>
-								<td width="60" class="border-right text-center">Jan</td>
-								<td width="60" class="border-right text-center">Feb</td>
-								<td width="60" class="border-right text-center">Mar</td>
-								<td width="60" class="border-right text-center">Apr</td>
-								<td width="60" class="border-right text-center">May</td>
-								<td width="60" class="border-right text-center">Jun</td>
-								<td width="60" class="border-right text-center">Jul</td>
-								<td width="60" class="border-right text-center">Aug</td>
-								<td width="60" class="border-right text-center">Sep</td>
-								<td width="60" class="border-right text-center">Oct</td>
-								<td width="60" class="border-right text-center">Nov</td>
-								<td width="60" class="border-right text-center">Dec</td>
-								<td width="70" class="border-right text-center">Month Lap</td>
-								<td width="80" class="border-right text-center">Total</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<?php
-									$shipment_all_plan = $DB->Find('shipment_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
-									$production_all_plan = $DB->Find('shipment_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
-									$stock_all_plan = $DB->Find('shipment_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
-								?>
-								<td rowspan="3" class="border-right text-center">Ship</td>
-								<td class="border-right text-center">Plan</td>
-								<td class="border-right text-right numbers">0</td>
-								<td class="border-right text-right numbers shipment-plan-jan"><?php echo $shipment_all_plan['jan']?></td>
-								<td class="border-right text-right numbers shipment-plan-feb"><?php echo $shipment_all_plan['feb']?></td>
-								<td class="border-right text-right numbers shipment-plan-mar"><?php echo $shipment_all_plan['mar']?></td>
-								<td class="border-right text-right numbers shipment-plan-apr"><?php echo $shipment_all_plan['apr']?></td>
-								<td class="border-right text-right numbers shipment-plan-may"><?php echo $shipment_all_plan['may']?></td>
-								<td class="border-right text-right numbers shipment-plan-jun"><?php echo $shipment_all_plan['jun']?></td>
-								<td class="border-right text-right numbers shipment-plan-jul"><?php echo $shipment_all_plan['jul']?></td>
-								<td class="border-right text-right numbers shipment-plan-aug"><?php echo $shipment_all_plan['aug']?></td>
-								<td class="border-right text-right numbers shipment-plan-sep"><?php echo $shipment_all_plan['sep']?></td>
-								<td class="border-right text-right numbers shipment-plan-oct"><?php echo $shipment_all_plan['oct']?></td>
-								<td class="border-right text-right numbers shipment-plan-nov"><?php echo $shipment_all_plan['nov']?></td>
-								<td class="border-right text-right numbers shipment-plan-dec"><?php echo $shipment_all_plan['dece']?></td>
-								<td class="border-right text-right numbers">0</td>
-								<td class="border-right text-right numbers"><?php echo $shipment_all_plan['total_qty']?></td>
-							</tr>	
-							<tr>
-								<td class="border-right text-center">Actual</td>
-								<td class="border-right text-right numbers">0</td>
-								<td class="border-right text-right numbers production-plan-jan"><?php echo $production_all_plan['jan']?></td>
-								<td class="border-right text-right numbers production-plan-feb"><?php echo $production_all_plan['feb']?></td>
-								<td class="border-right text-right numbers production-plan-mar"><?php echo $production_all_plan['mar']?></td>
-								<td class="border-right text-right numbers production-plan-apr"><?php echo $production_all_plan['apr']?></td>
-								<td class="border-right text-right numbers production-plan-may"><?php echo $production_all_plan['may']?></td>
-								<td class="border-right text-right numbers production-plan-jun"><?php echo $production_all_plan['jun']?></td>
-								<td class="border-right text-right numbers production-plan-jul"><?php echo $production_all_plan['jul']?></td>
-								<td class="border-right text-right numbers production-plan-aug"><?php echo $production_all_plan['aug']?></td>
-								<td class="border-right text-right numbers production-plan-sep"><?php echo $production_all_plan['sep']?></td>
-								<td class="border-right text-right numbers production-plan-oct"><?php echo $production_all_plan['oct']?></td>
-								<td class="border-right text-right numbers production-plan-nov"><?php echo $production_all_plan['nov']?></td>
-								<td class="border-right text-right numbers production-plan-dec"><?php echo $production_all_plan['dece']?></td>
-								<td class="border-right text-right numbers">0</td>
-								<td class="border-right text-right numbers"><?php echo $production_all_plan['total_qty']?></td>
-							</tr>	
-							<tr>
-								<td class="border-right text-center">%</td>
-								<td class="border-right text-right numbers">0</td>
-								<td class="border-right text-right numbers stock-plan-jan"><?php echo $stock_all_plan['jan']?></td>
-								<td class="border-right text-right numbers stock-plan-feb"><?php echo $stock_all_plan['feb']?></td>
-								<td class="border-right text-right numbers stock-plan-mar"><?php echo $stock_all_plan['mar']?></td>
-								<td class="border-right text-right numbers stock-plan-apr"><?php echo $stock_all_plan['apr']?></td>
-								<td class="border-right text-right numbers stock-plan-may"><?php echo $stock_all_plan['may']?></td>
-								<td class="border-right text-right numbers stock-plan-jun"><?php echo $stock_all_plan['jun']?></td>
-								<td class="border-right text-right numbers stock-plan-jul"><?php echo $stock_all_plan['jul']?></td>
-								<td class="border-right text-right numbers stock-plan-aug"><?php echo $stock_all_plan['aug']?></td>
-								<td class="border-right text-right numbers stock-plan-sep"><?php echo $stock_all_plan['sep']?></td>
-								<td class="border-right text-right numbers stock-plan-oct"><?php echo $stock_all_plan['oct']?></td>
-								<td class="border-right text-right numbers stock-plan-nov"><?php echo $stock_all_plan['nov']?></td>
-								<td class="border-right text-right numbers stock-plan-dec"><?php echo $stock_all_plan['dece']?></td>
-								<td class="border-right text-right numbers">0</td>
-								<td class="border-right text-right numbers"><?php echo $stock_all_plan['total_qty']?></td>
-							</tr>	
-						</tbody>
-					</table>
-				</div>
+      	
+      	<div id="div-ship" class="form-container">
+					<h3 class="form-title">Shipment</h3>
+	      	<div id="grid-overview" class="grid jq-grid" style="min-height:146px;">
+						<table cellspacing="0" cellpadding="0">
+							<thead>
+								<tr>
+									<td class="border-right text-center">CRESC</td>
+									<td width="70" class="border-right text-center">Prev</td>
+									<td width="60" class="border-right text-center">Jan</td>
+									<td width="60" class="border-right text-center">Feb</td>
+									<td width="60" class="border-right text-center">Mar</td>
+									<td width="60" class="border-right text-center">Apr</td>
+									<td width="60" class="border-right text-center">May</td>
+									<td width="60" class="border-right text-center">Jun</td>
+									<td width="60" class="border-right text-center">Jul</td>
+									<td width="60" class="border-right text-center">Aug</td>
+									<td width="60" class="border-right text-center">Sep</td>
+									<td width="60" class="border-right text-center">Oct</td>
+									<td width="60" class="border-right text-center">Nov</td>
+									<td width="60" class="border-right text-center">Dec</td>
+									<td width="70" class="border-right text-center">Month Lap</td>
+									<td width="80" class="border-right text-center">Total</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<?php
+										$shipment_all_plan = $DB->Find('shipment_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
+									?>
+									<td class="border-right text-center">Plan</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers shipment-plan-jan"><?php echo $shipment_all_plan['jan']?></td>
+									<td class="border-right text-right numbers shipment-plan-feb"><?php echo $shipment_all_plan['feb']?></td>
+									<td class="border-right text-right numbers shipment-plan-mar"><?php echo $shipment_all_plan['mar']?></td>
+									<td class="border-right text-right numbers shipment-plan-apr"><?php echo $shipment_all_plan['apr']?></td>
+									<td class="border-right text-right numbers shipment-plan-may"><?php echo $shipment_all_plan['may']?></td>
+									<td class="border-right text-right numbers shipment-plan-jun"><?php echo $shipment_all_plan['jun']?></td>
+									<td class="border-right text-right numbers shipment-plan-jul"><?php echo $shipment_all_plan['jul']?></td>
+									<td class="border-right text-right numbers shipment-plan-aug"><?php echo $shipment_all_plan['aug']?></td>
+									<td class="border-right text-right numbers shipment-plan-sep"><?php echo $shipment_all_plan['sep']?></td>
+									<td class="border-right text-right numbers shipment-plan-oct"><?php echo $shipment_all_plan['oct']?></td>
+									<td class="border-right text-right numbers shipment-plan-nov"><?php echo $shipment_all_plan['nov']?></td>
+									<td class="border-right text-right numbers shipment-plan-dec"><?php echo $shipment_all_plan['dece']?></td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers"><?php echo $shipment_all_plan['total_qty']?></td>
+								</tr>	
+								<tr>
+									<td class="border-right text-center">Actual</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+								</tr>	
+								<tr>
+									<td class="border-right text-center">%</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+								</tr>	
+							</tbody>
+						</table>
+					</div>	
+      	</div>
+      	<br/>
+      	<div id="div-prod" class="form-container">
+					<h3 class="form-title">Production</h3>
+	      	<div id="grid-overview" class="grid jq-grid" style="min-height:146px;">
+						<table cellspacing="0" cellpadding="0">
+							<thead>
+								<tr>
+									<td class="border-right text-center">CRESC</td>
+									<td width="70" class="border-right text-center">Prev</td>
+									<td width="60" class="border-right text-center">Jan</td>
+									<td width="60" class="border-right text-center">Feb</td>
+									<td width="60" class="border-right text-center">Mar</td>
+									<td width="60" class="border-right text-center">Apr</td>
+									<td width="60" class="border-right text-center">May</td>
+									<td width="60" class="border-right text-center">Jun</td>
+									<td width="60" class="border-right text-center">Jul</td>
+									<td width="60" class="border-right text-center">Aug</td>
+									<td width="60" class="border-right text-center">Sep</td>
+									<td width="60" class="border-right text-center">Oct</td>
+									<td width="60" class="border-right text-center">Nov</td>
+									<td width="60" class="border-right text-center">Dec</td>
+									<td width="70" class="border-right text-center">Month Lap</td>
+									<td width="80" class="border-right text-center">Total</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<?php
+										$production_all_plan = $DB->Find('production_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
+										$stock_all_plan = $DB->Find('shipment_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
+									?>
+									<td class="border-right text-center">Plan</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers production-plan-jan"><?php echo $production_all_plan['jan']?></td>
+									<td class="border-right text-right numbers production-plan-feb"><?php echo $production_all_plan['feb']?></td>
+									<td class="border-right text-right numbers production-plan-mar"><?php echo $production_all_plan['mar']?></td>
+									<td class="border-right text-right numbers production-plan-apr"><?php echo $production_all_plan['apr']?></td>
+									<td class="border-right text-right numbers production-plan-may"><?php echo $production_all_plan['may']?></td>
+									<td class="border-right text-right numbers production-plan-jun"><?php echo $production_all_plan['jun']?></td>
+									<td class="border-right text-right numbers production-plan-jul"><?php echo $production_all_plan['jul']?></td>
+									<td class="border-right text-right numbers production-plan-aug"><?php echo $production_all_plan['aug']?></td>
+									<td class="border-right text-right numbers production-plan-sep"><?php echo $production_all_plan['sep']?></td>
+									<td class="border-right text-right numbers production-plan-oct"><?php echo $production_all_plan['oct']?></td>
+									<td class="border-right text-right numbers production-plan-nov"><?php echo $production_all_plan['nov']?></td>
+									<td class="border-right text-right numbers production-plan-dec"><?php echo $production_all_plan['dece']?></td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers"><?php echo $production_all_plan['total_qty']?></td>
+								</tr>	
+								<tr>
+									<td class="border-right text-center">Actual</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+								</tr>	
+								<tr>
+									<td class="border-right text-center">%</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+								</tr>	
+							</tbody>
+						</table>
+					</div>	
+      	</div>
+      	<br/>
+      	<div id="div-stock" class="form-container">
+					<h3 class="form-title">Stock</h3>
+	      	<div id="grid-overview" class="grid jq-grid" style="min-height:146px;">
+						<table cellspacing="0" cellpadding="0">
+							<thead>
+								<tr>
+									<td class="border-right text-center">CRESC</td>
+									<td width="70" class="border-right text-center">Prev</td>
+									<td width="60" class="border-right text-center">Jan</td>
+									<td width="60" class="border-right text-center">Feb</td>
+									<td width="60" class="border-right text-center">Mar</td>
+									<td width="60" class="border-right text-center">Apr</td>
+									<td width="60" class="border-right text-center">May</td>
+									<td width="60" class="border-right text-center">Jun</td>
+									<td width="60" class="border-right text-center">Jul</td>
+									<td width="60" class="border-right text-center">Aug</td>
+									<td width="60" class="border-right text-center">Sep</td>
+									<td width="60" class="border-right text-center">Oct</td>
+									<td width="60" class="border-right text-center">Nov</td>
+									<td width="60" class="border-right text-center">Dec</td>
+									<td width="70" class="border-right text-center">Month Lap</td>
+									<td width="80" class="border-right text-center">Total</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<?php
+										//$stock_all_plan = $DB->Find('shipment_plan_view', array('columns'=> '*', 'conditions'=> 'plan_year='.$active_year));
+									?>
+									<td class="border-right text-center">Plan</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers stock-plan-jan">0</td>
+									<td class="border-right text-right numbers stock-plan-feb">0</td>
+									<td class="border-right text-right numbers stock-plan-mar">0</td>
+									<td class="border-right text-right numbers stock-plan-apr">0</td>
+									<td class="border-right text-right numbers stock-plan-may">0</td>
+									<td class="border-right text-right numbers stock-plan-jun">0</td>
+									<td class="border-right text-right numbers stock-plan-jul">0</td>
+									<td class="border-right text-right numbers stock-plan-aug">0</td>
+									<td class="border-right text-right numbers stock-plan-sep">0</td>
+									<td class="border-right text-right numbers stock-plan-oct">0</td>
+									<td class="border-right text-right numbers stock-plan-nov">0</td>
+									<td class="border-right text-right numbers stock-plan-dec">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td></td>
+								</tr>	
+								<tr>
+									<td class="border-right text-center">Actual</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+								</tr>	
+								<tr>
+									<td class="border-right text-center">%</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+									<td class="border-right text-right numbers">0</td>
+								</tr>	
+							</tbody>
+						</table>
+					</div>	
+      	</div>
+				
       </form>
 		</div>
 	</div>
@@ -215,18 +393,19 @@
     		options.series.push({
     			 name: 'Stock',
             data: [
-            			parseInt($('.stock-plan-jan').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-feb').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-mar').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-apr').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-may').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-jun').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-jul').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-aug').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-sep').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-oct').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-nov').html().replace(/,/g, ''), 10), 
-            			parseInt($('.stock-plan-dec').html().replace(/,/g, ''), 10)
+            			0,0,0,0,0,0,0,0,0,0,0,0
+            			// parseInt($('.stock-plan-jan').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-feb').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-mar').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-apr').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-may').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-jun').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-jul').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-aug').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-sep').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-oct').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-nov').html().replace(/,/g, ''), 10), 
+            			// parseInt($('.stock-plan-dec').html().replace(/,/g, ''), 10)
             			],
             color: '#bfad30'
     		})
@@ -236,8 +415,8 @@
     
 });
 </script>
-<script src="../Highcharts/js/highcharts.js"></script>
-<script src="../Highcharts/js/modules/exporting.js"></script>
+<script src="../include/Highcharts/js/highcharts.js"></script>
+<script src="../include/Highcharts/js/modules/exporting.js"></script>
 
 <?php }
 require('footer.php'); ?>

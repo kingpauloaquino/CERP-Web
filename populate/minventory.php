@@ -26,7 +26,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 														INNER JOIN item_classifications ON materials.material_classification = item_classifications.id
 														INNER JOIN brand_models ON brand_models.id = materials.brand_model
 														INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
-														INNER JOIN lookups ON lookups.id = item_costs.unit',
+														INNER JOIN lookups ON lookups.id = materials.unit',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,

@@ -25,16 +25,15 @@
       </div>
         
       <!-- BOF GridView -->
-      <div id="grid-notifications" class="grid jq-grid">
+      <div id="grid-notifications" class="grid jq-grid" style="min-height: 400px">
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <td class="border-right text-center" width="120"><a class="sort default active up" column="created_at">Date</a></td>
-              <td class="border-right text-center" width="130"><a class="sort" column="type">Type</a></td>
+              <td class="border-right text-center" width="140"><a class="sort default active" column="created_at">Date</a></td>
+              <td class="border-right text-center" width="100"><a class="sort" column="type">Type</a></td>
               <td class="border-right text-center" width="130"><a class="sort" column="title">Title</a></td>
-              <td class="border-right text-center" width="120"><a class="sort" column="value">Parameter</a></td>
               <td class="border-right text-center"><a class="sort" column="remarks">Remarks</a></td>
-              <td class="border-right text-center" width="110"><a class="sort" column="value">Status</a></td>
+              <td class="border-right text-center" width="110"><a class="sort" column="status">Status</a></td>
             </tr>
           </thead>
           <tbody></tbody>
@@ -53,7 +52,9 @@
 			"data_key":"notifications",
 			"row_template":"row_template_notifications",
       "pagination":"#notifications-pagination",
-      "searchable":true
+      "searchable":true,
+      "order":"created_at",
+      "sort":"DESC"
 		}
 	
 		$('#grid-notifications').grid(data);

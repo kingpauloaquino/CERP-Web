@@ -94,7 +94,7 @@
 			  
 			  function loadData() {
 					var data = { 
-			    	"url":"/populate/shipment-plans.php?ctrl_id=<?php echo $_GET['ctrl_id'] ?>&pid=<?php echo $_GET['pid'] ?>",
+			    	"url":"/populate/shipment-plans.php?t=<?php echo $_GET['t'] ?>&ctrl_id=<?php echo $_GET['ctrl_id'] ?>&pid=<?php echo $_GET['pid'] ?>",
 			      "limit":"50",
 						"data_key":"shipment_plans",
 						"row_template":"row_template_plan_po_model_shipments_read_only",

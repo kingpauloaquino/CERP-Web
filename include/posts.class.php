@@ -148,6 +148,7 @@ class Posts {
 		  'sorting_percentage'			=> $params['sorting_percentage'],
 		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] ,
 		  'msq' => $params['msq'], 
+		  'unit' => $params['unit'], 
 		  'created_by' => $_SESSION['user']['id'], 
 		);
     return $this->DB->InsertRecord('materials', $material);
@@ -192,8 +193,7 @@ class Posts {
     $item_cost = array(
 		  'item_id'		=> $params['item_id'],
 		  'item_type'	=> $params['item_type'],
-		  'supplier'	=> $params['supplier'],		  
-		  'unit'			=> $params['unit'],
+		  'supplier'	=> $params['supplier'],		
 		  'currency'	=> $params['currency'],
 		  'cost'			=> $params['cost'],
 		  'moq'				=> $params['moq'],
@@ -220,6 +220,7 @@ class Posts {
 		  'priority'								=> $params['priority'],
 		  'series'									=> $params['series'],	  
 		  'pack_qty'				=> $params['pack_qty'],
+		  'unit'				=> $params['unit'],
 		  'created_by' => $_SESSION['user']['id'], 
 		);
     return $this->DB->InsertRecord('products', $product);
@@ -835,7 +836,8 @@ class Posts {
       'received_date' => date('Y-m-d', strtotime($params['received_date'])),
 		  'received_by' => $params['received_by'],
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
-		  'status'	=> 19
+		  'completion_status'	=> 19,
+		  'status'	=> $params['status']
 		);	
 		
 		if(!isset($params['expected_date'])) unset($req['expected_date']);
@@ -1297,5 +1299,16 @@ class Posts {
 	
 	function DeleteLookup($params) {
     return $this->DB->DeleteRecord('lookups', $params);
+	}
+	
+	function AddNotification($params) {
+		$noti = array(
+  	  'type'	=> $params['type'],
+  	  'title'	=> $params['title'],
+		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
+  	  'url'	=> $params['url'],
+  	  'status'		=> 163, // UNREAD
+		);	
+		return $this->DB->InsertRecord('notifications', $noti);
 	}
 }

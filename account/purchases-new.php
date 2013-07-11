@@ -199,8 +199,6 @@
 			  	}
 					
 			  })
-			  
-				
        
          function row_modal_materials(row) {
            var row_id	= "mat-"+ row['id'];

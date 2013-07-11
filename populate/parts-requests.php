@@ -19,7 +19,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 														production_purchase_order_product_parts.expected_datetime, lookups2.description AS status, production_purchase_order_product_parts.is_requested',
 					    'joins'		=> 'INNER JOIN materials ON materials.id = production_purchase_order_product_parts.material_id
 														LEFT OUTER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT" 
-														LEFT OUTER JOIN lookups ON lookups.id = item_costs.unit
+														LEFT OUTER JOIN lookups ON lookups.id = materials.unit
 														LEFT OUTER JOIN lookups AS lookups2 ON lookups2.id = production_purchase_order_product_parts.status',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,

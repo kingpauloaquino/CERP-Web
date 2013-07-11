@@ -62,7 +62,7 @@
       	<br/>
 				<div class="form-container">
 					<h3 class="form-title">Warehouse Stock <span id="out-of-stock" class="magenta" style="display: none">(Out-of-stock)</span></h3>
-		      <div id="grid-materials" class="grid jq-grid" style="min-height:60px;">
+		      <div id="grid-materials" class="grid jq-grid" style="min-height:100px;">
 	           <table cellspacing="0" cellpadding="0">
 	             <thead>
 	               <tr>
@@ -90,64 +90,21 @@
 	      <br/> 
 				<div class="form-container">
 					<h3 class="form-title">Production Request</h3>
-		      <div class="grid jq-grid">
+		      <div id="grid-requests" class="grid jq-grid" style="min-height: 100px">
 		        <table cellspacing="0" cellpadding="0">
 		          <thead>
 		            <tr>
-		              <td width="3%" class="border-right text-center"><a></a></td>
-		              <td width="8%" class="border-right text-center"><a>P/O No.</a></td>
-		              <td width="10%" class="border-right text-center"><a>Tracking No.</a></td>
-		              <td width="10%" class="border-right text-center"><a>Prod. Lot No</a></td>
-		              <td width="14%" class="border-right text-center"><a>Requested</a></td>
-		              <td width="14%" class="border-right text-center"><a>Expected</a></td>
-		              <td class="border-right text-center"><a>Status</a></td>
-		              <td width="7%" class="border-right text-center"><a>UOM</a></td>
-		              <td width="8%" class="border-right text-center"><a>Pending</a></td>
-		              <td width="8%" class="border-right text-center"><a>Released</a></td>
-		              <td width="8%" class="border-right text-center"><a>Requested</a></td>
+	                 <td width="30" class="border-right text-center">No.</td>
+	                 <td class="border-right text-center">Request Type</td>
+	                 <td width="100" class="border-right text-center">Batch #</td>
+	                 <td width="100" class="border-right text-center">Requested</td>
+	                 <td width="100" class="border-right text-center">Expected</td>
+	                 <td width="140" class="border-right text-center">Terminal</td>
+	                 <td width="70" class="border-right text-center">Status</td>
+	                 <td width="70" class="border-right text-center">Qty</td>
 		            </tr>
 		          </thead>
-		          <tbody>
-		        		<?php
-		        				$requests = $DB->Get('production_purchase_order_product_parts', array(
-								  			'columns' => 'orders.po_number, production_purchase_order_products.lot_no AS prod_lot_no, production_purchase_orders.id AS ppoid,
-																			production_purchase_order_product_parts.tracking_no, production_purchase_order_product_parts.material_id,
-																			production_purchase_order_product_parts.plan_qty, production_purchase_order_product_parts.pending_qty,
-																			production_purchase_order_product_parts.updated_at, lookups.description AS status, production_purchase_orders.order_id AS oid,
-																			production_purchase_order_product_parts.expected_datetime, production_purchase_order_product_parts.is_requested', 
-	  										'joins' => 'INNER JOIN production_purchase_order_products ON production_purchase_order_products.id = production_purchase_order_product_parts.production_purchase_order_product_id
-																		INNER JOIN production_purchase_orders ON production_purchase_orders.id =  production_purchase_order_products.production_purchase_order_id
-																		INNER JOIN orders ON orders.id = production_purchase_orders.order_id
-																		INNER JOIN lookups ON lookups.id = production_purchase_order_product_parts.status',
-								  	    'conditions' => 'production_purchase_order_product_parts.material_id = '.$_GET['id'], 
-								  	    'order' => 'production_purchase_order_product_parts.created_at DESC',
-								  	    ));
-												// status id 149 = production request pending
-										$total_req = 0.0;
-										$ctr = 1;
-		        				foreach ($requests as $req) {
-		        					echo '<tr>';
-											echo '<td class="border-right text-right">'.$ctr.'</td>';
-											echo '<td class="border-right text-center"><a href="production-plan-show.php?ppoid='.$req['ppoid'].'&oid='.$req['oid'].'">'.$req['po_number'].'</a></td>';
-											echo '<td class="border-right text-center"><a href="#">'.$req['tracking_no'].'</a></td>';
-											echo '<td class="border-right text-center"><a href="#">'.$req['prod_lot_no'].'</a></td>';
-											echo '<td class="border-right">'.date("M. d, Y g:i a", strtotime($req['updated_at'])).'</td>';
-											echo '<td class="border-right">'.date("M. d, Y g:i a", strtotime($req['expected_datetime'])).'</td>';
-											echo '<td class="border-right text-center">'.$req['status'].'</td>';
-											echo '<td class="border-right text-center">'.$materials['unit'].'</td>';
-											echo '<td class="border-right text-right">'.trim_decimal($req['pending_qty']).'</td>';
-											echo '<td class="border-right text-right">'.(trim_decimal($req['plan_qty']) - trim_decimal($req['pending_qty'])).'</td>';
-											echo '<td class="border-right text-right">'.trim_decimal($req['plan_qty']).'</td>';
-											$ctr+=1;
-											$total_req += (double)$req['plan_qty'];
-		        					echo '</tr>';
-										}
-		        		?>
-		          	<tr>
-		          		<td class="border-right text-right" colspan="10"><b>Total:</b></td>
-		          		<td class="border-right text-right"><b><?php echo $total_req ?></b></td>
-		          	</tr>
-		          </tbody>
+		          <tbody id="requests"></tbody>
 		        </table>
 					</div>	
 				</div>
@@ -158,14 +115,26 @@
 	
 	<script>
 		$(function() {
-	  	var data = { 
+	  	var data1 = { 
 	    	"url":"/populate/minventory-items.php?id=<?php echo $_GET['id'] ?>",
 	      "limit":"15",
 				"data_key":"minventory_items",
 				"row_template":"row_template_minventory_items_read_only",
 			}
 		
-			$('#grid-materials').grid(data);
+			$('#grid-materials').grid(data1);
+			
+			var data2 = { 
+	    	"url":"/populate/minventory-requests.php?mid=<?php echo $_GET['id'] ?>",
+	      "limit":"15",
+				"data_key":"material_request_items",
+				"row_template":"row_template_minventory_requests",
+				"order":"requested_date",
+				"sort":"ASC"
+			}
+		
+			$('#grid-requests').grid(data2);
+			
 			
 			$(window).load(function(){
 				var total = 0;

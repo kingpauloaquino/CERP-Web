@@ -25,9 +25,10 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 														products.product_code AS code, product_series.series, 
 														SUM(qty) AS ttl, SUM(qty * products.pack_qty) AS ttls',
 							'joins' => 'INNER JOIN item_costs ON item_costs.item_id = shipment_plans.item_id AND item_costs.item_type = shipment_plans.item_type
-														INNER JOIN lookups ON lookups.id = item_costs.unit
+														
 														INNER JOIN lookup_status ON lookup_status.id = shipment_plans.status
 														INNER JOIN products ON products.id = shipment_plans.item_id
+														INNER JOIN lookups ON lookups.id = products.unit
 														INNER JOIN product_series ON product_series.id = products.series',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,

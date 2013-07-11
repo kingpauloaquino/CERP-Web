@@ -17,7 +17,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
                   'joins' => 'INNER JOIN materials ON materials.id = receive_items.item_id
 															INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
 															INNER JOIN lookup_status ON lookup_status.id = receive_items.status
-															INNER JOIN lookups ON lookups.id = item_costs.unit',
+															INNER JOIN lookups ON lookups.id = materials.unit',
 							    'order' 	=> $order .' '.$sort,
 		    					'limit'		=> $startpoint .', '.$limit,
                   'conditions' => $search)

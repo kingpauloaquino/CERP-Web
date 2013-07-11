@@ -15,8 +15,8 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	$query = $DB->Fetch('warehouse_inventories', array(
 							'columns'	=> 'warehouse_inventories.id, warehouse_inventories.item_id, warehouse_inventories.invoice_no, warehouse_inventories.lot_no,
 			  										warehouse_inventories.qty, warehouse_inventories.remarks, lookups.description AS unit',
-					    'joins'		=> 'INNER JOIN item_costs ON item_costs.item_id = warehouse_inventories.item_id AND item_costs.item_type = "MAT"
-														INNER JOIN lookups ON lookups.id = item_costs.unit',
+					    'joins'		=> 'INNER JOIN materials ON materials.id = warehouse_inventories.item_id
+														INNER JOIN lookups ON lookups.id = materials.unit',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,

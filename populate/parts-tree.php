@@ -19,7 +19,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 					    'joins'		=> 'LEFT OUTER JOIN materials ON products_parts_tree.material_id = materials.id
 				  	    									LEFT OUTER JOIN item_costs ON materials.id = item_costs.item_id
 				  	    									LEFT OUTER JOIN suppliers ON item_costs.supplier = suppliers.id
-				  	    									LEFT OUTER JOIN lookups ON item_costs.unit = lookups.id',
+				  	    									LEFT OUTER JOIN lookups ON materials.unit = lookups.id',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
 							'conditions'=> $search

@@ -34,9 +34,9 @@
             <tr>
               <td width="130" class="border-right text-center"><a class="sort" column="request_type">Type</a></td>
               <td width="110" class="border-right text-center"><a class="sort" column="batch_no">Batch</a></td>
-              <td class="border-right"><a class="sort down" column="remarks">Remarks</a></td>
+              <td class="border-right"><a class="sort" column="remarks">Remarks</a></td>
               <td width="110" class="border-right text-center text-date"><a class="sort" column="requested_date">Requested</a></td>
-              <td width="110" class="border-right text-center text-date"><a class="sort  default active up"column="expected_date">Expected</a></td>
+              <td width="110" class="border-right text-center text-date"><a class="sort default active up"column="expected_date">Expected</a></td>
             </tr>
           </thead>
           <tbody></tbody>
@@ -56,7 +56,9 @@
 			"data_key":"requests",
 			"row_template":"row_template_material_requests",
       "pagination":"#requests-pagination",
-      "searchable":true
+      "searchable":true,
+      "sort":"ASC",
+      "order":"expected_date"
 		}
 	
 		$('#grid-requests').grid(data);

@@ -12,14 +12,15 @@
 		
 	  if(isset($_GET['pid'])) {
 	  	$products = $DB->Find('products', array(
-					  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, pack_qty, 
-					  												products.bar_code, products.color, products.prod_cp, products.series', 
+					  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, pack_qty, priority,
+					  												products.bar_code, products.color, products.prod_cp, products.series, lookups.description AS unit', 
 					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
 					  	    'joins' 			=> 'INNER JOIN brand_models ON products.brand_model = brand_models.id
-					  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification'
+					  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification
+					  	    									INNER JOIN lookups ON lookups.id = products.unit'
 	  	  )
 			);	
-			$item_costs = $DB->Find('item_costs', array('columns' => 'id, supplier, unit, currency, cost', 
+			$item_costs = $DB->Find('item_costs', array('columns' => 'id, supplier, currency, cost', 
 	  							'conditions' => 'item_id = '.$_GET['pid'].' AND item_type="PRD"'));  
 			$item_images = $DB->Get('item_images', array('columns' => 'item_images.*',
 			 																			'conditions' => 'item_id='.$_GET['pid']));	
@@ -78,7 +79,7 @@
 	           </tr>     
 	           <tr>
 	              <td>Status:</td><td><?php select_query_tag($status, 'id', 'description', $products['status'], 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
-	              <td></td><td></td>
+	              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $products['unit'], 'product[unit]', 'product[unit]', '', 'width:192px;'); ?></td>
 	           </tr>            
 	           <tr>
 	              <td>Description:</td>
@@ -100,13 +101,9 @@
 	              </td>
 	           </tr>
 	           <tr>
-	              <td width="150">Currency:</td><td><?php select_query_tag($currencies, 'id', 'description', $item_costs['currency'], 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+	              <td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'description', $item_costs['currency'], 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
 	              <td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" value="<?php echo $item_costs['cost'] ?>" class="text-field text-right decimal" required/></td>
-	           </tr>
-	           <tr>
-	              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', $item_costs['unit'], 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
-	              <td></td>
-	           </tr>    
+	           </tr>  
 	           <tr><td height="5" colspan="99"></td></tr>
 	        </table> 	
 				</div>    

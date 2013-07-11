@@ -24,7 +24,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
                     				item_costs.cost AS price, lookups.description AS unit, pack_qty',
 					    'joins'		=> 'INNER JOIN brand_models ON brand_models.id = products.brand_model 
 					                  INNER JOIN item_costs ON item_id = products.id AND item_costs.item_type = "PRD" 
-					                  INNER JOIN lookups ON lookups.id = item_costs.unit
+					                  INNER JOIN lookups ON lookups.id = products.unit
 					                  INNER JOIN product_series ON product_series.id = products.series',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,

@@ -1,6 +1,6 @@
 <?php
   /* Module: Material Requests  */
-  $capability_key = 'add_material_requests';
+  $capability_key = 'edit_material_requests';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -9,10 +9,9 @@
 	}else{
   
   	$request = $Query->material_request_by_id($_GET['rid']);
-		$request_types = $Query->get_lookups('request_type');
 ?>
-  <!-- BOF PAGE -->
-  <div id="page">
+	<!-- BOF PAGE -->
+	<div id="page">
     <div id="page-title">
       <h2>
         <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
@@ -25,27 +24,27 @@
 
     <div id="content">
       <form id="request-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
-      	<input type="hidden" name="action" value="add_material_request"/>
-      	<input type="hidden" name="redirect" value="production-material-requests-show.php"/>
+      	<input type="hidden" name="action" value="edit_material_request"/>
+      	<input type="hidden" name="rid" value="<?php echo $_GET['rid'] ?>"/>
       	
          <!-- BOF TEXTFIELDS -->
          <div>
          	<table>
                <tr>
-                  <td width="120">Type:</td><td width="340"><?php select_query_tag($request_types, 'id', 'description', '', 'request-type', 'request_type', '', 'width:192px;'); ?></td>
-                  <td width="120">Batch Number:</td><td width="340"><input type="text" name="batch_no" class="text-field" required/></td>
+                  <td width="120">Type:</td><td width="340"><input type="text" value="<?php echo $request['type']; ?>" class="text-field" disabled/></td>
+                  <td width="120">Batch Number:</td><td width="340"><input type="text" name="batch_no" value="<?php echo $request['batch_no']; ?>" class="text-field magenta" /></td>
                </tr>
                <tr>
-                  <td>Expected Date:</td><td><input type="text" name="expected_date" class="text-field date-pick-week" required/></td>
-                  <td>Status:</td><td><input type="text" value="Pending" class="text-field" disabled/></td>
+                  <td>Expected Date:</td><td><input type="text" name="expected_date" value="<?php echo date("F d, Y", strtotime($request['expected_date'])) ?>" class="text-field date-pick-week" /></td>
+                  <td>Status:</td><td><input type="text" value="<?php echo $request['completion_status']; ?>" class="text-field" disabled/></td>
                </tr>
                <tr>
-                  <td>Requested Date:</td><td><input type="text" name="requested_date" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" required/></td>
-                  <td>Requested By:</td><td><input type="text" value="<?php echo $_SESSION['user']['first_name'].' '.$_SESSION['user']['last_name']; ?>" class="text-field" disabled/></td>
+                  <td>Requested Date:</td><td><input type="text" name="requested_date" value="<?php echo date("F d, Y", strtotime($request['requested_date'])) ?>" class="text-field date-pick-week" /></td>
+                  <td>Requested By:</td><td><input type="text" value="<?php echo $request['requested_by']; ?>" class="text-field" disabled/></td>
                </tr>
                <tr>
-                  <td>Received Date:</td><td><input type="text" class="text-field" disabled/></td>
-                  <td>Received By:</td><td><input type="text" class="text-field" disabled/></td>
+                  <td>Received Date:</td><td><input type="text" value="<?php echo $rcv_date = ($request['received_date']!='') ? date("F d, Y", strtotime($request['received_date'])) : '' ?>" class="text-field" disabled/></td>
+                  <td>Received By:</td><td><input type="text" value="<?php echo $request['received_by']; ?>" class="text-field" disabled/></td>
                </tr>
                <tr><td height="5" colspan="99"></td></tr>
             </table>
@@ -56,7 +55,7 @@
            <table cellspacing="0" cellpadding="0">
              <thead>
                <tr>
-                 <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
+                 <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all" disabled/></td>
                  <td width="30" class="border-right text-center">No.</td>
                  <td class="border-right">Material</td>
              			<td width="130" class="border-right text-center">Type</td>
@@ -73,29 +72,30 @@
          <!-- BOF REMARKS -->
          <div>
          	<table width="100%">
-               <tr><td height="5" colspan="99"></td></tr>
-               <tr>
-                  <strong><a href="#modal-materials" class="" rel="modal:open">Add Item</a></strong>
-                   &nbsp;|&nbsp;
-                   <strong><a id="remove-materials" href="#" class="" grid="#grid-request-items">Remove Item</a></strong>
-                  <td align="right"></td>
-               </tr>
-               <tr><td colspan="2">Remarks:<br/><textarea name="remarks" style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $request['remarks']; ?></textarea></td></tr>
-            </table>
-         </div>
+						<tr><td height="5" colspan="99"></td></tr>
+						<tr>
+              <strong><a href="#modal-materials" class="" rel="modal:open">Add Item</a></strong>
+               &nbsp;|&nbsp;
+               <strong><a id="remove-materials" href="#" class="" grid="#grid-request-items">Remove Item</a></strong>
+              <td align="right"></td>
+						</tr>
+						<tr><td colspan="2">Remarks:<br/><textarea name="remarks" style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $request['remarks']; ?></textarea></td></tr>
+					</table>
+				</div>
          
          <div class="field-command">
        	   <div class="text-post-status">
-       	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="status" ><?php echo build_select_post_status(); ?></select>
+       	     <strong></strong>
+							
            </div>
-           <?php if($request['status'] != "Publish") { ?>
-           <input type="submit" value="Request" class="btn"/>
-       	   <?php } ?>
-           <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('production-material-requests.php'); ?>"/>
+
+           <input type="submit" value="Save" class="btn" />
+
+           <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('production-material-requests-show.php?rid='. $request['id']); ?>"/>
          </div>
       </form>
    </div>
-
+   
 	<!-- BOF MODAL -->
 	<div id="modal-materials" class="modal" style="display:none;width:820px;">
 		<div class="modal-title"><h3>Materials</h3></div>
@@ -130,12 +130,19 @@
 			<div class="clear"></div>
 		</div>
 	</div>
-   
+
+       
    <script>
    	$(function() {
-			$('#grid-request-items').grid({}); 
+	  	var data1 = { 
+	    	"url":"/populate/material-request-items.php?rid=<?php echo $request['id']; ?>",
+	      "limit":"50",
+				"data_key":"material_request_items",
+				"row_template":"row_template_material_request_items"
+			}
+			$('#grid-request-items').grid(data1);
 			
-	  	var data = { 
+			var data2 = { 
 	    	"url":"/populate/materials-all.php",
 	      "limit":"10",
 				"data_key":"materials_all",
@@ -143,11 +150,10 @@
 	      "pagination":"#materials-pagination",
 	      "searchable": true
 			}
-			$('#grid-materials').grid(data); 
+			$('#grid-materials').grid(data2); 
 			
 			$('#add-item').append_item();
 		  $('#remove-materials').remove_item();
-			
 	  }) 
 	  
 	  function row_modal_materials(data) { 

@@ -58,7 +58,7 @@
 	           </tr>     
 	           <tr>
 	           		<td>Status:</td><td><?php select_query_tag($status, 'id', 'description', '', 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
-	           		<td></td><td></td>
+	           		<td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', '', 'product[unit]', 'product[unit]', '', 'width:192px;'); ?></td>
 	           </tr>      
 	           <tr>
 	              <td>Description:</td>
@@ -81,13 +81,9 @@
 	              </td>
 	           </tr>
 	           <tr>
-	              <td width="150">Currency:</td><td><?php select_query_tag($currencies, 'id', 'description', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
+	              <td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'description', '24', 'item_cost[currency]', 'item_cost[currency]', '', 'width:192px;'); ?></td>
 	              <td width="150">Cost:</td><td><input type="text" id="item_cost[cost]" name="item_cost[cost]" class="text-field text-right decimal" required /></td>
 	           </tr>
-	           <tr>
-	              <td width="150">Unit:</td><td width="310"><?php select_query_tag($units, 'id', 'description', '', 'item_cost[unit]', 'item_cost[unit]', '', 'width:192px;'); ?></td>
-	              <td></td>
-	           </tr>    
 	           <tr><td height="5" colspan="99"></td></tr>
 	        </table> 	
 				</div>

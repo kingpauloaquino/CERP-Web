@@ -320,15 +320,15 @@ $.fn.grid = function(args) {
   var table = $(this);
   
   // DATA SORTING
-  table.find('thead a.sort').bind('click', function(e) {
+  table.find('thead a.sort').bind('click', function(e) { 
     e.preventDefault();
     var active	= ($(this).hasClass('up') == true) ? 'active' : 'active up';
     var column	= $(this).attr('column') || $(this).text();
     var sort	= (active == "active") ? 'DESC' : 'ASC';
     
-    args['order_by']	= column;
-    args['sort_by']		= sort;
-    
+    args['order']	= column;
+    args['sort']		= sort;
+
     grid_population(table, args);
     
     table.find('thead a.sort').removeClass('active up');
@@ -363,8 +363,8 @@ function grid_population(table, args) {
 
   args['page'] = args['page'] || 1;
   args['limit'] = args['limit'] || 15;
-  args['order_by'] = args['order_by'] || "";
-  args['sort_by'] = args['sort_by'] || 'ASC';
+  args['order'] = args['order'] || "";
+  args['sort'] = args['sort'] || 'ASC';
 	var params = typeof args['params'] == "undefined" ? "" : args['params'];
 	
 	var opt = args['url'].indexOf("?") !== -1 ? "&" : "?";
@@ -372,7 +372,7 @@ function grid_population(table, args) {
   // DATA POPULATION
 
   $.ajax({
-    url: host + args['url'] + opt + 'page='+ args['page'] +'&limit='+ args['limit'] +'&order='+ args['order_by'] +'&sort='+ args['sort_by'] +'&params='+ params,
+    url: host + args['url'] + opt + 'page='+ args['page'] +'&limit='+ args['limit'] +'&order='+ args['order'] +'&sort='+ args['sort'] +'&params='+ params,
     dataType: "json",
     data: args['data'] || null,
     success: function(data) {
@@ -523,7 +523,7 @@ function row_template_minventory_items_read_only(data) {
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
   row.append('<td class="border-right text-center item-invoice">'+ data['invoice_no'] +'</td>');
   row.append('<td class="border-right text-center item-lot">'+ data['lot_no'] +'</td>');
-  row.append('<td class="border-right item-remarks">'+ data['remarks'] +'</td>');
+  row.append('<td class="border-right item-remarks">'+ (data['remarks'] || '') +'</td>');
   row.append('<td class="border-right text-center item-unit">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right item-qty numbers">'+ parseFloat(data['qty']) +'</td>');
  
@@ -564,6 +564,25 @@ function row_template_actual_minventory_items(data) {
   row.append('<td class="border-right text-center"><input type="text" name="actual['+id+'][qty]" class="text-field-smallest text-right actual-qty numeric" value="0" autocomplete="off"/></td>');
  
   row.find('.numeric').numeric_only();
+  row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_minventory_requests(data) { 
+  var id		= data['mrid'];
+  var row		= $('<tr id="'+ id +'"></tr>');
+  var forward	= host + "/account/production-material-requests-show.php?rid="+ data['rid'] +"";
+  
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center"><a target="_blank" href="'+ forward +'">'+ data['type'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['batch_no'] +'</td>');
+  row.append('<td class="border-right text-center date-string">'+ data['requested_date'] +'</td>');
+  row.append('<td class="border-right text-center date-string">'+ data['expected_date'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['terminal'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['completion_status'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ data['qty'] +'</td>');
+ 
+	row.find('.date-string').format_date_string(false, 'M dd, yy');
   row.find('.numbers').digits();
   return row;   
 }
@@ -743,7 +762,6 @@ function row_template_notifications(data) {
     "<td class=\"border-right text-center text-date\">"+ data['created_at'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['type'] +"</td>" +
   	"<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['title'] +"</a></td>" +
-    "<td class=\"border-right text-center\">"+ data['value'] +"</td>" +
     "<td class=\"border-right \">"+ data['remarks'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['status'] +"</td>" +
     "</tr>");
@@ -1179,9 +1197,29 @@ function row_template_material_requests(data) {
   return row;   
 }
 
+function row_template_material_request_items(data) {
+  var mid		= data['mid'];
+  var forward	= host + "/account/materials-show.php?mid="+ mid +"";
+  var row		= $('<tr id="mat-'+mid+'">' +
+  							'<input type="hidden" name="request['+mid+'][mid]" value="'+mid+'"/>' +
+  						'</tr>');
+  
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item"/></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-center"><input type="text" name="request['+mid+'][total]" value="'+ (data['qty'] || 0) +'" class="text-field-smallest numeric text-right"/></td>');
+
+  return row;   
+}
+
 function row_template_material_request_items_read_only(data) {
-	var forward	= host + "/account/materials-show.php?mid="+ data['mid'] + "";
-  var row		= $('<tr id="mat-'+ data['mid'] +'"></tr>');
+  var mid		= data['mid'];
+	var forward	= host + "/account/materials-show.php?mid="+ mid + "";
+  
+  var row		= $('<tr id="mat-'+mid+'">' +
+  						'</tr>');
 
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
@@ -1189,6 +1227,35 @@ function row_template_material_request_items_read_only(data) {
   row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right numbers">'+ parseFloat(data['qty']) +'</td>');
+ 	
+  row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_material_request_issuance(data) {
+  var mid		= data['mid'];
+	var forward	= host + "/account/materials-show.php?mid="+ mid + "";
+  
+  var row		= $('<tr id="'+mid+'">' +
+  						'</tr>');
+	var wh_stock = (data['wh_stock'] || 0);
+	
+	var text = '';
+	if(wh_stock < parseFloat(data['qty'])) {
+		text = 'text-orange disable-issue';
+	} 
+	if(wh_stock == 0) {
+		text = 'text-red disable-issue';
+	}
+
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers '+ text +'">'+ parseFloat((data['qty'] || 0)) +'</td>');
+  row.append('<td class="border-right text-right numbers wh-stock '+ text +'">'+ parseFloat((data['wh_stock'] || 0)) +'</td>');
  	
   row.find('.numbers').digits();
   return row;   

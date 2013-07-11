@@ -35,7 +35,7 @@ class Query {
                'joins' => 'INNER JOIN purchases ON purchases.id = purchase_items.purchase_id
 														INNER JOIN materials ON materials.id = purchase_items.item_id
 														INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type="MAT" AND item_costs.supplier = purchases.supplier_id
-														INNER JOIN lookups ON lookups.id = item_costs.unit',
+														INNER JOIN lookups ON lookups.id = materials.unit',
                'conditions' => 'purchase_id ='. $id)
              );
 	
@@ -84,7 +84,7 @@ class Query {
                              lookups.description AS unit, brand_model, material_type, quantity, item_price',
                'joins' => 'INNER JOIN materials ON materials.id = purchase_items.item_id
                            LEFT OUTER JOIN item_costs ON item_type = "MAT" AND item_costs.item_id = purchase_items.item_id
-                           LEFT OUTER JOIN lookups ON lookups.id = item_costs.unit')
+                           LEFT OUTER JOIN lookups ON lookups.id = materials.unit')
              );
 	
 	if(!empty($query)) return $query;
@@ -230,7 +230,7 @@ class Query {
 																		INNER JOIN product_series ON product_series.id = products.series
 																		LEFT OUTER JOIN item_costs ON products.id = item_costs.item_id AND item_costs.item_type = "PRD"
 																		LEFT OUTER JOIN suppliers ON item_costs.supplier = suppliers.id
-																		LEFT OUTER JOIN lookups AS lookups1 ON item_costs.unit = lookups1.id
+																		LEFT OUTER JOIN lookups AS lookups1 ON products.unit = lookups1.id
 																		LEFT OUTER JOIN lookups AS lookups2 ON item_costs.currency = lookups2.id'
 	  	  ));
 				
@@ -248,7 +248,7 @@ class Query {
 																			LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
 																			LEFT OUTER JOIN users ON materials.person_in_charge = users.id
 																			LEFT OUTER JOIN item_costs ON materials.id = item_costs.item_id
-																			LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = item_costs.unit
+																			LEFT OUTER JOIN lookups AS lookups1 ON lookups1.id = materials.unit
 																			LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
 																			LEFT OUTER JOIN lookup_status ON materials.status = lookup_status.id'));
 				
@@ -289,7 +289,7 @@ class Query {
 															) AS wh2 ON wh2.item_id = m.id
 														INNER JOIN item_classifications ON m.material_classification = item_classifications.id
 														INNER JOIN item_costs ON item_costs.item_id = m.id AND item_costs.item_type = "MAT"
-														INNER JOIN lookups ON lookups.id = item_costs.unit',
+														INNER JOIN lookups ON lookups.id = m.unit',
                'group' => 'm.id',
 							 'conditions' => 'm.material_type = 70 
 							 							',
@@ -323,7 +323,7 @@ class Query {
 														INNER JOIN brand_models ON brand_models.id = p.brand_model
 														INNER JOIN product_series ON product_series.id = p.series
 														INNER JOIN item_costs ON item_costs.item_id = p.id AND item_costs.item_type = "PRD"
-														INNER JOIN lookups ON lookups.id = item_costs.unit',
+														INNER JOIN lookups ON lookups.id = p.unit',
                'group' => 'p.id',
  								'order' => 'code'
 							 )
@@ -403,11 +403,12 @@ class Query {
 	function material_request_by_id($id) {
   	$query = $this->DB->Fetch('material_requests', array(
                'columns' => 'material_requests.id, lookups.description AS type, batch_no, remarks, expected_date, 
-               							requested_date, received_date, lookup_status.description AS status, 
+               							requested_date, received_date, lookup_status.description AS status, lookup_status2.description AS completion_status,
                							CONCAT(users1.first_name, " ", users1.last_name) AS requested_by,
                							CONCAT(users2.first_name, " ", users2.last_name) AS received_by',
                'joins' => 'INNER JOIN lookups ON lookups.id = material_requests.request_type
                						INNER JOIN lookup_status ON lookup_status.id = material_requests.status
+               						INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = material_requests.completion_status
                						LEFT OUTER JOIN users AS users1 ON users1.id = material_requests.requested_by
                						LEFT OUTER JOIN users AS users2 ON users2.id = material_requests.received_by',
 							 'conditions' => 'material_requests.id='.$id,
@@ -417,6 +418,19 @@ class Query {
 	
 	if(!empty($query)) return $query[0];
 	return null;
+  }
+
+	function get_notifications($type) {
+  	$query = $this->DB->Fetch('notifications', array(
+               'columns' => '*',
+							 'conditions' => 'type='.$type,
+							 'order' => 'created_at',
+							 'sort' => 'DESC'
+							 )
+             );
+	
+		if(!empty($query)) return $query;
+		return null;
   }
 
 	function get_lookup_parents() {

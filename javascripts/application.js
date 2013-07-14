@@ -374,6 +374,7 @@ function grid_population(table, args) {
   $.ajax({
     url: host + args['url'] + opt + 'page='+ args['page'] +'&limit='+ args['limit'] +'&order='+ args['order'] +'&sort='+ args['sort'] +'&params='+ params,
     dataType: "json",
+    async: false, // set as synchronous for table total quantities 
     data: args['data'] || null,
     success: function(data) {
       // Remove Loader
@@ -382,7 +383,7 @@ function grid_population(table, args) {
       var totalItems = data['total'] || 0;
 
       // Populate Grid Rows
-      console.log(data[args['data_key']]);
+      // console.log(data[args['data_key']]);
       $.each(data[args['data_key']], function(x, y) {
       	var row = $(window[args['row_template']](y));
         tbody.append(row);

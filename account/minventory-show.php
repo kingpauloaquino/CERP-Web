@@ -122,7 +122,7 @@
 				"row_template":"row_template_minventory_items_read_only",
 			}
 		
-			$('#grid-materials').grid(data1);
+			$('#grid-materials').grid(data1); 
 			
 			var data2 = { 
 	    	"url":"/populate/minventory-requests.php?mid=<?php echo $_GET['id'] ?>",
@@ -135,18 +135,25 @@
 		
 			$('#grid-requests').grid(data2);
 			
-			
-			$(window).load(function(){
-				var total = 0;
-				$('#materials tr').each(function(){
-    			total += parseFloat($(this).attr('qty'));
-    		});
-	  		if(total == 0) {
-	  			$('#out-of-stock').show();
-	  		}
-    		$('#total_qty').val(total).digits();
-			})
+			// $(window).load(function(){
+				// var total = 0;
+				// $('#materials tr').each(function(){
+    			// total += parseFloat($(this).attr('qty'));
+    		// });
+	  		// if(total == 0) {
+	  			// $('#out-of-stock').show();
+	  		// }
+    		// $('#total_qty').val(total).digits();
+			// })			$('#total_qty').val(get_total()).digits();
 	  }) 
+	  
+	  function get_total(){
+	  	var total_qty = 0;
+	  	$('#materials tr').each(function(){
+				total_qty += parseFloat($(this).find('td.item-qty').html().replace(/,/g, ''), 10);
+			});
+			return total_qty;
+	  }
  </script>
 <?php }
 require('footer.php'); ?>

@@ -135,16 +135,16 @@
 		
 			$('#grid-requests').grid(data2);
 			
-			// $(window).load(function(){
-				// var total = 0;
-				// $('#materials tr').each(function(){
-    			// total += parseFloat($(this).attr('qty'));
-    		// });
-	  		// if(total == 0) {
-	  			// $('#out-of-stock').show();
-	  		// }
-    		// $('#total_qty').val(total).digits();
-			// })			$('#total_qty').val(get_total()).digits();
+			$(window).load(function(){
+				var total = 0;
+				$('#materials tr').each(function(){
+    			total += parseFloat($(this).attr('qty'));
+    		});
+	  		if(total == 0) {
+	  			$('#out-of-stock').show();
+	  		}
+    		$('#total_qty').val(total).digits();
+			})			//$('#total_qty').val(get_total()).digits();
 	  }) 
 	  
 	  function get_total(){

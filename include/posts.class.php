@@ -888,45 +888,6 @@ class Posts {
 		return $this->DB->ExecuteQuery($query);
 	}
 	
-	function InitPurchaseOrderProducts($params) {		
-		$query = array(
-			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
-			'set_2' 	=> 'SET @ppoid = '.$params['ppoid'],
-			'set_3' 	=> 'SET @oid = '.$params['oid'],
-			'set_4' 	=> 'SET @target_date = "'.$params['target_date'].'"',
-			'set_5' 	=> 'SET @prod_type = 122', // lookups plan production product type
-			'query_1' => 'INSERT INTO production_purchase_order_products (production_purchase_order_id, product_id, order_qty, produce_qty, prod_ship_date, type, created_at) 
-										SELECT @ppoid, order_items.item_id, order_items.quantity, (order_items.quantity + (order_items.quantity * 0.05)) AS produce_qty, 
-										@target_date, @prod_type, @created_at FROM order_items WHERE order_items.order_id=@oid'
-		);		
-		return $this->DB->ExecuteQuery($query);
-	}
-
-	function AddPurchaseOrderProducts($params) {
-  	$prods = array(
-  	  'production_purchase_order_id'	=> $params['production_purchase_order_id'],
-  	  'lot_no'	=> $params['lot_no'],
-  	  'product_id'	=> $params['product_id'],
-  	  'order_qty'	=> $params['order_qty'],
-  	  'produce_qty'	=> $params['produce_qty'],
-  	  'prod_ship_date'	=> $params['prod_ship_date'],
-  	  'type'	=> $params['type'],
-  	  'init'	=> $params['init'],
-  	  'request_id'	=> $params['request_id']
-		);	
-		return $this->DB->InsertRecord('production_purchase_order_products', $prods);
-  }
-
-	function AddPurchaseOrderProductMaterials($params) {
-  	$mats = array(
-  	  'production_purchase_order_product_id'	=> $params['production_purchase_order_product_id'],
-  	  'material_id'	=> $params['material_id'],
-  	  'qty'	=> $params['qty'],
-  	  'plan_qty'	=> $params['plan_qty']
-		);	
-		return $this->DB->InsertRecord('production_purchase_order_product_parts', $mats);
-  }
-	
 	function EditProductionPlan($params) {
     return $this->DB->UpdateRecord('production_purchase_order_products', $params);
   }
@@ -938,19 +899,6 @@ class Posts {
 	function EditProductRequest($params) {
     return $this->DB->UpdateRecord('warehouse_material_requests', $params);
   }
-	
-	function InitPurchaseOrderProductMaterials($params) {
-		$query = array(
-			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
-			'set_2' 	=> 'SET @ppopid = '.$params['ppopid'],
-			'set_3' 	=> 'SET @product_id = '.$params['product_id'],
-			'set_4' 	=> 'SET @plan_qty = '.$params['plan_qty'],
-			'set_5' 	=> 'SET @tracking_no = "'.$params['tracking_no'].'"',
-			'query_1' => 'INSERT INTO production_purchase_order_product_parts (production_purchase_order_product_id, tracking_no, material_id, qty, plan_qty, pending_qty, created_at) 
-										SELECT @ppopid, @tracking_no, material_id, material_qty, (@plan_qty * material_qty), (@plan_qty * material_qty), @created_at FROM products_parts_tree WHERE products_parts_tree.product_id=@product_id'
-		);		
-		return $this->DB->ExecuteQuery($query);
-	}
 	
 	function AddWarehouseInventory($params) {
   	$invt = array(
@@ -994,141 +942,6 @@ class Posts {
 																													invoice_no ="'.$params['invoice_no'].'" AND lot_no="'.$params['lot_no'].'" '); 
 		return $this->DB->UpdateRecord('warehouse_inventories', $args);
   }
-	
-	function InitProductionInventory($params) {		
-		$query = array(
-			'set_1' 	=> 'SET @created_at = "'.date('Y-m-d H:i:s').'"',
-			'set_2' 	=> 'SET @item_type = "MAT"',
-			'set_3' 	=> 'SET @location_code = "WIP"',
-			'set_4' 	=> 'SET @item_id = '.$params['item_id'],
-			'set_5' 	=> 'SET @prod_lot_no = '.$params['prod_lot_no'],
-			'set_6' 	=> 'SET @ppopid = '.$params['ppopid'],
-			'set_7' 	=> 'SET @tracking_no = '.$params['tracking_no'],
-			'query_1' => 'INSERT INTO production_inventories (production_purchase_order_product_id, tracking_no, item_id, item_type, terminal_id, prod_lot_no, created_at) 
-										SELECT @ppopid, @tracking_no, @item_id, @item_type, terminals.id, @prod_lot_no, @created_at FROM terminals INNER JOIN locations ON locations.id=terminals.location_id 
-										WHERE locations.location_code=@location_code',
-			'query_2' => 'INSERT INTO production_inventory_logs (production_purchase_order_product_id, tracking_no, item_id, item_type, terminal_id, prod_lot_no, created_at) 
-										SELECT @ppopid, @tracking_no, @item_id, @item_type, terminals.id, @prod_lot_no, @created_at FROM terminals INNER JOIN locations ON locations.id=terminals.location_id 
-										WHERE locations.location_code=@location_code'
-		);		
-		return $this->DB->ExecuteQuery($query);
-	}
-
-	function AdjustProductionInventory($params) {
-		//var_dump($params);
-		return $this->DB->UpdateRecord('production_inventories', $params);
-		
-		// if($params['type'] == 'OUTPUT') {
-// 			
-		// } else {
-			// if($params['terminal_id'] == 3){ //Pre-Prod IN
-				// $status = 103;
-			// } 
-		// }
-		// $invt = array(
-  	  // 'item_id'			=> $params['item_id'],
-  	  // 'item_type'		=> 'MAT',
-  	  // 'tracking_no'	=> $params['tracking_no'],
-  	  // 'prod_lot_no'	=> $params['prod_lot_no'],
-  	  // 'mat_lot_no'	=> $params['mat_lot_no'],
-  	  // 'src_terminal_id'	=> $params['src_terminal_id'],
-  	  // 'terminal_id'	=> $params['terminal_id'],
-  	  // 'terminal_device_id'	=> 2,
-  	  // 'status'		=> $status,
-  	  // 'qty'			=> $params['qty'],
-  	  // 'remarks'	=> $params['remarks']
-		// );	
-		// $id = $this->DB->InsertRecord('production_inventories', $invt);
-// 		
-// 		
-		// $request_target_date = array('prod_ship_date' => date('Y-m-d', strtotime($arr['prod_ship_date'])));
-		// $Posts->EditProductionPlan(array('variables' => $request_target_date, 'conditions' => 'id='.$arr['id']));	
-	}
-
-	function AddProductionInventory($params) {
-		$invt = array(
-  	  'item_id'			=> $params['item_id'],
-  	  'item_type'		=> 'MAT',
-  	  'tracking_no'	=> $params['tracking_no'],
-  	  'prod_lot_no'	=> $params['prod_lot_no'],
-  	  'mat_lot_no'	=> $params['mat_lot_no'],
-  	  'src_terminal_id'	=> $params['src_terminal_id'],
-  	  'terminal_id'	=> $params['terminal_id'],
-  	  'terminal_device_id'	=> $params['terminal_device_id'],
-  	  'status'		=> $params['status'],
-  	  'qty'			=> $params['qty'],
-		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
-		);	
-		var_dump($params); die();
-		$id = $this->DB->InsertRecord('production_inventories', $params);
-
-		
-// 		
-// 		
-		// if($params['type'] == 'Input') {
-			// $trml_prod_in = array('qty' => '(qty - '.$params['qty'].')', 'remarks' => $params['remarks']);
-			// $args_in = array('variables' => $trml_prod_in, 'conditions' => 'item_id='.$params['item_id'].' AND 
-																															// prod_lot_no="'.$params['lot_no'].'" AND 
-																															// terminal_id='.$params['terminal_from']. ' AND 
-																															// tracking_no='.$params['tracking_no']);
-			// $this->DB->UpdateRecord('production_inventories', $args_in);
-		// }
-// 		
-		// if($params['type'] == 'Output') {
-			// $out_terminal = $this->DB->Find('terminals', array('columns' => 'terminal_name', 'conditions'  => 'id = '.$params['terminal_id']));
-			// $in_terminal = $this->DB->Find('terminals', array('columns' => 'id', 'conditions'  => 'terminal_name ="'.$out_terminal['terminal_name'].'" AND type="IN"'));
-// 			
-			// $trml_prod_in = array('qty' => '(qty - '.$params['qty'].')', 'remarks' => $params['remarks']);
-			// $args_in = array('variables' => $trml_prod_in, 'conditions' => 'item_id='.$params['item_id'].' AND 
-																															// prod_lot_no="'.$params['lot_no'].'" AND 
-																															// terminal_id='.$in_terminal['id']. ' AND 
-																															// tracking_no='.$params['tracking_no']);
-// 
-			// $this->DB->UpdateRecord('production_inventories', $args_in);
-		// }
-		// $trml_prod = array('qty' => $params['qty'], 'remarks' => $params['remarks']);
-		// $args = array('variables' => $trml_prod, 'conditions' => 'item_id='.$params['item_id'].' AND 
-																														// prod_lot_no="'.$params['lot_no'].'" AND 
-																														// terminal_id='.$params['terminal_id']. ' AND 
-																														// tracking_no='.$params['tracking_no']);
-		// return $this->DB->UpdateRecord('production_inventories', $args);
-		
-		
-		//TODO: add history log
-	}	
-
-	function EditProductionInventory($params) {
-		if($params['type'] == 'Input') {
-			$trml_prod_in = array('qty' => '(qty - '.$params['qty'].')', 'remarks' => $params['remarks']);
-			$args_in = array('variables' => $trml_prod_in, 'conditions' => 'item_id='.$params['item_id'].' AND 
-																															prod_lot_no="'.$params['lot_no'].'" AND 
-																															terminal_id='.$params['terminal_from']. ' AND 
-																															tracking_no='.$params['tracking_no']);
-			$this->DB->UpdateRecord('production_inventories', $args_in);
-		}
-		
-		if($params['type'] == 'Output') {
-			$out_terminal = $this->DB->Find('terminals', array('columns' => 'terminal_name', 'conditions'  => 'id = '.$params['terminal_id']));
-			$in_terminal = $this->DB->Find('terminals', array('columns' => 'id', 'conditions'  => 'terminal_name ="'.$out_terminal['terminal_name'].'" AND type="IN"'));
-			
-			$trml_prod_in = array('qty' => '(qty - '.$params['qty'].')', 'remarks' => $params['remarks']);
-			$args_in = array('variables' => $trml_prod_in, 'conditions' => 'item_id='.$params['item_id'].' AND 
-																															prod_lot_no="'.$params['lot_no'].'" AND 
-																															terminal_id='.$in_terminal['id']. ' AND 
-																															tracking_no='.$params['tracking_no']);
-			var_dump($args_in); die();
-			$this->DB->UpdateRecord('production_inventories', $args_in);
-		}
-		$trml_prod = array('qty' => $params['qty'], 'remarks' => $params['remarks']);
-		$args = array('variables' => $trml_prod, 'conditions' => 'item_id='.$params['item_id'].' AND 
-																														prod_lot_no="'.$params['lot_no'].'" AND 
-																														terminal_id='.$params['terminal_id']. ' AND 
-																														tracking_no='.$params['tracking_no']);
-		return $this->DB->UpdateRecord('production_inventories', $args);
-		
-		
-		//TODO: add history log
-	}	
 	
 	function AddItemTracks($params) {
   	$track = array(

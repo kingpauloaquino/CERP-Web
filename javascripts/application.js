@@ -374,7 +374,7 @@ function grid_population(table, args) {
   $.ajax({
     url: host + args['url'] + opt + 'page='+ args['page'] +'&limit='+ args['limit'] +'&order='+ args['order'] +'&sort='+ args['sort'] +'&params='+ params,
     dataType: "json",
-    async: false, // set as synchronous for table total quantities 
+    // async: false, // set as synchronous for table total quantities 
     data: args['data'] || null,
     success: function(data) {
       // Remove Loader
@@ -1139,47 +1139,6 @@ function row_template_production_plans(data) {
     "<td class=\"border-right text-center\">"+ data['status'] +"</td>" +
     "</tr>");
 
-  return row;
-}
-
-function row_template_terminal_prod_items(data) {
-  var forward	= host + "/account/#"+ data['id'] +"";
-  var row		= $("<tr forward=\""+ forward +"\">" +
-    "<td class=\"border-right text-center\"></td>" +
-    "<td class=\"border-right text-center\"></td>" +
-  	"<td class=\"border-right text-center\">"+ data['prod_lot_no'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['tracking_no'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['mat_lot_no'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['material_code'] +"</td>" +
-    "<td class=\"border-right\">"+ data['description'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['status'] +"</td>" +
-    "<td class=\"border-right text-right\">"+ data['qty'] +"</td>" +
-    "</tr>");
-
-  return row;
-}
-
-function row_template_parts_requests(data) {
-	$('.timepick').datetimepicker({
-		dateFormat: "yy-mm-dd",
-		timeFormat: "HH:mm"
-	});
-	var id = data['id'];
-  var forward	= host + "/account/materials-show.php?mid="+ data['mat_id'];
-  var row		= $("<tr forward=\""+ forward +"\">" +
-    "<td class=\"border-right text-center\"><input type=\"checkbox\" name=\"parts["+id+"][requested]\" value=\""+ id +"\" " + ((data['is_requested'] == 1) ? "checked disabled" : "") + " class=\"chk-item\"/></td></td>" +    
-		"<td class=\"border-right text-center\" replace=\"#{index}\"></td><input type='hidden' name='parts["+id+"][id]' value='" +id+ "' />" +
-  	"<td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['material_code'] || '--') +"</a></td>" +
-    "<td class=\"border-right text-center\"><input type='text' name='parts["+id+"][expected_datetime]' value='"+ 
-    	(data['expected_datetime'] || '') +"' class='auto_width_center text-center timepick' " + ((data['is_requested'] == 1) ? "disabled" : "") + "/></td>" +
-    "<td class=\"border-right text-center\">"+ (data['status'] || '') +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['unit'] +"</td>" +
-    "<td class=\"border-right text-right\">"+ parseFloat(data['qty']) +"</td>" +
-    "<td class=\"border-right text-center\"><input type='text' name='parts["+id+"][plan_qty]' value='"+ 
-    	(parseFloat(data['plan_qty']) || '') +"' class='auto_width_right' " + ((data['is_requested'] == 1) ? "disabled" : "") + "/></td>" +
-    "<td class=\"border-right text-center\"></td>" +
-    "</tr>");
-		
   return row;
 }
 

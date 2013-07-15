@@ -23,7 +23,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   }
 }
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
 		<script type="text/javascript" src="javascripts/jquery-1.7.2.min.js"></script>
     	<style>

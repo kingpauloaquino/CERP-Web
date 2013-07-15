@@ -88,7 +88,7 @@
            	     <strong>Saved As:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
                </div>
                	<?php if($delivery['status'] != "Publish") { ?>
-               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='. $delivery['id']); ?>"/>
+               <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('receiving-new.php?id='. $delivery['id']); ?>"/>
            	   	<?php } ?>
                <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('receiving.php'); ?>"/>
              </div>

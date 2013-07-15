@@ -58,7 +58,7 @@
 	           </tr>     
 	           <tr>
 	           		<td>Status:</td><td><?php select_query_tag($status, 'id', 'description', '', 'product[status]', 'product[status]', '', 'width:192px;'); ?></td>
-	           		<td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', '', 'product[unit]', 'product[unit]', '', 'width:192px;'); ?></td>
+	           		<td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', 19, 'product[unit]', 'product[unit]', '', 'width:192px;'); ?></td>
 	           </tr>      
 	           <tr>
 	              <td>Description:</td>

@@ -100,7 +100,7 @@
                
                <?php if($delivery['status'] != "Close") { ?>
                
-           	   <input id="btn-receive" type="button" value="RECEIVE" class="btn redirect-to" rel="<?php echo host('receiving-edit.php?id='.$_GET['id']); ?>"/>
+           	   <input id="btn-receive" type="button" value="RECEIVE" class="btn redirect-to" rel="<?php echo host('receiving-new.php?id='.$_GET['id']); ?>"/>
            	   <?php } ?>
                <input type="button" value="CANCEL" class="btn redirect-to" rel="<?php echo host('deliveries.php'); ?>"/>
                

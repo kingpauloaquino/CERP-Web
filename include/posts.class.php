@@ -259,6 +259,10 @@ class Posts {
     return $this->DB->UpdateRecord('warehouse_inventories', $params);
   }
 	
+	function DeleteInventory($params) {
+    return $this->DB->DeleteRecord('warehouse_inventories', $params);
+  }
+	
 	function AddActualInventory($params) {
     $inventory = array(
 		  'item_id'					=> $params['item_id'],	
@@ -861,6 +865,15 @@ class Posts {
 	
 	function EditMaterialRequestItem($params) {
     return $this->DB->UpdateRecord('material_request_items', $params);
+  }
+
+	function AddMaterialRequestItemIssue($params) {
+    $items = array(
+		  'request_item_id'	=> $params['request_item_id'],	  
+		  'warehouse_inventory_id'		=> $params['warehouse_inventory_id'],	  
+		  'qty'	=> $params['qty'],	  
+		);
+    return $this->DB->InsertRecord('material_request_item_issuances', $items);
   }
 	
 	function AddSettings($params) {

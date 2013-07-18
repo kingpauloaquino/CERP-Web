@@ -265,7 +265,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
   case 'edit_receiving':
 		$ctr = 0;
 		$complete_flag = 0;
-    $items	= $_POST['items']; 
+    $items	= $_POST['items'];
 		
 		// set all items as incomplete status
 		$args = array('variables' => array('status' => 22), 'conditions' => 'delivery_id='.$_POST['delivery']['id']); 
@@ -861,7 +861,93 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 
 	case 'issue_materials':
 		$Posts->EditMaterialRequest(array('variables'=>array('completion_status' => $_POST['completion_status']), 'conditions' => 'id='.$_POST['rid']));
-	break;
+		
+		// TODO: subtract from stock, according to lot_no
+		// get warehouse items
+		$requests = $DB->Fetch('material_request_items', array('columns' => 'id, material_id, qty', 'conditions' => 'request_id='.$_POST['rid']));
+		foreach($requests as $req) {
+			$stocks = null;
+			$stocks = $DB->Fetch('warehouse_inventories', array('columns' => 'id, qty', 'conditions' => 'item_id='.$req['material_id'], 'order' => 'id'));
+			
+			$req_qty  = NULL;
+			foreach($stocks as $stock) {
+				$req_qty = ($req_qty == NULL) ? $req['qty'] : $req_qty;
+				if($stock['qty'] >= $req_qty) {
+					$new_stock_qty = (double) $stock['qty'] - $req_qty;
+					
+					// add to issuance
+					$Posts->AddMaterialRequestItemIssue(array('request_item_id' => $req['id'], 'warehouse_inventory_id' => $stock['id'], 'qty' => $req_qty));
+					
+					// update w/h stock
+					$args = array('variables' => array('qty' => $new_stock_qty, 'remarks' => 'Issued for issuance.'), 'conditions' => 'id='.$stock['id']); 
+					$Posts->EditInventory($args);
+					
+					// if new_stock_qty is 0, remove
+					if($new_stock_qty == 0) {
+						$Posts->DeleteInventory(array('conditions' => 'id='.$stock['id']));
+					}
+					$req_qty  = NULL;
+					break;
+				}
+				else {
+					$req_qty = (double) $req_qty - (double) $stock['qty'];
+					
+					// add to issuance
+					$Posts->AddMaterialRequestItemIssue(array('request_item_id' => $req['id'], 'warehouse_inventory_id' => $stock['id'], 'qty' => $stock['qty']));
+					
+					$Posts->DeleteInventory(array('conditions' => 'id='.$stock['id']));
+				}
+				
+				
+			}
+			
+			
+		}
+		break;
+		
+		// case 'issue_materials':
+		// $Posts->EditMaterialRequest(array('variables'=>array('completion_status' => $_POST['completion_status']), 'conditions' => 'id='.$_POST['rid']));
+// 		
+		// // TODO: subtract from stock, according to lot_no
+		// // get warehouse items
+		// $requests = $DB->Fetch('material_request_items', array('columns' => 'id, material_id, qty', 'conditions' => 'request_id='.$_POST['rid']));
+		// foreach($requests as $req) {
+			// $stocks = null;
+			// $stocks = $DB->Fetch('warehouse_inventories', array('columns' => 'id, qty', 'conditions' => 'item_id='.$req['material_id'], 'order' => 'id'));
+// 			
+			// $new_stock_qty = NULL;
+			// foreach($stocks as $stock) {
+				// if($stock['qty'] >= $req['qty']) {
+					// $new_stock_qty = (double) $stock['qty'] - (double) $req['qty'];
+// 					
+					// // add to issuance
+					// $Posts->AddMaterialRequestItemIssue(array('request_item_id' => $req['id'], 'warehouse_inventory_id' => $stock['id'], 'qty' => $req['qty']));
+// 					
+					// // update w/h stock
+					// $args = array('variables' => array('qty' => $new_stock_qty, 'remarks' => 'Issued for issuance.'), 'conditions' => 'id='.$stock['id']); 
+					// $Posts->EditInventory($args);
+// 					
+					// // if new_stock_qty is 0, remove
+					// if($new_stock_qty == 0) {
+						// $Posts->DeleteInventory(array('conditions' => 'id='.$stock['id']));
+					// }
+				// }
+				// else {
+					// $new_stock_qty = (double) $req['qty'] - (double) $stock['qty'];
+// 					
+					// // add to issuance
+					// $Posts->AddMaterialRequestItemIssue(array('request_item_id' => $req['id'], 'warehouse_inventory_id' => $stock['id'], 'qty' => $stock['qty']));
+// 					
+					// $Posts->DeleteInventory(array('conditions' => 'id='.$stock['id']));
+				// }
+// 				
+// 				
+				// break;
+			// }
+// 			
+// 			
+		// }
+		// break;
 	} // close switch
 
   

@@ -58,7 +58,7 @@
       "pagination":"#requests-pagination",
       "searchable":true,
       "sort":"ASC",
-      "order":"expected_date"
+      "order":"expected_date, id"
 		}
 	
 		$('#grid-requests').grid(data);

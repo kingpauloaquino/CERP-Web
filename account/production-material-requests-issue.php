@@ -97,9 +97,9 @@
 									
                </div>
                <?php if($request['completion_status'] != "Issued") { ?>
-               <input id="btn-submit" type="submit" value="Issue" class="btn"/>
+               <input id="btn-submit" type="submit" value="Proceed" class="btn"/>
            	   <?php } ?>
-               <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('production-material-requests.php'); ?>"/>
+               <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('production-material-requests.php'); ?>"/>
              </div>
           </form>
        </div>
@@ -112,6 +112,7 @@
 			      "limit":"50",
 						"data_key":"material_request_issue",
 						"row_template":"row_template_material_request_issuance"
+						
 					}
 				
 					$('#grid-request-items').grid(data);

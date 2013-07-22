@@ -32,11 +32,13 @@
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <td width="130" class="border-right text-center"><a class="sort" column="request_type">Type</a></td>
-              <td width="110" class="border-right text-center"><a class="sort" column="batch_no">Batch</a></td>
+              <td width="110" class="border-right text-center"><a class="sort" column="request_no">Request #</a></td>
+              <td width="110" class="border-right text-center"><a class="sort" column="request_type">Type</a></td>
+              <td width="90" class="border-right text-center"><a class="sort" column="batch_no">Batch</a></td>
               <td class="border-right"><a class="sort" column="remarks">Remarks</a></td>
-              <td width="110" class="border-right text-center text-date"><a class="sort" column="requested_date">Requested</a></td>
-              <td width="110" class="border-right text-center text-date"><a class="sort default active up"column="expected_date">Expected</a></td>
+              <td width="100" class="border-right text-center text-date"><a class="sort" column="requested_date">Requested</a></td>
+              <td width="100" class="border-right text-center text-date"><a class="sort default active up"column="expected_date">Expected</a></td>
+              <td width="100" class="border-right text-center"><a class="sort"column="expected_date">Status</a></td>
             </tr>
           </thead>
           <tbody></tbody>

@@ -10,7 +10,7 @@ $sort			= ($_GET['sort'] != "" ? $_GET['sort'] : "ASC");
 function populate_records($keyword='', $page, $limit, $order, $sort) {
   global $DB;
   $startpoint = $limit * ($page - 1);
-	$search = 'warehouse_inventories.item_type = "MAT" AND warehouse_inventories.item_id ='.$_GET['id'];
+	$search = 'warehouse_inventories.status=16 AND warehouse_inventories.item_type = "MAT" AND warehouse_inventories.item_id ='.$_GET['id'];
 
 	$query = $DB->Fetch('warehouse_inventories', array(
 							'columns'	=> 'warehouse_inventories.id, warehouse_inventories.item_id, warehouse_inventories.invoice_no, warehouse_inventories.lot_no,

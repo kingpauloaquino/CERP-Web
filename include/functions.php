@@ -365,6 +365,15 @@ function generate_new_code($type) {
 			$pad = TRUE; 
 			$pad_cnt = 3;			
 			break;
+			
+		case "request_number":	
+			$prefix = "MR".date('ymd');
+			$flag = '-';
+			$table = 'material_requests';
+			$column = 'request_number';	
+			$pad = TRUE; 
+			$pad_cnt = 2;			
+			break;
 	}
 	
 	global $DB;

@@ -1,6 +1,6 @@
 <?php
-  /* Module: Material Requests  */
-  $capability_key = 'material_requests_issue';
+  /* Module: Material Requests Release */
+  $capability_key = 'material_requests_release';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -24,7 +24,7 @@
 
   <div id="content">
     <form id="request-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
-    	<input type="hidden" name="action" value="issue_materials" />
+    	<input type="hidden" name="action" value="release_materials" />
     	<input type="hidden" name="rid" value="<?php echo $_GET['rid'] ?>" />
     	<input type="hidden" name="completion_status" value="24" />
     	
@@ -60,14 +60,13 @@
          <table cellspacing="0" cellpadding="0">
            <thead>
              <tr>
-               <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all" disabled/></td>
+               <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
                <td width="30" class="border-right text-center">No.</td>
                <td width="120" class="border-right">Material</td>
                <td class="border-right">Description</td>
            			<td width="100" class="border-right text-center">Type</td>
            			<td width="50" class="border-right text-center">Unit</td>
                <td width="70" class="border-right text-center">Qty</td>
-               <td width="70" class="border-right text-center">W/H Stock</td>
              </tr>
            </thead>
            <tbody id="request-items"></tbody>
@@ -100,8 +99,8 @@
      	     <strong></strong>
 						
          </div>
-         <?php if($request['completion_status'] != "Issued") { ?>
-         <input id="btn-submit" type="submit" value="Proceed" class="btn"/>
+         <?php if($request['completion_status'] == "Issued") { ?>
+         <input id="btn-submit" type="submit" value="Release" class="btn"/>
      	   <?php } ?>
          <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('production-material-requests.php'); ?>"/>
        </div>
@@ -117,7 +116,7 @@
 	    	"url":"/populate/material-requests-issue.php?rid=<?php echo $request['id']; ?>",
 	      "limit":"50",
 				"data_key":"material_request_issue",
-				"row_template":"row_template_material_request_issuance"
+				"row_template":"row_template_material_request_release"
 				
 			}
 		

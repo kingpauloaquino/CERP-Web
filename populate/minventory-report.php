@@ -25,7 +25,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 															(
 															SELECT warehouse_inventories.item_id,sum(warehouse_inventories.qty) as qty
 															FROM warehouse_inventories
-															WHERE EXTRACT(YEAR_MONTH FROM warehouse_inventories.created_at) <= EXTRACT(YEAR_MONTH FROM "'.$_GET['mydate'].'")
+															WHERE (EXTRACT(YEAR_MONTH FROM warehouse_inventories.created_at) <= EXTRACT(YEAR_MONTH FROM "'.$_GET['mydate'].'")) AND warehouse_inventories.status=16
 															GROUP BY warehouse_inventories.item_id
 															) AS wh1 ON wh1.item_id = m.id
 														LEFT OUTER JOIN

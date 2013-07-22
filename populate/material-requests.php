@@ -17,8 +17,9 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						: '';
 	
 	$query = $DB->Fetch('material_requests', array(
-							'columns'	=> 'material_requests.id, lookups.description AS request_type, batch_no, remarks, expected_date, requested_date',
-					    'joins'		=> 'INNER JOIN lookups ON lookups.id = material_requests.request_type',
+							'columns'	=> 'material_requests.id, material_requests.request_no, lookups.description AS request_type, batch_no, remarks, expected_date, requested_date, lookup_status.description AS status',
+					    'joins'		=> 'INNER JOIN lookups ON lookups.id = material_requests.request_type
+					    							INNER JOIN lookup_status ON lookup_status.id = material_requests.completion_status',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,

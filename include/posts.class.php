@@ -249,7 +249,8 @@ class Posts {
 		  'item_type'				=> $params['item_type'],	
 		  'invoice_no'				=> $params['invoice'],	
 		  'lot_no'				=> $params['lot'],	
-		  'qty'				=> $params['qty'],	 
+		  'qty'				=> $params['qty'],	
+		  'status'				=> 16, // status16 = active	 
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		);
     return $this->DB->InsertRecord('warehouse_inventories', $inventory);
@@ -832,6 +833,7 @@ class Posts {
 	
 	function AddMaterialRequest($params) {
   	$req = array(
+  	  'request_no'	=> $params['request_no'],
   	  'request_type'	=> $params['request_type'],
   	  'batch_no'	=> $params['batch_no'],
       'requested_date' => date('Y-m-d'),

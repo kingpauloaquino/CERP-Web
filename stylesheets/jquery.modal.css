@@ -19,12 +19,12 @@
 
 .modal .modal-content { padding:18px 20px 5px; }
 
-.modal .modal-content { background-color:#ffffff; min-height:150px; max-height: 420px; overflow:auto; }
+.modal .modal-content { background-color:#ffffff; min-height:350px; max-height: 420px; overflow:auto; }
 .modal .modal-content .field { clear:both;height:35px; }
 .modal .modal-content .field label { float:left;display:block;margin:3px 0 0;width:125px; }
 .modal .modal-content .field .text-field { float:left; } 
 .modal .modal-content .field .text-select { float:left;margin-top:3px; }
-.modal .modal-content .grid { margin:0 0 10px;min-width:680px;min-height:300px; }
+.modal .modal-content .grid { margin:0 0 10px;min-width:300px;min-height:100px; }
  
 .text-field.w305 { width:305px; }
 .text-select.w320 { width:320px; }

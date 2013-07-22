@@ -277,7 +277,7 @@ class Query {
 															(
 															SELECT warehouse_inventories.item_id,sum(warehouse_inventories.qty) as qty
 															FROM warehouse_inventories
-															WHERE EXTRACT(YEAR_MONTH FROM warehouse_inventories.created_at) <= EXTRACT(YEAR_MONTH FROM "'.$month_year.'")
+															WHERE (EXTRACT(YEAR_MONTH FROM warehouse_inventories.created_at) <= EXTRACT(YEAR_MONTH FROM "'.$month_year.'")) AND warehouse_inventories.status=16
 															GROUP BY warehouse_inventories.item_id
 															) AS wh1 ON wh1.item_id = m.id
 														LEFT OUTER JOIN
@@ -291,7 +291,7 @@ class Query {
 														INNER JOIN item_costs ON item_costs.item_id = m.id AND item_costs.item_type = "MAT"
 														INNER JOIN lookups ON lookups.id = m.unit',
                'group' => 'm.id',
-							 'conditions' => 'm.material_type = 70 
+							 'conditions' => 'm.material_type = 70 AND m.status=16
 							 							',
  								'order' => 'code'
 							 )
@@ -402,7 +402,7 @@ class Query {
 	
 	function material_request_by_id($id) {
   	$query = $this->DB->Fetch('material_requests', array(
-               'columns' => 'material_requests.id, lookups.description AS type, batch_no, remarks, expected_date, 
+               'columns' => 'material_requests.id,material_requests.request_no, lookups.description AS type, batch_no, remarks, expected_date, 
                							requested_date, received_date, lookup_status.description AS status, lookup_status2.description AS completion_status,
                							CONCAT(users1.first_name, " ", users1.last_name) AS requested_by,
                							CONCAT(users2.first_name, " ", users2.last_name) AS received_by',

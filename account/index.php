@@ -37,9 +37,55 @@
 			<div id='calendar' style="width: 540px; margin: 0 auto;"></div>
 		</div>
 		
-		<div style="width:500px; height:360px; margin:5px; padding:4px; float:left; border:solid 1px #eee">
+		
+		
+<!-- test -->
+<div style="width: 480px; height: 130px; margin: 5px; padding:10px; float: left; border: solid 1px #eee">
+			<h3>OUTSTANDING</h3>
+	  			<div style="padding-left:10px;  background: #e2e2e2">
+	  				<div style="padding: 7px; width: 60px; float: left; margin-right:40px;">
+		  				<div style="padding: 20px; width: 60px; font-size: 50px; color: #fff; background: #93e025; text-align: center; ">
+		  					3
+		  				</div>	
+		  				<div style="padding-left: 20px; width: 60px; font-size: 10px; text-align: center; ">
+		  					<a href="#">Work Orders</a>  
+		  				</div>		  				
+	  				</div>
+
+	  				<div style="padding: 7px; width: 60px; float: left; margin-right:40px;">
+		  				<div style="padding: 20px; width: 60px; font-size: 50px; color: #fff; background: #2593e0; text-align: center; ">
+		  					46
+		  				</div>	
+		  				<div style="padding-left: 20px; width: 60px; font-size: 10px; text-align: center; ">
+		  					<a href="#">Stocks</a>  
+		  				</div>		  				
+	  				</div>
+	  				
+	  				<div style="padding: 7px; width: 60px; float: left; margin-right:40px;">
+		  				<div style="padding: 20px; width: 60px; font-size: 50px; color: #fff; background: #e0257d; text-align: center; ">
+		  					25
+		  				</div>	
+		  				<div style="padding-left: 20px; width: 60px; font-size: 10px; text-align: center; ">
+		  					<a href="#">Requests</a>  
+		  				</div>		  				
+	  				</div>
+	  				
+	  				<div style="padding: 7px; width: 60px; float: left; margin-right:40px;">
+		  				<div style="padding: 20px; width: 60px; font-size: 50px; color: #fff; background: #e0bf25; text-align: center; ">
+		  					2
+		  				</div>	
+		  				<div style="padding-left: 20px; width: 60px; font-size: 10px; text-align: center; ">
+		  					<a href="#">Deliveries</a>  
+		  				</div>		  				
+	  				</div>
+	  			</div>
+	  		</div>
+<!-- test -->
+		
+		<br/><br/>
+		<div style="width:500px; height:260px; margin:5px; padding:4px; float:left; border:solid 1px #eee">
 			<h3>NOTIFICATIONS</h3>
-			<div id="tabs" style="min-height: 315px">
+			<div id="tabs" style="min-height: 215px">
 			  <ul>
 			    <li><a href="#tabs-1">General</a></li>
 			    <li><a href="#tabs-2">Warehouse</a></li>
@@ -47,9 +93,9 @@
 			  </ul>
 			  <div id="tabs-1">
 			    <ul>
-			    	<li>item 1</li>
-			    	<li>item 2</li>
-			    	<li>item 3</li>
+			    	<li><span class="text-green">EVENT</span> - Project Presentation</li>
+			    	<li><span class="text-blue">APPROVAL</span> - New Purchase Order</li>
+			    	<li><span class="text-orange">EVENT</span> - Data backup successful</li>
 			    </ul>
 			  </div>
 			  <div id="tabs-2" style="overflow: auto; max-height: 250px">
@@ -64,13 +110,12 @@
 			  </div>
 			  <div id="tabs-3">
 			    <ul>
-			    	<li>item 1</li>
-			    	<li>item 2</li>
+			    	<li><span class="text-red">ALERT</span> - Machine #2 mechanical failure</li>
+			    	<li><span class="text-orange">WARNING</span> - Machine #3 supply running low</li>
 			    </ul>
 			  </div>
 			</div>
 		</div>
-		
 	</div>
 </div>
 <script>
@@ -157,15 +202,20 @@
 		$('#calendar').fullCalendar({
 			editable: true,
 			events: [
+				// {
+					// title: 'Test Event',
+					// start: new Date(y, m, d-5),
+					// end: new Date(y, m, d-2)
+				// },
 				{
-					title: 'Test Event',
-					start: new Date(y, m, d-5),
-					end: new Date(y, m, d-2)
+					title: 'Project Presentation',
+					start: new Date(y, m, 22),
+					end: new Date(y, m, 22)
 				},
 				{
-					title: 'CERP Dashboard',
-					start: new Date(y, m, 28),
-					end: new Date(y, m, 29),
+					title: 'Sample ranged event',
+					start: new Date(y, m, 29),
+					end: new Date(y, m, 31),
 					url: 'http://119.92.50.166/cerp/'
 				}
 			]

@@ -1147,12 +1147,27 @@ function row_template_material_requests(data) {
   var forward	= host + "/account/production-material-requests-show.php?rid="+ id +"";
   var row		= $('<tr id="'+id+'">' +
   						'</tr>');
+  						
+	var text = '';
+	switch(data['status']){
+		case 'Pending':
+			text = 'text-red';
+		break;
+		case 'Issued':
+			text = 'text-orange';
+		break;
+		case 'Released':
+			text = 'text-green';
+		break;
+	}
   
-  row.append('<td class="border-right text-center"><a href="'+ forward +'">'+ data['request_type'] +'</a></td>');
+  row.append('<td class="border-right text-center"><a href="'+ forward +'">'+ data['request_no'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ (data['request_type'] || '-') +'</td>');
   row.append('<td class="border-right text-center">'+ (data['batch_no'] || '-') +'</td>');
   row.append('<td class="border-right">'+ (data['remarks'] || '-') +'</td>');
   row.append('<td class="border-right text-center">'+ data['requested_date'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['expected_date'] +'</td>');
+  row.append('<td class="border-right text-center '+text+'">'+ data['status'] +'</td>');
 
   return row;   
 }
@@ -1183,7 +1198,7 @@ function row_template_material_request_items_read_only(data) {
 
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right"><a class="click-issue" id="'+ data['id'] +'" href="#">'+ data['code'] +'</a></td>');
   row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right numbers">'+ parseFloat(data['qty']) +'</td>');
@@ -1194,7 +1209,6 @@ function row_template_material_request_items_read_only(data) {
 
 function row_template_material_request_issuance(data) {
   var mid		= data['mid'];
-	var forward	= host + "/account/materials-show.php?mid="+ mid + "";
   
   var row		= $('<tr id="'+mid+'">' +
   						'</tr>');
@@ -1210,13 +1224,45 @@ function row_template_material_request_issuance(data) {
 
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append('<td class="border-right"><a target="_blank" href="'+ forward +'">'+ data['code'] +'</a></td>');
+  row.append('<td class="border-right">'+ data['code'] +'</td>');
   row.append('<td class="border-right">'+ data['description'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right numbers '+ text +'">'+ parseFloat((data['qty'] || 0)) +'</td>');
   row.append('<td class="border-right text-right numbers wh-stock '+ text +'">'+ parseFloat((data['wh_stock'] || 0)) +'</td>');
  	
+  row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_material_request_release(data) {
+  var mid		= data['mid'];
+  
+  var row		= $('<tr id="'+mid+'">' +
+  						'</tr>');
+	var wh_stock = (data['wh_stock'] || 0);
+
+  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right">'+ data['code'] +'</td>');
+  row.append('<td class="border-right">'+ data['description'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ parseFloat((data['qty'] || 0)) +'</td>');
+ 	
+  row.find('.numbers').digits();
+  return row;   
+}
+
+function row_template_material_request_issue_stock(data) {
+  var id		= data['id'];
+  var row		= $('<tr id="'+id+'">' +
+  						'</tr>');
+  
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center">'+ data['lot_no'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ parseFloat(data['qty'] || 0) +'</td>');
+ 
   row.find('.numbers').digits();
   return row;   
 }

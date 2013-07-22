@@ -23,7 +23,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 							'columns'	=> 'materials.id AS id, materials.material_code AS code, materials.description AS description, 
 														item_costs.cost AS price, item_costs.moq, suppliers.name AS supplier, lookups.code AS unit, item_costs.currency,
 														SUM(warehouse_inventories.qty) AS stock, lookups2.description AS type',
-					    'joins'		=> 'LEFT OUTER JOIN warehouse_inventories ON warehouse_inventories.item_id = materials.id AND warehouse_inventories.item_type = "MAT"
+					    'joins'		=> 'LEFT OUTER JOIN warehouse_inventories ON warehouse_inventories.item_id = materials.id AND warehouse_inventories.item_type = "MAT" AND warehouse_inventories.status=16 
 												    INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
 												    INNER JOIN suppliers ON suppliers.id = item_costs.supplier
 												    INNER JOIN lookups ON lookups.id = materials.unit

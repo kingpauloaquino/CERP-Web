@@ -16,17 +16,18 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						'materials.description LIKE "%'. $keyword .'%" OR '.
 						'brand_models.brand_model LIKE "%'. $keyword .'%" OR '.
 						'item_classifications.classification LIKE "%'. $keyword .'%") AND materials.status=16 ' 
-						: 'materials.status=16';
+						: 'materials.status=16 ';
 
 	$query = $DB->Fetch('warehouse_inventories', array(
-							'columns'	=> 'materials.id, materials.material_code AS code, SUM(warehouse_inventories.qty) AS qty,
+							'columns'	=> 'materials.id, materials.material_code AS code, COALESCE(SUM(warehouse_inventories.qty),0) AS qty,
 														item_classifications.classification AS classification, materials.description AS description, 
 														brand_models.brand_model AS model, lookups.description AS uom, msq',
-					    'joins'		=> 'RIGHT OUTER JOIN materials ON warehouse_inventories.item_id = materials.id
+					    'joins'		=> 'RIGHT OUTER JOIN materials ON warehouse_inventories.item_id = materials.id AND warehouse_inventories.status = 16
 														INNER JOIN item_classifications ON materials.material_classification = item_classifications.id
 														INNER JOIN brand_models ON brand_models.id = materials.brand_model
 														INNER JOIN item_costs ON item_costs.item_id = materials.id AND item_costs.item_type = "MAT"
-														INNER JOIN lookups ON lookups.id = materials.unit',
+														INNER JOIN lookups ON lookups.id = materials.unit
+														',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,
     					'conditions' => $search,

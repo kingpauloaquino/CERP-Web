@@ -253,8 +253,8 @@ html .fc,
 	 
 .fc-event {
 	cursor: default;
-	border: 1px solid #35aec4; /* default BORDER color */
-	background-color: #35aec4; /* default BACKGROUND color */
+	border: 1px solid #C9383F; /* default BORDER color */
+	background-color: #C9383F; /* default BACKGROUND color */
 	color: #fff;               /* default TEXT color */
 	font-size: .85em;
 	font-weight:100;

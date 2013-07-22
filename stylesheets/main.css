@@ -395,6 +395,8 @@ img {
 .text-left { text-align:left; }
 .text-right { text-align:right; }
 .text-red { color: red;}
+.text-green { color: #26AF00;}
+.text-blue { color: #3E83DD;}
 .text-orange { color: orange;}
 .text-lightgray { color: #aaa;}
 

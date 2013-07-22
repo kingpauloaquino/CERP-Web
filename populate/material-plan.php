@@ -18,8 +18,12 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 												    materials.sorting_percentage, item_costs.moq, item_costs.cost AS price,
 														(
 												        SELECT COALESCE(SUM(warehouse_inventories.qty), 0) AS qty FROM warehouse_inventories 
-												        WHERE warehouse_inventories.item_id = purchase_order_item_parts.material_id OR
-												        warehouse_inventories.item_id = work_order_item_parts.material_id
+												        WHERE 
+												        (
+											        			warehouse_inventories.item_id = purchase_order_item_parts.material_id
+											        			OR
+												        		warehouse_inventories.item_id = work_order_item_parts.material_id
+										        		) AND warehouse_inventories.status = 16
 												    ) AS inventory, 
 														(
 																SELECT SUM((purchase_order_items.quantity * purchase_order_item_parts.parts_tree_qty)) AS qty

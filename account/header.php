@@ -1128,6 +1128,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	  <ul>
         	    <li><a href="users.php">Users</a></li>
         	    <li><a href="roles.php">Roles</a></li>
+        	    <li><a href="barcodegen.php">Barcode Generator</a></li>
         	    <li><a href="notifications.php">Notifications</a></li>
         	    <li><a href="settings-lookups-show.php">Lookups</a></li>
         	    <li><a href="settings-show.php">Settings</a></li>

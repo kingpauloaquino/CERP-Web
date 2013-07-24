@@ -15,7 +15,6 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
         <?php
-				  //echo '<a href="'.$Capabilities->All['supplier_delivery']['url'].'" class="nav">'.$Capabilities->All['supplier_delivery']['title'].'</a>';
 				  echo '<a href="'.$Capabilities->All['add_deliveries']['url'].'" class="nav">'.$Capabilities->All['add_deliveries']['title'].'</a>';
 				?>
 				<div class="clear"></div>

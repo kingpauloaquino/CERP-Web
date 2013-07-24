@@ -665,7 +665,8 @@ function row_template_supplier_material_plan(data) {
 }
 
 function row_template_material_plan(data) {
-  var forward	= host + "/account/material-plan-model-show.php?mid="+ data['id'] +"";
+  //var forward	= host + "/account/material-plan-model-show.php?mid="+ data['id'] +"";
+  var forward	= host + "/account/materials-show.php?mid="+ data['id'] +"";
   
   var sorting_percentage = parseFloat(data['sorting_percentage']);
   var sp = (sorting_percentage > 0) ? (sorting_percentage*100) + '%' : 'N/A';
@@ -699,61 +700,6 @@ function row_template_material_plan(data) {
 
   row.find('.numbers').digits();
   row.find('.text-currency').formatCurrency({region:"en-PH"});
-  return row;
-}
-
-function row_template_material_plan1(data) {
-  var forward	= host + "/account/material-plan-model-show.php?mid="+ data['id'] +"";
-  
-  var prod_plan = parseFloat((parseFloat(data['prod_plan']) * parseFloat(data['defect_rate'])) + parseFloat(data['prod_plan']));
-  var balance = ((parseFloat(data['open_po']) || 0) + (parseFloat(data['inventory']) || 0) - prod_plan);
-  var po_qty = (Math.ceil(parseFloat(parseFloat(Math.abs(balance) / parseFloat(data['moq'])).toFixed(1)) * 1) / 1) * parseFloat(data['moq']);
-  
-  var row		= $("<tr forward=\""+ forward +"\">" +
-  	"<td class=\"border-right\"><a target=\"_blank\" href=\""+ forward +"\">"+ data['material_code'] +"</a></td>" +
-    "<td class=\"border-right\">"+ data['model'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ (parseFloat(data['defect_rate'])*100) +"%</td>" +
-    "<td class=\"border-right text-right numbers\">"+ (prod_plan.toFixed(2) || 'N/A') +"</td>" +
-    "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['inventory']) || 0) +"</td>" +
-    "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['open_po']) || 0) +"</td>" +
-    "<td class=\"border-right text-right numbers "+ ((balance < 0) ? "red" : "") +"\">"+ balance +"</td>" +
-    "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['moq']) || 0) + data['unit'] +"</td>" +
-    "<td class=\"border-right text-right numbers text-currency\">"+ (parseFloat(data['price']) || 0) +"</td>" +
-    "<td class=\"border-right text-right numbers\">"+ (po_qty || 'N/A') +"</td>" +
-    "</tr>");
-
-  row.find('.numbers').digits();
-  row.find('.text-currency').formatCurrency({region:"en-PH"});
-  return row;
-  ///////////////////
-  var id		= data['id'];
-  var row		= $('<tr id="mat-'+ data['item_id'] +'"></tr>');
-  var amount	= parseFloat(data['quantity'] * clean_currency(data['item_price']));
-  
-  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /><input type="hidden" name="items['+id+'][item_id]" value="'+ data['item_id'] +'" /></td>');
-  row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append('<td class="border-right">'+ data['code'] +'</td>');
-  row.append('<td class="border-right">'+ data['description'] +'</td>');
-  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
-  row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
-  row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price"/></td>');
-  row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
- 
-  row.find('.currency').formatCurrency({region:"en-PH"});
-  return row; 
-}
-
-function row_template_material_plan_model(data) {
-  var forward	= host + "/account/material-plan-model-show.php?mid="+ data['item_id'] +"";
-    
-  var row		= $("<tr forward=\""+ forward +"\">" +
-  	"<td class=\"border-right\"><a target=\"_blank\" href=\""+ forward +"\">"+ data['product_code'] +"</a></td>" +
-    "<td class=\"border-right\">"+ data['brand'] +"</td>" +
-    "<td class=\"border-right text-right numbers\">"+ (data['price'] || 0) +"</td>" +
-    "<td class=\"border-right text-right numbers\">"+ (data['qty'] || 0) +"</td>" +
-    "</tr>");
-
-  row.find('.numbers').digits();
   return row;
 }
 
@@ -891,7 +837,7 @@ function row_template_plan_po_model_shipments(data) {
 }
 
 function row_template_plan_products(data) {
-  var forward	= host + "/account/plan-model-po-show.php?pid="+ data['id'] +"";
+  var forward	= host + "/account/plan-model-orders-show.php?pid="+ data['id'] +"";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right\"><a href=\""+ forward +"\">"+ (data['code'] || '--') +"</a></td>" +
     "<td class=\"border-right text-center\">"+ data['brand'] +"</td>" +
     "<td class=\"border-right text-center\">"+ data['series'] +"</td>" +
@@ -904,13 +850,14 @@ function row_template_plan_products(data) {
 }
 
 function row_template_plan_product_pos_read_only(data) {
-  var forward	= host + '/account/plan-po-model-shipment-show.php?ctrl_id='+ data['id'] +'&pid='+ data['pid'];
+	var forward = host + '/account/plan-order-model-shipment-show.php?ctrl_id='+ data['id'] +'&pid='+ data['pid'] +'&t='+ data['order_type'];
+  //var forward	= host + '/account/plan-po-model-shipment-show.php?ctrl_id='+ data['id'] +'&pid='+ data['pid'];
   var row		= $('<tr id="'+ data['id'] +'"></tr>');
 
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append('<td class="border-right text-center"><a target="_blank" href="'+ forward +'">'+ data['po_number'] +'</a></td>');
-  row.append('<td class="border-right text-center">'+ data['po_date'] +'</td>');
+  row.append('<td class="border-right text-center"><a target="_blank" href="'+ forward +'">'+ data['order_no'] +'</a></td>');
+  row.append('<td class="border-right text-center">'+ data['order_date'] +'</td>');
   row.append('<td class="border-right">'+ data['remarks'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['ship_date'] +'</td>');
   row.append('<td class="border-right text-right numbers">'+ data['quantity'] +'</td>');

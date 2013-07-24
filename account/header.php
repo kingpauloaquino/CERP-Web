@@ -1085,7 +1085,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	  <ul>
         	    <li><a href="productions.php">Production</a></li>
         	    <li><a href="production-material-requests.php">Material Requests</a></li>
-        	    <li><a href="production-output.php">Output</a></li>
         	    <!-- <li><a href="terminal-production.php">Terminal Entry</a></li>
         	    <li><a href="#">Requests</a></li>
         	    <li><a href="#">Transfers</a></li>
@@ -1108,17 +1107,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	</div>
         </div>
         <div class="menu">
-          <a href="#" alt="#menu-defects" class="show-submenu">Defects</a>
-        	<div id="menu-defects" class="main-sub-menu">
+          <a href="#" alt="#menu-analytics" class="show-submenu">Analytics</a>
+        	<div id="menu-analytics" class="main-sub-menu">
             <div class="glyphicons-halflings"></div>
-        	  <!-- <ul>
-        	    <li><a href="defects.php">Defects</a></li>
-        	    <li><a href="defects.php">Reworks</a></li>
-        	    <li><a href="defects.php">Machines</a></li>
-        	    <li><a href="defects.php">Tracking</a></li>
-        	    <li><a href="defects.php">OEE</a></li>
-        	    <li><a href="defect-reports.php">Reports</a></li>
-        	  </ul> -->
+        	  <ul>
+        	    <li><a href="analytics-sample.php">Sample</a></li>
+        	    <!-- <li><a href="defects.php">Defects</a></li> -->
+        	  </ul>
         	</div>
         </div>
         <div class="menu">
@@ -1128,11 +1123,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
         	  <ul>
         	    <li><a href="users.php">Users</a></li>
         	    <li><a href="roles.php">Roles</a></li>
-        	    <li><a href="barcodegen.php">Barcode Generator</a></li>
         	    <li><a href="notifications.php">Notifications</a></li>
         	    <li><a href="settings-lookups-show.php">Lookups</a></li>
-        	    <li><a href="settings-show.php">Settings</a></li>
-        	    <li><a href="settings.php">Advanced</a></li>
+        	    <li><a href="barcodegen.php">Barcode Generator</a></li>
+        	    <!-- <li><a href="settings-show.php">Settings</a></li>
+        	    <li><a href="settings.php">Advanced</a></li> -->
         	  </ul>
         	</div>
         </div>

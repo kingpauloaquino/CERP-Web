@@ -43,11 +43,11 @@
                <tr>
                  <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
                  <td width="30" class="border-right text-center">No.</td>
-                 <td width="140" class="border-right text-center">P/O No.</td>
-                 <td width="90" class="border-right text-center">P/O Date</td>
+                 <td width="140" class="border-right text-center">Order No.</td>
+                 <td width="90" class="border-right text-center">Order Date</td>
                  <td class="border-right text-center">Remarks</td>
                  <td width="90" class="border-right text-center">Ship Date</td>
-                 <td width="65" class="border-right text-center">P/O Qty</td>
+                 <td width="65" class="border-right text-center">Order Qty</td>
                </tr>
              </thead>
              <tbody id="purchase-order-materials"></tbody>
@@ -72,9 +72,9 @@
        <script>
 				$(function() {
 			  	var data = { 
-			    	"url":"/populate/product-pos.php?pid=<?php echo $_GET['pid'] ?>",
+			    	"url":"/populate/product-orders.php?pid=<?php echo $_GET['pid'] ?>",
 			      "limit":"50",
-						"data_key":"product_pos",
+						"data_key":"product_orders",
 						"row_template":"row_template_plan_product_pos_read_only",
 					}
 				

@@ -15,7 +15,7 @@
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
 	        <?php
-	        	echo '<a href="'.$Capabilities->All['plan_pos']['url'].'" class="nav">Browse by P/O</a>';
+	        	echo '<a href="'.$Capabilities->All['plan_orders']['url'].'" class="nav">Browse by Orders</a>';
 					?>
 				<div class="clear"></div>
       </h2>

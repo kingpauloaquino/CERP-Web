@@ -29,12 +29,12 @@
                   <td width="120"></td><td width="340"></td>
                </tr>
                <tr>
-                  <td width="120">P/O Number:</td><td width="340"><input type="text" value="<?php echo $purchase_order['po_number'] ?>" class="text-field magenta" disabled/></td>
-                  <td width="120">P/O Date:</td><td width="340"><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['po_date']))?>" class="text-field text-date" disabled/></td>
+                  <td width="120">P/O Number:</td><td width="340"><input type="text" value="<?php echo $purchase_order['order_no'] ?>" class="text-field magenta" disabled/></td>
+                  <td width="120">P/O Date:</td><td width="340"><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['order_date']))?>" class="text-field text-date" disabled/></td>
                </tr>
                <tr>
                   <td>Terms:</td><td><input type="text" value="<?php echo $purchase_order['terms'] ?>" class="text-field" disabled/></td>
-                  <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['delivery_date']))?>" class="text-field" disabled/></td>
+                  <td>Ship Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['ship_date']))?>" class="text-field" disabled/></td>
                </tr>
                <tr>
                   <td>Payment Terms:</td>
@@ -44,7 +44,7 @@
                </tr>    
                <tr>
                   <td>Completion:</td><td><input type="text" value="<?php echo $purchase_order['completion_status'] ?>" class="text-field" disabled/></td>
-                  <td>Ship Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['ship_date']))?>" class="text-field" disabled/></td>
+                  <td></td><td></td>
                </tr>  
                <tr>
                   <td>Product:</td><td><input type="text" value="<?php echo $product['product_code'] ?>" class="text-field" disabled/></td>

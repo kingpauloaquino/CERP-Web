@@ -48,7 +48,7 @@
                   <td>Payment Terms:</td><td><input type="text" name="purchase[payment_terms]" value="<?php echo $purchase['payment_terms']; ?>" class="text-field"/></td>
                </tr>
                <tr>
-                  <td>Completion:</td><td><?php select_query_tag($completion, 'id', 'description', $purchase['completion_status_id'], 'purchase[completion_status]', 'purchase[completion_status]', '', 'width:192px;'); ?></td>
+                  <td>Delivery:</td><td><input type="text" value="<?php echo $purchase['completion_status']; ?>" class="text-field" disabled/></td>
                   <td></td><td></td>
                </tr>
                <tr><td height="5" colspan="99"></td></tr>
@@ -87,7 +87,7 @@
                   </td>
                   <td align="right"><strong>Total Amount:</strong>&nbsp;&nbsp;<input id="purchase_amount" type="text" value="" class="text-right text-currency" style="width:95px;" disabled/></td>
                </tr>
-               <tr><td colspan="2">Remarks:<br/><textarea name="purchase[remarks]" style="min-width:650px;width:98.9%;height:50px;"></textarea></td></tr>
+               <tr><td colspan="2">Remarks:<br/><textarea name="purchase[remarks]" style="min-width:650px;width:98.9%;height:50px;"><?php echo $purchase['remarks']; ?></textarea></td></tr>
             </table>
          </div>
          <div class="field-command">
@@ -122,7 +122,7 @@
 								<td class="border-right text-center" width="20"><input type="checkbox" class="chk-all"/></td> 
 								<td class="border-right text-center" width="140"><a class="sort default active up" column="code">Code</a></td>
 								<td class="border-right text-center" width="80"><a class="sort" column="stock">Stock</a></td> 
-								<td class="border-right text-center"><a class="sort" column="description">Supplier</a></td> 
+								<td class="border-right text-center"><a class="sort" column="description">Description</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="price">Price</a></td> 
                </tr>
@@ -218,9 +218,9 @@
            var cell		= $("<tr id=\""+ row_id +"\"></tr>");
            
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
-           cell.append("<td class=\"mat-code border-right\"><input type='hidden' class='mat-currency' value='"+ row['currency'] +"' /><a class=\"mat\" alt=\"" + row['id'] + "\" rel=\"modal:open\" href=\"#modal-material-requests\">"+ row['code'] +"</a></td>");
+           cell.append("<td class=\"mat-code border-right\"><input type='hidden' class='mat-currency' value='"+ row['currency'] +"' /><input type='hidden' class='mat-moq' value='"+ row['moq'] +"' /><a class=\"mat\" alt=\"" + row['id'] + "\" rel=\"modal:open\" href=\"#modal-material-requests\">"+ row['code'] +"</a></td>");
            cell.append("<td class=\"mat-stock border-right text-right numbers\">"+ (parseFloat(row['stock']) || '0') +"</td>");
-           cell.append("<td class=\"mat-description border-right text-center\">"+ row['supplier'] +"</td>");
+           cell.append("<td class=\"mat-description border-right\">"+ row['description'] +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            
@@ -309,6 +309,7 @@
            	       'quantity':1,
            	       'item_price':item.find('.mat-price').html(),
            	       'currency':item.find('.mat-currency').val(),
+           	       'moq':item.find('.mat-moq').val(),
            	     }
            	     
            	     var row = row_template_purchase_material(data);

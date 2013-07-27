@@ -292,7 +292,7 @@
            	       'code':item.find('.mat-code').html(),
            	       'description':item.find('.mat-description').html(),
            	       'unit':item.find('.mat-unit').html(),
-           	       'quantity':1,
+           	       'quantity':parseFloat(item.find('.mat-moq').val()),
            	       'item_price':item.find('.mat-price').html(),
            	       'currency':item.find('.mat-currency').val(),
            	       'moq':item.find('.mat-moq').val(),

@@ -67,8 +67,8 @@
 	             <thead>
 	               <tr>
 	                 <td width="30" class="border-right text-center">No.</td>
-	                 <td width="100" class="border-right text-center">Invoice</td>
-	                 <td width="100" class="border-right text-center">Lot</td>
+	                 <td width="110" class="border-right text-center">Invoice</td>
+	                 <td width="110" class="border-right text-center">Lot</td>
 	                 <td class="border-right">Remarks</td>
 	                 <td width="70" class="border-right text-center">Unit</td>
 	                 <td width="70" class="border-right text-center">Stock</td>
@@ -96,10 +96,11 @@
 		            <tr>
 	                 <td width="30" class="border-right text-center">No.</td>
 	                 <td class="border-right text-center">Request Type</td>
-	                 <td width="100" class="border-right text-center">Batch #</td>
+	                 <td width="110" class="border-right text-center">Batch #</td>
 	                 <td width="100" class="border-right text-center">Requested</td>
 	                 <td width="100" class="border-right text-center">Expected</td>
 	                 <td width="140" class="border-right text-center">Terminal</td>
+	                 <td width="110" class="border-right text-center">Lot No.</td>
 	                 <td width="70" class="border-right text-center">Status</td>
 	                 <td width="70" class="border-right text-center">Qty</td>
 		            </tr>
@@ -129,7 +130,7 @@
 	      "limit":"15",
 				"data_key":"material_request_items",
 				"row_template":"row_template_minventory_requests",
-				"order":"requested_date",
+				"order":"requested_date, mriiid",
 				"sort":"ASC"
 			}
 		

@@ -43,7 +43,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 														) AS wo_plan,
 														(
 																SELECT COALESCE(SUM(purchase_items.quantity), 0) AS qty FROM purchase_items 
-																INNER JOIN purchases ON purchases.id = purchase_items.purchase_id AND purchases.status = 11
+																INNER JOIN purchases ON purchases.id = purchase_items.purchase_id AND purchases.completion_status = 13
 																WHERE purchase_items.item_id = materials.id
 														) AS open_po
 												    ',

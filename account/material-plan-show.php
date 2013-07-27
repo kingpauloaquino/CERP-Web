@@ -19,7 +19,10 @@
       <div id="page">
         <div id="page-title">
           <h2>
-            <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
+	      	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
+	        <?php
+					  echo '<a href="'.$Capabilities->All['material_plan']['url'].'" class="nav">List</a>';
+					?>
             <div class="clear"></div>
           </h2>
         </div>

@@ -322,6 +322,7 @@ function pad_number($number,$n) {
 }
 
 function generate_new_code($type) {
+	$pad_cnt = 2;
 	switch($type) {
 		case "purchase_order_number":	
 			$prefix = "STJ-C";	
@@ -372,14 +373,35 @@ function generate_new_code($type) {
 			$table = 'material_requests';
 			$column = 'request_number';	
 			$pad = TRUE; 
-			$pad_cnt = 2;			
+			$pad_cnt = 3;			
+			break;
+			
+		case "material_lot_no":	
+			$prefix = "MLN".date('ymd');
+			$flag = '-';
+			$table = 'warehouse_inventories';
+			$column = 'lot_no';	
+			$pad = TRUE; 
+			$pad_cnt = 3;			
 			break;
 	}
 	
 	global $DB;
-	$result = $DB->Find($table, array('columns' => 'MAX(id) AS current'));
+	$result = $DB->Find($table, array('columns' => 'COUNT(id) AS current'));
 	//$res = substr($result['current'], strpos($result['current'], $flag)+1)+1;
-	$res = $result['current'] + 1;
+	//$result['current'] = 999;
+	switch($pad_cnt) {
+		case 2:
+			$res = ((int) $result['current'] == 99) ? 1 : $result['current'] + 1;
+			break;
+		case 3:
+			$res = ((int) $result['current'] == 999) ? 1 : $result['current'] + 1;
+			break;
+		case 4:
+			$res = ((int) $result['current'] == 9999) ? 1 : $result['current'] + 1;
+			break;
+	}
+	//$res = $result['current'] + 1;
 	if($pad) { $res = pad_number($res, $pad_cnt); }
 	return $prefix . $res;
 }

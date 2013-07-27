@@ -17,7 +17,7 @@
             <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
 		        <?php
 		        	echo '<a href="'.$Capabilities->All['purchases']['url'].'?pid='.$_GET['id'].'" class="nav">'.$Capabilities->All['purchases']['name'].'</a>';
-		        	echo '<a href="'.$Capabilities->All['deliveries_po']['url'].'?pid='.$_GET['id'].'" class="nav">'.$Capabilities->All['deliveries_po']['name'].'</a>';
+		        	echo '<a href="'.$Capabilities->All['deliveries_po']['url'].'?pid='.$_GET['id'].'" class="nav">Deliveries</a>';
 						?>
             <div class="clear"></div>
           </h2>

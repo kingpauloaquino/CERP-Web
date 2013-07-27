@@ -250,19 +250,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$Posts->UpdateDelivery(array('variables' => $_POST['delivery'], 'conditions' => 'id='.$_POST['did']));
 		redirect_to(host('deliveries-show.php?id='.$_POST['did']));
   	break;
-  
-  // ===============================================================
+		
+	// ===============================================================
   // Post::Add Receiving
   // ===============================================================
   case 'add_receiving':
-    //echo $Posts->AddReceiving($_POST['receiving']);
-    exit();
-    break;
-		
-	// ===============================================================
-  // Post::Edit Receiving
-  // ===============================================================
-  case 'edit_receiving':
 		$ctr = 0;
 		$complete_flag = 0;
     $items	= $_POST['items'];
@@ -290,22 +282,23 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			
 			$ctr += 1;
 			if($item['status'] == 21) $complete_flag += 1;
-			
-			
 		}
 		
 		$purchase_completion_status = 0;
+		$delivery_completion_status = 0;
 		if($ctr > 0) {
 			if($ctr == $complete_flag) {
-				$purchase_completion_status = 6; //complete
+				$purchase_completion_status = 14; // close
+				$delivery_completion_status = 6; // complete
 			}
 			if($ctr > $complete_flag) {
-				$purchase_completion_status = 5; // partial
+				$purchase_completion_status = 13; // open
+				$delivery_completion_status = 5; // partial
 			}	
 		}
 		
 		// status 14 = close
-		$delivery = array('variables' => array('remarks' => $_POST['delivery']['remarks'], 'status' => 14, 'completion_status' => $purchase_completion_status), 'conditions' => 'id='.$_POST['delivery']['id']); 
+		$delivery = array('variables' => array('remarks' => $_POST['delivery']['remarks'], 'status' => 14, 'completion_status' => $delivery_completion_status), 'conditions' => 'id='.$_POST['delivery']['id']); 
 		$Posts->EditReceiving($delivery);
 		
 		$purchase = array('variables' => array('completion_status' => $purchase_completion_status), 'conditions' => 'id='.$_POST['delivery']['purchase_id']);
@@ -846,7 +839,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$Posts->EditMaterialRequest(array('variables'=>array('batch_no' => $_POST['batch_no'], 
 																													'expected_date' => date('Y-m-d', strtotime($_POST['expected_date'])),
 																													'requested_date' => date('Y-m-d', strtotime($_POST['requested_date'])),
-																													'remarks' => $_POST['remarks'])
+																													'remarks' => $_POST['remarks'],
+																													'status' => $_POST['status'])
 																			, 'conditions' => 'id='.$_POST['rid']));
 																			
 		$DB->DeleteRecord('material_request_items', array('conditions' => 'request_id='.$_POST['rid']));
@@ -866,11 +860,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		// get warehouse items
 		$requests = $DB->Fetch('material_request_items', array('columns' => 'id, material_id, qty', 'conditions' => 'request_id='.$_POST['rid']));
 		foreach($requests as $req) {
+			// update material request items status to ISSUED
+			$Posts->EditMaterialRequestItem(array('variables' => array('status' => 24), 'conditions' => 'id='.$req['id']));
+			
 			$stocks = null;
 			$stocks = $DB->Fetch('warehouse_inventories', array('columns' => 'id, qty', 'conditions' => 'item_id='.$req['material_id'], 'order' => 'id'));
 			
 			$req_qty  = NULL;
-			foreach($stocks as $stock) {
+			foreach($stocks as $stock) {				
 				$req_qty = ($req_qty == NULL) ? $req['qty'] : $req_qty;
 				if($stock['qty'] >= $req_qty) {
 					$new_stock_qty = (double) $stock['qty'] - $req_qty;
@@ -879,7 +876,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 					$Posts->AddMaterialRequestItemIssue(array('request_item_id' => $req['id'], 'warehouse_inventory_id' => $stock['id'], 'qty' => $req_qty));
 					
 					// update w/h stock
-					$args = array('variables' => array('qty' => $new_stock_qty, 'remarks' => 'Issued for issuance.'), 'conditions' => 'id='.$stock['id']); 
+					$args = array('variables' => array('qty' => $new_stock_qty, 'remarks' => 'Request issued.'), 'conditions' => 'id='.$stock['id']); 
 					$Posts->EditInventory($args);
 					
 					// if new_stock_qty is 0, set inactive
@@ -905,92 +902,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		break;
 		
 	case 'release_materials':
-		$Posts->EditMaterialRequest(array('variables'=>array('completion_status' => $_POST['completion_status']), 'conditions' => 'id='.$_POST['rid']));
-		
-		// get warehouse items
-		$requests = $DB->Fetch('material_request_items', array('columns' => 'id, material_id, qty', 'conditions' => 'request_id='.$_POST['rid']));
-		foreach($requests as $req) {
-			$stocks = null;
-			$stocks = $DB->Fetch('warehouse_inventories', array('columns' => 'id, qty', 'conditions' => 'item_id='.$req['material_id'], 'order' => 'id'));
 			
-			$req_qty  = NULL;
-			foreach($stocks as $stock) {
-				$req_qty = ($req_qty == NULL) ? $req['qty'] : $req_qty;
-				if($stock['qty'] >= $req_qty) {
-					$new_stock_qty = (double) $stock['qty'] - $req_qty;
-					
-					// add to issuance
-					$Posts->AddMaterialRequestItemIssue(array('request_item_id' => $req['id'], 'warehouse_inventory_id' => $stock['id'], 'qty' => $req_qty));
-					
-					// update w/h stock
-					$args = array('variables' => array('qty' => $new_stock_qty, 'remarks' => 'Issued for issuance.'), 'conditions' => 'id='.$stock['id']); 
-					$Posts->EditInventory($args);
-					
-					// if new_stock_qty is 0, set inactive
-					if($new_stock_qty == 0) {
-						$args = array('variables' => array('status' => 17), 'conditions' => 'id='.$stock['id']); // status17 = inactive 
-						$Posts->EditInventory($args);
-					}
-					$req_qty  = NULL;
-					break;
-				}
-				else {
-					$req_qty = (double) $req_qty - (double) $stock['qty'];
-					
-					// add to issuance
-					$Posts->AddMaterialRequestItemIssue(array('request_item_id' => $req['id'], 'warehouse_inventory_id' => $stock['id'], 'qty' => $stock['qty']));
-					
-					// set status as inactive, stock = 0
-					$args = array('variables' => array('status' => 17), 'conditions' => 'id='.$stock['id']); // status17 = inactive 
-					$Posts->EditInventory($args);
-				}
-			}
-		}
 		break;
 		
-		// case 'issue_materials':
-		// $Posts->EditMaterialRequest(array('variables'=>array('completion_status' => $_POST['completion_status']), 'conditions' => 'id='.$_POST['rid']));
-// 		
-		// // TODO: subtract from stock, according to lot_no
-		// // get warehouse items
-		// $requests = $DB->Fetch('material_request_items', array('columns' => 'id, material_id, qty', 'conditions' => 'request_id='.$_POST['rid']));
-		// foreach($requests as $req) {
-			// $stocks = null;
-			// $stocks = $DB->Fetch('warehouse_inventories', array('columns' => 'id, qty', 'conditions' => 'item_id='.$req['material_id'], 'order' => 'id'));
-// 			
-			// $new_stock_qty = NULL;
-			// foreach($stocks as $stock) {
-				// if($stock['qty'] >= $req['qty']) {
-					// $new_stock_qty = (double) $stock['qty'] - (double) $req['qty'];
-// 					
-					// // add to issuance
-					// $Posts->AddMaterialRequestItemIssue(array('request_item_id' => $req['id'], 'warehouse_inventory_id' => $stock['id'], 'qty' => $req['qty']));
-// 					
-					// // update w/h stock
-					// $args = array('variables' => array('qty' => $new_stock_qty, 'remarks' => 'Issued for issuance.'), 'conditions' => 'id='.$stock['id']); 
-					// $Posts->EditInventory($args);
-// 					
-					// // if new_stock_qty is 0, remove
-					// if($new_stock_qty == 0) {
-						// $Posts->DeleteInventory(array('conditions' => 'id='.$stock['id']));
-					// }
-				// }
-				// else {
-					// $new_stock_qty = (double) $req['qty'] - (double) $stock['qty'];
-// 					
-					// // add to issuance
-					// $Posts->AddMaterialRequestItemIssue(array('request_item_id' => $req['id'], 'warehouse_inventory_id' => $stock['id'], 'qty' => $stock['qty']));
-// 					
-					// $Posts->DeleteInventory(array('conditions' => 'id='.$stock['id']));
-				// }
-// 				
-// 				
-				// break;
-			// }
-// 			
-// 			
-		// }
-		// break;
 	} // close switch
 
   

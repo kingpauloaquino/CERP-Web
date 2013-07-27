@@ -26,7 +26,7 @@
     <form id="request-form" action="<?php host($Capabilities->GetUrl()) ?>" method="POST" class="form-container">
     	<input type="hidden" name="action" value="release_materials" />
     	<input type="hidden" name="rid" value="<?php echo $_GET['rid'] ?>" />
-    	<input type="hidden" name="completion_status" value="24" />
+    	<input type="hidden" name="completion_status" value="25" />
     	
        <!-- BOF TEXTFIELDS -->
        <div>
@@ -100,7 +100,7 @@
 						
          </div>
          <?php if($request['completion_status'] == "Issued") { ?>
-         <input id="btn-submit" type="submit" value="Release" class="btn"/>
+         <input id="btn-submit" type="submit" value="Proceed" class="btn"/>
      	   <?php } ?>
          <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('production-material-requests.php'); ?>"/>
        </div>

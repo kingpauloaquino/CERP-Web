@@ -403,7 +403,7 @@ class Query {
 	function material_request_by_id($id) {
   	$query = $this->DB->Fetch('material_requests', array(
                'columns' => 'material_requests.id,material_requests.request_no, lookups.description AS type, batch_no, remarks, expected_date, 
-               							requested_date, received_date, lookup_status.description AS status, lookup_status2.description AS completion_status,
+               							requested_date, received_date, material_requests.status AS status_id, lookup_status.description AS status, lookup_status2.description AS completion_status,
                							CONCAT(users1.first_name, " ", users1.last_name) AS requested_by,
                							CONCAT(users2.first_name, " ", users2.last_name) AS received_by',
                'joins' => 'INNER JOIN lookups ON lookups.id = material_requests.request_type

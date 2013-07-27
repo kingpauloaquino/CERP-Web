@@ -1,6 +1,6 @@
 <?php
   /* Module: Receiving  */
-  $capability_key = 'edit_receiving';
+  $capability_key = 'add_receiving';
   require('header.php');
 	
 	$allowed = $Role->isCapableByName($capability_key);	
@@ -22,7 +22,7 @@
         <div id="content">
         	<a id="btn-receive-material" href="#mdl-receive-material" rel="modal:open"></a>
           <form class="form-container" method="POST" >
-		      	 <input type="hidden" name="action" value="edit_receiving"/>
+		      	 <input type="hidden" name="action" value="add_receiving"/>
 		      	 <input type="hidden" name="delivery[id]" value="<?php echo $_GET['id']; ?>"/>
 		      	 <input type="hidden" name="delivery[purchase_id]" value="<?php echo $delivery['pid']; ?>"/>
              <!-- BOF TEXTFIELDS -->
@@ -49,11 +49,13 @@
                       <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
                    </tr>
                    <tr>
-                      <td>Invoice:</td><td><input id="delivery[invoice]" name="delivery[invoice]" type="text" class="text-field" required autocomplete="off"/></td>
-                      <td>Receipt:</td><td><input id="delivery[receipt]" name="delivery[receipt]" type="text" class="text-field" autocomplete="off"/></td>
+                      <td>Invoice:</td><td><input id="invoice" name="delivery[invoice]" type="text" class="text-field" required autocomplete="off" notice="invoice_status"/>
+                      	<span id="invoice_status" class="warning"></span>
+                      </td>
+                      <td>Receipt:</td><td><input id="receipt" name="delivery[receipt]" type="text" class="text-field" autocomplete="off"/></td>
                    </tr>
                    <tr>
-                      <td>Lot No.:</td><td><input id="delivery[lot]" name="delivery[lot]" type="text" class="text-field" required autocomplete="off" /></td>
+                      <td>Lot No.:</td><td><input id="delivery[lot]" name="delivery[lot]" type="text" class="text-field magenta" value="<?php echo generate_new_code('material_lot_no') ?>" required autocomplete="off" readonly/></td>
                       <td></td><td></td>
                    </tr>
                    <tr><td height="5" colspan="99"></td></tr>
@@ -97,7 +99,7 @@
            </div>
            <?php 
            	if($delivery['status'] != 'Close') {
-           		echo '<input type="submit" value="Save" class="btn"/>';
+           		echo '<input id="btn-submit" type="submit" value="Save" class="btn" disabled/>';
            	}
            ?>
            <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('deliveries-show.php?id='.$_GET['id']); ?>"/>
@@ -158,7 +160,11 @@
     $('#tbl-materials').find('tbody tr .chk-item').show_receiving_modal();
     $('#submit-receive-material').add_receiving();
     
-    
+    $('#invoice').keyup(function() {
+			($(this).is_existing('delivery_items', 'id', '', 'invoice="' +$(this).val()+ '"', 'invoice')) 
+				? $('#btn-submit').attr('disabled', true)
+				: $('#btn-submit').attr('disabled', false);
+		});
   })
   
   

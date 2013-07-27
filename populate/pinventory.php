@@ -18,7 +18,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 						: 'products.status=16';
 	
 	$query = $DB->Fetch('warehouse2_inventories', array(
-							'columns'	=> 'warehouse2_inventories.id AS id, products.id AS pid, warehouse2_inventories.production_purchase_order_id, 
+							'columns'	=> 'warehouse2_inventories.id AS id, products.id AS pid, 
 														warehouse2_inventories.prod_lot_no, products.product_code AS code, 
 														SUM(warehouse2_inventories.qty) AS qty, products.color AS color, products.description AS description,
 														products.pack_qty, brand_models.brand_model AS brand, product_series.series',

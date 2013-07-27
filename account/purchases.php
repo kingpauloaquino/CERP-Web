@@ -37,7 +37,6 @@
               <td width="90" class="border-right text-center text-date"><a class="sort" column="po_date">P/O Date</a></td>
               <td width="90" class="border-right text-center text-date"><a class="sort"column="delivery_date">Delivery</a></td>
               <td width="90" class="border-right text-center"><a class="sort" column="total_amount">Amount</a></td>
-              <td width="70" class="border-right text-center"><a class="sort" column="status">Approval</a></td>
               <td width="70" class="text-center"><a class="sort" column="completion_status">Completion</a></td>
             </tr>
           </thead>

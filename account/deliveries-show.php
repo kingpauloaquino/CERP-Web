@@ -95,7 +95,7 @@
              
              <div class="field-command">
            	   <div class="text-post-status">
-           	     <strong>Status:</strong>&nbsp;&nbsp;<?php echo $delivery['status']; ?>
+           	     <strong></strong>
                </div>
                
                <?php if($delivery['status'] != "Close") { ?>

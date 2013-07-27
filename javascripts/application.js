@@ -374,7 +374,7 @@ function grid_population(table, args) {
   $.ajax({
     url: host + args['url'] + opt + 'page='+ args['page'] +'&limit='+ args['limit'] +'&order='+ args['order'] +'&sort='+ args['sort'] +'&params='+ params,
     dataType: "json",
-    // async: false, // set as synchronous for table total quantities 
+    // async: false, // set as synchronous for table total quantities; async false is deprecated
     data: args['data'] || null,
     success: function(data) {
       // Remove Loader
@@ -580,8 +580,9 @@ function row_template_minventory_requests(data) {
   row.append('<td class="border-right text-center date-string">'+ data['requested_date'] +'</td>');
   row.append('<td class="border-right text-center date-string">'+ data['expected_date'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['terminal'] +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['lot_no'] || '') +'</td>');
   row.append('<td class="border-right text-center">'+ data['completion_status'] +'</td>');
-  row.append('<td class="border-right text-right numbers">'+ data['qty'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ parseFloat(data['qty']) +'</td>');
  
 	row.find('.date-string').format_date_string(false, 'M dd, yy');
   row.find('.numbers').digits();
@@ -686,7 +687,7 @@ function row_template_material_plan(data) {
   		"<input type=\"hidden\" name=\"items["+data['id']+"][item_price]\" value=\""+ parseFloat(data['price']) +"\" />" +
   		"<input type=\"hidden\" name=\"items["+data['id']+"][currency]\" value=\""+ data['currency'] +"\" />" +
   	"<a target=\"_blank\" href=\""+ forward +"\">"+ data['material_code'] +"</a></td>" +
-    "<td class=\"border-right\">"+ data['model'] +"</td>" +
+    "<td class=\"border-right text-center\">"+ data['model'] +"</td>" +
     "<td class=\"border-right text-center\">"+ (parseFloat(data['defect_rate'])*100) +"%</td>" +
     "<td class=\"border-right text-right numbers\">"+ (isNaN(prod_plan) ? '0' : prod_plan) +"</td>" +
     "<td class=\"border-right text-right numbers\">"+ (parseFloat(data['inventory']) || 0) +"</td>" +
@@ -1145,7 +1146,13 @@ function row_template_material_request_items_read_only(data) {
 
   row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" disabled/></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append('<td class="border-right"><a class="click-issue" id="'+ data['id'] +'" href="#">'+ data['code'] +'</a></td>');
+  
+  if(data['status'] == 19) { // status 19 = pending
+		row.append('<td class="border-right">'+ data['code'] +'</td>');
+	} else {
+		row.append('<td class="border-right"><a class="click-issue" id="'+ data['id'] +'" href="#">'+ data['code'] +'</a></td>');
+	} 
+	
   row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right numbers">'+ parseFloat(data['qty']) +'</td>');
@@ -1247,18 +1254,20 @@ function row_template_users(data) {
 }
 
 function row_template_purchases(data) {
-  var forward	= host + "/account/purchases-show.php?id="+ data['id'] +"";
-  var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['po_number'] || '--') +"</a></td>" +
-    "<td class=\"border-right\"><a href=\"\">"+ data['supplier_name'] +"</a></td>" +
-    "<td class=\"border-right text-center\">"+ dtime_basic(data['po_date']) +"</td>" +
-    "<td class=\"border-right text-center\">"+ dtime_basic(data['delivery_date']) +"</td>" +
-    "<td class=\"border-right text-right text-currency\">"+ data['total_amount'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['status'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['completion_status'] +"</td>" +
-    "</tr>");
+  var id		= data['id'];
+  var forward = host + '/account/purchases-show.php?id='+ id;
+  var row		= $('<tr id="'+id+'">' +
+  						'</tr>');
   
+  row.append('<td class="border-right text-center"><a href="'+ forward +'">'+ (data['po_number'] || '--') +'</a></td>');
+  row.append('<td class="border-right">'+ data['supplier_name'] +'</td>');
+  row.append('<td class="border-right text-center">'+ dtime_basic(data['po_date']) +'</td>');
+  row.append('<td class="border-right text-right">'+ dtime_basic(data['delivery_date']) +'</td>');
+  row.append('<td class="border-right text-right text-currency">'+ data['total_amount'] +'</td>');
+  row.append('<td class="border-right text-center">'+ data['completion_status'] +'</td>');
+ 
   row.find('.text-currency').formatCurrency({region:"en-PH"});
-  return row;
+  return row;   
 }
 
 function row_template_purchase_material(data) {
@@ -1277,7 +1286,7 @@ function row_template_purchase_material(data) {
   row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
  
   row.find('.numeric').numeric_only();
-  row.find('.currency').formatCurrency({region:"en-PH"});
+  row.find('.currency').formatCurrency({region:"en-PH", roundToDecimalPlace: 3});
   return row;   
 }
 
@@ -1454,7 +1463,6 @@ function row_template_deliveries(data) {
   row.append("<td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ data['po_number'] +"</a></td>");
   row.append("<td class=\"border-right\">"+ data['supplier_name'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ dtime_basic(data['delivery_date']) +"</td>");
-  row.append("<td class=\"border-right text-center\">"+ data['status'] +"</td>");
   row.append("<td class=\"border-right text-center\">"+ data['completion_status'] +"</td>");
   
   row.find('.text-currency').formatCurrency({region:"en-PH"});

@@ -4,6 +4,7 @@ session_start();
 
 require('database.class.php');
 require('capabilities.class.php');
+require('status.class.php');
 require('posts.class.php');
 require('query.class.php');
 require('prettyjson.class.php');
@@ -29,6 +30,7 @@ $DB				= new MySQL;
 $Capabilities	= new Capabilities($DB);
 $Posts			= new Posts($DB);
 $Query			= new Query($DB);
+$Status = new LookupStatus();
 $JSON			= new PrettyJson;
 $Menu			= new Menu;
 

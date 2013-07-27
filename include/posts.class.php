@@ -529,7 +529,7 @@ class Posts {
       'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
       'total_amount'	=> $params['total_amount'],
       'status'			=> $params['status'],
-      'completion_status'			=> 2, //pending
+      'completion_status'			=> 13, // Open receiving status
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
 		  'created_by' => $_SESSION['user']['id'],
 		  'checked_by' => $_SESSION['user']['id'],
@@ -545,10 +545,11 @@ class Posts {
 			$delivery['purchase_id'] = $purchase_id;
 			$delivery['delivery_via'] = trim($params['delivery_via']);
 			$delivery['delivery_date'] = date('Y-m-d', strtotime($params['delivery_date']));
-			$delivery['remarks'] = mysql_real_escape_string(ucwords(strtolower($params['remarks'])));
+			$delivery['remarks'] = $params['remarks'];
 			$delivery['status'] = 13; // Open receiving status
 			$delivery['completion_status'] = 19; // pending completion status
 			$delivery_id = $this->AddDelivery($delivery);
+			
 		}
 		
 		// Add Each Purchase Item
@@ -583,8 +584,8 @@ class Posts {
 	      'delivery_date' => date('Y-m-d', strtotime($params['delivery_date'])),
 	      'total_amount'	=> $params['total_amount'],
 	      'status'			=> $params['status'],
-      	'completion_status'		=> $params['completion_status'],
-		  	'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
+      	//'completion_status'		=> $params['completion_status'],
+		  	'remarks'	=> ucwords(strtolower($params['remarks'])),
 			  'created_by' => $_SESSION['user']['id'],
 			  'checked_by' => $_SESSION['user']['id'],
 			  'checked_at' => date('Y-m-d')
@@ -601,7 +602,7 @@ class Posts {
 			$delivery['purchase_id'] = $params['id'];
 			$delivery['delivery_via'] = trim($params['delivery_via']);
 			$delivery['delivery_date'] = date('Y-m-d', strtotime($params['delivery_date']));
-			$delivery['remarks'] = mysql_real_escape_string(ucwords(strtolower($params['remarks'])));
+			$delivery['remarks'] = ucwords(strtolower($params['remarks']));
 			$delivery['status'] = 13; // Open receiving status
 			$delivery['completion_status'] = 19; // pending completion status
 			$delivery_id = $this->AddDelivery($delivery);
@@ -861,7 +862,7 @@ class Posts {
     $items = array(
 		  'request_id'	=> $params['request_id'],	  
 		  'material_id'		=> $params['material_id'],	  
-		  'qty'	=> $params['qty'],	  
+		  'qty'	=> $params['qty'],	   
 		);
     return $this->DB->InsertRecord('material_request_items', $items);
   }

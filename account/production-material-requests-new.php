@@ -80,7 +80,7 @@
                    <strong><a id="remove-materials" href="#" class="" grid="#grid-request-items">Remove Item</a></strong>
                   <td align="right"></td>
                </tr>
-               <tr><td colspan="2">Remarks:<br/><textarea name="remarks" style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $request['remarks']; ?></textarea></td></tr>
+               <tr><td colspan="2">Remarks:<br/><textarea name="remarks" style="min-width:650px;width:98.9%;height:50px;"></textarea></td></tr>
             </table>
          </div>
          

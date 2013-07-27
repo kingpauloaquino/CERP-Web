@@ -8,7 +8,7 @@
 		require('inaccessible.php');	
 	}else{
   
-		$pos = $DB->Get('purchases', array('columns' => 'id, po_number', 'conditions' => 'completion_status =5')); // status 5 = partial
+		$pos = $DB->Get('purchases', array('columns' => 'id, po_number', 'conditions' => 'completion_status =13')); // status 13 = open
 ?>
       <!-- BOF PAGE -->
       <div id="page">

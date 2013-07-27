@@ -58,7 +58,7 @@
 									?>
 									<td class="border-right text-center">Plan</td>
 									<td class="border-right text-right numbers">0</td>
-									<td class="border-right text-right numbers shipment-plan-jan"><?php echo $shipment_all_plan['jan']?></td>
+									<td class="border-right text-right numbers shipment-plan-jan"><?php echo ($shipment_all_plan['jan'] || 0) ?></td>
 									<td class="border-right text-right numbers shipment-plan-feb"><?php echo $shipment_all_plan['feb']?></td>
 									<td class="border-right text-right numbers shipment-plan-mar"><?php echo $shipment_all_plan['mar']?></td>
 									<td class="border-right text-right numbers shipment-plan-apr"><?php echo $shipment_all_plan['apr']?></td>

@@ -387,13 +387,14 @@ class Posts {
 	function EditPurchaseOrder($params) {
     $purchase_order = array(
       'variables' => array(
+		  	  'po_number'	=> $params['po_number'],
 		  	  'po_date'			=> strdate($params['po_date'], 'Y-m-d'),
 		  	  'payment_terms'	=> $params['payment_terms'],
 		  	  'terms'			=> $params['terms'],
 		  	  'ship_date'	=> strdate($params['ship_date'], 'Y-m-d'),    
   	  		'status'		=> $params['status'],
   	  		'completion_status'			=> $params['completion_status'],
-		  		'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
+		  		'remarks'	=> ucwords(strtolower($params['remarks'])),
 		  	  'total_amount'	=> $params['total_amount'],
 		  	  'created_by' => $_SESSION['user']['id'],
 				  'checked_by' => $_SESSION['user']['id'],

@@ -37,7 +37,9 @@
                   <td width="120"></td><td width="340"></td>
                </tr>
                <tr>
-                  <td>P/O Number:</td><td><input type="text" name="purchase_order[po_number]" value="<?php echo generate_new_code('purchase_order_number') ?>" class="text-field magenta"/></td>
+                  <td>P/O Number:</td><td><input type="text" id="po_number" name="purchase_order[po_number]" value="<?php echo generate_new_code('purchase_order_number') ?>" class="text-field magenta" notice="po_number_status" autocomplete="off" required/>
+                  	<span id="po_number_status" class="warning"></span>
+                  </td>
                   <td>P/O Date:</td><td><input type="text" name="purchase_order[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week"/></td>
                </tr>
                <tr>
@@ -99,7 +101,7 @@
        	   <div class="text-post-status">
        	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase_order[status]"><?php echo build_select_post_status(); ?></select>
            </div>
-       	   <input type="submit" value="Save" class="btn"/>
+       	   <input id="submit-btn" type="submit" value="Save" class="btn" />
            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchase-orders.php'); ?>"/>
          </div>
       </form>
@@ -122,9 +124,9 @@
 								<td class="border-right text-center" width="20"><input type="checkbox" class="chk-all"/></td> 
 								<td class="border-right text-center" width="140"><a class="sort default active up" column="code">Code</a></td>
 								<td class="border-right text-center" width="100"><a class="sort down" column="model">Model</a></td>
-								<td class="border-right text-center"><a class="sort" column="description">Supplier</a></td> 
+								<td class="border-right text-center"><a class="sort" column="description">Description</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td> 
-								<td class="border-right text-center" width="60"><a class="sort" column="price">Price</a></td> 
+								<td class="border-right text-center" width="80"><a class="sort" column="price">Price</a></td> 
                </tr>
              </thead>
              <tbody></tbody>
@@ -161,7 +163,7 @@
 								<td class="border-right text-center" width="100"><a class="sort down" column="model">Model</a></td>
 								<td class="border-right text-center"><a class="sort" column="description">Description</a></td> 
 								<td class="border-right text-center" width="60"><a class="sort" column="unit">Unit</a></td> 
-								<td class="border-right text-center" width="60"><a class="sort" column="price">Price</a></td> 
+								<td class="border-right text-center" width="80"><a class="sort" column="price">Price</a></td> 
                </tr>
              </thead>
              <tbody></tbody>
@@ -183,6 +185,13 @@
 
        <script>
 				$(function() {
+					// check po number
+					$('#po_number').keyup(function() {
+						($(this).is_existing('purchase_orders', 'id', '', 'po_number="' +$(this).val()+ '"', 'po_number')) 
+							? $('#submit-btn').attr('disabled', true)
+							: $('#submit-btn').attr('disabled', false);
+					});
+					
 					function loadPRD() {
 						var data = { 
 				    	"url":"/populate/products.php",
@@ -235,12 +244,12 @@
            
            cell.append("<td class=\"border-right text-center\"><input type=\"checkbox\" value=\""+ row['id'] +"\" class=\"chk-item\"/></td>");
            cell.append("<td class=\"mat-code border-right\">"+ row['code'] +"</td>");
-           cell.append("<td class=\"mat-brand border-right\">"+ row['brand'] +"</td>");
+           cell.append("<td class=\"mat-brand border-right text-center\">"+ row['brand'] +"</td>");
            cell.append("<td class=\"mat-description border-right\">"+ (row['description'] || '') +"</td>");
            cell.append("<td class=\"mat-unit border-right text-center\">"+ row['unit'] +"</td>");
            cell.append("<td class=\"mat-price text-right currency\">"+ row['price'] +"</td>");
            
-           cell.find('.currency').formatCurrency({region:"en-PH"});
+           cell.find('.currency').formatCurrency({region:"en-PH", roundToDecimalPlace: 3});
            return cell;
          }
         

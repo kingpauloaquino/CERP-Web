@@ -13,7 +13,7 @@
 	  if(isset($_GET['pid'])) {
 	  	$products = $DB->Find('products', array(
 					  			'columns' 		=> 'products.product_code, products.description, brand_models.id AS brand, pack_qty, priority,
-					  												products.bar_code, products.color, products.prod_cp, products.series, lookups.description AS unit', 
+					  												products.bar_code, products.color, products.prod_cp, products.series, products.unit', 
 					  	    'conditions' 	=> 'products.id = '.$_GET['pid'], 
 					  	    'joins' 			=> 'INNER JOIN brand_models ON products.brand_model = brand_models.id
 					  	    									LEFT OUTER JOIN item_classifications ON item_classifications.id = products.product_classification

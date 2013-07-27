@@ -62,7 +62,7 @@
 	           <tr>
 	              <td>Address:</td><td><input type="text"  class="text-field" />
 	              </td>
-	              <td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', '', 'material[unit]', 'material[unit]', '', 'width:192px;'); ?></td>
+	              <td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', 19, 'material[unit]', 'material[unit]', '', 'width:192px;'); ?></td>
 	           </tr>   
 	           <tr>
 	              <td>Defect Rate %:</td><td><input id="material[defect_rate]" name="material[defect_rate]" type="text"  class="text-field text-right decimal"/>

@@ -135,9 +135,9 @@ class MySQL {
 	
   	$columns	= implode(array_keys($arguments),",");
 		$values		= implode($arguments,"','");
-    $sql			= "INSERT INTO ".$table." (".$columns.", created_at) VALUES ('".$values."', '".date('Y-m-d H:i:s')."')"; 
+    $sql			= "INSERT INTO ".$table." (".$columns.", created_at) VALUES ('".$values."', '".date('Y-m-d H:i:s')."')";
 // echo '<br/><br/>';
-// var_dump($sql); die(); 
+// var_dump($sql); die(); 
 		$this->Query($sql);
 		return mysql_insert_id();
   }
@@ -147,16 +147,18 @@ class MySQL {
   	$values = '';
 	
 	foreach ($arguments['variables'] as $key => $value) {			
-		if(strpos($value, "'")!==FALSE) $value = str_replace("'", "''", $value);
+		//if(strpos($value, "'")!==FALSE) $value = str_replace("'", "''", $value);
+		$value = mysql_real_escape_string($value);
 		if(strpos($value, "qty")!==FALSE) {
 			$values .= $key."=".$value.",";
 		}	else {
 			$values .= $key."='".$value."',";
 		}
+		
 	} 
 	$sql = "UPDATE ".$table." SET ".rtrim($values, ",").", updated_at='".date('Y-m-d H:i:s')."' WHERE ".$arguments['conditions']; 
 // echo '<br/><br/>';
-// var_dump($sql); die();	
+// var_dump($sql); die();	
 	$this->Query($sql);
 	return mysql_affected_rows();
   }

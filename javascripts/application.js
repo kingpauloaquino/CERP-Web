@@ -1314,9 +1314,10 @@ function row_template_purchase_order_items(data) {
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][quantity]" value="'+ data['quantity'] +'" class="text-field-smallest text-right get-amount item-quantity"/></td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-center"><input type="text" name="items['+id+'][item_price]" value="'+ data['item_price'] +'" class="currency text-field-price text-right get-amount item-price" readonly/></td>');
-  row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency text-field-price text-right item-amount" disabled/></td>');
+  row.append('<td class="border-right text-center"><input type="text" name="items[amount]" value="'+ amount +'" class="currency2 text-field-price text-right item-amount" disabled/></td>');
            	
-  row.find('.currency').formatCurrency({region:"en-PH"});
+  row.find('.currency').formatCurrency({region:"en-PH", roundToDecimalPlace: 3});
+  row.find('.currency2').formatCurrency({region:"en-PH", roundToDecimalPlace: 2});
   return row;   
 }
 
@@ -1334,9 +1335,10 @@ function row_template_purchase_order_items_read_only(data) {
   row.append('<td class="border-right text-right numbers">'+ data['quantity'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
   row.append('<td class="border-right text-right currency">'+ data['item_price'] +'</td>');
-  row.append('<td class="border-right text-right currency amount">'+ amount +'</td>');
+  row.append('<td class="border-right text-right currency2 amount">'+ amount +'</td>');
            	
-  row.find('.currency').formatCurrency({region:"en-PH"});
+  row.find('.currency').formatCurrency({region:"en-PH", roundToDecimalPlace: 3});
+  row.find('.currency2').formatCurrency({region:"en-PH", roundToDecimalPlace: 2});
   row.find('.numbers').digits();
   return row;   
 }

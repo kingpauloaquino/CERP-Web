@@ -137,7 +137,7 @@
 					$('#div-notice').hide('slow');
 					// submit
 					$.post(document.URL, $($('#request-form')).serialize(), function(data) {
-					  window.location = document.URL;
+					  window.location = 'production-material-requests-show.php?rid=<?php echo $_GET['rid'] ?>';
 					});
 				}
 			});

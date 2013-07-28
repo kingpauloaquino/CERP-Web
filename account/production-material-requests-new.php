@@ -33,14 +33,14 @@
          	<table>
                <tr>
                   <td width="120">Type:</td><td width="340"><?php select_query_tag($request_types, 'id', 'description', '', 'request-type', 'request_type', '', 'width:192px;'); ?></td>
-                  <td width="120">Batch Number:</td><td width="340"><input type="text" name="batch_no" class="text-field" required/></td>
+                  <td width="120">Batch Number:</td><td width="340"><input type="text" name="batch_no" class="text-field" autocomplete="off" required/></td>
                </tr>
                <tr>
-                  <td>Expected Date:</td><td><input type="text" name="expected_date" class="text-field date-pick-week" required/></td>
+                  <td>Expected Date:</td><td><input type="text" name="expected_date" class="text-field date-pick-week" autocomplete="off" required/></td>
                   <td>Status:</td><td><input type="text" value="Pending" class="text-field" disabled/></td>
                </tr>
                <tr>
-                  <td>Requested Date:</td><td><input type="text" name="requested_date" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" required/></td>
+                  <td>Requested Date:</td><td><input type="text" name="requested_date" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" autocomplete="off" required/></td>
                   <td>Requested By:</td><td><input type="text" value="<?php echo $_SESSION['user']['first_name'].' '.$_SESSION['user']['last_name']; ?>" class="text-field" disabled/></td>
                </tr>
                <tr>

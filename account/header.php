@@ -899,6 +899,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 				}
 			}
 		}
+var_dump($_POST); die();
+		redirect_to($Capabilities->All['show_material_requests']['url'].'?rid='.$_POST['rid']);
 		break;
 		
 	case 'release_materials':

@@ -33,7 +33,7 @@
          <div>
          	<table>
                <tr>
-                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $client['name'] ?>" class="text-field" readonly/></td>
+                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $client['name'] ?>" class="text-field" disabled/></td>
                   <td width="120"></td><td width="340"></td>
                </tr>
                <tr>
@@ -52,10 +52,6 @@
                     <?php select_query_tag($pay_terms, 'id', 'description', $purchase_order['payment_terms'], 'purchase_order[payment_terms]', 'purchase_order[payment_terms]', '', 'width:655px;'); ?>
                   </td>
                </tr>   
-               <tr>
-                  <td>Completion:</td><td><?php select_query_tag($completion, 'id', 'description', $purchase_order['completion_status_id'], 'purchase_order[completion_status]', 'purchase_order[completion_status]', '', 'width:192px;'); ?></td>
-                  <td></td><td></td>
-               </tr> 
                <tr><td height="5" colspan="99"></td></tr>
             </table>
          </div>
@@ -187,9 +183,11 @@
 				$(function() {
 					// check po number
 					$('#po_number').keyup(function() {
-						($(this).is_existing('purchase_orders', 'id', '', 'po_number="' +$(this).val()+ '"', 'po_number')) 
-							? $('#submit-btn').attr('disabled', true)
-							: $('#submit-btn').attr('disabled', false);
+						if($(this).val() != '<?php echo $purchase_order['order_no'] ?>') {
+							($(this).is_existing('purchase_orders', 'id', '', 'po_number="' +$(this).val()+ '"', 'po_number')) 
+								? $('#submit-btn').attr('disabled', true)
+								: $('#submit-btn').attr('disabled', false);
+						}
 					});
 					
 					var data = { 

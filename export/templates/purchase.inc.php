@@ -16,13 +16,14 @@ require('../include/general.class.php');
   $purchase_number	= $purchase['po_number'];
   $purchase_items	= $Query->purchase_items_by_id($id);
 
-  $objPHPExcel->getActiveSheet()->setCellValue('R2', $purchase['po_number']);
+  $objPHPExcel->getActiveSheet()->setCellValue('R1', $purchase['po_number']);
+  $objPHPExcel->getActiveSheet()->setCellValue('R2', date("F d, Y", strtotime($purchase['po_date'])));
   $objPHPExcel->getActiveSheet()->setCellValue('B4', $purchase['supplier_name'] ." ". $purchase['supplier_address']);
   $objPHPExcel->getActiveSheet()->setCellValue('C8', $purchase['supplier_phone']);
   $objPHPExcel->getActiveSheet()->setCellValue('C9', $purchase['supplier_fax']);
   $objPHPExcel->getActiveSheet()->setCellValue('D10', $purchase['supplier_person']);
   $objPHPExcel->getActiveSheet()->setCellValue('A13', $purchase['terms']);
-  $objPHPExcel->getActiveSheet()->setCellValue('G13', dformat($purchase['delivery_date'], 'm/d/Y'));
+  $objPHPExcel->getActiveSheet()->setCellValue('G13', date("F d, Y", strtotime($purchase['delivery_date'])));
   $objPHPExcel->getActiveSheet()->setCellValue('J13', $purchase['delivery_via']);
   $objPHPExcel->getActiveSheet()->setCellValue('N13', $purchase['payment_terms']);
   $objPHPExcel->getActiveSheet()->setCellValue('R13', dformat($purchase['created_at'], 'm/d/Y'));
@@ -54,6 +55,10 @@ require('../include/general.class.php');
 	
 	$objPHPExcel->getActiveSheet()->setCellValue('R'. ($baseRow + count($purchase_items) -1), $purchase['total_amount']);
 	$objPHPExcel->getActiveSheet()->getStyle('R'. ($baseRow + count($purchase_items) -1))->getNumberFormat()->setFormatCode('"₱"#,##0.00_-');
+	
+	$objPHPExcel->getActiveSheet()->setCellValue('A'. ($baseRow + count($purchase_items) + 3), $purchase['creator']);
+  $objPHPExcel->getActiveSheet()->setCellValue('I'. ($baseRow + count($purchase_items) + 3), $purchase['checker']);
+  $objPHPExcel->getActiveSheet()->setCellValue('Q'. ($baseRow + count($purchase_items) + 3), $purchase['approver']);
 	
 	// $objPHPExcel->getActiveSheet()->getStyle('R'. ($baseRow + count($purchase_items) -1))->getNumberFormat()
             										// ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_USD);

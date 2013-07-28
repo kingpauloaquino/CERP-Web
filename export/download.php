@@ -5,6 +5,12 @@ switch($_GET['cat']) {
 	case 'purchases':
 		require($_GET['type'].'/purchase.php');		
 		break;
+	case 'purchase_orders':
+		require($_GET['type'].'/purchase_order.php');		
+		break;
+	case 'work_orders':
+		require($_GET['type'].'/work_order.php');		
+		break;
 	case 'minventory_report':
 		$mydate = $_GET['mydate'];
 		$name = 'materials_month_end_report.xls';

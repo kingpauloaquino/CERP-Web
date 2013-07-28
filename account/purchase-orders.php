@@ -32,12 +32,12 @@
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <td class="border-right text-center" width="140"><a class="sort default active up" column="po_number">P/O Number</a></td>
-              <td class="border-right text-center" width="120"><a class="sort" column="po_date">P/O Date</a></td>
-              <td class="border-right text-center"><a class="sort" column="payment_terms">Payment Terms</a></td>
-              <td class="border-right text-center" width="120"><a class="sort" column="ship_date">Ship Date</a></td>
-              <td class="border-right text-center" width="120"><a class="sort" column="status">Approval</a></td>
-              <td class="text-center" width="120"><a class="sort" column="completion_status">Completion</a></td>
+              <td class="border-right text-center" width="130"><a class="sort default active up" column="po_number">P/O Number</a></td>
+              <td class="border-right text-center" width="90"><a class="sort" column="po_date">P/O Date</a></td>
+              <td class="border-right"><a class="sort" column="remarks">Remarks</a></td>
+              <td class="border-right text-center" width="90"><a class="sort" column="ship_date">Ship Date</a></td>
+              <td class="border-right text-center" width="90"><a class="sort" column="completion_status">Completion</a></td>
+              <td class="border-right text-center" width="110" ><a class="sort" column="total_amount">Amount</a></td>
             </tr>
           </thead>
           <tbody></tbody>

@@ -362,7 +362,7 @@ class Posts {
   	  'terms'			=> $params['terms'],
   	  'ship_date'	=> date('Y-m-d', strtotime($params['ship_date'])),
   	  'status'			=> $params['status'],
-  	  'completion_status'			=> $params['completion_status'],
+  	  'completion_status'			=> 19, // status 19 pending
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
   	  'total_amount'	=> $params['total_amount'],
 		  'created_by' => $_SESSION['user']['id'],
@@ -393,7 +393,7 @@ class Posts {
 		  	  'terms'			=> $params['terms'],
 		  	  'ship_date'	=> strdate($params['ship_date'], 'Y-m-d'),    
   	  		'status'		=> $params['status'],
-  	  		'completion_status'			=> $params['completion_status'],
+  	  		'completion_status'			=> 19, // status 19 pending
 		  		'remarks'	=> ucwords(strtolower($params['remarks'])),
 		  	  'total_amount'	=> $params['total_amount'],
 		  	  'created_by' => $_SESSION['user']['id'],
@@ -447,11 +447,14 @@ class Posts {
   	  'wo_date'			=> date('Y-m-d', strtotime($params['wo_date'])),
   	  'ship_date'	=> date('Y-m-d', strtotime($params['ship_date'])),
   	  'status'			=> $params['status'],
-  		'completion_status'	=> $params['completion_status'],
+  		'completion_status'	=> 19, //status pending
 		  'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
   	  'total_amount'	=> $params['total_amount'],
+		  'created_by' => $_SESSION['user']['id'],
+		  'checked_by' => $_SESSION['user']['id'],
+		  'checked_at' => date('Y-m-d')
 		);	
-		$work_order_id = $this->DB->InsertRecord('work_orders', $work_order);
+		$work_order_id = $this->DB->InsertRecord('work_orders', setApproval($work_order, $params['status']));
 	
 		if(!empty($params['items'])) {
 		  // Add Each Work Order Item
@@ -468,18 +471,21 @@ class Posts {
 	function EditWorkOrder($params) {
     $work_order = array(
       'variables' => array(
-		  	  //'wo_number'		=> $params['wo_number'],
+		  	  'wo_number'		=> $params['wo_number'],
 		  	  'wo_date'			=> strdate($params['wo_date'], 'Y-m-d'),
 		  	  'ship_date'	=> strdate($params['ship_date'], 'Y-m-d'),
   	  		'status'			=> $params['status'],
-  	  		'completion_status'	=> $params['completion_status'],
-		  		'remarks'	=> mysql_real_escape_string(ucwords(strtolower($params['remarks']))),
-		  	  'total_amount'	=> $params['total_amount']
+  	  		'completion_status'	=> 19, //status pending
+		  		'remarks'	=> ucwords(strtolower($params['remarks'])),
+		  	  'total_amount'	=> $params['total_amount'],
+		  	  'created_by' => $_SESSION['user']['id'],
+				  'checked_by' => $_SESSION['user']['id'],
+				  'checked_at' => date('Y-m-d')
 	  ),
 	  'conditions' => 'id = '.$params['id']
     );
 	
-		$row = $this->DB->UpdateRecord('work_orders', $work_order);
+		$row = $this->DB->UpdateRecord('work_orders', setApproval($work_order, $params['status'], FALSE));
 	if($row > 0) {
 		$work_order_item_ids = $this->DB->Get('work_order_items', array('columns' => 'id', 'conditions' => 'work_order_id ='. $params['id']));
 		foreach($work_order_item_ids as $prod) {
@@ -577,6 +583,7 @@ class Posts {
   function EditPurchase($params) {
     $purchase = array(
       'variables' => array(
+	      'po_number'		=> trim($params['po_number']),
 	      'po_date' => date('Y-m-d', strtotime($params['po_date'])),
 	      'payment_terms'	=> trim($params['payment_terms']),
 	      'terms'		=> trim($params['terms']),
@@ -1121,6 +1128,10 @@ class Posts {
 	
 	function ApprovePurchaseOrder($params) {
     return $this->DB->UpdateRecord('purchase_orders', $params);
+  }
+	
+	function ApproveWorkOrder($params) {
+    return $this->DB->UpdateRecord('work_orders', $params);
   }
 	
 	function EditLookup($params) {

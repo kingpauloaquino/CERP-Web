@@ -33,7 +33,7 @@
          <div>
          	<table>
                <tr>
-                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $client['name'] ?>" class="text-field" readonly/></td>
+                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $client['name'] ?>" class="text-field" disabled/></td>
                   <td width="120"></td><td width="340"></td>
                </tr>
                <tr>
@@ -51,10 +51,6 @@
                   <td colspan="99">
                     <?php select_query_tag($pay_terms, 'id', 'description', '', 'purchase_order[payment_terms]', 'purchase_order[payment_terms]', '', 'width:655px;'); ?>
                   </td>
-               </tr>   
-               <tr>
-                  <td>Completion:</td><td><?php select_query_tag($completion, 'id', 'description', 19, 'purchase_order[completion_status]', 'purchase_order[completion_status]', '', 'width:192px;'); ?></td>
-                  <td></td><td></td>
                </tr> 
                <tr><td height="5" colspan="99"></td></tr>
             </table>

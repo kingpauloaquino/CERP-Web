@@ -31,21 +31,19 @@
 					<input type="hidden" id="order[client_id]" name="work_order[client_id]" value="<?php echo $client['id'] ?>"/>
          <!-- BOF TEXTFIELDS -->
          <div>
-         	<table>
-               <tr>
-                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $client['name'] ?>" class="text-field" readonly/></td>
-                  <td width="120"></td><td width="340"></td>
-               </tr>
-               <tr>
-                  <td>W/O Number:</td><td><input type="text" name="work_order[wo_number]" class="text-field magenta" value="<?php echo generate_new_code('work_order_number') ?>" readonly/></td>
-                  <td>W/O Date:</td><td><input type="text" name="work_order[wo_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" required/></td>
-               </tr>
-               <tr>
-                  <td>Completion:</td><td><?php select_query_tag($completion, 'id', 'description', 19, 'work_order[completion_status]', 'work_order[completion_status]', '', 'width:192px;', TRUE); ?></td>
-                  <td>Ship Date:</td><td><input type="text" name="work_order[ship_date]"  class="text-field date-pick-thursday" required/></td>
-               </tr> 
-               <tr><td height="5" colspan="99"></td></tr>
-            </table>
+					<table>
+						<tr>
+							<td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $client['name'] ?>" class="text-field" disabled/></td>
+							<td width="120">W/O Date:</td><td width="340"><input type="text" name="work_order[wo_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" required/></td>
+						</tr>
+						<tr>
+							<td>W/O Number:</td><td><input type="text" id="wo_number" name="work_order[wo_number]" class="text-field magenta" value="<?php echo generate_new_code('work_order_number') ?>" notice="wo_number_status" autocomplete="off"/>
+								<span id="wo_number_status" class="warning"></span>
+							</td>
+							<td>Ship Date:</td><td><input type="text" name="work_order[ship_date]"  class="text-field date-pick-thursday" value="<?php echo date("F d, Y", strtotime('next Thursday', strtotime(date("F d, Y")))) ?>" required/></td>
+						</tr>
+						<tr><td height="5" colspan="99"></td></tr>
+					</table>
          </div>
          
          <!-- BOF GRIDVIEW -->
@@ -86,7 +84,7 @@
        	   <div class="text-post-status">
        	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="work_order[status]"><?php echo build_select_post_status("APRVL"); ?></select>
            </div>
-       	   <input type="submit" value="Save" class="btn"/>
+       	   <input id="btn-submit" type="submit" value="Save" class="btn"/>
            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('work-orders.php'); ?>"/>
          </div>
       </form>
@@ -133,6 +131,12 @@
       
        <script>
 				$(function() {
+					// check po number
+					$('#wo_number').keyup(function() {
+						($(this).is_existing('work_orders', 'id', '', 'wo_number="' +$(this).val()+ '"', 'wo_number')) 
+							? $('#btn-submit').attr('disabled', true)
+							: $('#btn-submit').attr('disabled', false);
+					});
 										
 			  	var products = { 
 			    	"url":"/populate/products.php",

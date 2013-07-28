@@ -55,8 +55,8 @@
                <tr>
                  <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
                  <td width="30" class="border-right text-center">No.</td>
-                 <td width="110" class="border-right text-center">Shipment Plan</td>
                  <td width="110" class="border-right text-center">Production Plan</td>
+                 <td width="110" class="border-right text-center">Shipment Plan</td>
                  <td class="border-right text-center">Remarks</td>
                  <td width="100" class="border-right text-center">Status</td>
                  <td width="60" class="border-right text-center">Unit</td>
@@ -115,13 +115,23 @@
 				 </div>
 				 
 				 <div class="field">
-				    <label>Shipment Plan:</label>
-				    <input type="text" id="ship-plan-date" name="plan[ship_date]" class="text-field date-pick-thursday" readonly required/>
+				    <label>Delivery:</label>
+				    <input type="text" class="text-field" value="<?php echo date("F d, Y", strtotime($order['ship_date']))?>" disabled="disabled"/>
 				 </div>
+				 
+				 <div class="field">
+				    <label>P/O Qty:</label>
+				    <input type="text" class="text-field" value="<?php echo $order['quantity'] ?>" disabled="disabled"/>
+				 </div>		
 				 
 				 <div class="field">
 				    <label>Production Plan:</label>
 				    <input type="text" id="prod-plan-date" name="plan[prod_date]" class="text-field date-pick-friday" readonly required/>
+				 </div>		 
+				 
+				 <div class="field">
+				    <label>Shipment Plan:</label>
+				    <input type="text" id="ship-plan-date" name="plan[ship_date]" class="text-field date-pick-thursday" readonly required/>
 				 </div>
 				 
 				 <div class="field">

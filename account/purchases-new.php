@@ -14,9 +14,6 @@
 		<div id="page-title">
     	<h2>
       	<span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
-		        <?php
-		        	echo '<a href="'.$Capabilities->All['purchases']['url'].'?pid='.$_GET['id'].'" class="nav">'.$Capabilities->All['purchases']['name'].'</a>';
-						?>
 				<div class="clear"></div>
       </h2>
 		</div>
@@ -28,7 +25,9 @@
          <div>
          	<table>
                <tr>
-                  <td width="120">P/O Number:</td><td width="340"><input type="text" name="purchase[purchase_number]" value="<?php echo generate_new_code('purchase_number') ?>" class="text-field magenta" readonly/></td>
+                  <td width="120">P/O Number:</td><td width="340"><input type="text" id="po_number" name="purchase[purchase_number]" value="<?php echo generate_new_code('purchase_number') ?>" class="text-field magenta" notice="po_number_status" autocomplete="off"/>
+                  	<span id="po_number_status" class="warning"></span>
+                  </td>
                   <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y") ?>" class="text-field date-pick-week" autocomplete="off" required/></td>
                </tr>
                <tr>
@@ -88,7 +87,7 @@
        	   <div class="text-post-status">
        	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="purchase[status]" ><?php echo build_select_post_status_by_level(getConditionByLevel($_SESSION['user']['level'])); ?></select>
            </div>
-       	   <input type="submit" value="Save" class="btn"/>
+       	   <input id="btn-submit" type="submit" value="Save" class="btn"/>
            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchases.php'); ?>"/>
          </div>
       </form>
@@ -162,6 +161,13 @@
       
        <script>
 				$(function() {
+					// check po number
+					$('#po_number').keyup(function() {
+						($(this).is_existing('purchases', 'id', '', 'po_number="' +$(this).val()+ '"', 'po_number')) 
+							? $('#btn-submit').attr('disabled', true)
+							: $('#btn-submit').attr('disabled', false);
+					});
+					
 					populate($('#suppliers').val());
 					
 					$('#suppliers').on('change', function() {

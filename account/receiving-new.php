@@ -130,7 +130,7 @@
 						 
 						 <div class="field">
 						    <label>Received:</label>
-						    <input type="text" id="receiving-received" name="receiving[received]" class="text-field"/>
+						    <input type="text" id="receiving-received" name="receiving[received]" class="text-field numeric"/>
 						 </div>
 						 
 						 <div class="field">

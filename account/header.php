@@ -539,6 +539,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		if($work_order_id > 0) redirect_to(host('work-orders-show.php?wid='.$work_order['id'])); 
     break;	
 		
+	case 'approve_work_order':
+		$item = array('variables' => array('approved_by' => $_POST['approved_by'], 'approved_at' => date('Y-m-d H:i:s')), 'conditions' => 'id='.$_POST['id']);
+		$Posts->ApproveWorkOrder($item);
+		break;
+		
 	// ===============================================================
   // Post::Parts Request
   // ===============================================================

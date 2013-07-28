@@ -50,8 +50,8 @@
                <tr>
                  <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all" disabled/></td>
                  <td width="30" class="border-right text-center">No.</td>
-                 <td width="110" class="border-right text-center">Shipment Plan</td>
                  <td width="110" class="border-right text-center">Production Plan</td>
+                 <td width="110" class="border-right text-center">Shipment Plan</td>
                  <td class="border-right text-center">Remarks</td>
                  <td width="100" class="border-right text-center">Status</td>
                  <td width="60" class="border-right text-center">Unit</td>

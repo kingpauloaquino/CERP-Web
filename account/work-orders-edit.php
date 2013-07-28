@@ -7,7 +7,10 @@
 	if(!$allowed) {
 		require('inaccessible.php');	
 	}else{
-	
+		$client = $DB->Find('suppliers', array(
+								  			'columns' => 'suppliers.id, suppliers.name', 
+								  	  	'conditions' => 'suppliers.name LIKE "ST SANGYO%"'));
+												
 		$work_order = $Query->work_order_by_id($_GET['wid']);	
 		
 		$completion = $DB->Get('lookup_status', array('columns' => 'id, description', 'conditions'  => 'parent = "CMPLTN"'));
@@ -27,17 +30,19 @@
       	 <input type="hidden" name="work_order[id]" value="<?php echo $_GET['wid']; ?>"/>
          <!-- BOF TEXTFIELDS -->
          <div>
-         	<table>
-               <tr>
-                  <td width="120">W/O Number:</td><td width="340"><input type="text" name="work_order[wo_number]" value="<?php echo $work_order['order_no'] ?>" class="text-field magenta" disabled/></td>
-                  <td width="120">W/O Date:</td><td width="340"><input type="text" name="work_order[wo_date]" value="<?php echo date("F d, Y", strtotime($work_order['order_date'])) ?>" class="text-field date-pick"/></td>
-               </tr>
-               <tr>
-                  <td>Completion:</td><td><?php select_query_tag($completion, 'id', 'description', $work_order['completion_status_id'], 'work_order[completion_status]', 'work_order[completion_status]', '', 'width:192px;'); ?></td>
-                  <td>Ship Date:</td><td><input type="text" name="work_order[ship_date]" value="<?php echo date("F d, Y", strtotime($work_order['ship_date'])) ?>" class="text-field date-pick"/></td>
-               </tr> 
-               <tr><td height="5" colspan="99"></td></tr>
-            </table>
+					<table>
+						<tr>
+							<td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $client['name'] ?>" class="text-field" disabled/></td>
+							<td width="120">W/O Date:</td><td width="340"><input type="text" name="work_order[wo_date]" value="<?php echo date("F d, Y", strtotime($work_order['order_date'])) ?>" class="text-field date-pick"/></td>
+						</tr>
+						<tr>
+							<td>W/O Number:</td><td><input type="text" id="wo_number" name="work_order[wo_number]" value="<?php echo $work_order['order_no'] ?>" class="text-field magenta" notice="wo_number_status"/>
+								<span id="wo_number_status" class="warning"></span>
+							</td>
+							<td>Ship Date:</td><td><input type="text" name="work_order[ship_date]" value="<?php echo date("F d, Y", strtotime($work_order['ship_date'])) ?>" class="text-field date-pick"/></td>
+						</tr>
+						<tr><td height="5" colspan="99"></td></tr>
+					</table>
          </div>
          
          <!-- BOF GRIDVIEW -->
@@ -78,7 +83,7 @@
        	   <div class="text-post-status">
        	     <strong>Save As:</strong>&nbsp;&nbsp;<select name="work_order[status]"><?php echo build_select_post_status("APRVL", $work_order['status_id']); ?></select>
            </div>
-       	   <input type="submit" value="Save" class="btn"/>
+       	   <input id="btn-submit" type="submit" value="Save" class="btn"/>
            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('work-orders-show.php?wid='.$_GET['wid']); ?>"/>
          </div>
       </form>
@@ -125,6 +130,15 @@
       
        <script>
 				$(function() {
+					// check wo number
+					$('#wo_number').keyup(function() {
+						if($(this).val() != '<?php echo $work_order['order_no'] ?>') {
+							($(this).is_existing('work_orders', 'id', '', 'wo_number="' +$(this).val()+ '"', 'wo_number')) 
+								? $('#btn-submit').attr('disabled', true)
+								: $('#btn-submit').attr('disabled', false);
+						}
+					});
+					
 					var data = { 
 			    	"url":"/populate/work-order-items.php?wid=<?php echo $_GET['wid'] ?>",
 			      "limit":"50",

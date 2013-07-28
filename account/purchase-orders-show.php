@@ -14,8 +14,11 @@
 	<div id="page">
 		<div id="page-title">
     	<h2>
-            <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
-            <div class="clear"></div>
+          <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
+            <?php
+		        	echo '<a href="'.$Capabilities->All['purchase_orders']['url'].'" class="nav">'.$Capabilities->All['purchase_orders']['name'].'</a>';
+						?>
+          <div class="clear"></div>
       </h2>
 		</div>
 
@@ -27,25 +30,25 @@
          <div>
          	<table>
                <tr>
-                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $purchase_order['client'] ?>" class="text-field" disabled/></td>
+                  <td width="120">Client:</td><td width="340"><input type="text" value="<?php echo $purchase_order['client'] ?>" class="text-field" readonly/></td>
                   <td width="120"></td><td width="340"></td>
                </tr>
                <tr>
-                  <td>P/O Number:</td><td><input type="text" value="<?php echo $purchase_order['order_no'] ?>" class="text-field magenta" disabled/></td>
-                  <td>P/O Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['order_date']))?>" class="text-field text-date" disabled/></td>
+                  <td>P/O Number:</td><td><input type="text" value="<?php echo $purchase_order['order_no'] ?>" class="text-field magenta" readonly/></td>
+                  <td>P/O Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['order_date']))?>" class="text-field text-date" readonly/></td>
                </tr>
                <tr>
-                  <td>Terms:</td><td><input type="text" value="<?php echo $purchase_order['terms'] ?>" class="text-field" disabled/></td>
-                  <td>Ship Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['ship_date']))?>" class="text-field" disabled/></td>
+                  <td>Terms:</td><td><input type="text" value="<?php echo $purchase_order['terms'] ?>" class="text-field" readonly/></td>
+                  <td>Ship Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($purchase_order['ship_date']))?>" class="text-field" readonly/></td>
                </tr>
                <tr>
                   <td>Payment Terms:</td>
                   <td colspan="99">
-                    <input type="text" value="<?php echo $purchase_order['payment_terms'] ?>" class="text-field" style="width:645px" disabled/>
+                    <input type="text" value="<?php echo $purchase_order['payment_terms'] ?>" class="text-field" style="width:645px" readonly/>
                   </td>
                </tr>    
                <tr>
-                  <td>Completion:</td><td><input type="text" value="<?php echo $purchase_order['completion_status'] ?>" class="text-field" disabled/></td>
+                  <td>Completion:</td><td><input type="text" value="<?php echo $purchase_order['completion_status'] ?>" class="text-field" readonly/></td>
                   <td></td><td></td>
                </tr> 
                <tr><td height="5" colspan="99"></td></tr>
@@ -77,9 +80,9 @@
          	<table width="100%">
                <tr><td height="5" colspan="99"></td></tr>
                <tr>
-                  <td align="right"><strong>Total Amount:</strong>&nbsp;&nbsp;<input id="order_amount" type="text" value="" class="text-right text-currency" style="width:95px;" disabled/></td>
+                  <td align="right"><strong>Total Amount:</strong>&nbsp;&nbsp;<input id="order_amount" type="text" value="" class="text-right text-currency" style="width:95px;" readonly/></td>
                </tr>
-               <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $purchase_order['remarks'] ?></textarea></td></tr>
+               <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" readonly><?php echo $purchase_order['remarks'] ?></textarea></td></tr>
             </table>
          </div>
          <div class="field-command">
@@ -89,7 +92,10 @@
            <?php if($purchase_order['status'] != "Publish") { ?>
            <input type="button" value="Edit" class="btn redirect-to" rel="<?php echo host('purchase-orders-edit.php?pid='. $purchase_order['id']); ?>"/>
        	   <?php } ?>
-           <input type="button" value="Back" class="btn redirect-to" rel="<?php echo host('purchase-orders.php'); ?>"/>
+       	   <?php if($purchase_order['status'] == "Publish") { ?>
+           <input type="button" value="To Excel" class="btn btn-download" rel="<?php echo export_file('?type=xls&cat=purchase_orders&id='. $purchase_order['id']); ?>"/>
+       	   <?php } ?>
+           
          </div>
          <?php 
 								$approval_item_id = $_GET['pid'];

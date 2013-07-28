@@ -29,7 +29,9 @@
          <div>
          	<table>
                <tr>
-                  <td width="120">P/O Number:</td><td width="340"><input type="text" value="<?php echo $purchase['po_number']; ?>" class="text-field magenta" disabled/></td>
+                  <td width="120">P/O Number:</td><td width="340"><input type="text" id="po_number" name="purchase[po_number]" value="<?php echo $purchase['po_number']; ?>" class="text-field magenta" notice="po_number_status" autocomplete="off" required/>
+                  	<span id="po_number_status" class="warning"></span>
+                  </td>
                   <td width="120">P/O Date:</td><td width="340"><input type="text" name="purchase[po_date]" value="<?php echo date("F d, Y", strtotime($purchase['po_date'])) ?>" class="text-field date-pick-week" required /></td>
                </tr>
                <tr>
@@ -94,15 +96,9 @@
        	   <div class="text-post-status">
        	     <strong>Save As:</strong>&nbsp;&nbsp;<select id="purchase-status" name="purchase[status]"><?php echo build_select_post_status_by_level(getConditionByLevel($_SESSION['user']['level']), $purchase['status_id']); ?></select>
            </div>
-       	   <input type="submit" value="Save" class="btn"/>
+       	   <input id="btn-submit" type="submit" value="Save" class="btn"/>
            <input type="button" value="Cancel" class="btn redirect-to" rel="<?php echo host('purchases-show.php?id='.$_GET['id']); ?>"/>
          </div>
-         
-         <?php 
-						$approval_item_id = $_GET['id'];
-						$approval_table = 'purchases';
-						require_once 'approval.php';
-					?>
       </form>
    </div>
        
@@ -174,6 +170,15 @@
       
        <script>
 				$(function() {
+					// check po number
+					$('#po_number').keyup(function() {
+						if($(this).val() != '<?php echo $purchase['po_number'] ?>') {
+							($(this).is_existing('purchases', 'id', '', 'po_number="' +$(this).val()+ '"', 'po_number')) 
+								? $('#submit-btn').attr('disabled', true)
+								: $('#submit-btn').attr('disabled', false);
+						}
+					});
+					
 					var data = { 
 			    	"url":"/populate/purchases-items.php?pid=<?php echo $purchase['id']; ?>",
 			      "limit":"50",

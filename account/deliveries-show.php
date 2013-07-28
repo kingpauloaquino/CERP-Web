@@ -32,27 +32,27 @@
              <div>
              	<table>
                    <tr>
-                      <td width="120">P/O Number:</td><td width="340"><input type="text" value="<?php echo $delivery['po_number']; ?>" class="text-field magenta" disabled/>
+                      <td width="120">P/O Number:</td><td width="340"><input type="text" value="<?php echo $delivery['po_number']; ?>" class="text-field magenta" readonly/>
                       	<?php echo $linkto = (isset($delivery['pid'])) ? link_to('purchases-show.php?id='.$delivery['pid']) : '' ?>
                       </td>
-                      <td width="120">P/O Date:</td><td width="340"><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['po_date'])); ?>" class="text-field" disabled/>
+                      <td width="120">P/O Date:</td><td width="340"><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['po_date'])); ?>" class="text-field" readonly/>
                    </tr>
                    <tr>
                       <td>Supplier:</td>
                       <td colspan="99">
-                        <input type="text" value="<?php echo $delivery['supplier_name']; ?>" class="text-field" style="width:644px;" disabled/>
+                        <input type="text" value="<?php echo $delivery['supplier_name']; ?>" class="text-field" style="width:644px;" readonly/>
                       </td>
                    </tr>
                    <tr>
-                      <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" disabled/></td>
-                      <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" disabled/></td>
+                      <td>Delivery Via:</td><td><input type="text" value="<?php echo $delivery['delivery_via']; ?>" class="text-field" readonly/></td>
+                      <td>Delivery Date:</td><td><input type="text" value="<?php echo date("F d, Y", strtotime($delivery['delivery_date'])) ?>" class="text-field text-date" readonly/></td>
                    </tr>
                    <tr>
-                      <td>Trade Terms:</td><td><input type="text" value="<?php echo $delivery['terms']; ?>" class="text-field" disabled/></td>
-                      <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" disabled/></td>
+                      <td>Trade Terms:</td><td><input type="text" value="<?php echo $delivery['terms']; ?>" class="text-field" readonly/></td>
+                      <td>Payment Terms:</td><td><input type="text" value="<?php echo $delivery['payment_terms']; ?>" class="text-field" readonly/></td>
                    </tr>
                    <tr>
-                      <td>Completion:</td><td><input type="text" value="<?php echo $delivery['completion_status']; ?>" class="text-field" disabled/></td>
+                      <td>Completion:</td><td><input type="text" value="<?php echo $delivery['completion_status']; ?>" class="text-field" readonly/></td>
                       <td></td><td></td>
                    </tr>
                    <tr><td height="5" colspan="99"></td></tr>
@@ -64,7 +64,7 @@
                <table cellspacing="0" cellpadding="0">
                  <thead>
                    <tr>
-<!--                      <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all" disabled/></td> -->
+<!--                      <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all" readonly/></td> -->
                      <td width="30" class="border-right text-center">No.</td>
                      <td width="140" class="border-right">Item Code</td>
                      <td width="120" class="border-right">Invoice</td>
@@ -89,7 +89,7 @@
                       <td></td>
                       <td align="right"></td>
                    </tr>
-                   <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" disabled><?php echo $delivery['remarks']; ?></textarea></td></tr>
+                   <tr><td colspan="2">Remarks:<br/><textarea style="min-width:650px;width:98.9%;height:50px;" readonly><?php echo $delivery['remarks']; ?></textarea></td></tr>
                 </table>
              </div>
              

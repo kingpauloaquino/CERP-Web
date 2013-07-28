@@ -16,10 +16,14 @@ class Query {
                               suppliers.representative AS supplier_person, delivery_date, delivery_via, terms, 
                               purchases.status AS status_id, purchases.completion_status AS completion_status_id,
                               payment_terms, total_amount, remarks, lookup_status.description AS status,lookup_status2.description AS completion_status,
-                              purchases.created_by, purchases.created_at, purchases.checked_by, purchases.checked_at, purchases.approved_by, purchases.approved_at',
+                              purchases.created_by, purchases.created_at, purchases.checked_by, purchases.checked_at, purchases.approved_by, purchases.approved_at,
+                              CONCAT(u1.first_name, " ", u1.last_name) AS creator, CONCAT(u2.first_name, " ", u2.last_name) AS checker, CONCAT(u3.first_name, " ", u3.last_name) AS approver',
                'joins' => 'INNER JOIN suppliers ON suppliers.id = purchases.supplier_id 
                            INNER JOIN lookup_status ON lookup_status.id = purchases.status
-                           INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = purchases.completion_status',
+                           INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = purchases.completion_status
+                           LEFT OUTER JOIN users AS u1 ON u1.id = purchases.created_by
+			  	  							LEFT OUTER JOIN users AS u2 ON u2.id = purchases.checked_by
+			  	  							LEFT OUTER JOIN users AS u3 ON u3.id = purchases.approved_by',
                'conditions' => 'purchases.id = '. $id)
              );
 	
@@ -99,11 +103,15 @@ class Query {
 			  										purchase_orders.payment_terms AS payment_terms_id, purchase_orders.completion_status AS completion_status_id, lookup_status2.description AS completion_status,
 			  										purchase_orders.status AS status_id, lookup_status.description AS status, purchase_orders.total_amount, purchase_orders.remarks, 
 			  										suppliers.name AS client, lookups.description AS payment_terms, purchase_orders.created_by, purchase_orders.created_at, 
-			  										purchase_orders.checked_by, purchase_orders.checked_at, purchase_orders.approved_by, purchase_orders.approved_at', 
+			  										purchase_orders.checked_by, purchase_orders.checked_at, purchase_orders.approved_by, purchase_orders.approved_at,
+			  										CONCAT(u1.first_name, " ", u1.last_name) AS creator, CONCAT(u2.first_name, " ", u2.last_name) AS checker, CONCAT(u3.first_name, " ", u3.last_name) AS approver', 
 			  	  	'joins' => 'INNER JOIN suppliers ON suppliers.id = purchase_orders.client_id
 			  	  							INNER JOIN lookups ON lookups.id = purchase_orders.payment_terms
 			  	  							INNER JOIN lookup_status ON lookup_status.id = purchase_orders.status
-			  	  							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = purchase_orders.completion_status',
+			  	  							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = purchase_orders.completion_status
+			  	  							LEFT OUTER JOIN users AS u1 ON u1.id = purchase_orders.created_by
+			  	  							LEFT OUTER JOIN users AS u2 ON u2.id = purchase_orders.checked_by
+			  	  							LEFT OUTER JOIN users AS u3 ON u3.id = purchase_orders.approved_by',
 			  	  	'conditions' => 'purchase_orders.id = '.$id)
 						);	 
 						 
@@ -126,16 +134,35 @@ class Query {
 	return null;
   }
 
+	function purchase_order_items_by_id($pid) {
+		$query = $this->DB->Fetch('purchase_order_items', array(
+			  			'columns' => 'purchase_order_items.id, purchase_order_items.purchase_order_id, products.id AS item_id, products.product_code AS code, products.description, item_costs.cost AS item_price, lookups.code AS unit, 
+               							purchase_order_items.item_type AS item_type, purchase_order_items.quantity AS quantity, purchase_order_items.remarks AS remarks', 
+			  	  	'joins' => 'INNER JOIN products ON products.id=purchase_order_items.item_id
+														INNER JOIN item_costs ON item_costs.item_id = products.id
+														INNER JOIN lookups ON lookups.id = products.unit',
+			  	  	'conditions' => 'item_costs.item_type="PRD" AND purchase_order_items.item_type="PRD" AND purchase_order_items.purchase_order_id= '.$pid,
+							'order' => 'id')
+						);	 
+						 
+	if(!empty($query)) return $query;
+	return null;
+  }
+
 	function work_order_by_id($id) {
 		$query = $this->DB->Fetch('work_orders', array(
 			  			'columns' => 'work_orders.id, work_orders.wo_number AS order_no, work_orders.wo_date AS order_date, work_orders.ship_date, 
 			  										work_orders.completion_status AS completion_status_id, lookup_status2.description AS completion_status,
 			  										work_orders.status AS status_id, lookup_status.description AS status, work_orders.total_amount, work_orders.remarks, 
 			  										suppliers.name AS client, work_orders.created_by, work_orders.created_at, 
-			  										work_orders.checked_by, work_orders.checked_at, work_orders.approved_by, work_orders.approved_at', 
+			  										work_orders.checked_by, work_orders.checked_at, work_orders.approved_by, work_orders.approved_at,
+			  										CONCAT(u1.first_name, " ", u1.last_name) AS creator, CONCAT(u2.first_name, " ", u2.last_name) AS checker, CONCAT(u3.first_name, " ", u3.last_name) AS approver', 
 			  	  	'joins' => 'INNER JOIN suppliers ON suppliers.id = work_orders.client_id
 			  	  							INNER JOIN lookup_status ON lookup_status.id = work_orders.status
-			  	  							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = work_orders.completion_status',
+			  	  							INNER JOIN lookup_status AS lookup_status2 ON lookup_status2.id = work_orders.completion_status
+			  	  							LEFT OUTER JOIN users AS u1 ON u1.id = work_orders.created_by
+			  	  							LEFT OUTER JOIN users AS u2 ON u2.id = work_orders.checked_by
+			  	  							LEFT OUTER JOIN users AS u3 ON u3.id = work_orders.approved_by',
 			  	  	'conditions' => 'work_orders.id = '.$id)
 						);	 
 						 
@@ -154,6 +181,21 @@ class Query {
 						);	 
 						 
 	if(!empty($query)) return $query[0];
+	return null;
+  }
+
+	function work_order_items_by_id($pid) {
+		$query = $this->DB->Fetch('work_order_items', array(
+			  			'columns' => 'work_order_items.id, work_order_items.work_order_id, products.id AS item_id, products.product_code AS code, products.description, item_costs.cost AS item_price, lookups.code AS unit, 
+               							work_order_items.quantity AS quantity, work_order_items.remarks AS remarks', 
+			  	  	'joins' => 'INNER JOIN products ON products.id=work_order_items.product_id
+														INNER JOIN item_costs ON item_costs.item_id = products.id
+														INNER JOIN lookups ON lookups.id = products.unit',
+			  	  	'conditions' => 'item_costs.item_type="PRD" AND work_order_items.work_order_id= '.$pid,
+							'order' => 'id')
+						);	 
+						 
+	if(!empty($query)) return $query;
 	return null;
   }
 

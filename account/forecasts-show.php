@@ -93,7 +93,7 @@
 	<script>
 	$(function() {
 		// Initiate forecast if empty
-  	$.post("forecast.php", { action: "init_forecast", forecast_year: <?php echo $active_year ?> })
+  	$.post(document.URL, { action: "init_forecast", forecast_year: <?php echo $active_year ?> })
 			.done(function(data) {
 			//return
 		});

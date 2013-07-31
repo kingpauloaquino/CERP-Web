@@ -22,7 +22,7 @@
     	<h2>Models Production Plan</h2>
     	<div id="accordion">
     		
-      <h3>ECI-E31</h3>
+      <h3 class="head" style="border-bottom: 1px solid #ccc">ECI-E31</h3>
       <div id="grid-suppliers" class="grid jq-grid" >
         <table cellspacing="0" cellpadding="0">
           <thead>
@@ -106,7 +106,7 @@
           </tbody>
         </table>
       </div>	
-      <h3>ECI-E32</h3>
+      <h3 class="head" style="border-bottom: 1px solid #ccc">ECI-E32</h3>
       <div id="grid-suppliers" class="grid jq-grid" >
         <table cellspacing="0" cellpadding="0">
           <thead>
@@ -220,7 +220,7 @@
           </tbody>
         </table>
       </div>
-      <h3>ECI-E23</h3>
+      <h3 class="head" style="border-bottom: 1px solid #ccc">ECI-E23</h3>
       <div id="grid-suppliers" class="grid jq-grid" >
         <table cellspacing="0" cellpadding="0">
           <thead>
@@ -385,10 +385,15 @@
 	
 <script type="text/javascript">
 	$(function() {
-    $( "#accordion" ).accordion({
-      collapsible: true,
-      heightStyle: "content"
-    });
+    // $( "#accordion" ).accordion({
+      // collapsible: true,
+      // heightStyle: "content"
+    // });
+    
+    $('#accordion .head').click(function() {
+      $(this).next().toggle('slow');
+      return false;
+  }).next().hide();
     
     $('.click').click(function (){
     	$('#btn-click').click();

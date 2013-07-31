@@ -99,8 +99,8 @@
 	              <td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', $materials['unit'], 'material[unit]', 'material[unit]', '', 'width:192px;'); ?></td>
 						 </tr>     
 	           <tr>
-	           	<td>Defect Rate %:</td><td><input id="material[defect_rate]" name="material[defect_rate]" type="text" value="<?php echo ($materials['defect_rate'] * 100) ?>" class="text-field text-right"/></td>
-	           	<td>Sorting %</td><td><input id="material[defect_rate]" name="material[sorting_percentage]" type="text" value="<?php echo ($materials['sorting_percentage'] * 100) ?>" class="text-field text-right"/></td>
+	           	<td>Defect Rate %:</td><td><input id="material[defect_rate]" name="material[defect_rate]" type="text" value="<?php echo ($materials['defect_rate'] * 100) ?>" class="text-field text-right decimal"/></td>
+	           	<td>Sorting %</td><td><input id="material[defect_rate]" name="material[sorting_percentage]" type="text" value="<?php echo ($materials['sorting_percentage'] * 100) ?>" class="text-field text-right decimal"/></td>
 	           </tr> 
 	           <tr>
 	              <td>Min. Stock Qty.:</td><td><input id="material[msq]" name="material[msq]" type="text" value="<?php echo $materials['msq'] ?>" class="text-field text-right numeric"/></td>
@@ -136,11 +136,11 @@
 		           </tr>
 		           <tr>
 		              <td width="150">Currency:</td><td width="310"><?php select_query_tag($currencies, 'id', 'description', $cost['currency'], 'item_cost['.$cost['id'].'][currency]', 'item_cost['.$cost['id'].'][currency]', '', 'width:192px;'); ?></td>
-		              <td width="150">Cost:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][cost]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][cost]' ?>" value="<?php echo $cost['cost'] ?>" class="text-field text-right" /></td>
+		              <td width="150">Cost:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][cost]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][cost]' ?>" value="<?php echo $cost['cost'] ?>" class="text-field text-right decimal" /></td>
 		           </tr>
 		           <tr>
-		              <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" value="<?php echo ($cost['transportation_rate'] * 100) ?>" class="text-field text-right" /></td>
-		              <td>MOQ:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" value="<?php echo $cost['moq'] ?>" class="text-field text-right" /></td>
+		              <td width="150">Transportation Rate:</td><td width="310"><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][transportation_rate]' ?>" value="<?php echo ($cost['transportation_rate'] * 100) ?>" class="text-field text-right decimal" /></td>
+		              <td>MOQ:</td><td><input type="text" id="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" name="<?php echo 'item_cost['.$cost['id'].'][moq]' ?>" value="<?php echo $cost['moq'] ?>" class="text-field text-right numeric" /></td>
 		              <td></td><td></td>
 		           </tr>    
 		           <tr><td height="5" colspan="99"></td></tr>

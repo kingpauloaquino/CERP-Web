@@ -25,7 +25,7 @@ $(function() {
   $('.decimal').decimal_only();
   $('.tooltip').tooltip();
   
-  
+  $('.text-field').disable_autocomplete();
   //$('.to-numeric').to_numeric();
   
   
@@ -35,6 +35,10 @@ $(function() {
     // "word": "Loading Records "
   // });
 })
+
+$.fn.disable_autocomplete = function() {
+	$(this).attr('autocomplete', 'off');
+}
 
 /* MOVE ELEMENT IN MIDDLE - CENTER OF A SCREEN */
 $.fn.core_position = function() {

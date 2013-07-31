@@ -173,7 +173,7 @@
 						 
 						 <div class="field">
 						    <label>Lot No.:</label>
-						    <input type="text" id="inventory-lot" name="inventory[lot_no]" class="text-field" />
+						    <input type="text" id="inventory-lot" name="inventory[lot_no]" class="text-field" value="<?php echo generate_new_code('material_lot_no') ?>"/>
 						 </div>
 						 
 						 <div class="field">

@@ -60,7 +60,7 @@
 	              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', '', 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?></td>
 	           </tr>     
 	           <tr>
-	              <td>Address:</td><td><input type="text"  class="text-field" />
+	              <td>Address:</td><td><input type="text"  class="text-field" disabled/>
 	              </td>
 	              <td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', 19, 'material[unit]', 'material[unit]', '', 'width:192px;'); ?></td>
 	           </tr>   

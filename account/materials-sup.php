@@ -16,7 +16,8 @@
 			$materials = $DB->Find('materials', array(
 					  			'columns' 		=> 'materials.id AS mid, materials.parent, materials.material_code, materials.bar_code, materials.description, brand_models.brand_model, msq, lookups1.description AS unit,
 																  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic, materials.defect_rate, materials.sorting_percentage,																  	
-																  	lookups3.description AS material_type, lookup_status.description AS status, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
+																  	lookups3.description AS material_type, lookup_status.description AS status, terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal,
+																  	location_addresses.address, materials.address AS address_id', 
 					  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
 					  	    'joins' 			=> 'LEFT OUTER JOIN brand_models ON materials.brand_model = brand_models.id 
 																		LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
@@ -24,7 +25,8 @@
 																		LEFT OUTER JOIN lookups AS lookups1 ON materials.unit = lookups1.id
 																		LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
 																		LEFT OUTER JOIN lookup_status ON materials.status = lookup_status.id
-																		LEFT OUTER JOIN terminals ON terminals.id=materials.production_entry_terminal_id'
+																		LEFT OUTER JOIN terminals ON terminals.id=materials.production_entry_terminal_id
+																		LEFT OUTER JOIN location_addresses ON location_addresses.id = materials.address'
 	  	  )
 			);
 		}	
@@ -77,8 +79,8 @@
 	              </td>
 	           </tr>      
 	           <tr>
-	              <td>Address:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
-	              	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
+	              <td>Address:</td><td><input type="text" value="<?php echo $materials['address'] ?>" class="text-field" disabled/>
+	              	<?php echo $linkto = ($materials['address']!='') ? link_to('locations-show.php?lid='.$materials['address_id']) : '' ?>
 	              </td>
 	              <td>Unit:</td><td><input type="text" value="<?php echo $materials['unit'] ?>" class="text-field" disabled/></td>
 	           </tr>   

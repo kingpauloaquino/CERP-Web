@@ -129,7 +129,7 @@
        </div>
      </div>
      
-     <div id="modal-material-requests" class="modal" style="display:none;width:920px;">
+   <div id="modal-material-requests" class="modal" style="display:none;width:920px;">
       <div class="modal-title"><h3>Unreleased Production Requests</h3></div>
       <div class="modal-content">
       

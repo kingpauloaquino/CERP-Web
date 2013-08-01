@@ -21,8 +21,7 @@ function populate_records($keyword='', $page, $limit, $order, $sort) {
 	$query = $DB->Fetch('location_addresses', array(
 							'columns'	=> 'location_addresses.id AS id, location_addresses.address AS address, materials.material_code AS item, 
 														locations1.location_code AS bldg, location_addresses.description AS description',
-					    'joins'		=> 'LEFT OUTER JOIN location_address_items ON location_address_items.address = location_addresses.id
-													LEFT OUTER JOIN materials ON materials.id = location_address_items.item_id
+					    'joins'		=> 'LEFT OUTER JOIN materials ON materials.id = location_addresses.item_id
 													LEFT OUTER JOIN locations AS locations1 ON locations1.id = location_addresses.bldg',
 					    'order' 	=> $order .' '.$sort,
     					'limit'		=> $startpoint .', '.$limit,

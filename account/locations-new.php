@@ -9,17 +9,6 @@
 	if(!$allowed) {
 		require('inaccessible.php');	
 	}else{
-	
-		if($_POST['action'] == 'add_location') {
-			if($_POST['location']['item_classification'] == 0) { // for single class rack
-				$_POST['location']['item_classification'] = NULL;
-			} 
-			$_POST['location']['address'] = $_POST['bldg'].'-'.$_POST['bldg_no'].$_POST['location']['rack'].sprintf( '%03d', $_POST['location']['number']);
-			$id = $Posts->AddLocation($_POST['location']);
-			$id = $Posts->AddLocationAddressItem(array('address' => $id));
-			
-			if(isset($id)){ redirect_to($Capabilities->All['show_location']['url'].'?lid='.$id); }
-		} 
 		
 	  $locations = $DB->Get('locations', array('columns' => 'id, location_code', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg').'"'));
 		$bldg_nos = $DB->Get('locations', array('columns' => 'id, CONCAT(location_code, "-", description) AS bldg_no', 'conditions' => 'parent = "'.get_lookup_code('loc_bldg_no').'"'));
@@ -53,8 +42,10 @@
 		<div id="content">
 			<form class="form-container" method="POST">
 				<input type="hidden" name="action" value="add_location"> 
-				<input type="hidden" name="bldg" id="bldg"> 
-				<input type="hidden" name="bldg_no" id="bldg_no"> 
+				<!-- <input type="hidden" name="bldg" id="bldg"> 
+				<input type="hidden" name="bldg_no" id="bldg_no">  -->
+				<input type="hidden" id="material-id" name="location[item_id]" />
+				<input type="hidden" name="location[item_type]" value="MAT" />
 
 				<h3 class="form-title">Details</h3>
         <table>
@@ -80,6 +71,12 @@
                 <input type="text" id="location[description]" name="location[description]" class="text-field" style="width:645px" />
               </td>
            </tr>  
+           <tr>
+              <td>Assigned Item:</td><td><input id="material-code" type="text" class="text-field" readonly/>
+              	<a id="btn-id" href="#modal-materials" rel="modal:open">Set</a>
+              </td>
+              <td></td><td></td>
+           </tr>  
            <!-- <tr>
 							<input type="hidden" id="mat_id" name="mat_id"/>
               <td>Assigned Item:</td><td><input type="text" id="item_code" name="item_code" value="<?php echo $item['item_code'] ?>" class="text-field searchbox" autocomplete="off" placeholder="Material Code" />
@@ -99,6 +96,77 @@
 			</form>
 		</div>
 	</div>
+	
+	<div id="modal-materials" class="modal" style="display:none;width:920px;">
+		<div class="modal-title"><h3>Warehouse Address</h3></div>
+		<div class="modal-content">
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
+      </div>
+			<div id="grid-materials" class="grid jq-grid">
+				<table cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<td width="20" class="border-right text-center"></td>
+              <td width="110" class="border-right text-center"><a class="sort default active up" column="code">Code</a></td>
+              <td width="100" class="border-right text-center"><a class="sort" column="classification">Classification</a></td>
+              <td class="border-right text-center"><a class="sort" column="description">Description</a></td>
+              <td width="120" class="border-right text-center"><a class="sort" column="address">Address</a></td>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>	
+			<div id="materials"></div>
+      <!-- BOF Pagination -->
+			<div id="locations-pagination"></div>
+		</div>     
+		<div class="modal-footer">
+			<a class="btn modal-close" rel="modal:close">Close</a>
+			<div class="clear"></div>
+		</div>
+	</div>
 
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var data = { 
+	    	"url":"/populate/location-materials.php",
+	      "limit":"10",
+				"data_key":"location_materials",
+				"row_template":"row_template_location_materials_modal",
+	      "pagination":"#locations-pagination",
+	      "searchable":true
+				}
+				$('#grid-materials').grid(data);
+				
+			$('#btn-id').click(function(){
+				// clear all checked
+				// var group = "input:checkbox[name='materials[1]']";
+	      // $(group).prop("checked", false);
+	        
+				$('#materials').find('tr.one-chk').each(function(){
+					$(this).prop("checked", false);
+				})
+			})
+				
+			$('.one-chk').live('click', function() {
+				// allow single selection only
+		    if ($(this).is(":checked")) {
+	        var group = "input:checkbox[name='" + $(this).attr("name") + "']";
+	        $(group).prop("checked", false);
+	        $(this).prop("checked", true);
+		    } else {
+	        $(this).prop("checked", false);
+		    }
+		    
+		    $('#material-code').val($(this).attr('material-code'));
+		    $('#material-id').val($(this).attr('material-id'));
+		    $('.modal-close').click();
+			});
+			
+		});
+	</script>
 <?php }
 require('footer.php'); ?>

@@ -33,10 +33,10 @@
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <td width="110" class="border-right text-center"><a class="sort default active up" code="address">Address</a></td>
-              <td width="200" class="border-right text-center"><a class="sort" code="item">Item</a></td>
-              <td width="100" class="border-right text-center"><a class="sort" code="bldg">Building</a></td>
-              <td class="border-right text-center"><a class="sort" code="description">Description</a></td>
+              <td width="110" class="border-right text-center"><a class="sort default active up" column="address">Address</a></td>
+              <td width="110" class="border-right text-center"><a class="sort" column="item">Assigned Item</a></td>
+              <td width="100" class="border-right text-center"><a class="sort" column="bldg">Building</a></td>
+              <td class="border-right text-center"><a class="sort" column="description">Description</a></td>
             </tr>
           </thead>
           <tbody></tbody>

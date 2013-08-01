@@ -16,7 +16,8 @@
 																	  	item_classifications.classification, users.id AS user_id, CONCAT(users.first_name, " ", users.last_name) AS pic,
 																	  	suppliers.id AS sup_id, suppliers.name AS supplier, lookups1.description AS unit, lookups2.code AS currency, item_costs.cost, 
 																	  	lookups3.description AS material_type, lookups4.description AS status, item_costs.transportation_rate,
-																	  	terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal', 
+																	  	terminals.id AS tid, CONCAT(terminals.terminal_code," - ", terminals.terminal_name) AS terminal,
+																	  	location_addresses.address, materials.address AS address_id', 
 						  	    'conditions' 	=> 'materials.id = '.$_GET['mid'], 
 						  	    'joins' 			=> 'LEFT OUTER JOIN item_classifications ON materials.material_classification = item_classifications.id 
 																			LEFT OUTER JOIN users ON materials.person_in_charge = users.id
@@ -26,13 +27,8 @@
 																			LEFT OUTER JOIN lookups AS lookups2 ON item_costs.currency = lookups2.id
 																			LEFT OUTER JOIN lookups AS lookups3 ON materials.material_type = lookups3.id
 																			LEFT OUTER JOIN lookups AS lookups4 ON materials.status = lookups4.id
-																			LEFT OUTER JOIN terminals ON terminals.id=materials.production_entry_terminal_id'
-		  	  )
-				);
-				$address = $DB->Find('location_address_items', array(
-						  			'columns' 		=> 'location_address_items.id, location_address_items.address AS add_id, location_addresses.address', 
-						  			'joins'				=> 'INNER JOIN location_addresses ON location_addresses.id = location_address_items.address',
-						  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.item_id = '.$_GET['mid']
+																			LEFT OUTER JOIN terminals ON terminals.id=materials.production_entry_terminal_id
+																			LEFT OUTER JOIN location_addresses ON location_addresses.id = materials.address'
 		  	  )
 				);
   }
@@ -78,8 +74,8 @@
 	              </td>
 	           </tr>      
 	           <tr>
-	              <td>Address:</td><td><input type="text" value="<?php echo $address['address'] ?>" class="text-field" disabled/>
-	              	<?php echo $linkto = ($address['address']!='') ? link_to('locations-show.php?lid='.$address['add_id']) : '' ?>
+	              <td>Address:</td><td><input type="text" value="<?php echo $materials['address'] ?>" class="text-field" disabled/>
+	              	<?php echo $linkto = ($materials['address']!='') ? link_to('locations-show.php?lid='.$materials['address_id']) : '' ?>
 	              </td>
 	              <td width="150">Unit:</td><td width="310"><input type="text" value="<?php echo $materials['unit'] ?>" class="text-field" disabled/></td>
 	           </tr>            

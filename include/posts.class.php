@@ -149,6 +149,7 @@ class Posts {
 		  'production_entry_terminal_id' => $params['production_entry_terminal_id'] ,
 		  'msq' => $params['msq'], 
 		  'unit' => $params['unit'], 
+		  'address' => $params['address'], 
 		  'created_by' => $_SESSION['user']['id'], 
 		);
     return $this->DB->InsertRecord('materials', $material);
@@ -169,6 +170,7 @@ class Posts {
 		  'person_in_charge'				=> $params['person_in_charge'],
 		  'status'									=> $params['status'],
 		  'production_entry_terminal_id' => $params['production_entry_terminal_id'],
+		  'address' => $params['address'], 
 		  'created_by' => $_SESSION['user']['id'], 
 		);
     return $this->DB->InsertRecord('materials', $material);
@@ -765,25 +767,15 @@ class Posts {
   	  'number'			=> $params['number'],
   	  'address'			=> $params['address'],
 		  'description'	=> mysql_real_escape_string(ucwords(strtolower($params['description']))),
-  	  'terminal_id'	=> $params['terminal_id']
-  	  //'color'				=> $params['color']
+  	  'terminal_id'	=> $params['terminal_id'],
+  	  'item_id'			=> $params['item_id'],
+  		'item_type'	=> $params['item_type']
 		);	
 		return $this->DB->InsertRecord('location_addresses', $location);
   }
 	
 	function EditLocation($params) {
     return $this->DB->UpdateRecord('location_addresses', $params);
-  }
-	
-	function AddLocationAddressItem($params) {
-  	$location = array(
-  	  'address'	=> $params['address']
-		);	
-		return $this->DB->InsertRecord('location_address_items', $location);
-  }
-	
-	function EditLocationAddressItem($params) {
-    return $this->DB->UpdateRecord('location_address_items', $params);
   }
 
 	function AddTerminal($params) {
@@ -1152,4 +1144,5 @@ class Posts {
 		);	
 		return $this->DB->InsertRecord('notifications', $noti);
 	}
+
 }

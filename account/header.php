@@ -88,6 +88,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		}
 		$_POST['item_cost']['item_id'] = $base_id;
 		$Posts->AddItemCost($_POST['item_cost']);
+		
+		// Update location item
+		$args = array('variables' => array('item_type' => 'MAT', 'item_id' => $base_id), 'conditions' => 'id='.$_POST['material']['address']); 
+		$num_of_records = $Posts->EditLocation($args);
+		
+		
 		if(isset($base_id)){ redirect_to($Capabilities->All['show_material']['url'].'?mid='.$base_id); }
 		break;
 		
@@ -106,6 +112,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 			}
 			$Posts->EditItemCost(array('variables' => $cost, 'conditions' => 'item_type= "MAT" AND id='.$cost['id']));
 		}
+		
+		// Update location item
+		$args = array('variables' => array('item_type' => '', 'item_id' => 'NULL'), 'conditions' => 'id='.$_POST['old-address']); 
+		$num_of_records = $Posts->EditLocation($args); unset($args);
+		// Update location item
+		$args = array('variables' => array('item_type' => 'MAT', 'item_id' => $_POST['mid']), 'conditions' => 'id='.$_POST['material']['address']); 
+		$num_of_records = $Posts->EditLocation($args);
+		
 		redirect_to($Capabilities->All['show_material']['url'].'?mid='.$_POST['mid']);		
 		break;
 		
@@ -118,6 +132,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		}
 		$_POST['material']['base'] = FALSE;
 		$id = $Posts->AddMaterial($_POST['material']);
+		
+		// Update location item
+		$args = array('variables' => array('item_type' => 'MAT', 'item_id' => $id), 'conditions' => 'id='.$_POST['material']['address']); 
+		$num_of_records = $Posts->EditLocation($args);
 				
 		if(isset($_POST['item_cost']['transportation_rate'])) {
 			$_POST['item_cost']['transportation_rate'] = $_POST['item_cost']['transportation_rate'] / 100;
@@ -142,6 +160,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		
 	case 'add_indirect_material':
 		$id = $Posts->AddIndirectMaterial($_POST['material']);
+		
+		// Update location item
+		$args = array('variables' => array('item_type' => 'MAT', 'item_id' => $id), 'conditions' => 'id='.$_POST['material']['address']); 
+		$num_of_records = $Posts->EditLocation($args);
 					
 		if(isset($_POST['item_cost']['transportation_rate'])) {
 			$_POST['item_cost']['transportation_rate'] = $_POST['item_cost']['transportation_rate'] / 100;
@@ -149,6 +171,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$_POST['item_cost']['item_id'] = $id;
 		$Posts->AddItemCost($_POST['item_cost']);
 		if(isset($id)){ redirect_to($Capabilities->All['show_indirect_material']['url'].'?mid='.$id); }
+		break;
+		
+	case 'edit_indirect_material':
+		$num_of_records1 = $Posts->EditMaterial(array('variables' => $_POST['material'], 'conditions' => 'id='.$_POST['mid']));
+		$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'item_id='.$_POST['mid']));
+		
+		// Update location item
+		$args = array('variables' => array('item_type' => '', 'item_id' => 'NULL'), 'conditions' => 'id='.$_POST['old-address']); 
+		$num_of_records = $Posts->EditLocation($args); unset($args);
+		// Update location item
+		$args = array('variables' => array('item_type' => 'MAT', 'item_id' => $_POST['mid']), 'conditions' => 'id='.$_POST['material']['address']); 
+		$num_of_records = $Posts->EditLocation($args);
+		
+		redirect_to($Capabilities->All['show_indirect_material']['url'].'?mid='.$_POST['mid']);		
 		break;
 		
 	case 'add_product':
@@ -170,6 +206,35 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$num_of_records2 = $Posts->EditItemCost(array('variables' => $_POST['item_cost'], 'conditions' => 'id='.$_POST['item_cost_id']));
 		redirect_to($Capabilities->All['show_product']['url'].'?pid='.$_POST['pid']);		
 		break;	
+		
+	case 'add_location':
+			if($_POST['location']['item_classification'] == 0) { // for single class rack
+				$_POST['location']['item_classification'] = NULL;
+			} 
+			$_POST['location']['address'] = $_POST['bldg'].'-'.$_POST['bldg_no'].$_POST['location']['rack'].sprintf( '%03d', $_POST['location']['number']);
+			$id = $Posts->AddLocation($_POST['location']);
+			
+			// Update material address
+			$args = array('variables' => array('address' => $id), 'conditions' => 'id='.$_POST['location']['item_id']); 
+			$num_of_records = $Posts->EditMaterial($args);
+			
+			if(isset($id)){ redirect_to($Capabilities->All['show_location']['url'].'?lid='.$id); }
+		break;	
+		
+	case 'edit_location':
+			$_POST['location']['address'] = $_POST['bldg'].'-'.$_POST['bldg_no'].$_POST['location']['rack'].sprintf( '%03d', $_POST['location']['number']);
+			$args = array('variables' => $_POST['location'], 'conditions' => 'id='.$_POST['lid']); 
+			$num_of_records = $Posts->EditLocation($args);
+			
+			// remove previous material
+			$args = array('variables' => array('address' => 'NULL'), 'conditions' => 'id='.$_POST['old-item-id']); 
+			$num_of_records = $Posts->EditMaterial($args); unset($args);
+			// Update material address
+			$args = array('variables' => array('address' => $_POST['lid']), 'conditions' => 'id='.$_POST['location']['item_id']); 
+			$num_of_records = $Posts->EditMaterial($args);
+			
+			redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_POST['lid']);
+		break;
 		
   // ===============================================================
   // Post::Add Purchase
@@ -812,7 +877,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 		$rid = $Posts->AddMaterialRequest(array(
 																'request_no' => generate_new_code('request_number'),
 																'request_type' => $_POST['request_type'], 
-																'batch_no' => $_POST['batch_no'],
+																'batch_no' => generate_new_code('prod_batch_number'),
 																'requested_date' => date('Y-m-d'),
 																'requested_by' => $_SESSION['user']['id'],
 																'expected_date' => $_POST['expected_date'],
@@ -904,7 +969,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_POST['action'])) {
 				}
 			}
 		}
-var_dump($_POST); die();
+
 		redirect_to($Capabilities->All['show_material_requests']['url'].'?rid='.$_POST['rid']);
 		break;
 		

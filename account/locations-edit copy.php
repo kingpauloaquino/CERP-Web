@@ -9,12 +9,39 @@
 	if(!$allowed) {
 		require('inaccessible.php');	
 	}else{
+	
+		if($_GET['clear_item'] == 1) {
+			$args = array('variables' => array('item_id' => NULL, 'item_type' => ''), 'conditions' => 'address='.$_GET['lid']); 
+			$num_of_records = $Posts->EditLocationAddressItem($args);
+			redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_GET['lid']);	
+		}
+		
+		if($_POST['action'] == 'edit_location') {
+			$_POST['location']['address'] = $_POST['bldg'].'-'.$_POST['bldg_no'].$_POST['location']['rack'].sprintf( '%03d', $_POST['location']['number']);
+			$args = array('variables' => $_POST['location'], 'conditions' => 'id='.$_POST['lid']); 
+			$num_of_records = $Posts->EditLocation($args);
+			
+			if($_POST['mat_id']!='') {
+				$mid = $_POST['mat_id'];
+				$typ = 'MAT';
+				$args = array('variables' => array('item_id' => $mid, 'item_type' => $typ), 'conditions' => 'address='.$_POST['lid']); 
+				$num_of_records = $Posts->EditLocationAddressItem($args);
+			}
+			
+			
+			redirect_to($Capabilities->All['show_location']['url'].'?lid='.$_POST['lid']);		
+		} 
 		
 		if(isset($_GET['lid'])) {
 	  	$location = $DB->Find('location_addresses', array(
-	  		'columns' => 'location_addresses.*, location_addresses.item_id AS mid, materials.material_code AS code', 
-	  		'joins' => 'LEFT OUTER JOIN materials ON materials.id = location_addresses.item_id AND item_type="MAT"',
+	  		'columns' => 'location_addresses.*', 
 	  	  'conditions' => 'location_addresses.id = '.$_GET['lid']
+	  	  )
+			);
+			$item = $DB->Find('location_address_items', array(
+					  			'columns' 		=> 'location_address_items.id, location_address_items.item_id AS mat_id, materials.material_code AS item_code', 
+					  			'joins'				=> 'INNER JOIN materials ON materials.id = location_address_items.item_id',
+					  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.address = '.$_GET['lid']
 	  	  )
 			);
 		}
@@ -27,6 +54,7 @@
 	  $areas = $DB->Get('locations', array('columns' => 'id, location', 'conditions' => 'parent = "'.get_lookup_code('loc_area').'"'));
 		$racks = range('A', 'Z');
 ?>
+<script type="text/javascript" src="../javascripts/jquery.watermarkinput.js"></script>
 <script>	
 	$(document).ready(function() {
 		$('#bldg').val($('[name*="location[bldg]"] option:selected').text());
@@ -37,7 +65,42 @@
     $('[name*="location[bldg_no]"]').change(function(){
 			$('#bldg_no').val($('[name*="location[bldg_no]"] option:selected').text().substring(0,$('[name*="location[bldg_no]"] option:selected').text().indexOf("-")+1));
     });
-   
+    $(".searchbox").keydown(function(e) {
+			if (e.keyCode == 9) {
+				$('#live_search_display').hide();
+			}
+		});
+		$(".searchbox").keyup(function() {
+			var searchbox = $(this).val().toUpperCase();
+			if(searchbox=='') {				
+				$('#live_search_display').hide();
+			}
+			else {
+				function ajax(ptype, purl, pout){
+					$.ajax({
+						type: ptype,
+						url: purl,
+						data: { searchword: searchbox, 
+										searchtype: 'location',
+										resultcount: 5,
+										table: 			'materials',
+										columns: 		'materials.id AS mat_id, materials.material_code AS item_code ',
+										joins: 			' ',
+										conditions: 'materials.material_code LIKE "%'+searchbox+'%"'
+									},
+						cache: false,
+						success: function(data) {
+							$(pout).html(data).show();		
+						}
+					});
+				}
+				ajax ("POST", "../include/livesearch.php", "#live_search_display");
+			}
+			return false;    
+		});
+	});
+	jQuery(function($) {
+		$('#item_code').Watermark("Material Code");
 	});
 </script>
 	<div id="page">
@@ -57,9 +120,6 @@
 				<input type="hidden" name="bldg" id="bldg"> 
 				<input type="hidden" name="bldg_no" id="bldg_no"> 
 				<input type="hidden" name="lid" value="<?php echo $_GET['lid'] ?>">
-				<input type="hidden" name="old-item-id" value="<?php echo $location['mid'] ?>" />
-				<input type="hidden" id="material-id" name="location[item_id]" value="<?php echo $location['item_id'] ?>"/>
-				<input type="hidden" name="location[item_type]" value="MAT" />
 
 				<h3 class="form-title">Details</h3>
         <table>
@@ -86,8 +146,10 @@
               </td>
            </tr>  
            <tr>
-              <td>Assigned Item:</td><td><input id="material-code" type="text" class="text-field" value="<?php echo $location['code'] ?>" readonly/>
-              	<a id="btn-id" href="#modal-materials" rel="modal:open">Set</a>
+							<input type="hidden" id="mat_id" name="mat_id"/>
+              <td>Assigned Item:</td><td><input type="text" id="item_code" name="item_code" value="<?php echo $item['item_code'] ?>" class="text-field searchbox" autocomplete="off" placeholder="Material Code" />
+              	<?php echo $linkto = ($item['item_code']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$_GET['lid'].'&clear_item=1">[CLEAR]</a>' : '' ?>
+              	<div id="live_search_display" class="live_search_display"></div>
               </td>
               <td></td><td></td>
            </tr>    
@@ -102,75 +164,5 @@
 		</div>
 	</div>
 
-	<div id="modal-materials" class="modal" style="display:none;width:920px;">
-		<div class="modal-title"><h3>Warehouse Address</h3></div>
-		<div class="modal-content">
-			<!-- BOF Search -->
-      <div class="search">
-        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
-      </div>
-			<div id="grid-materials" class="grid jq-grid">
-				<table cellspacing="0" cellpadding="0">
-					<thead>
-						<tr>
-							<td width="20" class="border-right text-center"></td>
-              <td width="110" class="border-right text-center"><a class="sort default active up" column="code">Code</a></td>
-              <td width="100" class="border-right text-center"><a class="sort" column="classification">Classification</a></td>
-              <td class="border-right text-center"><a class="sort" column="description">Description</a></td>
-              <td width="120" class="border-right text-center"><a class="sort" column="address">Address</a></td>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-			</div>	
-			<div id="materials"></div>
-      <!-- BOF Pagination -->
-			<div id="locations-pagination"></div>
-		</div>     
-		<div class="modal-footer">
-			<a class="btn modal-close" rel="modal:close">Close</a>
-			<div class="clear"></div>
-		</div>
-	</div>
-	<script type="text/javascript">
-		$(document).ready(function(){
-			var data = { 
-	    	"url":"/populate/location-materials.php",
-	      "limit":"10",
-				"data_key":"location_materials",
-				"row_template":"row_template_location_materials_modal",
-	      "pagination":"#locations-pagination",
-	      "searchable":true
-				}
-				$('#grid-materials').grid(data);
-				
-			$('#btn-id').click(function(){
-				// clear all checked
-				// var group = "input:checkbox[name='materials[1]']";
-	      // $(group).prop("checked", false);
-	        
-				$('#materials').find('tr.one-chk').each(function(){
-					$(this).prop("checked", false);
-				})
-			})
-				
-			$('.one-chk').live('click', function() {
-				// allow single selection only
-		    if ($(this).is(":checked")) {
-	        var group = "input:checkbox[name='" + $(this).attr("name") + "']";
-	        $(group).prop("checked", false);
-	        $(this).prop("checked", true);
-		    } else {
-	        $(this).prop("checked", false);
-		    }
-		    
-		    $('#material-code').val($(this).attr('material-code'));
-		    $('#material-id').val($(this).attr('material-id'));
-		    $('.modal-close').click();
-			});
-			
-		});
-	</script>
 <?php }
 require('footer.php'); ?>

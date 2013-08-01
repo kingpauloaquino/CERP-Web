@@ -1210,9 +1210,13 @@ function row_template_material_request_release(data) {
   						'</tr>');
 	var wh_stock = (data['wh_stock'] || 0);
 
-  row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /></td>');
+  //row.append('<td class="border-right text-center"><input type="checkbox" value="" class="chk-item" /></td>');
   row.append('<td class="border-right text-center" replace="#{index}"></td>');
-  row.append('<td class="border-right">'+ data['code'] +'</td>');
+  
+  
+	row.append('<td class="border-right"><a class="click-issue" id="'+ data['id'] +'" code="'+ data['code'] +'" href="#">'+ data['code'] +'</a></td>');
+  
+  //row.append('<td class="border-right">'+ data['code'] +'</td>');
   row.append('<td class="border-right">'+ data['description'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['type'] +'</td>');
   row.append('<td class="border-right text-center">'+ data['unit'] +'</td>');
@@ -1235,15 +1239,57 @@ function row_template_material_request_issue_stock(data) {
   return row;   
 }
 
+function row_template_material_request_release_item(data) {
+  var id		= data['id'];
+  var row		= $('<tr id="'+id+'">' +
+  						'</tr>');
+  
+  row.append('<td class="border-right text-center"><input type="checkbox" issue-id="'+ id +'" class="chk-item"/></td>');
+  row.append('<td class="border-right text-center" replace="#{index}"></td>');
+  row.append('<td class="border-right text-center">'+ data['lot_no'] +'</td>');
+  row.append('<td class="border-right text-right numbers">'+ parseFloat(data['qty'] || 0) +'</td>');
+ 
+  row.find('.numbers').digits();
+  return row;   
+}
+
 function row_template_locations(data) {
   var forward	= host + "/account/locations-show.php?lid="+ data['id'] + "";
   var row		= $("<tr forward=\""+ forward +"\"><td class=\"border-right text-center\"><a href=\""+ forward +"\">"+ (data['address'] || '--') +"</a></td>" +
-    "<td class=\"border-right text-center\">"+ (data['item'] || '--') +"</td>" +
+    "<td class=\"border-right\">"+ (data['item'] || '--') +"</td>" +
     "<td class=\"border-right text-center\">"+ data['bldg'] +"</td>" +
-    "<td class=\"border-right text-center\">"+ data['description'] +"</td>" +
+    "<td class=\"border-right\">"+ data['description'] +"</td>" +
     "</tr>");
 
   return row;
+}
+
+function row_template_locations_modal(data) {
+  var id		= data['id'];
+  var row		= $('<tr id="'+id+'">' +
+  						'</tr>');
+  
+  row.append('<td class="border-right text-center"><input type="checkbox" class="one-chk" name="materials[1]" address-id="'+ id +'" address-name="'+ data['address'] +'"/></td>');
+  row.append('<td class="border-right text-center">'+ data['address'] +'</td>');
+  row.append('<td class="border-right">'+ (data['item'] || '') +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['bldg'] || '') +'</td>');
+  row.append('<td class="border-right">'+ (data['description'] || '') +'</td>');
+ 
+  return row;   
+}
+
+function row_template_location_materials_modal(data) {
+  var id		= data['id'];
+  var row		= $('<tr id="'+id+'">' +
+  						'</tr>');
+  
+  row.append('<td class="border-right text-center"><input type="checkbox" class="one-chk" name="materials[1]" material-id="'+ id +'" material-code="'+ data['code'] +'"/></td>');
+  row.append('<td class="border-right text-center">'+ data['code'] +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['classification'] || '') +'</td>');
+  row.append('<td class="border-right">'+ (data['description'] || '') +'</td>');
+  row.append('<td class="border-right text-center">'+ (data['address'] || '') +'</td>');
+ 
+  return row;   
 }
 
 function row_template_devices(data) {

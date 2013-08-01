@@ -12,7 +12,7 @@
 	
 		if(isset($_GET['lid'])) {
 	  	$location = $DB->Find('location_addresses', array(
-	  		'columns' => 'location_addresses.id AS loc_id, locations1.location_code AS bldg, location_addresses.address,
+	  		'columns' => 'location_addresses.id AS loc_id, locations1.location_code AS bldg, location_addresses.address, materials.id AS mid, materials.material_code AS code, materials.material_type AS type,
 											item_classifications.classification, locations2.location AS deck, locations3.location AS area, CONCAT(locations4.location_code, "-", locations4.description) AS bldg_no,
 											terminals.terminal_code,terminals.id AS tid, terminals.terminal_name, location_addresses.rack, location_addresses.number, location_addresses.description', 
 				'joins'		=>	'LEFT OUTER JOIN locations AS locations1 ON locations1.id = location_addresses.bldg 
@@ -20,15 +20,10 @@
 											LEFT OUTER JOIN locations AS locations3 ON locations3.id = location_addresses.area	
 											LEFT OUTER JOIN locations AS locations4 ON locations4.id = location_addresses.bldg_no	
 											LEFT OUTER JOIN terminals ON terminals.id = location_addresses.terminal_id
-											LEFT OUTER JOIN item_classifications ON item_classifications.id = location_addresses.item_classification',
+											LEFT OUTER JOIN item_classifications ON item_classifications.id = location_addresses.item_classification
+											LEFT OUTER JOIN materials ON materials.id = location_addresses.item_id AND location_addresses.item_type="MAT"',
 	  	  'conditions' => 'location_addresses.id = '.$_GET['lid']
 	  	  ));
-				$item = $DB->Find('location_address_items', array(
-						  			'columns' 		=> 'location_address_items.id, materials.id AS mat_id, materials.material_code AS item_code', 
-						  			'joins'				=> 'INNER JOIN materials ON materials.id = location_address_items.item_id',
-						  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.address = '.$_GET['lid']
-		  	  )
-				);
 		}
 ?>
 
@@ -74,8 +69,11 @@
               </td>
            </tr>  
            <tr>
-              <td>Assigned Item:</td><td><input type="text" value="<?php echo $item['item_code'] ?>" class="text-field" disabled/>
-              	<?php echo $linkto = ($item['item_code']!='') ? link_to('materials-show.php?mid='.$item['mat_id']) : '' ?>
+              <td>Assigned Item:</td><td><input type="text" value="<?php echo $location['code'] ?>" class="text-field" disabled/>
+              	<?php 
+              		echo $linkto = ($location['code']!='') 
+              			? link_to((($location['type'] == 70) ? 'materials-show.php?mid=' : 'indirect-materials-show.php?mid=').$location['mid']) 
+										: '' ?>
               </td>
               <td></td><td></td>
            </tr>   

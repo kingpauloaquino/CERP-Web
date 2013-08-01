@@ -18,7 +18,7 @@
 		<div id="page-title">
     	<h2>
             <span class="title"><?php echo $Capabilities->GetTitle(); ?></span>
-         			<a id="btn-add-plan" href="#mdl-ship-plan" rel="modal:open" class="nav">Add Ship Plan</a>
+         			<a id="btn-add-plan" href="#mdl-ship-plan" rel="modal:open" class="nav">Add Plan</a>
             <div class="clear"></div>
       </h2>
 		</div>
@@ -93,7 +93,7 @@
 	</div>
 	
 	<div id="mdl-ship-plan" class="modal">
-		<div class="modal-title"><h3>New Plan Ship Date</h3></div>
+		<div class="modal-title"><h3>New Plan</h3></div>
 		<div class="modal-content">
 			<form id="frm-ship-plan" method="POST">
 				<span class="notice"></span>     

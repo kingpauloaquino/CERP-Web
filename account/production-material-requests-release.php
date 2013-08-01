@@ -60,7 +60,6 @@
          <table cellspacing="0" cellpadding="0">
            <thead>
              <tr>
-               <td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
                <td width="30" class="border-right text-center">No.</td>
                <td width="120" class="border-right">Material</td>
                <td class="border-right">Description</td>
@@ -108,7 +107,32 @@
  </div>
        
        
-
+	<!-- BOF MODAL -->
+	<a id="btn-stock" href="#modal-issue-materials" rel="modal:open"></a>
+	<div id="modal-issue-materials" class="modal" style="display:none;width:340px;">
+		<div class="modal-title"><h3></h3></div>
+		<div class="modal-content" >
+		<!-- BOF GRIDVIEW -->
+			<div id="grid-issue-materials" class="grid jq-grid grid-item">
+				<table cellspacing="0" cellpadding="0">
+				<thead>
+					<tr>
+						<td width="20" class="border-right text-center"><input type="checkbox" class="chk-all"/></td>
+						<td width="30" class="border-right text-center">No.</td>
+						<td class="border-right text-center" width="140"><a class="sort" column="lot_no">Lot No</a></td>
+						<td clas s="border-right text-center" width="80"><a class="sort" column="qty">Qty</a></td> 
+					</tr>
+				</thead>
+				<tbody id="issue-materials"></tbody></table>
+			</div>
+		</div>
+		
+		<div class="modal-footer">
+			<a id="btn-release" class="btn" rel="modal:close">Release</a>
+			<a class="btn parent-modal" rel="modal:close">Cancel</a>
+			<div class="clear"></div>
+		</div>
+	</div>
        
    <script>
    	$(function() {
@@ -117,31 +141,46 @@
 	      "limit":"50",
 				"data_key":"material_request_issue",
 				"row_template":"row_template_material_request_release"
-				
 			}
-		
 			$('#grid-request-items').grid(data);
 			
-			$('#btn-submit').click(function(e){
+			$('#request-items').find('.click-issue').show_issue();
+			
+			$('#btn-release').click(function(e){
 				e.preventDefault();
-				var ctr = 0;
-				$('#request-items > tr').each(function(){
-					if($(this).find('.wh-stock').hasClass('disable-issue')) {
-						ctr++;
+				
+				$('#issue-materials').find('.chk-item').each(function(){
+					if($(this).is(':checked')) {
+						alert($(this).attr('issue-id'));
+						
+						$.post(document.URL, $(form).serialize(), function(data) {
+			      }).done(function(data){
+			      	//window.location = 'plan-order-model-shipment-show.php?t=<?php echo $_GET['t'] ?>&ctrl_id=<?php echo $_GET['ctrl_id'] ?>&pid=<?php echo $_GET['pid'] ?>';
+			      });	
 					}
-				});
-				if(ctr>0) {
-					$('#div-notice').show('slow');
-				} else {
-					$('#div-notice').hide('slow');
-					// submit
-					$.post(document.URL, $($('#request-form')).serialize(), function(data) {
-					  window.location = document.URL;
-					});
-				}
+				})
 			});
 	  }) 
-	  
+	  $.fn.show_issue = function() {
+	  	$()
+	    this.live('click', function(e) {
+	    	e.preventDefault();
+	    	
+	    	$('#modal-issue-materials').find('h3').text($(this).attr('code'));
+	    	
+	    	var data = { 
+		    	"url":"/populate/material-requests-issue-stock.php?id="+$(this).attr('id'),
+		      "limit":"15",
+					"data_key":"material_request_item_issue_stock",
+					"row_template":"row_template_material_request_release_item",
+		      "searchable":false
+				}
+			
+				$('#grid-issue-materials').grid(data);
+				
+				$('#btn-stock').click();	
+	    })
+	  }
   </script>
 
 <?php }

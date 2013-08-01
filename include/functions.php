@@ -384,6 +384,15 @@ function generate_new_code($type) {
 			$pad = TRUE; 
 			$pad_cnt = 3;			
 			break;
+			
+		case "prod_batch_number":	
+			$prefix = "PBN".date('ymd');
+			$flag = '-';
+			$table = 'productions';
+			$column = 'batch_no';	
+			$pad = TRUE; 
+			$pad_cnt = 3;			
+			break;
 	}
 	
 	global $DB;

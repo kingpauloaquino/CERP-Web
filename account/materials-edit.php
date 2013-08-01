@@ -13,16 +13,12 @@
 	
   if(isset($_GET['mid'])) {
   	$materials = $DB->Find('materials', array(
-				  			'columns' 		=> 'materials.*', 
+				  			'columns' 		=> 'materials.*, materials.address AS address_id, location_addresses.address AS address_name', 
+				  			'joins' => 'LEFT OUTER JOIN location_addresses ON location_addresses.id = materials.address',
 				  	    'conditions' 	=> 'materials.id = '.$_GET['mid'] ));	
 								
 		$item_costs = $DB->Find('item_costs', array('columns' => 'supplier, currency, cost, transportation_rate', 
   							'conditions' => 'item_id = '.$_GET['mid'].' AND item_type="MAT"'));  
-		
-		$address = $DB->Find('location_address_items', array(
-				  			'columns' 		=> 'location_address_items.id, location_address_items.address AS add_id, location_addresses.address', 
-				  			'joins'				=> 'INNER JOIN location_addresses ON location_addresses.id = location_address_items.address',
-				  	    'conditions' 	=> 'location_address_items.item_type="MAT" AND location_address_items.item_id = '.$_GET['mid'] ));
 								
 		if($materials['base']) {
 			$revisions = $DB->Get('material_revisions', array('columns' => 'materials.id, materials.material_code', 
@@ -65,6 +61,8 @@
 				<input type="hidden" name="action" value="edit_material">
 				<input type="hidden" name="mid" value="<?php echo $_GET['mid'] ?>">
 				<input type="hidden" id="material[material_type]" name="material[material_type]" value="70" />
+				<input type="hidden" name="old-address" value="<?php echo $materials['address_id'] ?>" />
+				<input type="hidden" id="address-id" name="material[address]" value="<?php echo $materials['address'] ?>" />
 				
 				<div class="form-container">
 					<h3 class="form-title">Details</h3>
@@ -93,8 +91,8 @@
 	              <td>WIP Line Entry:</td><td><?php select_query_tag($terminals, 'id', 'terminal', $materials['production_entry_terminal_id'], 'material[production_entry_terminal_id]', 'material[production_entry_terminal_id]', '', 'width:192px;'); ?></td>
 	           </tr>      
 	           <tr>
-	              <td>Address:</td><td><input type="text"  value="<?php echo $address['address'] ?>" class="text-field" />
-	          			<?php echo $linkto = ($address['add_id']!='') ? '&nbsp;<a href="locations-edit.php?lid='.$address['add_id'].'">change</a>' : '' ?>
+	              <td>Address:</td><td><input id="address-name" type="text"  value="<?php echo $materials['address_name'] ?>" class="text-field" />
+	          			<a id="btn-id" href="#modal-locations" rel="modal:open">Set</a>
 	              </td>
 	              <td>Unit:</td><td><?php select_query_tag($units, 'id', 'description', $materials['unit'], 'material[unit]', 'material[unit]', '', 'width:192px;'); ?></td>
 						 </tr>     
@@ -157,9 +155,76 @@
 				</form>
 		</div>
 	</div>
+	
+	<div id="modal-locations" class="modal" style="display:none;width:920px;">
+		<div class="modal-title"><h3>Warehouse Address</h3></div>
+		<div class="modal-content">
+			<!-- BOF Search -->
+      <div class="search">
+        <input type="text" id="keyword" name="keyword" class="keyword" placeholder="Search" />
+      </div>
+			<div id="grid-locations" class="grid jq-grid">
+				<table cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<td width="20" class="border-right text-center"></td>
+              <td width="110" class="border-right text-center"><a class="sort default active up" code="address">Address</a></td>
+              <td width="200" class="border-right text-center"><a class="sort" code="item">Assigned Item</a></td>
+              <td width="100" class="border-right text-center"><a class="sort" code="bldg">Building</a></td>
+              <td class="border-right text-center"><a class="sort" code="description">Description</a></td>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>	
+			<div id="materials"></div>
+      <!-- BOF Pagination -->
+			<div id="locations-pagination"></div>
+		</div>     
+		<div class="modal-footer">
+			<a class="btn modal-close" rel="modal:close">Close</a>
+			<div class="clear"></div>
+		</div>
+	</div>
 
 	<script type="text/javascript">
 		$(document).ready(function(){
+			var data = { 
+	    	"url":"/populate/locations.php",
+	      "limit":"10",
+				"data_key":"location_addresses",
+				"row_template":"row_template_locations_modal",
+	      "pagination":"#locations-pagination",
+	      "searchable":true
+				}
+				$('#grid-locations').grid(data);
+				
+			$('#btn-id').click(function(){
+				// clear all checked
+				// var group = "input:checkbox[name='materials[1]']";
+	      // $(group).prop("checked", false);
+	        
+				$('#materials').find('tr.one-chk').each(function(){
+					$(this).prop("checked", false);
+				})
+			})
+				
+			$('.one-chk').live('click', function() {
+				// allow single selection only
+		    if ($(this).is(":checked")) {
+	        var group = "input:checkbox[name='" + $(this).attr("name") + "']";
+	        $(group).prop("checked", false);
+	        $(this).prop("checked", true);
+		    } else {
+	        $(this).prop("checked", false);
+		    }
+		    
+		    $('#address-name').val($(this).attr('address-name'));
+		    $('#address-id').val($(this).attr('address-id'));
+		    $('.modal-close').click();
+			});
+			
 			$('#mat-code').keyup(function() {
 				if($(this).val() != '<?php echo $materials['material_code'] ?>') {
 					($(this).is_existing('materials', 'id', '', 'material_code="' +$(this).val()+ '"', 'material_code')) 
